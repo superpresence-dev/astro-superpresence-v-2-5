@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "astro-lumos-custom",
+  "name": "superpresence-v-2-5",
   "compatibility_date": "2026-08-13",
 
   // The built site. There is no `main`, so this deploys as an assets-only

@@ -1,0 +1,138 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Icon from "@/components/media/Icon.astro";
+import valueIcon from "@/assets/home/value-icon.svg";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+}
+
+const { render = true, class: className, ...rest } = Astro.props;
+
+const items = [
+  {
+    title: "Web design specialists",
+    text: "Websites are our core craft. You work with people who design them every day and know what makes a buyer stay, trust you and get in touch.",
+  },
+  {
+    title: "One team, senior thinking",
+    text: "Strategy, design, copy, development and QA, all in one place. You get an expert team that owns the whole project, without hiring, managing or paying for one.",
+  },
+  {
+    title: "Proven frameworks",
+    text: "Every site is built on design frameworks proven across our launches: page structures and layouts that turn visitors into enquiries. You start from what works, and launch sooner.",
+  },
+  {
+    title: "World-class standards",
+    text: "Visual design that stands with the best in your category, and every build tested across devices and browsers, so buyers see a polished site wherever they look.",
+  },
+];
+---
+
+{
+  render && (
+    <div class:list={["home-value_wrap", className]} {...rest}>
+      <div class="home-value_header">
+        <Paragraph variant="overline-small" class="home-value_eyebrow">
+          Why Superpresence
+        </Paragraph>
+        <Heading tag="h2" variant="h3" class="home-value_heading">
+          We help you turn your website<br />into the asset it should be
+        </Heading>
+      </div>
+      <ul class="home-value_list" role="list">
+        {
+          items.map((item) => (
+            <li class="home-value_item">
+              <Icon src={valueIcon} class="home-value_icon" />
+              <div class="home-value_content">
+                <Heading tag="h3" variant="h5" class="home-value_title">
+                  {item.title}
+                </Heading>
+                <Paragraph variant="main" class="home-value_text">
+                  {item.text}
+                </Paragraph>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .home-value_wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3-5rem);
+
+      .home-value_header {
+        max-width: 45rem;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+      }
+
+      .home-value_eyebrow {
+        margin: 0;
+        color: var(--color-neutral-30);
+      }
+
+      .home-value_heading {
+        margin: 0;
+      }
+
+      .home-value_list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--space-1-5rem);
+        @media (width >= 48rem) {
+          grid-template-columns: repeat(2, minmax(0, 30rem));
+          justify-content: end;
+        }
+        @media (width >= 62rem) {
+          grid-template-columns: repeat(2, minmax(0, 26.25rem));
+        }
+      }
+
+      .home-value_item {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: var(--space-2rem);
+        padding-block: var(--space-2rem);
+        padding-right: var(--space-2rem);
+        border-top: var(--border-width) solid var(--color-neutral-5);
+      }
+
+      .home-value_icon {
+        --_size: 2.5rem;
+        color: var(--brand);
+      }
+
+      .home-value_content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+      }
+
+      .home-value_title,
+      .home-value_text {
+        margin: 0;
+      }
+
+      .home-value_text {
+        color: var(--text);
+      }
+    }
+  }
+</style>

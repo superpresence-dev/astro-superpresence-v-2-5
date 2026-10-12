@@ -1,0 +1,154 @@
+---
+import type { ComponentProps, HTMLAttributes } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Img from "@/components/media/Img.astro";
+import background from "@/assets/home/globalwrapper.png";
+import logo from "@/assets/home/logo-10.svg";
+import avatar from "@/assets/home/testimonial-image.png";
+
+interface Props
+  extends HTMLAttributes<"section">,
+    Pick<ComponentProps<typeof Section>, "render"> {}
+
+const { render = true, class: className, ...rest } = Astro.props;
+---
+
+<Section
+  render={render}
+  class:list={["home-quote_wrap", className]}
+  {...rest}
+>
+  <Img src={background} slot="background" class="home-quote_background" />
+  <div slot="background" class="home-quote_fade"></div>
+  <div class="home-quote_layout">
+    <div class="home-quote_logo">
+      <Img src={logo} alt="Superpresence" class="home-quote_logo-image" />
+    </div>
+    <Paragraph variant="h4" class="home-quote_quote">
+      "Superpresence rebuilt our site around what founders and partners actually
+      need from us. It finally looks like the organisation we've become, and the
+      team made the whole process easy."
+    </Paragraph>
+    <div class="home-quote_detail">
+      <div class="home-quote_avatar">
+        <Img src={avatar} alt="Billy van der Loo" />
+      </div>
+      <div class="home-quote_person">
+        <Paragraph variant="large" class="home-quote_name">
+          Billy van der Loo
+        </Paragraph>
+        <Paragraph variant="main" class="home-quote_role">
+          President, Bangkok Startup Association
+        </Paragraph>
+      </div>
+    </div>
+  </div>
+</Section>
+
+<style is:global>
+  @layer components {
+    .home-quote_wrap {
+      .home-quote_background {
+        object-fit: cover;
+      }
+
+      .home-quote_fade {
+        background-image: linear-gradient(
+          to bottom,
+          color-mix(in srgb, var(--color-neutral-0) 48%, transparent) 50%,
+          var(--color-neutral-0)
+        );
+      }
+
+      .home-quote_layout {
+        width: 100%;
+        max-width: 37.5rem;
+        margin-inline: auto;
+        padding-block: var(--space-3rem);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        gap: var(--space-2rem);
+        @media (width >= 62rem) {
+          max-width: 55rem;
+        }
+      }
+
+      .home-quote_logo {
+        height: 1.75rem;
+        display: flex;
+        align-items: center;
+        @media (width >= 48rem) {
+          height: 2rem;
+        }
+        @media (width >= 62rem) {
+          height: 2.5rem;
+        }
+      }
+
+      .home-quote_logo-image {
+        width: 6.5188rem;
+        height: auto;
+        background-color: transparent;
+        @media (width >= 48rem) {
+          width: 7.45rem;
+        }
+        @media (width >= 62rem) {
+          width: 9.3125rem;
+        }
+      }
+
+      .home-quote_quote {
+        margin: 0;
+        color: var(--heading);
+      }
+
+      .home-quote_detail {
+        display: flex;
+        align-items: center;
+        gap: var(--space-1-25rem);
+      }
+
+      .home-quote_avatar {
+        position: relative;
+        flex: none;
+        width: 2.5rem;
+        aspect-ratio: 1 / 1;
+        border-radius: var(--radius-0-125rem);
+        overflow: hidden;
+        @media (width >= 48rem) {
+          width: 3rem;
+        }
+        @media (width >= 62rem) {
+          width: 3.75rem;
+        }
+
+        & > .image {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+
+      .home-quote_person {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-125rem);
+      }
+
+      .home-quote_name,
+      .home-quote_role {
+        margin: 0;
+      }
+
+      .home-quote_name {
+        color: var(--heading);
+        font-weight: var(--primary-medium);
+      }
+    }
+  }
+</style>

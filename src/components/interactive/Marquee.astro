@@ -10,12 +10,15 @@ type Props = HTMLAttributes<"div"> & {
   label?: string;
   /** Travel direction. */
   direction?: "forwards" | "backwards";
+  /** Show the play and pause button. Without it the strip loops on its own, held still only for reduced motion. */
+  controls?: boolean;
 };
 
 const {
   render = true,
   label = "Marquee",
   direction = "forwards",
+  controls = true,
   class: className,
   ...rest
 } = Astro.props;
@@ -95,13 +98,15 @@ const locals = `--_count: ${count}`;
         </div>
       </div>
 
-      <Button
-        variant="play"
-        emphasis="secondary"
-        pressed={true}
-        class="marquee_toggle"
-        data-marquee-toggle
-      />
+      {controls && (
+        <Button
+          variant="play"
+          emphasis="secondary"
+          pressed={true}
+          class="marquee_toggle"
+          data-marquee-toggle
+        />
+      )}
     </div>
   )
 }
@@ -187,6 +192,12 @@ const locals = `--_count: ${count}`;
       &:focus-within,
       .marquee_wrap[data-state="paused"] & {
         animation-play-state: paused;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .marquee_wrap:not(:has(.marquee_toggle)) & {
+          animation-play-state: paused;
+        }
       }
     }
 

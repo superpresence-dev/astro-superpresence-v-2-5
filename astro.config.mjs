@@ -13,16 +13,11 @@ export default defineConfig({
   ],
   fonts: [
     {
-      name: "Inter",
-      cssVariable: "--font-inter",
+      name: "Stack Sans Headline",
+      cssVariable: "--font-stack-sans-headline",
       provider: fontProviders.google(),
-      weights: ["400 700"],
+      weights: ["500", "600"],
       styles: ["normal"],
-      options: {
-        experimental: {
-          variableAxis: { opsz: ["32"] },
-        },
-      },
     },
   ],
   vite: { build: { cssTarget: "safari15.4" } },

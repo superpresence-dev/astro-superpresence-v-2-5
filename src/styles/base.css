@@ -1,19 +1,17 @@
 /* 1. Design tokens */
 :root {
   /* Swatches */
-  --color-primary-safron-mango-5: #fef3e0;
-  --color-primary-safron-mango-10: #fdeccb;
-  --color-primary-safron-mango-20: #fce2b1;
-  --color-primary-safron-mango-30: #fbd898;
-  --color-primary-safron-mango-40: #facf7e;
-  --color-primary-safron-mango-50: #f9c564;
-  --color-primary-safron-mango-60: #cfa453;
-  --color-primary-safron-mango-70: #a68343;
-  --color-primary-safron-mango-80: #7d6332;
-  --color-primary-safron-mango-90: #534221;
-  --color-primary-safron-mango-95: #322714;
-
-  --color-primary-background-10: #fffffc;
+  --color-primary-5: #eff0ff;
+  --color-primary-10: #d6d9ff;
+  --color-primary-20: #b0b6fe;
+  --color-primary-30: #8d97fe;
+  --color-primary-40: #697afe;
+  --color-primary-50: #405dfe;
+  --color-primary-60: #0642ee;
+  --color-primary-70: #0435c6;
+  --color-primary-80: #022592;
+  --color-primary-90: #01135b;
+  --color-primary-95: #000a3d;
 
   --color-neutral-0: #ffffff;
   --color-neutral-2: #f9f9f9;
@@ -62,24 +60,13 @@
   --color-accent-warning-80: #92400e;
   --color-accent-warning-90: #78350f;
 
-  --color-secondary-outrageous-orange-5: #ffdfd7;
-  --color-secondary-outrageous-orange-10: #ffcabd;
-  --color-secondary-outrageous-orange-20: #ffaf9b;
-  --color-secondary-outrageous-orange-30: #ff957a;
-  --color-secondary-outrageous-orange-40: #ff7b59;
-  --color-secondary-outrageous-orange-50: #ff6038;
-  --color-secondary-outrageous-orange-60: #d4502f;
-  --color-secondary-outrageous-orange-70: #aa4025;
-  --color-secondary-outrageous-orange-80: #80301c;
-  --color-secondary-outrageous-orange-90: #552013;
-  --color-secondary-outrageous-orange-95: #33130b;
-
   /* Brand */
-  --brand: var(--color-primary-safron-mango-50);
-  --brand-text: var(--color-neutral-90);
+  --brand: var(--color-primary-60);
+  --brand-text: var(--color-neutral-0);
 
   /* Typography primitives */
-  --primary-family: var(--font-inter, system-ui, sans-serif);
+  --primary-family: var(--font-helvetica-neue, "Helvetica Neue", Helvetica, Arial, sans-serif);
+  --secondary-family: var(--font-stack-sans-headline, var(--primary-family));
   --primary-regular: 400;
   --primary-medium: 500;
   --primary-semibold: 600;
@@ -89,7 +76,14 @@
 
   /* Letter spacing */
   --letter-spacing-tight: -0.03em;
+  --letter-spacing-neg-1-75: -0.0175em;
+  --letter-spacing-neg-1-5: -0.015em;
+  --letter-spacing-neg-1-25: -0.0125em;
+  --letter-spacing-neg-1: -0.01em;
+  --letter-spacing-neg-0-7: -0.007em;
+  --letter-spacing-neg-0-5: -0.005em;
   --letter-spacing-normal: 0em;
+  --letter-spacing-overline: 0.03em;
 
   /* Line height */
   --line-height-small: 1;
@@ -98,21 +92,29 @@
   --line-height-huge: 1.5;
 
   /* Button */
-  --button-radius: 0.5em;
-  --button-padding-block: 0.75em;
-  --button-padding-inline: 1.5em;
+  --button-radius: var(--radius-0-125rem);
+  --button-padding-block: var(--space-0-75rem);
+  --button-padding-inline: var(--space-1-25rem);
   --button-border-inset: 0rem;
-  --button-gap: 0.5em;
-  --button-font-size: initial;
-  --button-font-weight: initial;
-  --button-line-height: 1.2;
-  --button-letter-spacing: initial;
+  --button-gap: var(--space-0-75rem);
+  --button-font-size: var(--text-main);
+  --button-font-weight: var(--primary-medium);
+  --button-line-height: var(--text-main-line-height);
+  --button-letter-spacing: var(--text-main-letter-spacing);
 
   /* Borders & focus */
   --border-width: 0.0625rem;
   --focus-width: 0.125rem;
   --focus-offset: 0.1827rem;
   --focus-offset-inner: calc(var(--focus-width) * -1);
+
+  /* Shadows */
+  --shadow-small: inset 0 0 0.2rem 0 rgb(255 255 255 / 0.04);
+  --shadow-medium: 0 0.1553rem 0.3107rem -0.0777rem rgb(16 24 40 / 0.1), 0 0.0777rem 0.1553rem -0.0777rem rgb(16 24 40 / 0.06);
+  --shadow-large: 0 0.1942rem 0.3884rem -0.0971rem rgb(16 24 40 / 0.1), 0 0.0971rem 0.1942rem -0.0971rem rgb(16 24 40 / 0.06);
+  --shadow-xlarge: 0 0.233rem 0.466rem -0.1165rem rgb(16 24 40 / 0.1), 0 0.1165rem 0.233rem -0.1165rem rgb(16 24 40 / 0.06);
+  --shadow-2xlarge: 0 2.5rem 4rem 0 rgb(102 135 255 / 0.16), 0 0.8125rem 1.25rem 0 rgb(102 135 255 / 0.1), 0 0.25rem 0.5rem 0 rgb(102 135 255 / 0.08), 0 0.0375rem 0.1875rem 0 rgb(102 135 255 / 0.06);
+  --shadow-3xlarge: 0 2.5rem 4.5563rem 0 rgb(102 135 255 / 0.16), 0 0.8113rem 1.1197rem 0 rgb(102 135 255 / 0.1), 0 0.2246rem 0.4259rem 0 rgb(102 135 255 / 0.08), 0 0.0399rem 0.1857rem 0 rgb(102 135 255 / 0.06);
 
   /* Hover motion */
   --hover-duration: 200ms;
@@ -243,7 +245,7 @@
   --icon-4xl-desktop: 60;
 
   /* Nav */
-  --nav-height: 5rem;
+  --nav-height: calc(2 * var(--space-1-25rem) + var(--text-small-line-height) + 2 * var(--space-0-5rem) + 2 * var(--border-width));
 
   /* Typography styles */
   --display: calc((var(--bp-mobile) * var(--display-mobile) + var(--bp-tablet) * var(--display-tablet) + var(--bp-desktop) * var(--display-desktop)) / 16 * 1rem);
@@ -255,7 +257,7 @@
   --display-text-transform: none;
   --display-margin-top: var(--space-3rem);
   --display-margin-bottom: var(--space-2-5rem);
-  --display-font-family: var(--primary-family);
+  --display-font-family: var(--secondary-family);
   --display-font-weight: var(--primary-medium);
   --display-trim-top: var(--primary-trim-top);
   --display-trim-bottom: var(--primary-trim-bottom);
@@ -263,18 +265,18 @@
 
   --h1: calc((var(--bp-mobile) * var(--h1-mobile) + var(--bp-tablet) * var(--h1-tablet) + var(--bp-desktop) * var(--h1-desktop)) / 16 * 1rem);
   --h1-mobile: 32;
-  --h1-tablet: 45;
-  --h1-desktop: 54;
+  --h1-tablet: 42;
+  --h1-desktop: 58;
   --h1-line-height: calc((var(--bp-mobile) * var(--h1-line-height-mobile) + var(--bp-tablet) * var(--h1-line-height-tablet) + var(--bp-desktop) * var(--h1-line-height-desktop)) / 16 * 1rem);
   --h1-line-height-mobile: 36;
-  --h1-line-height-tablet: 48;
+  --h1-line-height-tablet: 45;
   --h1-line-height-desktop: 60;
-  --h1-letter-spacing: var(--letter-spacing-tight);
+  --h1-letter-spacing: var(--letter-spacing-neg-1-75);
   --h1-text-transform: none;
   --h1-margin-top: var(--space-3rem);
   --h1-margin-bottom: var(--space-2-5rem);
-  --h1-font-family: var(--primary-family);
-  --h1-font-weight: var(--primary-medium);
+  --h1-font-family: var(--secondary-family);
+  --h1-font-weight: var(--primary-semibold);
   --h1-trim-top: var(--primary-trim-top);
   --h1-trim-bottom: var(--primary-trim-bottom);
   --h1-text-wrap: balance;
@@ -287,12 +289,12 @@
   --h2-line-height-mobile: 32;
   --h2-line-height-tablet: 42;
   --h2-line-height-desktop: 48;
-  --h2-letter-spacing: var(--letter-spacing-tight);
+  --h2-letter-spacing: var(--letter-spacing-neg-1-5);
   --h2-text-transform: none;
   --h2-margin-top: var(--space-3rem);
   --h2-margin-bottom: var(--space-2rem);
-  --h2-font-family: var(--primary-family);
-  --h2-font-weight: var(--primary-medium);
+  --h2-font-family: var(--secondary-family);
+  --h2-font-weight: var(--primary-semibold);
   --h2-trim-top: var(--primary-trim-top);
   --h2-trim-bottom: var(--primary-trim-bottom);
   --h2-text-wrap: balance;
@@ -300,16 +302,16 @@
   --h3: calc((var(--bp-mobile) * var(--h3-mobile) + var(--bp-tablet) * var(--h3-tablet) + var(--bp-desktop) * var(--h3-desktop)) / 16 * 1rem);
   --h3-mobile: 24;
   --h3-tablet: 32;
-  --h3-desktop: 38;
+  --h3-desktop: 40;
   --h3-line-height: calc((var(--bp-mobile) * var(--h3-line-height-mobile) + var(--bp-tablet) * var(--h3-line-height-tablet) + var(--bp-desktop) * var(--h3-line-height-desktop)) / 16 * 1rem);
   --h3-line-height-mobile: 28;
   --h3-line-height-tablet: 36;
-  --h3-line-height-desktop: 42;
-  --h3-letter-spacing: var(--letter-spacing-tight);
+  --h3-line-height-desktop: 44;
+  --h3-letter-spacing: var(--letter-spacing-neg-1-5);
   --h3-text-transform: none;
   --h3-margin-top: var(--space-2-5rem);
   --h3-margin-bottom: var(--space-2rem);
-  --h3-font-family: var(--primary-family);
+  --h3-font-family: var(--secondary-family);
   --h3-font-weight: var(--primary-medium);
   --h3-trim-top: var(--primary-trim-top);
   --h3-trim-bottom: var(--primary-trim-bottom);
@@ -323,11 +325,11 @@
   --h4-line-height-mobile: 25;
   --h4-line-height-tablet: 28;
   --h4-line-height-desktop: 38;
-  --h4-letter-spacing: var(--letter-spacing-tight);
+  --h4-letter-spacing: var(--letter-spacing-neg-1-25);
   --h4-text-transform: none;
   --h4-margin-top: var(--space-2-5rem);
   --h4-margin-bottom: var(--space-1-5rem);
-  --h4-font-family: var(--primary-family);
+  --h4-font-family: var(--secondary-family);
   --h4-font-weight: var(--primary-medium);
   --h4-trim-top: var(--primary-trim-top);
   --h4-trim-bottom: var(--primary-trim-bottom);
@@ -338,14 +340,14 @@
   --h5-tablet: 20;
   --h5-desktop: 24;
   --h5-line-height: calc((var(--bp-mobile) * var(--h5-line-height-mobile) + var(--bp-tablet) * var(--h5-line-height-tablet) + var(--bp-desktop) * var(--h5-line-height-desktop)) / 16 * 1rem);
-  --h5-line-height-mobile: 22;
+  --h5-line-height-mobile: 24;
   --h5-line-height-tablet: 26;
   --h5-line-height-desktop: 30;
-  --h5-letter-spacing: var(--letter-spacing-tight);
+  --h5-letter-spacing: var(--letter-spacing-neg-1);
   --h5-text-transform: none;
   --h5-margin-top: var(--space-2rem);
   --h5-margin-bottom: var(--space-1-5rem);
-  --h5-font-family: var(--primary-family);
+  --h5-font-family: var(--secondary-family);
   --h5-font-weight: var(--primary-medium);
   --h5-trim-top: var(--primary-trim-top);
   --h5-trim-bottom: var(--primary-trim-bottom);
@@ -356,14 +358,14 @@
   --h6-tablet: 18;
   --h6-desktop: 20;
   --h6-line-height: calc((var(--bp-mobile) * var(--h6-line-height-mobile) + var(--bp-tablet) * var(--h6-line-height-tablet) + var(--bp-desktop) * var(--h6-line-height-desktop)) / 16 * 1rem);
-  --h6-line-height-mobile: 21;
-  --h6-line-height-tablet: 22;
+  --h6-line-height-mobile: 22;
+  --h6-line-height-tablet: 24;
   --h6-line-height-desktop: 26;
-  --h6-letter-spacing: var(--letter-spacing-tight);
+  --h6-letter-spacing: var(--letter-spacing-neg-1);
   --h6-text-transform: none;
   --h6-margin-top: var(--space-2rem);
   --h6-margin-bottom: var(--space-1rem);
-  --h6-font-family: var(--primary-family);
+  --h6-font-family: var(--secondary-family);
   --h6-font-weight: var(--primary-medium);
   --h6-trim-top: var(--primary-trim-top);
   --h6-trim-bottom: var(--primary-trim-bottom);
@@ -371,13 +373,13 @@
 
   --text-large: calc((var(--bp-mobile) * var(--text-large-mobile) + var(--bp-tablet) * var(--text-large-tablet) + var(--bp-desktop) * var(--text-large-desktop)) / 16 * 1rem);
   --text-large-mobile: 16;
-  --text-large-tablet: 17;
-  --text-large-desktop: 19;
+  --text-large-tablet: 16;
+  --text-large-desktop: 18;
   --text-large-line-height: calc((var(--bp-mobile) * var(--text-large-line-height-mobile) + var(--bp-tablet) * var(--text-large-line-height-tablet) + var(--bp-desktop) * var(--text-large-line-height-desktop)) / 16 * 1rem);
-  --text-large-line-height-mobile: 24;
-  --text-large-line-height-tablet: 25;
-  --text-large-line-height-desktop: 28;
-  --text-large-letter-spacing: var(--letter-spacing-normal);
+  --text-large-line-height-mobile: 22;
+  --text-large-line-height-tablet: 22;
+  --text-large-line-height-desktop: 24;
+  --text-large-letter-spacing: var(--letter-spacing-neg-0-7);
   --text-large-text-transform: none;
   --text-large-margin-top: var(--space-1-5rem);
   --text-large-margin-bottom: var(--space-1-5rem);
@@ -389,13 +391,13 @@
 
   --text-main: calc((var(--bp-mobile) * var(--text-main-mobile) + var(--bp-tablet) * var(--text-main-tablet) + var(--bp-desktop) * var(--text-main-desktop)) / 16 * 1rem);
   --text-main-mobile: 14;
-  --text-main-tablet: 15;
-  --text-main-desktop: 17;
+  --text-main-tablet: 14;
+  --text-main-desktop: 16;
   --text-main-line-height: calc((var(--bp-mobile) * var(--text-main-line-height-mobile) + var(--bp-tablet) * var(--text-main-line-height-tablet) + var(--bp-desktop) * var(--text-main-line-height-desktop)) / 16 * 1rem);
-  --text-main-line-height-mobile: 21;
-  --text-main-line-height-tablet: 22;
-  --text-main-line-height-desktop: 25;
-  --text-main-letter-spacing: var(--letter-spacing-normal);
+  --text-main-line-height-mobile: 20;
+  --text-main-line-height-tablet: 20;
+  --text-main-line-height-desktop: 22;
+  --text-main-letter-spacing: var(--letter-spacing-neg-0-5);
   --text-main-text-transform: none;
   --text-main-margin-top: var(--space-1-5rem);
   --text-main-margin-bottom: var(--space-1-5rem);
@@ -406,14 +408,14 @@
   --text-main-text-wrap: pretty;
 
   --text-small: calc((var(--bp-mobile) * var(--text-small-mobile) + var(--bp-tablet) * var(--text-small-tablet) + var(--bp-desktop) * var(--text-small-desktop)) / 16 * 1rem);
-  --text-small-mobile: 13;
-  --text-small-tablet: 14;
-  --text-small-desktop: 15;
+  --text-small-mobile: 12;
+  --text-small-tablet: 13;
+  --text-small-desktop: 14;
   --text-small-line-height: calc((var(--bp-mobile) * var(--text-small-line-height-mobile) + var(--bp-tablet) * var(--text-small-line-height-tablet) + var(--bp-desktop) * var(--text-small-line-height-desktop)) / 16 * 1rem);
-  --text-small-line-height-mobile: 20;
-  --text-small-line-height-tablet: 21;
-  --text-small-line-height-desktop: 22;
-  --text-small-letter-spacing: var(--letter-spacing-normal);
+  --text-small-line-height-mobile: 18;
+  --text-small-line-height-tablet: 19;
+  --text-small-line-height-desktop: 20;
+  --text-small-letter-spacing: var(--letter-spacing-neg-0-5);
   --text-small-text-transform: none;
   --text-small-margin-top: var(--space-1-5rem);
   --text-small-margin-bottom: var(--space-1-5rem);
@@ -424,13 +426,13 @@
   --text-small-text-wrap: pretty;
 
   --text-xsmall: calc((var(--bp-mobile) * var(--text-xsmall-mobile) + var(--bp-tablet) * var(--text-xsmall-tablet) + var(--bp-desktop) * var(--text-xsmall-desktop)) / 16 * 1rem);
-  --text-xsmall-mobile: 12;
-  --text-xsmall-tablet: 13;
-  --text-xsmall-desktop: 13;
+  --text-xsmall-mobile: 11;
+  --text-xsmall-tablet: 12;
+  --text-xsmall-desktop: 12;
   --text-xsmall-line-height: calc((var(--bp-mobile) * var(--text-xsmall-line-height-mobile) + var(--bp-tablet) * var(--text-xsmall-line-height-tablet) + var(--bp-desktop) * var(--text-xsmall-line-height-desktop)) / 16 * 1rem);
-  --text-xsmall-line-height-mobile: 18;
-  --text-xsmall-line-height-tablet: 20;
-  --text-xsmall-line-height-desktop: 20;
+  --text-xsmall-line-height-mobile: 17;
+  --text-xsmall-line-height-tablet: 18;
+  --text-xsmall-line-height-desktop: 18;
   --text-xsmall-letter-spacing: var(--letter-spacing-normal);
   --text-xsmall-text-transform: none;
   --text-xsmall-margin-top: var(--space-1rem);
@@ -442,31 +444,31 @@
   --text-xsmall-text-wrap: pretty;
 
   --overline-small: calc((var(--bp-mobile) * var(--overline-small-mobile) + var(--bp-tablet) * var(--overline-small-tablet) + var(--bp-desktop) * var(--overline-small-desktop)) / 16 * 1rem);
-  --overline-small-mobile: 12;
-  --overline-small-tablet: 13;
-  --overline-small-desktop: 13;
+  --overline-small-mobile: 11;
+  --overline-small-tablet: 12;
+  --overline-small-desktop: 12;
   --overline-small-line-height: calc((var(--bp-mobile) * var(--overline-small-line-height-mobile) + var(--bp-tablet) * var(--overline-small-line-height-tablet) + var(--bp-desktop) * var(--overline-small-line-height-desktop)) / 16 * 1rem);
-  --overline-small-line-height-mobile: 18;
-  --overline-small-line-height-tablet: 20;
-  --overline-small-line-height-desktop: 20;
-  --overline-small-letter-spacing: var(--letter-spacing-normal);
-  --overline-small-text-transform: none;
+  --overline-small-line-height-mobile: 16;
+  --overline-small-line-height-tablet: 18;
+  --overline-small-line-height-desktop: 18;
+  --overline-small-letter-spacing: var(--letter-spacing-overline);
+  --overline-small-text-transform: uppercase;
   --overline-small-margin-top: var(--space-1rem);
   --overline-small-margin-bottom: var(--space-1rem);
   --overline-small-font-family: var(--primary-family);
-  --overline-small-font-weight: var(--primary-medium);
+  --overline-small-font-weight: var(--primary-regular);
   --overline-small-trim-top: var(--primary-trim-top);
   --overline-small-trim-bottom: var(--primary-trim-bottom);
   --overline-small-text-wrap: pretty;
 
   --overline-main: calc((var(--bp-mobile) * var(--overline-main-mobile) + var(--bp-tablet) * var(--overline-main-tablet) + var(--bp-desktop) * var(--overline-main-desktop)) / 16 * 1rem);
-  --overline-main-mobile: 13;
-  --overline-main-tablet: 14;
-  --overline-main-desktop: 15;
+  --overline-main-mobile: 12;
+  --overline-main-tablet: 13;
+  --overline-main-desktop: 14;
   --overline-main-line-height: calc((var(--bp-mobile) * var(--overline-main-line-height-mobile) + var(--bp-tablet) * var(--overline-main-line-height-tablet) + var(--bp-desktop) * var(--overline-main-line-height-desktop)) / 16 * 1rem);
-  --overline-main-line-height-mobile: 20;
-  --overline-main-line-height-tablet: 21;
-  --overline-main-line-height-desktop: 22;
+  --overline-main-line-height-mobile: 18;
+  --overline-main-line-height-tablet: 19;
+  --overline-main-line-height-desktop: 20;
   --overline-main-letter-spacing: var(--letter-spacing-normal);
   --overline-main-text-transform: none;
   --overline-main-margin-top: var(--space-1rem);
@@ -481,12 +483,12 @@
   --site-margin: calc((var(--bp-mobile) * var(--site-margin-mobile) + var(--bp-tablet) * var(--site-margin-tablet) + var(--bp-desktop) * var(--site-margin-desktop)) / 16 * 1rem);
   --site-margin-mobile: 16;
   --site-margin-tablet: 32;
-  --site-margin-desktop: 112;
+  --site-margin-desktop: 64;
 
   --site-gutter: calc((var(--bp-mobile) * var(--site-gutter-mobile) + var(--bp-tablet) * var(--site-gutter-tablet) + var(--bp-desktop) * var(--site-gutter-desktop)) / 16 * 1rem);
   --site-gutter-mobile: 16;
-  --site-gutter-tablet: 16;
-  --site-gutter-desktop: 20;
+  --site-gutter-tablet: 20;
+  --site-gutter-desktop: 24;
 
   --site-width: calc(100% - var(--site-margin) * 2);
 
@@ -496,15 +498,15 @@
   --space-none-tablet: 0;
   --space-none-desktop: 0;
   --space-0-125rem: calc((var(--bp-mobile) * var(--space-0-125rem-mobile) + var(--bp-tablet) * var(--space-0-125rem-tablet) + var(--bp-desktop) * var(--space-0-125rem-desktop)) / 16 * 1rem);
-  --space-0-125rem-mobile: 2;
+  --space-0-125rem-mobile: 1;
   --space-0-125rem-tablet: 2;
   --space-0-125rem-desktop: 2;
   --space-0-25rem: calc((var(--bp-mobile) * var(--space-0-25rem-mobile) + var(--bp-tablet) * var(--space-0-25rem-tablet) + var(--bp-desktop) * var(--space-0-25rem-desktop)) / 16 * 1rem);
-  --space-0-25rem-mobile: 4;
+  --space-0-25rem-mobile: 3;
   --space-0-25rem-tablet: 4;
   --space-0-25rem-desktop: 4;
   --space-0-5rem: calc((var(--bp-mobile) * var(--space-0-5rem-mobile) + var(--bp-tablet) * var(--space-0-5rem-tablet) + var(--bp-desktop) * var(--space-0-5rem-desktop)) / 16 * 1rem);
-  --space-0-5rem-mobile: 6;
+  --space-0-5rem-mobile: 5;
   --space-0-5rem-tablet: 6;
   --space-0-5rem-desktop: 8;
   --space-0-75rem: calc((var(--bp-mobile) * var(--space-0-75rem-mobile) + var(--bp-tablet) * var(--space-0-75rem-tablet) + var(--bp-desktop) * var(--space-0-75rem-desktop)) / 16 * 1rem);
@@ -581,9 +583,9 @@
   --section-space-small-tablet: 61;
   --section-space-small-desktop: 80;
   --section-space-medium: calc((var(--bp-mobile) * var(--section-space-medium-mobile) + var(--bp-tablet) * var(--section-space-medium-tablet) + var(--bp-desktop) * var(--section-space-medium-desktop)) / 16 * 1rem);
-  --section-space-medium-mobile: 56;
-  --section-space-medium-tablet: 64;
-  --section-space-medium-desktop: 80;
+  --section-space-medium-mobile: 72;
+  --section-space-medium-tablet: 80;
+  --section-space-medium-desktop: 104;
   --section-space-large: calc((var(--bp-mobile) * var(--section-space-large-mobile) + var(--bp-tablet) * var(--section-space-large-tablet) + var(--bp-desktop) * var(--section-space-large-desktop)) / 16 * 1rem);
   --section-space-large-mobile: 88;
   --section-space-large-tablet: 117;
@@ -601,12 +603,12 @@
 .theme-brand .theme-invert {
   color-scheme: light;
 
-  --background: var(--color-primary-background-10);
+  --background: var(--color-neutral-0);
   --background-2: var(--color-neutral-5);
   --background-3: var(--color-neutral-10);
   --background-skeleton: color-mix(in lab, currentcolor 10%, transparent);
-  --text: var(--color-neutral-90);
-  --heading: var(--text);
+  --text: var(--color-neutral-60);
+  --heading: var(--color-neutral-90);
   --ui: var(--text);
   --text-2: color-mix(in lab, currentcolor 60%, transparent);
   --border: color-mix(in lab, var(--ui) 20%, transparent);
@@ -629,9 +631,9 @@
   --button-2-border-hover: var(--button-2-background-hover);
   --button-2-text-hover: var(--background);
 
-  --link-text: var(--text);
-  --link-border: var(--border);
-  --link-text-hover: var(--text);
+  --link-text: var(--heading);
+  --link-border: var(--color-neutral-10);
+  --link-text-hover: var(--heading);
   --link-border-hover: var(--brand);
 }
 
@@ -653,12 +655,12 @@
   --selection-background: var(--ui);
   --selection-text: var(--background);
 
-  --button-background: var(--brand);
+  --button-background: var(--color-neutral-0);
   --button-border: var(--button-background);
-  --button-text: var(--brand-text);
-  --button-background-hover: var(--ui);
+  --button-text: var(--color-neutral-90);
+  --button-background-hover: var(--color-neutral-10);
   --button-border-hover: var(--button-background-hover);
-  --button-text-hover: var(--background);
+  --button-text-hover: var(--color-neutral-90);
 
   --button-2-background: transparent;
   --button-2-border: var(--border);

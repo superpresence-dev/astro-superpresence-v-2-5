@@ -1,0 +1,126 @@
+---
+import type { ComponentProps } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import ButtonWrapper from "@/components/wrapper/ButtonWrapper.astro";
+import Button from "@/components/Button.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Img from "@/components/media/Img.astro";
+import background from "@/assets/home/cta.png";
+
+type Props = Omit<
+  ComponentProps<typeof Section>,
+  | "theme"
+  | "paddingTop"
+  | "paddingBottom"
+  | "gap"
+  | "align"
+  | "fullHeight"
+  | "containerClass"
+  | "containerAttrs"
+>;
+
+const { render = true, class: className, ...rest } = Astro.props;
+---
+
+<Section
+  render={render}
+  theme="dark"
+  align="center"
+  class:list={["home-cta_wrap", className]}
+  {...rest}
+>
+  <Fragment slot="background">
+    <Img src={background} alt="" class="home-cta_image" fetchPriority="low" />
+    <div class="home-cta_fade home-cta_fade-tall"></div>
+    <div class="home-cta_fade"></div>
+  </Fragment>
+
+  <div class="home-cta_content">
+    <div class="home-cta_text">
+      <Paragraph variant="overline-small" class="home-cta_eyebrow">
+        Free website teardown
+      </Paragraph>
+      <Heading tag="h2" variant="h2" maxWidth={30}>
+        Get a free teardown of your website
+      </Heading>
+      <Paragraph variant="large" class="home-cta_body">
+        Send us your link and we'll review your website: what's working, what's
+        losing buyers, and what we'd change first.
+      </Paragraph>
+    </div>
+    <ButtonWrapper marginTop="0">
+      <Button element="link" href="#" arrow>Review my website</Button>
+    </ButtonWrapper>
+  </div>
+</Section>
+
+<style is:global>
+  @layer components {
+    .home-cta_wrap :is(.heading, .text) {
+      margin: 0;
+    }
+
+    .home-cta_wrap {
+      --home-cta-background: #060d33;
+      min-height: 33.75rem;
+      background-color: var(--home-cta-background);
+      overflow: clip;
+      @media (width >= 48rem) {
+        min-height: 37.5rem;
+      }
+      @media (width >= 62rem) {
+        min-height: 42.5rem;
+      }
+    }
+
+    .home-cta_image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.7;
+    }
+
+    .home-cta_fade {
+      inset: auto 0 0;
+      height: 11.25rem;
+      background-image: linear-gradient(
+        to bottom,
+        transparent,
+        var(--home-cta-background)
+      );
+      &.home-cta_fade-tall {
+        height: 15rem;
+      }
+    }
+
+    .home-cta_content {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-3rem);
+      padding-block: var(--space-3rem);
+      text-align: center;
+    }
+
+    .home-cta_text {
+      width: 100%;
+      max-width: 55rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-0-75rem);
+    }
+
+    .home-cta_eyebrow {
+      color: var(--color-neutral-30);
+      letter-spacing: 0.03em;
+    }
+
+    .home-cta_body {
+      max-width: 40rem;
+      color: var(--color-neutral-10);
+    }
+  }
+</style>

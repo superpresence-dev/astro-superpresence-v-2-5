@@ -1,0 +1,169 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Img from "@/components/media/Img.astro";
+import industryOne from "@/assets/home/industry-image.png";
+import industryTwo from "@/assets/home/industry-image-2.png";
+import industryThree from "@/assets/home/industry-image-3.png";
+
+type Props = HTMLAttributes<"div"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+};
+
+const { render = true, class: className, ...rest } = Astro.props;
+
+const industries = [
+  {
+    image: industryOne,
+    heading: "Software & tech",
+    text: "We make it obvious what your product does and why teams choose it, so buyers stop scrolling past.",
+    tags: ["Saas & tech", "Artificial Intelligence", "Cybersecurity"],
+  },
+  {
+    image: industryTwo,
+    heading: "Trust-led businesses",
+    text: "We put your track record and standards on the page, so buyers feel safe choosing you.",
+    tags: [
+      "Professional services",
+      "Investment firms",
+      "Manufacturing & wholesalers",
+    ],
+  },
+  {
+    image: industryThree,
+    heading: "Experience brands",
+    text: "We make the site feel like the place itself, so guests and clients book with you directly.",
+    tags: [
+      "Hotels & tourism",
+      "Education",
+      "Clinic & Wellness",
+      "Property developers",
+    ],
+  },
+];
+---
+
+{
+  render && (
+    <div class:list={["home-industry_wrap", className]} {...rest}>
+      <div class="home-industry_header margin-trim">
+        <Paragraph variant="overline-small" class="home-industry_eyebrow">
+          Who we work with
+        </Paragraph>
+        <Heading tag="h2" variant="h3">
+          Customers who decide on trust,<br />and compare before they call
+        </Heading>
+      </div>
+      <div class="home-industry_layout">
+        {industries.map((industry) => (
+          <div class="home-industry_item">
+            <div class="home-industry_visual">
+              <Img src={industry.image} alt="" />
+            </div>
+            <div class="home-industry_content">
+              <div class="home-industry_text margin-trim">
+                <Heading tag="h3" variant="h5">
+                  {industry.heading}
+                </Heading>
+                <Paragraph variant="main">{industry.text}</Paragraph>
+              </div>
+              <ul class="home-industry_tags" role="list">
+                {industry.tags.map((tag) => (
+                  <li class="home-industry_tag text-style-overline-small">
+                    <Fragment set:html={tag} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .home-industry_wrap :is(.heading, .text) {
+      margin: 0;
+    }
+
+    .home-industry_wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3-5rem);
+    }
+
+    .home-industry_header {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-0-75rem);
+      max-width: 55rem;
+    }
+
+    .home-industry_eyebrow {
+      color: var(--color-neutral-30);
+    }
+
+    .home-industry_layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-2rem);
+
+      @media (width >= 62rem) {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .home-industry_item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1-25rem);
+    }
+
+    .home-industry_visual {
+      aspect-ratio: 416 / 234;
+      border-radius: var(--radius-0-25rem);
+      overflow: clip;
+
+      > .image {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .home-industry_content {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1-5rem);
+      padding-right: var(--space-2rem);
+    }
+
+    .home-industry_text {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-0-75rem);
+    }
+
+    .home-industry_tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-0-5rem);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .home-industry_tag {
+      padding: var(--space-0-25rem) var(--space-0-5rem);
+      background-color: var(--color-neutral-2);
+      border: var(--border-width) solid var(--color-neutral-5);
+      border-radius: var(--radius-0-125rem);
+      color: var(--color-neutral-40);
+      white-space: nowrap;
+    }
+  }
+</style>

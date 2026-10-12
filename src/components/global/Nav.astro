@@ -1,7 +1,11 @@
 ---
 import Icon from "@/components/media/Icon.astro";
+import Button from "@/components/Button.astro";
 import NavLink from "@/components/global/NavLink.astro";
 import logo from "@/assets/logo/logo.svg";
+import plus from "@/assets/icons/nav-plus.svg";
+import menu from "@/assets/icons/menu.svg";
+import close from "@/assets/icons/close.svg";
 import { SITE_NAME } from "@/consts.ts";
 
 interface Props {
@@ -12,32 +16,54 @@ interface Props {
 }
 
 const { render = true, overlap = false } = Astro.props;
+
+const links = [
+  { label: "What we do", href: "#", more: true },
+  { label: "Who we work with", href: "#", more: true },
+  { label: "Why us", href: "#", more: true },
+  { label: "Our work", href: "#", more: false },
+  { label: "Pricing", href: "#", more: false },
+  { label: "Resources", href: "#", more: true },
+];
 ---
 
 {
   render && (
-    <header class:list={["nav_wrap", overlap && "overlap"]}>
+    <header class:list={["nav_wrap", "theme-dark", overlap && "overlap"]}>
       <div class="nav_inner">
         <a class="nav_logo" href="/" aria-label={SITE_NAME}>
           <Icon src={logo} variant="full-width" />
         </a>
-        <button
-          class="nav_toggle"
-          type="button"
-          aria-label="Menu"
-          aria-expanded="false"
-          aria-controls="nav-menu"
-        >
-          <span class="nav_toggle_icon" />
-        </button>
         <nav class="nav_menu" id="nav-menu" aria-label="Main">
           <div class="nav_menu_inner">
             <ul class="nav_links">
-              <NavLink href="/">Home</NavLink>
-              <NavLink href="/example-components">Example Components</NavLink>
+              {links.map((link) => (
+                <NavLink href={link.href}>
+                  {link.label}
+                  {link.more && <Icon src={plus} class="nav_link_icon" />}
+                </NavLink>
+              ))}
             </ul>
           </div>
         </nav>
+        <div class="nav_actions">
+          <p class="nav_status text-style-overline-small">
+            Limited spots for Q4
+          </p>
+          <Button element="link" href="#" class="nav_button">
+            Book a call
+          </Button>
+          <button
+            class="nav_toggle"
+            type="button"
+            aria-label="Menu"
+            aria-expanded="false"
+            aria-controls="nav-menu"
+          >
+            <Icon src={menu} class="nav_toggle_open" />
+            <Icon src={close} class="nav_toggle_close" />
+          </button>
+        </div>
       </div>
     </header>
   )
@@ -91,7 +117,7 @@ const { render = true, overlap = false } = Astro.props;
     });
 
     window
-      .matchMedia("(width >= 48rem)")
+      .matchMedia("(width >= 62rem)")
       .addEventListener("change", (event) => {
         if (event.matches) setOpen(false);
       });
@@ -106,14 +132,22 @@ const { render = true, overlap = false } = Astro.props;
       z-index: 100;
       display: flex;
       justify-content: center;
-      padding-inline: var(--site-margin);
-      background-color: var(--background);
+      padding: var(--space-1-25rem) var(--site-margin);
+      background-color: transparent;
+      background-image: linear-gradient(
+        to bottom,
+        rgb(25 25 25 / 0.32),
+        rgb(25 25 25 / 0)
+      );
       color: var(--text);
-      border-bottom: var(--border-width) solid var(--border);
 
       &.overlap {
         position: fixed;
         inset-inline: 0;
+      }
+
+      &.open {
+        background-color: var(--color-neutral-95);
       }
     }
 
@@ -122,39 +156,91 @@ const { render = true, overlap = false } = Astro.props;
       max-width: var(--max-width-content);
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 0 var(--space-2-5rem);
-    }
-
-    /* Bar height */
-    .nav_logo,
-    .nav_toggle {
-      min-height: var(--nav-height);
+      gap: var(--space-2rem);
     }
 
     .nav_logo {
+      flex: 1 1 0;
       display: flex;
       align-items: center;
-      width: 6.5rem;
       transition: opacity var(--hover-duration) var(--hover-ease);
+
+      & .icon {
+        width: 8.9375rem;
+        @media (width >= 48rem) {
+          width: 10.0548rem;
+        }
+        @media (width >= 62rem) {
+          width: 11.172rem;
+        }
+      }
+
       @media (hover: hover) {
         &:hover {
           opacity: 0.6;
         }
       }
+    }
+
+    .nav_actions {
+      flex: 1 1 0;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: var(--space-0-5rem);
+    }
+
+    .nav_status {
+      display: none;
+      align-items: center;
+      gap: var(--space-0-5rem);
+      margin: 0;
+      padding: var(--space-0-5rem) var(--space-1rem) var(--space-0-5rem)
+        var(--space-0-75rem);
+      white-space: nowrap;
+
+      &::before {
+        content: "";
+        flex: none;
+        width: 1rem;
+        aspect-ratio: 1;
+        border-radius: var(--radius-full);
+        background: radial-gradient(
+          circle,
+          var(--color-accent-success-40) 0 50%,
+          color-mix(in lab, var(--color-accent-success-40) 24%, transparent)
+            50%
+        );
+      }
+
+      @media (width >= 48rem) {
+        display: flex;
+      }
+    }
+
+    .nav_button {
+      --button-padding-block: var(--space-0-5rem);
+      --button-padding-inline: var(--space-1rem);
+      --button-font-size: var(--text-small);
+      --button-line-height: var(--text-small-line-height);
+      --button-letter-spacing: var(--text-small-letter-spacing);
+      white-space: nowrap;
     }
 
     .nav_toggle {
-      --_icon-width: 1.5rem;
-      --_bar-gap: 0.5rem;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-width: 2.75rem;
-      margin-right: calc((2.75rem - var(--_icon-width)) / -2);
+      width: 1.75rem;
+      aspect-ratio: 1;
+      margin-left: var(--space-0-5rem);
       color: inherit;
-      border-radius: var(--radius-0-5rem);
       transition: opacity var(--hover-duration) var(--hover-ease);
+
+      & .icon {
+        --_size: 1.3125rem;
+      }
+
       @media (hover: hover) {
         &:hover {
           opacity: 0.6;
@@ -162,35 +248,13 @@ const { render = true, overlap = false } = Astro.props;
       }
     }
 
-    .nav_toggle_icon {
-      position: relative;
-      display: block;
-      width: var(--_icon-width);
-      height: calc(var(--_bar-gap) + var(--border-width));
-      &::before,
-      &::after {
-        content: "";
-        position: absolute;
-        inset-inline: 0;
-        height: var(--border-width);
-        background-color: currentcolor;
-        transition: transform var(--open-duration) var(--open-ease);
-      }
-      &::before {
-        top: 0;
-      }
-      &::after {
-        top: var(--_bar-gap);
-      }
+    .nav_toggle_close,
+    .nav_wrap.open .nav_toggle_open {
+      display: none;
     }
 
-    .nav_wrap.open .nav_toggle_icon {
-      &::before {
-        transform: translateY(calc(var(--_bar-gap) / 2)) rotate(45deg);
-      }
-      &::after {
-        transform: translateY(calc(var(--_bar-gap) / -2)) rotate(-45deg);
-      }
+    .nav_wrap.open .nav_toggle_close {
+      display: block;
     }
 
     .nav_menu {
@@ -204,8 +268,7 @@ const { render = true, overlap = false } = Astro.props;
       overflow-x: clip;
       overflow-y: auto;
       overscroll-behavior: contain;
-      background-color: var(--background);
-      border-bottom: var(--border-width) solid var(--border);
+      background-color: var(--color-neutral-95);
       transition:
         grid-template-rows var(--open-duration) var(--open-ease),
         visibility var(--open-duration) var(--open-ease);
@@ -233,30 +296,33 @@ const { render = true, overlap = false } = Astro.props;
       padding: var(--space-0-75rem) var(--site-margin) var(--space-1-5rem);
       font-size: var(--text-main);
       font-weight: var(--primary-medium);
+      letter-spacing: var(--text-main-letter-spacing);
       & > li + li {
         border-top: var(--border-width) solid var(--border);
       }
     }
 
     .nav_link {
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-0-25rem);
       padding-block: var(--space-1rem);
-      color: color-mix(in lab, currentcolor 60%, transparent);
+      color: var(--text);
       text-decoration: none;
-      text-underline-offset: 0.4em;
-      text-decoration-thickness: var(--border-width);
-      transition: color var(--hover-duration) var(--hover-ease);
-      &[aria-current="page"] {
-        color: var(--text);
-      }
+      transition: opacity var(--hover-duration) var(--hover-ease);
       @media (hover: hover) {
         &:hover {
-          color: var(--text);
+          opacity: 0.6;
         }
       }
     }
 
-    @media (width >= 48rem) {
+    .nav_link_icon {
+      --_size: 1rem;
+    }
+
+    @media (width >= 62rem) {
       .nav_toggle {
         display: none;
       }
@@ -265,8 +331,9 @@ const { render = true, overlap = false } = Astro.props;
         position: static;
         display: block;
         visibility: visible;
+        max-height: none;
+        overflow: visible;
         background-color: transparent;
-        border-bottom: 0;
       }
 
       .nav_menu_inner {
@@ -276,20 +343,23 @@ const { render = true, overlap = false } = Astro.props;
 
       .nav_links {
         flex-direction: row;
-        flex-wrap: wrap;
         align-items: center;
+        gap: var(--space-0-25rem);
         padding: 0;
-        gap: var(--space-1-5rem);
         font-size: var(--text-small);
+        letter-spacing: var(--text-small-letter-spacing);
+        line-height: var(--text-small-line-height);
         & > li + li {
           border-top: 0;
         }
       }
 
       .nav_link {
-        padding-block: 0;
-        &[aria-current="page"] {
-          text-decoration: underline;
+        justify-content: center;
+        padding: var(--space-0-5rem) var(--space-0-75rem);
+        white-space: nowrap;
+        &:has(.nav_link_icon) {
+          padding-right: var(--space-0-5rem);
         }
       }
     }

@@ -1,0 +1,167 @@
+---
+import Img from "@/components/media/Img.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import statImage from "@/assets/home/stat.png";
+
+interface Props {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+}
+
+const { render = true } = Astro.props;
+
+const stats = [
+  {
+    title: "48+ websites launched",
+    text: "Launched by experts who've solved problems.",
+  },
+  {
+    title: "20% more enquiries",
+    text: "Average lift in enquiries for clients running ads.",
+  },
+  {
+    title: "6 to 12 weeks",
+    text: "From first call to launch, depending on scope.",
+  },
+];
+---
+
+{
+  render && (
+    <div class="home-stat_wrap">
+      <div class="home-stat_intro">
+        <div class="home-stat_visual">
+          <Img src={statImage} alt="" sizes="(min-width: 62rem) 31.25rem, (min-width: 48rem) 15rem, 100vw" variant="constrained" />
+        </div>
+        <div class="home-stat_content">
+          <Paragraph variant="overline-small" class="home-stat_overline">
+            Our view
+          </Paragraph>
+          <div class="home-stat_copy">
+            <Paragraph variant="h4">
+              Most agencies and designers are still<br />building websites like art projects
+            </Paragraph>
+            <Paragraph variant="h4">
+              We build yours to make you read as the authority in your category. Messaging that says what your customers need to hear, and page design that gets visitors ready to buy and get in touch.
+            </Paragraph>
+            <Paragraph variant="h4">
+              And now, AI can create websites in minutes. When every site in your market starts looking the same, buyers now need a stronger reason to choose you.
+            </Paragraph>
+            <Paragraph variant="h4">That's where we come in and make it easy.</Paragraph>
+          </div>
+        </div>
+      </div>
+      <div class="home-stat_list">
+        {
+          stats.map(({ title, text }) => (
+            <div class="home-stat_item">
+              <Paragraph variant="h5" class="home-stat_title">
+                {title}
+              </Paragraph>
+              <Paragraph variant="main" class="home-stat_text">
+                {text}
+              </Paragraph>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .home-stat_wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3-5rem);
+
+      .home-stat_intro {
+        display: flex;
+        flex-direction: column-reverse;
+        gap: var(--space-3rem);
+        @media (width >= 48rem) {
+          flex-direction: row;
+          align-items: flex-start;
+          gap: var(--space-4-5rem);
+        }
+      }
+      .home-stat_visual {
+        position: relative;
+        flex: none;
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
+        @media (width >= 48rem) {
+          width: 15rem;
+        }
+        @media (width >= 62rem) {
+          width: 31.25rem;
+        }
+        & > .image {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+      .home-stat_content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1rem);
+        flex: 1 1 0;
+        min-width: 0;
+        max-width: 50rem;
+        @media (width < 48rem) {
+          max-width: none;
+        }
+      }
+      .home-stat_overline {
+        margin-top: 0;
+        color: var(--color-neutral-30);
+      }
+      .home-stat_copy {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1-5rem);
+        & > * {
+          margin-top: 0;
+        }
+      }
+      .home-stat_list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        @media (width >= 48rem) {
+          flex-direction: row;
+          gap: var(--space-2rem);
+          padding-top: var(--space-2rem);
+        }
+      }
+      .home-stat_item {
+        flex: 1 1 0;
+        min-width: 0;
+        min-height: 6.25rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        gap: var(--space-0-75rem);
+        padding-left: var(--space-2rem);
+        border-left: var(--border-width) solid var(--color-neutral-5);
+        @media (width >= 48rem) {
+          min-height: 10rem;
+        }
+        @media (width >= 62rem) {
+          min-height: 11.25rem;
+        }
+      }
+      .home-stat_title,
+      .home-stat_text {
+        margin-top: 0;
+        max-width: 30rem;
+      }
+    }
+  }
+</style>

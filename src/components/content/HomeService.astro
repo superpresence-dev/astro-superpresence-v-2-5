@@ -1,0 +1,483 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Button from "@/components/Button.astro";
+import Icon from "@/components/media/Icon.astro";
+import Img from "@/components/media/Img.astro";
+import check from "@/assets/home/service-point-item.svg";
+import websiteDesign from "@/assets/home/service-process-image.png";
+import webflow from "@/assets/home/service-process-image-2.png";
+import framer from "@/assets/home/service-process-image-3.png";
+import social from "@/assets/home/service-amrisa-mockup-ig-1.png";
+import display from "@/assets/home/service-free-display-stand-mockup-2-copy-1.png";
+import billboard from "@/assets/home/service-billboard-1.png";
+import adCreative from "@/assets/home/service-process-image-4.png";
+
+type Props = HTMLAttributes<"div"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+};
+
+const { render = true, class: className, ...rest } = Astro.props;
+
+const services = [
+  {
+    id: "website-design",
+    tab: "Website design",
+    title: "Website design",
+    text: "Your visitors arrive with questions, and leave with their answers and a reason to get in touch. The site is designed around how your customers decide, page by page.",
+    points: [
+      "Site strategy & information architecture",
+      "Visual design systems",
+      "Custom icons & graphics",
+    ],
+    link: "See how we design it",
+    visual: { image: websiteDesign, tint: true },
+  },
+  {
+    id: "webflow-development",
+    tab: "Webflow development",
+    title: "Webflow development",
+    text: "Your site loads fast, and a migration keeps the rankings you've earned. Search engines and AI tools read your business correctly, and your team publishes content through the built-in CMS.",
+    points: [
+      "Custom Webflow build that loads fast",
+      "SEO-ready structure that keeps your rankings",
+      "CMS and integrations with your tools",
+    ],
+    link: "See how we build on Webflow",
+    visual: { image: webflow },
+  },
+  {
+    id: "framer-development",
+    tab: "Framer development",
+    title: "Framer development",
+    text: "Framer gives you a fast launch and pages with real movement, and we build it to hold up under real traffic. Your team publishes content through the CMS without touching the build.",
+    points: [
+      "Fast launch on Framer",
+      "Motion and interaction design",
+      "CMS set up for your content",
+    ],
+    link: "See how we build on Framer",
+    visual: { image: framer },
+  },
+  {
+    id: "branding",
+    tab: "Branding",
+    title: "Branding",
+    text: "Your brand stops looking smaller than the company behind it. We draw your logo, type and colour from your positioning, and hand over guidelines that hold across web, print and social.",
+    points: [
+      "Logo and visual identity from your positioning",
+      "Brand guidelines for web, print and social",
+      "Brand assets ready for your site",
+    ],
+    link: "See how we build your brand",
+    visual: { collage: true },
+  },
+  {
+    id: "social-ad-creative",
+    tab: "Social & ad creative",
+    title: "Social & ad design",
+    text: "Your ads and social posts carry the same standard as the site they point to. We design the creative, and your team runs the campaigns.",
+    points: [
+      "Ad creative for Meta, LinkedIn and Google",
+      "Social post templates in your brand",
+      "Campaign visuals that match the site",
+    ],
+    link: "See how we design creative",
+    visual: { image: adCreative },
+  },
+];
+---
+
+{
+  render && (
+    <div class:list={["home-service_wrap", className]} {...rest}>
+      <div class="home-service_header margin-trim">
+        <Paragraph variant="overline-small" class="home-service_eyebrow">
+          What we do
+        </Paragraph>
+        <Heading tag="h2" variant="h3" class="home-service_title">
+          One team for strategy, design, copy and build
+        </Heading>
+      </div>
+      <div class="home-service_layout">
+        <nav class="home-service_tabs text-style-main" aria-label="Services">
+          {services.map((service, index) => (
+            <a
+              class="home-service_tab"
+              href={`#service-${service.id}`}
+              aria-current={index === 0 ? "true" : undefined}
+            >
+              {service.tab}
+            </a>
+          ))}
+        </nav>
+        <div class="home-service_list">
+          {services.map((service, index) => (
+            <div class="home-service_item" id={`service-${service.id}`}>
+              <div class="home-service_content">
+                <div class="home-service_text margin-trim">
+                  <Paragraph
+                    variant="overline-small"
+                    class="home-service_eyebrow"
+                  >
+                    {`(0${index + 1})`}
+                  </Paragraph>
+                  <Heading tag="h3" variant="h5">
+                    {service.title}
+                  </Heading>
+                  <Paragraph variant="main">{service.text}</Paragraph>
+                </div>
+                <div class="home-service_action">
+                  <ul class="home-service_points text-style-main" role="list">
+                    {service.points.map((point) => (
+                      <li class="home-service_point">
+                        <Icon
+                          src={check}
+                          class="home-service_icon home-service_check"
+                        />
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Button variant="link" element="link" href="#" arrow>
+                    {service.link}
+                  </Button>
+                </div>
+              </div>
+              {service.visual.collage ? (
+                <div class="home-service_visual collage" aria-hidden="true">
+                  <div class="home-service_collage">
+                    <div class="home-service_column">
+                      <div class="home-service_cell raised" style="--_h: 100" />
+                      <div class="home-service_cell" style="--_h: 100" />
+                      <div class="home-service_cell light" style="--_h: 371">
+                        <div class="home-service_shot social">
+                          <Img src={social} alt="" />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="home-service_column">
+                      <div class="home-service_cell raised" style="--_h: 100" />
+                      <div class="home-service_cell light" style="--_h: 314">
+                        <div class="home-service_shot display">
+                          <Img src={display} alt="" />
+                        </div>
+                      </div>
+                      <div class="home-service_cell" style="--_h: 100" />
+                    </div>
+                    <div class="home-service_column">
+                      <div class="home-service_cell light" style="--_h: 314">
+                        <div class="home-service_shot billboard">
+                          <Img src={billboard} alt="" />
+                        </div>
+                      </div>
+                      <div class="home-service_cell" style="--_h: 100" />
+                      <div class="home-service_cell" style="--_h: 100" />
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div
+                  class:list={[
+                    "home-service_visual",
+                    service.visual.tint && "tint",
+                  ]}
+                >
+                  <Img src={service.visual.image!} alt="" />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .home-service_wrap :is(.heading, .text) {
+      margin: 0;
+    }
+
+    .home-service_wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3-5rem);
+      --_fade: #171717;
+    }
+
+    .home-service_header {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-0-75rem);
+    }
+
+    .home-service_eyebrow {
+      color: var(--color-neutral-30);
+    }
+
+    .home-service_title {
+      max-width: 39rem;
+    }
+
+    .home-service_layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-4rem);
+
+      @media (width >= 62rem) {
+        grid-template-columns: 18.75rem minmax(0, 1fr);
+      }
+    }
+
+    .home-service_tabs {
+      --_stroke: calc(var(--border-width) * 2);
+      display: none;
+      flex-direction: column;
+      gap: var(--space-0-125rem);
+      align-self: start;
+      position: sticky;
+      top: calc(var(--nav-height) + var(--space-2rem));
+      padding-block: var(--space-1-5rem);
+      box-shadow: inset var(--border-width) 0 0 var(--color-neutral-5);
+
+      @media (width >= 62rem) {
+        display: flex;
+      }
+    }
+
+    .home-service_tab {
+      padding: var(--space-0-5rem)
+        calc(var(--space-2rem) - var(--_stroke));
+      border-left: var(--_stroke) solid transparent;
+      color: var(--color-neutral-30);
+      font-weight: var(--primary-medium);
+      text-decoration: none;
+      transition:
+        color var(--hover-duration) var(--hover-ease),
+        border-color var(--hover-duration) var(--hover-ease);
+
+      @media (hover: hover) {
+        &:hover {
+          color: var(--color-neutral-60);
+        }
+      }
+
+      &[aria-current="true"] {
+        color: var(--color-neutral-90);
+        border-left-color: var(--brand);
+      }
+    }
+
+    .home-service_list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3-5rem);
+    }
+
+    .home-service_item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-1-5rem);
+      padding-bottom: var(--space-2rem);
+      scroll-margin-block-start: calc(var(--nav-height) + var(--space-2rem));
+
+      @media (width >= 48rem) {
+        grid-template-columns: minmax(0, 23.4375rem) minmax(0, 1fr);
+        align-items: center;
+        column-gap: var(--space-3-5rem);
+      }
+    }
+
+    .home-service_content {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-1-5rem);
+      align-self: stretch;
+      padding-block: var(--space-2rem);
+    }
+
+    .home-service_text {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-0-75rem);
+    }
+
+    .home-service_action {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-1-5rem);
+    }
+
+    .home-service_points {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      color: var(--text);
+    }
+
+    .home-service_point {
+      display: flex;
+      align-items: center;
+      gap: var(--space-0-75rem);
+      padding-block: var(--space-0-25rem);
+    }
+
+    .home-service_wrap .home-service_icon {
+      --_size: 1.25rem;
+    }
+
+    .home-service_check {
+      color: var(--brand);
+    }
+
+    .home-service_visual {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      border-radius: var(--radius-0-25rem);
+      overflow: clip;
+
+      > .image {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-image: linear-gradient(
+          180deg,
+          transparent 65.146%,
+          var(--_fade) 100%
+        );
+      }
+
+      &.tint::after {
+        background-image:
+          linear-gradient(180deg, transparent 67.415%, var(--_fade) 103.48%),
+          linear-gradient(rgb(154 70 27 / 0.24), rgb(154 70 27 / 0.24));
+      }
+
+      &.collage {
+        container-type: inline-size;
+        --_u: calc(100cqw / 517);
+        background-color: #0f1123;
+
+        &::after {
+          inset: auto 0 0;
+          height: 23.017%;
+          background-image: linear-gradient(180deg, transparent, var(--_fade));
+        }
+      }
+    }
+
+    .home-service_collage {
+      position: absolute;
+      left: calc(var(--_u) * -37);
+      top: calc(var(--_u) * -20);
+      width: calc(var(--_u) * 592);
+      height: calc(var(--_u) * 557);
+      display: flex;
+      align-items: center;
+      gap: calc(var(--_u) * 6);
+    }
+
+    .home-service_column {
+      flex: 1 1 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: calc(var(--_u) * 6);
+    }
+
+    .home-service_cell {
+      position: relative;
+      height: calc(var(--_u) * var(--_h));
+      background-color: #181a23;
+      overflow: clip;
+
+      &.light {
+        background-color: #222535;
+      }
+
+      &.raised {
+        box-shadow: var(--shadow-small);
+      }
+    }
+
+    .home-service_shot {
+      position: absolute;
+      overflow: clip;
+
+      > .image {
+        display: block;
+        width: 100%;
+        height: auto;
+        background-color: transparent;
+      }
+
+      &.social {
+        left: calc(var(--_u) * -148);
+        top: 0;
+        width: calc(var(--_u) * 495.6);
+        height: calc(var(--_u) * 371);
+      }
+
+      &.display {
+        left: calc(var(--_u) * -111.67);
+        top: calc(var(--_u) * -0.5);
+        width: calc(var(--_u) * 418);
+        height: calc(var(--_u) * 314);
+      }
+
+      &.billboard {
+        left: calc(var(--_u) * -128.67);
+        top: calc(var(--_u) * 56.5);
+        width: calc(var(--_u) * 417);
+        height: calc(var(--_u) * 241);
+        rotate: -90deg;
+      }
+    }
+  }
+</style>
+
+<script>
+  document
+    .querySelectorAll<HTMLElement>(".home-service_wrap")
+    .forEach((root) => {
+      const tabs = [
+        ...root.querySelectorAll<HTMLAnchorElement>(".home-service_tab"),
+      ];
+      const items = root.querySelectorAll<HTMLElement>(".home-service_item");
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            tabs.forEach((tab) => {
+              if (tab.hash === `#${entry.target.id}`) {
+                tab.setAttribute("aria-current", "true");
+              } else {
+                tab.removeAttribute("aria-current");
+              }
+            });
+          });
+        },
+        { rootMargin: "-45% 0px -45% 0px" },
+      );
+
+      items.forEach((item) => observer.observe(item));
+    });
+</script>

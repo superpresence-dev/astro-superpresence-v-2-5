@@ -1,0 +1,295 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Icon from "@/components/media/Icon.astro";
+import logo from "@/assets/home/difference-logo-wrapper.svg";
+import building from "@/assets/home/icon1.svg";
+import check from "@/assets/home/difference-list-item.svg";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+}
+
+const { render = true, class: className, ...rest } = Astro.props;
+
+const boxes = [
+  {
+    title: "Superpresence",
+    featured: true,
+    items: [
+      "We research your business, competitors and buyers, and agree the positioning before any design starts.",
+      "We build the messaging and page structure around how your customers actually decide.",
+      "Every screen is custom-designed to the standard of the leaders in your category.",
+      "Every page is planned to move visitors towards getting in touch.",
+      "Your site loads fast and is structured so search engines and AI tools read it correctly.",
+      "Strategy, design, copy and development sit in one team, with support after launch on request.",
+    ],
+  },
+  {
+    title: "Other agencies",
+    featured: false,
+    items: [
+      "Design usually begins from the brief, with research added if the budget allows.",
+      "Copy is often written by whoever is closest to the project, around the design.",
+      "Templates and themes are common starting points, tailored to your brand colours.",
+      "Pages are usually built to look good first, with conversion tested later if at all.",
+      "Speed and search structure are often treated as technical extras, handled at the end.",
+      "Work is often split across freelancers or departments, coordinated by an account manager.",
+    ],
+  },
+];
+---
+
+{
+  render && (
+    <div class:list={["home-difference_wrap", className]} {...rest}>
+      <div class="home-difference_intro">
+        <Paragraph variant="overline-small" class="home-difference_eyebrow">
+          Comparing agencies
+        </Paragraph>
+        <Heading tag="h2" variant="h3" class="home-difference_title">
+          Why Superpresence, and not another agency?
+        </Heading>
+        <Paragraph variant="large" class="home-difference_lead">
+          Other agencies can build you a good website. We build one that wins
+          you business.
+        </Paragraph>
+      </div>
+      <div class="home-difference_layout">
+        {boxes.map((box) => (
+          <article
+            class:list={["home-difference_box", box.featured && "featured"]}
+          >
+            {box.featured && <div class="home-difference_highlight" />}
+            <div class="home-difference_header">
+              <div class="home-difference_logo">
+                {box.featured ? (
+                  <Icon src={logo} class="home-difference_logo-mark" />
+                ) : (
+                  <Icon src={building} class="home-difference_building" />
+                )}
+              </div>
+              <Heading tag="h3" variant="h6" class="home-difference_name">
+                {box.title}
+              </Heading>
+            </div>
+            <hr class="home-difference_divider" />
+            <ul class="home-difference_list">
+              {box.items.map((item) => (
+                <li class="home-difference_item">
+                  {box.featured ? (
+                    <Icon src={check} class="home-difference_check" />
+                  ) : (
+                    <span class="home-difference_dot" aria-hidden="true" />
+                  )}
+                  <Paragraph tag="span" variant="main" class="home-difference_text">
+                    {item}
+                  </Paragraph>
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .home-difference_wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-3-5rem);
+
+      .home-difference_intro {
+        width: 100%;
+        max-width: 55rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-0-75rem);
+        text-align: center;
+      }
+      .home-difference_eyebrow {
+        margin: 0;
+        color: var(--color-neutral-30);
+      }
+      .home-difference_title {
+        margin: 0;
+      }
+      .home-difference_lead {
+        margin: 0;
+        max-width: 24.375rem;
+      }
+      .home-difference_layout {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-1-5rem);
+        @media (width >= 48rem) {
+          flex-direction: row;
+          align-items: stretch;
+          justify-content: center;
+        }
+      }
+      .home-difference_box {
+        width: 100%;
+        min-width: 0;
+        max-width: 33.75rem;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1-25rem);
+        padding-top: 1.875rem;
+        padding-bottom: var(--space-2rem);
+        background-color: var(--color-neutral-2);
+        border: var(--border-width) solid var(--color-neutral-5);
+        border-radius: var(--radius-0-25rem);
+        @media (width >= 48rem) {
+          flex: 1 1 0;
+        }
+        &.featured {
+          padding-top: 0;
+          overflow: clip;
+          background-color: var(--color-neutral-0);
+          border: 0.125rem solid var(--color-neutral-0);
+          box-shadow: var(--shadow-3xlarge);
+          @media (width >= 62rem) {
+            box-shadow: var(--shadow-2xlarge);
+          }
+        }
+      }
+      .home-difference_highlight {
+        height: 0.625rem;
+        flex: none;
+        background-image: linear-gradient(
+          -85.45deg,
+          rgb(6 66 238 / 0.7) 1.29%,
+          rgb(255 217 213 / 0.42) 10.69%,
+          rgb(31 54 250 / 0.675) 17.99%,
+          rgb(31 54 250 / 0.675) 31.02%,
+          rgb(91 192 255 / 0.42) 44.88%,
+          rgb(0 31 255 / 0.7) 70.34%,
+          rgb(119 117 235 / 0.602) 76.81%,
+          rgb(187 173 255 / 0.49) 84.54%,
+          rgb(6 66 238 / 0.7) 95.03%
+        );
+      }
+      .home-difference_header {
+        display: flex;
+        align-items: center;
+        gap: var(--space-0-75rem);
+        padding-inline: var(--space-2rem);
+      }
+      .home-difference_logo {
+        flex: none;
+        width: var(--icon-2xl);
+        aspect-ratio: 1 / 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-0-125rem);
+        background-color: var(--color-neutral-5);
+        color: var(--color-neutral-40);
+      }
+      .featured .home-difference_logo {
+        background-image: radial-gradient(
+          ellipse 160% 100% at 45% 0%,
+          #f7f7f7 0%,
+          #bbcaf5 13.8%,
+          #7f9df3 27.6%,
+          #6086f1 34.5%,
+          #426ff0 41.4%,
+          #2459ef 48.3%,
+          #154def 51.8%,
+          #0642ee 55.2%,
+          #0839c6 66.4%,
+          #0b309e 77.6%,
+          #0d2675 88.8%,
+          #0f1d4d 100%
+        );
+        color: var(--color-neutral-0);
+      }
+      .home-difference_logo-mark {
+        --_size: 0.9375rem;
+        aspect-ratio: 15 / 18;
+        path {
+          fill: currentcolor;
+        }
+      }
+      .home-difference_building {
+        --_size: 1.25rem;
+        path {
+          fill: currentcolor;
+        }
+      }
+      .home-difference_name {
+        flex: 1 1 0;
+        min-width: 0;
+        margin: 0;
+        color: var(--color-neutral-60);
+      }
+      .featured .home-difference_name {
+        color: var(--color-neutral-90);
+      }
+      .home-difference_divider {
+        height: 0;
+        margin: 0 0 calc(var(--border-width) * -1);
+        border: 0;
+        border-top: var(--border-width) solid var(--color-neutral-10);
+      }
+      .home-difference_list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+        margin: 0;
+        padding: 0 var(--space-2rem);
+        list-style: none;
+      }
+      .home-difference_item {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-1rem);
+        margin: 0;
+      }
+      .home-difference_check {
+        --_size: 1.5rem;
+        color: var(--brand);
+        path {
+          fill: currentcolor;
+        }
+      }
+      .home-difference_dot {
+        flex: none;
+        position: relative;
+        width: 1.5rem;
+        aspect-ratio: 1 / 1;
+        &::before {
+          content: "";
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 0.3125rem;
+          height: 0.3125rem;
+          translate: -50% -50%;
+          background-color: var(--color-neutral-30);
+        }
+      }
+      .home-difference_text {
+        flex: 1 1 0;
+        min-width: 0;
+        margin: 0;
+        color: var(--color-neutral-40);
+      }
+      .featured .home-difference_text {
+        color: var(--color-neutral-90);
+        font-weight: 500;
+      }
+    }
+  }
+</style>

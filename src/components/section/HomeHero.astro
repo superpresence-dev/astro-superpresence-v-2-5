@@ -1,0 +1,239 @@
+---
+import type { ComponentProps, HTMLAttributes } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Heading from "@/components/typography/Heading.astro";
+import ButtonWrapper from "@/components/wrapper/ButtonWrapper.astro";
+import Button from "@/components/Button.astro";
+import Marquee from "@/components/interactive/Marquee.astro";
+import Img from "@/components/media/Img.astro";
+import background from "@/assets/home/alt-01.png";
+import logoOne from "@/assets/home/logo-3.svg";
+import logoTwo from "@/assets/home/logo-4.svg";
+import logoThree from "@/assets/home/logo-5.svg";
+import logoFour from "@/assets/home/logo-6.svg";
+import logoFive from "@/assets/home/logo-7.svg";
+import logoSix from "@/assets/home/logo-8.svg";
+import logoSeven from "@/assets/home/logo-9.svg";
+import rallymatesMark from "@/assets/home/vector-31-stroke.svg";
+import rallymatesWord from "@/assets/home/rallymates.svg";
+
+interface Props
+  extends HTMLAttributes<"section">,
+    Pick<ComponentProps<typeof Section>, "render"> {}
+
+const { render = true, class: className, ...rest } = Astro.props;
+
+const logosBefore = [logoOne, logoTwo, logoThree, logoFour, logoFive];
+const logosAfter = [logoSix, logoSeven];
+---
+
+<Section
+  render={render}
+  theme="dark"
+  paddingTop="none"
+  paddingBottom="none"
+  containerClass="home-hero_layout"
+  class:list={["home-hero_wrap", className]}
+  {...rest}
+>
+  <Img
+    src={background}
+    slot="background"
+    loading="eager"
+    fetchPriority="high"
+  />
+  <div slot="background" class="home-hero_fade"></div>
+  <div class="home-hero_content">
+    <div class="home-hero_heading">
+      <Paragraph variant="overline-small" class="home-hero_eyebrow">
+        Web-design &amp; development agency in Asia
+      </Paragraph>
+      <Heading tag="h1" class="home-hero_title">
+        We make you look like the leader in your category
+      </Heading>
+      <Paragraph variant="large" class="home-hero_text">
+        Your customers compare you with the biggest names in your market before
+        they get in touch. We build the website that wins that comparison, and
+        turns it into enquiries.
+      </Paragraph>
+    </div>
+    <ButtonWrapper marginTop="0">
+      <Button element="link" href="#" arrow>Review my website</Button>
+    </ButtonWrapper>
+  </div>
+  <Marquee label="Client logos" controls={false} class="home-hero_logos">
+    {
+      logosBefore.map((logo) => (
+        <div class="home-hero_logo">
+          <Img src={logo} transparent class="home-hero_logo-image" />
+        </div>
+      ))
+    }
+    <div class="home-hero_logo">
+      <div class="home-hero_rallymates" role="img" aria-label="Rallymates">
+        <Img src={rallymatesMark} transparent class="home-hero_rallymates-leaf" />
+        <span class="home-hero_rallymates-ball"></span>
+        <Img
+          src={rallymatesWord}
+          transparent
+          class="home-hero_rallymates-word"
+        />
+      </div>
+    </div>
+    {
+      logosAfter.map((logo) => (
+        <div class="home-hero_logo">
+          <Img src={logo} transparent class="home-hero_logo-image" />
+        </div>
+      ))
+    }
+  </Marquee>
+</Section>
+
+<style is:global>
+  @layer components {
+    .home-hero_wrap {
+      --_fade: #111111;
+      --_fade-tall: 15rem;
+      --_fade-short: 11.25rem;
+      --_content-top: var(--space-5-5rem);
+      --_content-bottom: var(--space-1-5rem);
+      --_heading-width: 37.5rem;
+      --_text-width: 30rem;
+      --_logos-top: var(--space-1-25rem);
+      --_logos-gap: var(--space-1-25rem);
+      --_logo-height: 4.5rem;
+      @media (width >= 62rem) {
+        --_fade: rgb(23 23 23 / 0.7);
+        --_fade-tall: 12.5rem;
+        --_fade-short: 9.375rem;
+        --_content-top: var(--space-6rem);
+        --_content-bottom: var(--space-6rem);
+        --_heading-width: 46.875rem;
+        --_text-width: 33.75rem;
+        --_logos-top: var(--space-0-5rem);
+        --_logos-gap: var(--space-2rem);
+        --_logo-height: 5rem;
+      }
+      min-height: 100svh;
+      overflow: clip;
+
+      .home-hero_fade {
+        background-image:
+          linear-gradient(to bottom, transparent, var(--_fade)),
+          linear-gradient(to bottom, transparent, var(--_fade));
+        background-position: bottom;
+        background-repeat: no-repeat;
+        background-size:
+          100% var(--_fade-tall),
+          100% var(--_fade-short);
+      }
+
+      .home-hero_layout {
+        flex: 1;
+        display: grid;
+        grid-template-rows: 1fr auto;
+        justify-content: stretch;
+        align-items: center;
+        gap: 0;
+        padding-top: var(--nav-height);
+      }
+
+      .home-hero_content {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-2rem);
+        max-width: var(--_heading-width);
+        padding-top: var(--_content-top);
+        padding-bottom: var(--_content-bottom);
+
+        & > * {
+          margin: 0;
+        }
+      }
+
+      .home-hero_heading {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+
+        & > * {
+          margin: 0;
+        }
+      }
+
+      .home-hero_eyebrow {
+        color: var(--color-neutral-30);
+      }
+
+      .home-hero_text {
+        max-width: var(--_text-width);
+        color: var(--color-neutral-10);
+      }
+
+      .home-hero_logos {
+        --_gap-size: var(--_logos-gap);
+        width: 100vw;
+        margin-inline: calc(50% - 50vw);
+        padding-top: var(--_logos-top);
+        padding-bottom: var(--space-0-5rem);
+      }
+
+      .home-hero_logo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 10rem;
+        height: var(--_logo-height);
+        padding-inline: var(--space-1-25rem);
+      }
+
+      .home-hero_logo-image {
+        flex: none;
+        width: auto;
+        max-width: none;
+        height: 1.75rem;
+      }
+
+      .home-hero_rallymates {
+        container-type: inline-size;
+        position: relative;
+        flex: none;
+        width: 7.554375rem;
+        aspect-ratio: 120.87 / 28;
+
+        .home-hero_rallymates-leaf {
+          position: absolute;
+          top: 6.09cqw;
+          left: 0.925cqw;
+          width: 10.59cqw;
+          height: auto;
+          max-width: none;
+          rotate: -10.13deg;
+        }
+
+        .home-hero_rallymates-ball {
+          position: absolute;
+          top: 4.786cqw;
+          left: 8.22cqw;
+          width: 4.35cqw;
+          aspect-ratio: 1;
+          border-radius: var(--radius-full);
+          background-color: var(--color-neutral-20);
+        }
+
+        .home-hero_rallymates-word {
+          position: absolute;
+          top: 5.07cqw;
+          left: 16.16cqw;
+          width: 83.3cqw;
+          height: auto;
+          max-width: none;
+        }
+      }
+    }
+  }
+</style>

@@ -1,0 +1,154 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Accordion from "@/components/interactive/Accordion.astro";
+import AccordionItem from "@/components/interactive/AccordionItem.astro";
+import Button from "@/components/Button.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+
+type Props = HTMLAttributes<"div"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+};
+
+const { render = true, class: className, ...rest } = Astro.props;
+
+const lorem =
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.";
+
+const items = [
+  {
+    question: "Can't we build this with AI or a template for a fraction of the price?",
+    answer:
+      "You can, and for some companies that's the right call. If your customers compare carefully before they get in touch, a template gives them nothing to choose you by. We use AI to speed up our research, and the strategy, copy and design your buyers see are made by professionals who've launched 48+ sites.",
+  },
+  { question: "Our own designer could do this. Why bring in an agency?", answer: lorem },
+  { question: "Wouldn't a big agency be safer?", answer: lorem },
+  { question: "Will it actually bring in more enquiries, or just look nicer?", answer: lorem },
+  { question: "Will you understand our industry?", answer: lorem },
+  { question: "We don't have time to run a website project.", answer: lorem },
+  { question: "What does it cost, and is it worth it?", answer: lorem },
+  { question: "How long does it take?", answer: lorem },
+];
+---
+
+{
+  render && (
+    <div class:list={["home-faq_wrap", className]} {...rest}>
+      <div class="home-faq_heading">
+        <Paragraph variant="overline-small" class="home-faq_eyebrow">
+          Questions we hear
+        </Paragraph>
+        <Heading tag="h2" variant="h3">
+          The things you'd ask on a first call
+        </Heading>
+      </div>
+
+      <Accordion openFirst class="home-faq_list">
+        {items.map((item) => (
+          <AccordionItem heading={item.question} headingTag="h3">
+            <Paragraph variant="main">{item.answer}</Paragraph>
+          </AccordionItem>
+        ))}
+      </Accordion>
+
+      <div class="home-faq_footer">
+        <Paragraph variant="main">Got more questions?</Paragraph>
+        <Button element="link" href="#" variant="link" arrow>
+          Book a call with Kevin
+        </Button>
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .home-faq_wrap :is(.heading, .text) {
+      margin: 0;
+    }
+
+    .home-faq_wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-3-5rem);
+    }
+
+    .home-faq_heading {
+      width: 100%;
+      max-width: 55rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-0-75rem);
+      text-align: center;
+    }
+
+    .home-faq_eyebrow {
+      color: var(--color-neutral-30);
+      letter-spacing: 0.03em;
+    }
+
+    .home-faq_list {
+      max-width: 40rem;
+      @media (width >= 62rem) {
+        max-width: 50rem;
+      }
+
+      .accordion_item {
+        border-bottom-color: var(--color-neutral-5);
+        &[open] {
+          border-bottom: 0.125rem solid var(--color-primary-60);
+        }
+      }
+
+      .accordion_toggle {
+        gap: var(--space-3rem);
+        padding-block: var(--space-1-25rem);
+        &::after {
+          content: "";
+          flex: none;
+          width: var(--icon-m);
+          height: var(--icon-m);
+          background:
+            linear-gradient(currentcolor, currentcolor) center / 75% 0.08rem
+              no-repeat,
+            linear-gradient(currentcolor, currentcolor) center / 0.08rem 75%
+              no-repeat;
+          transition: rotate var(--open-duration) var(--open-ease);
+        }
+      }
+
+      .accordion_item[open] .accordion_toggle::after {
+        rotate: 45deg;
+      }
+
+      .accordion_icon {
+        display: none;
+      }
+
+      .accordion_title {
+        font-size: var(--h6);
+        line-height: var(--h6-line-height);
+        letter-spacing: var(--h6-letter-spacing);
+      }
+
+      .accordion_body {
+        max-width: 45rem;
+        padding-top: var(--space-0-5rem);
+        padding-bottom: var(--space-1-5rem);
+      }
+    }
+
+    .home-faq_footer {
+      display: flex;
+      align-items: center;
+      gap: var(--space-0-75rem);
+      > p {
+        margin-block: 0;
+      }
+    }
+  }
+</style>
