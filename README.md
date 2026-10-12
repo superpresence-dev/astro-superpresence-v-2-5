@@ -8,15 +8,15 @@ Preview: https://superpresence-v-2-5.astro-lumos-custom.workers.dev
 
 ## Status
 
-| Area                           | State                                                                                                |
-| ------------------------------ | ---------------------------------------------------------------------------------------------------- |
-| Homepage sections (hero → CTA) | Built from Figma                                                                                     |
-| Navbar                         | Built from the navbar inside the hero frame; dropdowns and the open mobile menu are not in Figma yet |
-| Footer                         | Still the Lumos template footer; to be sliced from Figma node `4771:4822`                            |
-| Value section icons            | One icon used for all four; the four Figma icons still need exporting                                |
-| FAQ answers 2–8                | Lorem ipsum placeholders                                                                             |
-| Links                          | Most `href`s are `#`                                                                                 |
-| Helvetica Neue                 | Not loaded yet; falls back to the system Helvetica Neue / Helvetica / Arial                          |
+| Area                           | State                                                                                                                         |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| Homepage sections (hero → CTA) | Built from Figma                                                                                                              |
+| Navbar                         | Built from the navbar inside the hero frame; dropdowns and the open mobile menu are not in Figma yet                          |
+| Footer                         | Built from Figma node `4771:4822`; newsletter form has no endpoint yet, live clocks for Sydney, Bangkok, Hong Kong, Singapore |
+| Value section icons            | One icon used for all four; the four Figma icons still need exporting                                                         |
+| FAQ answers 2–8                | Lorem ipsum placeholders                                                                                                      |
+| Links                          | Most `href`s are `#`                                                                                                          |
+| Helvetica Neue                 | Not loaded yet; falls back to the system Helvetica Neue / Helvetica / Arial                                                   |
 
 ## Getting started
 

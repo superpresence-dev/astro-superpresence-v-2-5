@@ -40,25 +40,25 @@ const items = [
           Why Superpresence
         </Paragraph>
         <Heading tag="h2" variant="h3" class="home-value_heading">
-          We help you turn your website<br />into the asset it should be
+          We help you turn your website
+          <br />
+          into the asset it should be
         </Heading>
       </div>
       <ul class="home-value_list" role="list">
-        {
-          items.map((item) => (
-            <li class="home-value_item">
-              <Icon src={valueIcon} class="home-value_icon" />
-              <div class="home-value_content">
-                <Heading tag="h3" variant="h5" class="home-value_title">
-                  {item.title}
-                </Heading>
-                <Paragraph variant="main" class="home-value_text">
-                  {item.text}
-                </Paragraph>
-              </div>
-            </li>
-          ))
-        }
+        {items.map((item) => (
+          <li class="home-value_item">
+            <Icon src={valueIcon} class="home-value_icon" />
+            <div class="home-value_content">
+              <Heading tag="h3" variant="h5" class="home-value_title">
+                {item.title}
+              </Heading>
+              <Paragraph variant="main" class="home-value_text">
+                {item.text}
+              </Paragraph>
+            </div>
+          </li>
+        ))}
       </ul>
     </div>
   )
@@ -109,13 +109,15 @@ const items = [
         flex-direction: column;
         justify-content: center;
         gap: var(--space-2rem);
-        padding-block: var(--space-2rem);
+        /* Figma counts the top border inside the item padding. */
+        padding-block: calc(var(--space-2rem) - var(--border-width))
+          var(--space-2rem);
         padding-right: var(--space-2rem);
         border-top: var(--border-width) solid var(--color-neutral-5);
       }
 
       .home-value_icon {
-        --_size: 2.5rem;
+        --_size: var(--icon-2xl);
         color: var(--brand);
       }
 

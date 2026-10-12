@@ -53,7 +53,9 @@ const industries = [
           Who we work with
         </Paragraph>
         <Heading tag="h2" variant="h3">
-          Customers who decide on trust,<br />and compare before they call
+          Customers who decide on trust,
+          <br />
+          and compare before they call
         </Heading>
       </div>
       <div class="home-industry_layout">
@@ -157,8 +159,10 @@ const industries = [
       list-style: none;
     }
 
+    /* Figma draws the tag stroke inside its box. */
     .home-industry_tag {
-      padding: var(--space-0-25rem) var(--space-0-5rem);
+      padding: calc(var(--space-0-25rem) - var(--border-width))
+        calc(var(--space-0-5rem) - var(--border-width));
       background-color: var(--color-neutral-2);
       border: var(--border-width) solid var(--color-neutral-5);
       border-radius: var(--radius-0-125rem);

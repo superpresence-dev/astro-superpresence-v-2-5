@@ -219,9 +219,12 @@ const { render = true, class: className, ...rest } = Astro.props;
         width: 100%;
         margin: 0;
 
+        /* The Medium face has taller metrics and would push its lines
+           2px past the 24px line height; let the paragraph strut set it. */
         & strong {
           color: var(--heading);
           font-weight: var(--primary-medium);
+          line-height: 0;
         }
       }
 

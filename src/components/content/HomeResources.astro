@@ -20,7 +20,8 @@ const posts = [
     image: thumbnail1,
     tag: "CRO",
     date: "Sep 11, 2026",
-    title: "What your website needs to sell into Thailand, Singapore and Australia",
+    title:
+      "What your website needs to sell into Thailand, Singapore and Australia",
   },
   {
     image: thumbnail2,
@@ -130,7 +131,9 @@ const posts = [
       grid-area: action;
       display: flex;
       justify-content: center;
-      padding-block: var(--space-0-5rem);
+      /* Figma counts the link underline inside the button height. */
+      padding-block: var(--space-0-5rem)
+        calc(var(--space-0-5rem) - var(--border-width));
     }
 
     .home-resources_list {
@@ -187,7 +190,9 @@ const posts = [
     }
 
     .home-resources_tag {
-      padding: var(--space-0-25rem) var(--space-0-5rem);
+      /* Stroke sits inside the tag in Figma. */
+      padding: calc(var(--space-0-25rem) - var(--border-width))
+        calc(var(--space-0-5rem) - var(--border-width));
       background-color: var(--color-neutral-2);
       border: var(--border-width) solid var(--color-neutral-5);
       border-radius: var(--radius-0-125rem);

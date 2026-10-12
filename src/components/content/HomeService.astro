@@ -250,9 +250,10 @@ const services = [
       }
     }
 
+    /* Starts after the 1px track line, as in Figma. */
     .home-service_tab {
-      padding: var(--space-0-5rem)
-        calc(var(--space-2rem) - var(--_stroke));
+      margin-left: var(--border-width);
+      padding: var(--space-0-5rem) calc(var(--space-2rem) - var(--_stroke));
       border-left: var(--_stroke) solid transparent;
       color: var(--color-neutral-30);
       font-weight: var(--primary-medium);
@@ -313,6 +314,11 @@ const services = [
       flex-direction: column;
       align-items: flex-start;
       gap: var(--space-1-5rem);
+
+      /* The Figma link sits in a frame padded by 0.5rem, its underline inside. */
+      > .button_wrap {
+        margin-block: calc(var(--space-0-5rem) - var(--border-width) / 2);
+      }
     }
 
     .home-service_points {
@@ -331,7 +337,7 @@ const services = [
     }
 
     .home-service_wrap .home-service_icon {
-      --_size: 1.25rem;
+      --_size: var(--icon-sm);
     }
 
     .home-service_check {

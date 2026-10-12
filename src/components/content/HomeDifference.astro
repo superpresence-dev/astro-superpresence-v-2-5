@@ -84,7 +84,11 @@ const boxes = [
                   ) : (
                     <span class="home-difference_dot" aria-hidden="true" />
                   )}
-                  <Paragraph tag="span" variant="main" class="home-difference_text">
+                  <Paragraph
+                    tag="span"
+                    variant="main"
+                    class="home-difference_text"
+                  >
                     {item}
                   </Paragraph>
                 </li>
@@ -124,7 +128,10 @@ const boxes = [
       }
       .home-difference_lead {
         margin: 0;
-        max-width: 24.375rem;
+        max-width: 30rem;
+        @media (width >= 62rem) {
+          max-width: 24.375rem;
+        }
       }
       .home-difference_layout {
         width: 100%;
@@ -134,7 +141,7 @@ const boxes = [
         gap: var(--space-1-5rem);
         @media (width >= 48rem) {
           flex-direction: row;
-          align-items: stretch;
+          align-items: flex-start;
           justify-content: center;
         }
       }
@@ -148,7 +155,9 @@ const boxes = [
         padding-top: 1.875rem;
         padding-bottom: var(--space-2rem);
         background-color: var(--color-neutral-2);
-        border: var(--border-width) solid var(--color-neutral-5);
+        /* Figma strokes sit inside the box, so they add no size. */
+        outline: var(--border-width) solid var(--color-neutral-5);
+        outline-offset: calc(var(--border-width) * -1);
         border-radius: var(--radius-0-25rem);
         @media (width >= 48rem) {
           flex: 1 1 0;
@@ -157,7 +166,8 @@ const boxes = [
           padding-top: 0;
           overflow: clip;
           background-color: var(--color-neutral-0);
-          border: 0.125rem solid var(--color-neutral-0);
+          outline: 0.125rem solid var(--color-neutral-0);
+          outline-offset: -0.125rem;
           box-shadow: var(--shadow-3xlarge);
           @media (width >= 62rem) {
             box-shadow: var(--shadow-2xlarge);
@@ -258,7 +268,7 @@ const boxes = [
         margin: 0;
       }
       .home-difference_check {
-        --_size: 1.5rem;
+        --_size: var(--icon-m);
         color: var(--brand);
         path {
           fill: currentcolor;
@@ -267,7 +277,7 @@ const boxes = [
       .home-difference_dot {
         flex: none;
         position: relative;
-        width: 1.5rem;
+        width: var(--icon-m);
         aspect-ratio: 1 / 1;
         &::before {
           content: "";

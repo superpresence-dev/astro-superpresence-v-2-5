@@ -1,7 +1,15 @@
 ---
-import Icon from "@/components/media/Icon.astro";
-import logo from "@/assets/logo/logo.svg";
-import { SITE_NAME } from "@/consts.ts";
+import Img from "@/components/media/Img.astro";
+import Button from "@/components/Button.astro";
+import Form from "@/components/form/Form.astro";
+import Input from "@/components/form/Input.astro";
+import headerBackground from "@/assets/footer/footer-header.jpg";
+import profile from "@/assets/footer/footer-profile.png";
+import wordmark from "@/assets/footer/footer-wordmark.svg";
+import flagAu from "@/assets/footer/flag-au.svg";
+import flagTh from "@/assets/footer/flag-th.svg";
+import flagHk from "@/assets/footer/flag-hk.svg";
+import flagSg from "@/assets/footer/flag-sg.svg";
 
 interface Props {
   /** Set to `false` to omit the component. */
@@ -9,36 +17,194 @@ interface Props {
 }
 
 const { render = true } = Astro.props;
+
+/* Listed in mobile reading order; `area` places each group on the
+   three-column grid from tablet up. */
+const menus = [
+  {
+    area: "service",
+    title: "Service",
+    links: [
+      "Branding",
+      "Website design",
+      "Social & ad creative",
+      "Webflow development",
+      "Framer development",
+      "Migrate to Webflow",
+      "Webflow maintenance",
+    ],
+  },
+  {
+    area: "industry",
+    title: "Industry",
+    links: [
+      "Professional service",
+      "Investment firms",
+      "Manufacturing & wholesalers",
+      "SaaS & tech",
+      "Artificial Intelligence",
+      "Cybersecurity",
+      "Hotels & tourism",
+      "Education",
+      "Property developers",
+      "Clinic & wellness",
+    ],
+  },
+  {
+    area: "audience",
+    title: "Who we work with",
+    links: ["Startups", "Businesses going digital", "Marketing teams"],
+  },
+  {
+    area: "company",
+    title: "Superpresence",
+    links: ["Our work", "About us", "Why Superpresence", "Pricing", "Contact"],
+  },
+  {
+    area: "offers",
+    title: "Our free offers",
+    links: ["Free website teardown", "Free homepage redesign"],
+  },
+  {
+    area: "resources",
+    title: "Resources",
+    links: [
+      "Insights",
+      "Explorations",
+      "ROI calculator",
+      "B2B website playbook",
+    ],
+  },
+];
+
+const clocks = [
+  { flag: flagAu, country: "Australia", zone: "Australia/Sydney" },
+  { flag: flagTh, country: "Thailand", zone: "Asia/Bangkok" },
+  { flag: flagHk, country: "Hong Kong", zone: "Asia/Hong_Kong" },
+  { flag: flagSg, country: "Singapore", zone: "Asia/Singapore" },
+];
+
+const timeIn = (zone: string) =>
+  new Intl.DateTimeFormat("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+    timeZone: zone,
+  }).format(new Date());
 ---
 
 {
   render && (
-    <footer class="footer_wrap">
+    <footer class="footer_wrap theme-dark">
       <div class="footer_inner">
-        <div class="footer_top">
-          <a class="footer_logo" href="/" aria-label={SITE_NAME}>
-            <Icon src={logo} variant="full-width" />
-          </a>
-          <nav aria-label="Footer">
-            <ul class="footer_links">
-              <li>
-                <a class="footer_link" href="/">
-                  Home
-                </a>
-              </li>
-              <li>
-                <a class="footer_link" href="/example-components">
-                  Example Components
-                </a>
-              </li>
-            </ul>
-          </nav>
+        <div class="footer_header">
+          <Img
+            src={headerBackground}
+            alt=""
+            class="footer_header_image"
+            fetchPriority="low"
+          />
+          <div class="footer_header_content">
+            <p class="footer_header_title text-style-h5">
+              Stay updated with the latest in web design
+            </p>
+            <Form name="newsletter" class="footer_subscribe">
+              <Input
+                variant="email"
+                label="Email address"
+                labelHidden
+                required
+              />
+              <Button type="submit" emphasis="secondary">
+                Subscribe
+              </Button>
+            </Form>
+          </div>
         </div>
+
+        <div class="footer_menu">
+          <nav class="footer_links" aria-label="Footer">
+            {menus.map((menu) => (
+              <div class="footer_group" style={`--footer-area: ${menu.area}`}>
+                <p class="footer_group_title text-style-overline-small">
+                  {menu.title}
+                </p>
+                <ul class="footer_list">
+                  {menu.links.map((label) => (
+                    <li>
+                      <a class="footer_link text-style-main" href="#">
+                        {label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </nav>
+
+          <div class="footer_cta">
+            <div class="footer_cta_text">
+              <p class="footer_cta_title text-style-h5">Talk with an expert</p>
+              <p class="footer_cta_body text-style-main">
+                See how Superpresence can build you a site that makes your
+                business the easy choice
+              </p>
+            </div>
+            <div class="footer_cta_action">
+              <Img
+                src={profile}
+                alt=""
+                variant="densities"
+                width={46}
+                class="footer_cta_profile"
+              />
+              <Button element="link" href="#">
+                Book a call with Kevin
+              </Button>
+            </div>
+          </div>
+        </div>
+
         <div class="footer_bottom">
-          <p class="footer_copyright text-style-small">
-            &copy; <span id="year">{new Date().getFullYear()}</span>&#160;
-            {SITE_NAME}
-          </p>
+          <div class="footer_legal">
+            <p class="footer_tag">
+              &copy;Superpresence, All Rights Reserved{" "}
+              <span class="footer_year">{new Date().getFullYear()}</span>
+            </p>
+            <a class="footer_tag footer_tag-link" href="#">
+              Privacy policy
+            </a>
+            <a class="footer_tag footer_tag-link" href="#">
+              Term of service
+            </a>
+          </div>
+          <ul class="footer_clocks">
+            {clocks.map((clock) => (
+              <li class="footer_clock">
+                <img
+                  class="footer_flag"
+                  src={clock.flag.src}
+                  alt={clock.country}
+                  width="19"
+                  height="14"
+                  loading="lazy"
+                />
+                <time class="footer_tag footer_time" data-zone={clock.zone}>
+                  {timeIn(clock.zone)}
+                </time>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="footer_wordmark" aria-hidden="true">
+          <img
+            src={wordmark.src}
+            alt=""
+            width="1312"
+            height="145"
+            loading="lazy"
+          />
         </div>
       </div>
     </footer>
@@ -46,23 +212,43 @@ const { render = true } = Astro.props;
 }
 
 <script>
-  const year = document.querySelector<HTMLSpanElement>("#year");
+  const year = document.querySelector<HTMLSpanElement>(".footer_year");
+  if (year) year.textContent = new Date().getFullYear().toString();
 
-  if (year) {
-    year.textContent = new Date().getFullYear().toString();
+  const times = document.querySelectorAll<HTMLTimeElement>(".footer_time");
+  const tick = () => {
+    const now = new Date();
+    for (const time of times) {
+      time.textContent = new Intl.DateTimeFormat("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+        timeZone: time.dataset.zone,
+      }).format(now);
+    }
+  };
+  if (times.length) {
+    tick();
+    setInterval(tick, 15000);
   }
 </script>
 
 <style is:global>
   @layer components {
     .footer_wrap {
+      --footer-background: var(--color-primary-98);
+      --footer-line: color-mix(in lab, var(--color-neutral-0) 12%, transparent);
+      /* Figma strokes sit inside the box. */
+      --button-border-inset: var(--border-width);
       display: flex;
       justify-content: center;
-      padding-block: var(--section-space-small);
-      padding-inline: var(--site-margin);
-      background-color: var(--background);
-      color: var(--text);
-      border-top: var(--border-width) solid var(--border);
+      padding: var(--space-4rem) var(--site-margin) 0;
+      background-color: var(--footer-background);
+      overflow: clip;
+    }
+
+    .footer_wrap :is(p, ul) {
+      margin: 0;
     }
 
     .footer_inner {
@@ -70,21 +256,153 @@ const { render = true } = Astro.props;
       max-width: var(--max-width-content);
       display: flex;
       flex-direction: column;
-      gap: var(--space-2-5rem);
+      gap: var(--space-2rem);
     }
 
-    .footer_top {
+    /* Newsletter */
+    .footer_header {
+      position: relative;
       display: flex;
-      flex-wrap: wrap;
       align-items: center;
-      justify-content: space-between;
-      gap: var(--space-1-5rem) var(--space-2-5rem);
+      --_pad-block: var(--space-1-5rem);
+      padding: calc(var(--_pad-block) - var(--border-width))
+        var(--space-1-25rem) var(--_pad-block);
+      border-top: var(--border-width) solid var(--footer-line);
+      border-radius: var(--radius-0-25rem);
+      overflow: hidden;
+      isolation: isolate;
+      @media (width >= 48rem) {
+        --_pad-block: var(--space-2rem);
+        padding-inline: var(--space-2rem);
+      }
     }
 
-    .footer_logo {
+    .footer_header_image {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.2;
+      mix-blend-mode: hard-light;
+      background-color: transparent;
+    }
+
+    .footer_header_content {
+      flex: 1 1 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1-5rem);
+      @media (width >= 62rem) {
+        flex-direction: row;
+        align-items: center;
+      }
+    }
+
+    .footer_header_title {
+      flex: 1 1 0;
+      margin: 0;
+      text-wrap: wrap;
+    }
+
+    .footer_subscribe {
+      width: auto;
+      & .form_fields {
+        flex-direction: column;
+        gap: var(--space-0-5rem);
+        @media (width >= 48rem) {
+          flex-direction: row;
+          align-items: center;
+        }
+      }
+      & .field {
+        max-width: 25rem;
+        @media (width >= 48rem) {
+          width: 25rem;
+        }
+      }
+      & .field-control {
+        --_field-pad-block: calc(var(--space-0-75rem) - var(--border-width));
+        --_field-pad-inline: calc(var(--space-1rem) - var(--border-width));
+        background-color: color-mix(
+          in lab,
+          var(--color-neutral-0) 8%,
+          transparent
+        );
+        border-color: color-mix(in lab, var(--color-neutral-0) 8%, transparent);
+        border-radius: var(--radius-0-125rem);
+        &::placeholder {
+          color: var(--color-neutral-40);
+        }
+      }
+      & .button_wrap {
+        --button-2-border: var(--text);
+        white-space: nowrap;
+      }
+    }
+
+    /* Menu */
+    .footer_menu {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3-5rem);
+      padding: var(--space-1-5rem) 0 var(--space-4rem);
+      @media (width >= 62rem) {
+        flex-direction: row-reverse;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding-top: var(--space-2rem);
+      }
+    }
+
+    .footer_links {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3rem);
+      @media (width >= 48rem) {
+        display: grid;
+        grid-template-columns: repeat(3, 15rem);
+        grid-template-rows: minmax(18.75rem, auto) auto;
+        grid-template-areas:
+          "service industry company"
+          "audience offers resources";
+        gap: var(--space-2rem) var(--space-1-25rem);
+      }
+      @media (width >= 62rem) {
+        grid-template-rows: minmax(20.625rem, auto) auto;
+      }
+    }
+
+    .footer_group {
+      grid-area: var(--footer-area);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-0-75rem);
+    }
+
+    .footer_group_title {
+      color: var(--color-neutral-40);
+    }
+
+    .footer_list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-0-125rem);
+    }
+
+    /* Body Md on mobile and tablet, Body Sm on desktop: 14/20 throughout. */
+    .footer_link {
       display: block;
-      width: 7.5rem;
-      max-width: 100%;
+      padding-block: var(--space-0-125rem);
+      @media (width >= 62rem) {
+        font-size: var(--text-small);
+        line-height: var(--text-small-line-height);
+        letter-spacing: var(--text-small-letter-spacing);
+      }
+      color: var(--text);
+      text-decoration: none;
       transition: opacity var(--hover-duration) var(--hover-ease);
       @media (hover: hover) {
         &:hover {
@@ -93,18 +411,101 @@ const { render = true } = Astro.props;
       }
     }
 
-    .footer_links {
+    .footer_cta {
       display: flex;
-      flex-wrap: wrap;
-      align-items: center;
+      flex-direction: column;
       gap: var(--space-1-5rem);
-      font-size: var(--text-small);
-      font-weight: var(--primary-medium);
+      padding: calc(var(--space-1-5rem) - var(--border-width))
+        calc(var(--space-1-25rem) - var(--border-width));
+      background-image: linear-gradient(
+        to bottom,
+        color-mix(in lab, var(--color-neutral-0) 8%, transparent),
+        color-mix(in lab, var(--color-neutral-0) 3%, transparent)
+      );
+      border: var(--border-width) solid var(--footer-line);
+      border-radius: var(--radius-0-25rem);
+      @media (width >= 48rem) {
+        max-width: 28.125rem;
+        padding: calc(var(--space-1-5rem) - var(--border-width));
+      }
+      @media (width >= 62rem) {
+        flex: 1 1 0;
+      }
     }
 
-    .footer_link {
-      color: var(--text-2);
-      text-decoration: none;
+    .footer_cta_text {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-0-5rem);
+    }
+
+    .footer_cta_body {
+      color: var(--color-neutral-10);
+    }
+
+    .footer_cta_action {
+      display: flex;
+      align-items: stretch;
+      gap: var(--space-0-125rem);
+    }
+
+    /* Square, as tall as the button beside it. */
+    .footer_cta_profile {
+      flex: none;
+      width: calc(var(--button-line-height) + 2 * var(--button-padding-block));
+      height: auto;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-radius: var(--radius-0-125rem);
+    }
+
+    /* Copyright and clocks */
+    .footer_bottom {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-1-5rem);
+      padding-top: var(--space-2rem);
+      border-top: var(--border-width) solid var(--footer-line);
+      @media (width >= 62rem) {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+    }
+
+    .footer_legal {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+      gap: var(--space-1-5rem);
+      @media (width >= 48rem) {
+        column-gap: var(--space-2rem);
+      }
+      & > :first-child {
+        flex-basis: 100%;
+        text-align: center;
+        @media (width >= 48rem) {
+          flex-basis: auto;
+        }
+      }
+    }
+
+    .footer_tag {
+      font-size: var(--overline-small);
+      line-height: var(--overline-small-line-height);
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: var(--color-neutral-40);
+      white-space: nowrap;
+    }
+
+    .footer_tag-link {
+      padding-block: var(--space-0-125rem);
+      text-decoration: underline;
+      text-decoration-color: var(--color-primary-60);
+      text-underline-position: from-font;
       transition: color var(--hover-duration) var(--hover-ease);
       @media (hover: hover) {
         &:hover {
@@ -113,13 +514,46 @@ const { render = true } = Astro.props;
       }
     }
 
-    .footer_bottom {
-      padding-top: var(--space-1-5rem);
-      border-top: var(--border-width) solid var(--border);
+    /* One row on mobile, spread across the width. */
+    .footer_clocks {
+      align-self: stretch;
+      display: flex;
+      justify-content: space-between;
+      gap: var(--space-0-5rem);
+      @media (width >= 48rem) {
+        align-self: auto;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: var(--space-2rem);
+      }
     }
 
-    .footer_copyright {
-      color: var(--text-2);
+    .footer_clock {
+      display: flex;
+      align-items: center;
+      gap: var(--space-0-5rem);
+    }
+
+    .footer_flag {
+      flex: none;
+      width: 1.1667rem;
+      height: 0.875rem;
+    }
+
+    .footer_time {
+      color: var(--color-neutral-10);
+    }
+
+    /* The wordmark runs past the bottom edge and is cut off there. */
+    .footer_wordmark {
+      aspect-ratio: 1312 / 143;
+      overflow: hidden;
+      & img {
+        display: block;
+        width: 100%;
+        height: auto;
+        margin-top: 0.762%;
+      }
     }
   }
 </style>

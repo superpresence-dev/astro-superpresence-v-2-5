@@ -31,7 +31,12 @@ const stats = [
     <div class="home-stat_wrap">
       <div class="home-stat_intro">
         <div class="home-stat_visual">
-          <Img src={statImage} alt="" sizes="(min-width: 62rem) 31.25rem, (min-width: 48rem) 15rem, 100vw" variant="constrained" />
+          <Img
+            src={statImage}
+            alt=""
+            sizes="(min-width: 62rem) 31.25rem, (min-width: 48rem) 15rem, 100vw"
+            variant="constrained"
+          />
         </div>
         <div class="home-stat_content">
           <Paragraph variant="overline-small" class="home-stat_overline">
@@ -39,31 +44,37 @@ const stats = [
           </Paragraph>
           <div class="home-stat_copy">
             <Paragraph variant="h4">
-              Most agencies and designers are still<br />building websites like art projects
+              Most agencies and designers are still
+              <br />
+              building websites like art projects
             </Paragraph>
             <Paragraph variant="h4">
-              We build yours to make you read as the authority in your category. Messaging that says what your customers need to hear, and page design that gets visitors ready to buy and get in touch.
+              We build yours to make you read as the authority in your category.
+              Messaging that says what your customers need to hear, and page
+              design that gets visitors ready to buy and get in touch.
             </Paragraph>
             <Paragraph variant="h4">
-              And now, AI can create websites in minutes. When every site in your market starts looking the same, buyers now need a stronger reason to choose you.
+              And now, AI can create websites in minutes. When every site in
+              your market starts looking the same, buyers now need a stronger
+              reason to choose you.
             </Paragraph>
-            <Paragraph variant="h4">That's where we come in and make it easy.</Paragraph>
+            <Paragraph variant="h4">
+              That's where we come in and make it easy.
+            </Paragraph>
           </div>
         </div>
       </div>
       <div class="home-stat_list">
-        {
-          stats.map(({ title, text }) => (
-            <div class="home-stat_item">
-              <Paragraph variant="h5" class="home-stat_title">
-                {title}
-              </Paragraph>
-              <Paragraph variant="main" class="home-stat_text">
-                {text}
-              </Paragraph>
-            </div>
-          ))
-        }
+        {stats.map(({ title, text }) => (
+          <div class="home-stat_item">
+            <Paragraph variant="h5" class="home-stat_title">
+              {title}
+            </Paragraph>
+            <Paragraph variant="main" class="home-stat_text">
+              {text}
+            </Paragraph>
+          </div>
+        ))}
       </div>
     </div>
   )
@@ -75,7 +86,8 @@ const stats = [
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: var(--space-3-5rem);
+      /* Fixed 56px in every Figma frame, not a responsive variable. */
+      gap: 3.5rem;
 
       .home-stat_intro {
         display: flex;
@@ -84,6 +96,8 @@ const stats = [
         @media (width >= 48rem) {
           flex-direction: row;
           align-items: flex-start;
+        }
+        @media (width >= 62rem) {
           gap: var(--space-4-5rem);
         }
       }
@@ -133,7 +147,7 @@ const stats = [
       .home-stat_list {
         display: flex;
         flex-direction: column;
-        gap: 1.25rem;
+        gap: var(--space-1-25rem);
         @media (width >= 48rem) {
           flex-direction: row;
           gap: var(--space-2rem);
@@ -148,7 +162,8 @@ const stats = [
         flex-direction: column;
         justify-content: flex-end;
         gap: var(--space-0-75rem);
-        padding-left: var(--space-2rem);
+        /* Figma counts the border inside the padding. */
+        padding-left: calc(var(--space-2rem) - var(--border-width));
         border-left: var(--border-width) solid var(--color-neutral-5);
         @media (width >= 48rem) {
           min-height: 10rem;

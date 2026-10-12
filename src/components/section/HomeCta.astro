@@ -62,7 +62,9 @@ const { render = true, class: className, ...rest } = Astro.props;
     }
 
     .home-cta_wrap {
-      --home-cta-background: #060d33;
+      --home-cta-background: var(--color-primary-98);
+      /* Figma strokes sit inside the button. */
+      --button-border-inset: var(--border-width);
       min-height: 33.75rem;
       background-color: var(--home-cta-background);
       overflow: clip;
@@ -99,7 +101,7 @@ const { render = true, class: className, ...rest } = Astro.props;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: var(--space-3rem);
+      gap: var(--space-2rem);
       padding-block: var(--space-3rem);
       text-align: center;
     }
@@ -118,8 +120,17 @@ const { render = true, class: className, ...rest } = Astro.props;
       letter-spacing: 0.03em;
     }
 
+    .home-cta_wrap .heading {
+      text-wrap: wrap;
+    }
+
     .home-cta_body {
-      max-width: 40rem;
+      @media (width >= 48rem) {
+        max-width: 30rem;
+      }
+      @media (width >= 62rem) {
+        max-width: 40rem;
+      }
       color: var(--color-neutral-10);
     }
   }

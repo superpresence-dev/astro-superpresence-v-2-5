@@ -8,17 +8,14 @@ import logo from "@/assets/home/logo-10.svg";
 import avatar from "@/assets/home/testimonial-image.png";
 
 interface Props
-  extends HTMLAttributes<"section">,
+  extends
+    HTMLAttributes<"section">,
     Pick<ComponentProps<typeof Section>, "render"> {}
 
 const { render = true, class: className, ...rest } = Astro.props;
 ---
 
-<Section
-  render={render}
-  class:list={["home-quote_wrap", className]}
-  {...rest}
->
+<Section render={render} class:list={["home-quote_wrap", className]} {...rest}>
   <Img src={background} slot="background" class="home-quote_background" />
   <div slot="background" class="home-quote_fade"></div>
   <div class="home-quote_layout">
@@ -103,6 +100,8 @@ const { render = true, class: className, ...rest } = Astro.props;
       .home-quote_quote {
         margin: 0;
         color: var(--heading);
+        /* Figma breaks the quote greedily, not balanced. */
+        text-wrap: wrap;
       }
 
       .home-quote_detail {
