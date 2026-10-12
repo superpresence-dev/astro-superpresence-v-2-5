@@ -1,0 +1,75 @@
+const imgLogo = "http://localhost:3845/assets/1111111111111111111111111111111111111111.svg";
+const imgPhoto = "http://localhost:3845/assets/2222222222222222222222222222222222222222.png";
+const imgArrow = "http://localhost:3845/assets/3333333333333333333333333333333333333333.svg";
+type CardProps = {
+  className?: string;
+};
+
+function Card({ className }: CardProps) {
+  return (
+    <div className={className || "bg-[var(--color\/neutral\/0,white)] content-stretch flex flex-col gap-[var(--spacing\/1rem,16px)] items-start p-[var(--padding\/1_5rem,24px)] relative rounded-[var(--corner-radius\/0_5rem,8px)] drop-shadow-[0px_1px_1.5px_rgba(16,24,40,0.1),0px_1px_1px_rgba(16,24,40,0.06)] w-[392px]"} data-node-id="10:2" data-name="card">
+      <p className="font-[var(--font\/weight\/medium,normal)] leading-[var(--line-height\/overline\/md,22px)] text-[color:var(--color\/accent\/warning\/50,#f59e0b)] text-[length:var(--font-size\/overline\/md,15px)] tracking-[0.6px] uppercase" data-node-id="10:3">
+        Sample eyebrow
+      </p>
+      <p className="font-[var(--font\/weight\/semi-bold,normal)] leading-[var(--line-height\/heading\/h6,26px)] text-[color:var(--color\/neutral\/95,#111)] text-[length:var(--font-size\/heading\/h6,20px)] tracking-[-0.4px]" data-node-id="10:4">
+        Sample card title
+      </p>
+      <p className="font-[var(--font\/weight\/regular,normal)] leading-[var(--line-height\/body\/md,25px)] text-[color:var(--color\/neutral\/90,#191919)] text-[length:var(--font-size\/body\/md,17px)] tracking-[-0.0425px] overflow-hidden text-ellipsis" data-node-id="10:5">
+        Sample card text that is cut off at the end of the line
+      </p>
+    </div>
+  );
+}
+
+export default function SamplePageDesktop() {
+  return (
+    <div className="bg-[var(--color\/primary\/background\/10-\[base\],#fffffc)] content-stretch flex flex-col items-start relative size-full" data-node-id="100:1" data-name="Sample Page [Desktop]">
+      <div className="content-stretch flex flex-col gap-[var(--spacing\/2rem,32px)] h-[400px] items-start px-[var(--padding\/7rem,112px)] py-[var(--padding\/5rem,80px)] relative shrink-0 w-full" data-node-id="100:2" data-name="intro-section">
+        <div className="h-[24px] relative shrink-0 w-[145px]" data-node-id="100:3" data-name="logo">
+          <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgLogo} />
+        </div>
+        <p className="font-[var(--font\/weight\/bold,normal)] leading-[var(--line-height\/heading\/h1,60px)] text-[color:var(--color\/neutral\/95,#111)] text-[length:var(--font-size\/heading\/h1,54px)] tracking-[-1.35px]" data-node-id="100:4">
+          Sample heading
+        </p>
+        <p className="font-[var(--font\/weight\/regular,normal)] leading-[var(--line-height\/body\/lg,28px)] text-[color:var(--color\/neutral\/40,#828282)] text-[length:var(--font-size\/body\/lg,19px)] tracking-[-0.0475px] line-clamp-3" data-node-id="100:5">
+          Sample muted paragraph
+        </p>
+        <p className="font-[var(--font\/weight\/regular,normal)] leading-[var(--line-height\/body\/md,25px)] text-[color:var(--color\/neutral\/90,#191919)] text-[length:var(--font-size\/body\/md,17px)] tracking-[-0.0425px]" data-node-id="100:20">
+          Sample body paragraph
+        </p>
+        <p className="font-[var(--font\/weight\/regular,normal)] leading-[var(--line-height\/body\/md,25px)] text-[color:var(--color\/neutral\/90,#191919)] text-[length:var(--font-size\/body\/md,17px)] tracking-[-0.0425px]" data-node-id="100:21">
+          Another body paragraph
+        </p>
+        <div className="content-stretch flex gap-[var(--spacing\/0_75rem,12px)] items-start relative shrink-0" data-node-id="100:6" data-name="actions">
+          <div className="bg-[var(--color\/neutral\/95,#111)] content-stretch flex items-center justify-center px-[var(--padding\/1_5rem,24px)] py-[var(--padding\/0_75rem,12px)] relative rounded-[var(--corner-radius\/0_25rem,4px)] shrink-0" data-node-id="100:7" data-name="primarybutton">
+            <div className="content-stretch flex gap-[var(--spacing\/0_5rem,8px)] items-center justify-center relative shrink-0" data-node-id="100:8" data-name="text-container">
+              <p className="font-[var(--font\/weight\/semi-bold,normal)] leading-[var(--line-height\/body\/md,25px)] text-[color:var(--color\/neutral\/0,white)] text-[length:var(--font-size\/body\/md,17px)] tracking-[-0.0425px] whitespace-nowrap" data-node-id="100:9">
+                Sample action
+              </p>
+            </div>
+          </div>
+          <div className="border border-[var(--color\/neutral\/70,#3e3e3e)] border-solid content-stretch flex items-center justify-center px-[var(--padding\/1_25rem,20px)] py-[var(--padding\/0_5rem,8px)] relative rounded-[var(--corner-radius\/0_125rem,2px)] shrink-0" data-node-id="100:10" data-name="secondarybutton">
+            <div className="content-stretch flex gap-[var(--spacing\/0_5rem,8px)] items-center justify-center relative shrink-0" data-node-id="100:11" data-name="text-container">
+              <p className="font-[var(--font\/weight\/semi-bold,normal)] leading-[var(--line-height\/body\/sm,22px)] text-[color:var(--color\/neutral\/70,#3e3e3e)] text-[length:var(--font-size\/body\/sm,15px)] whitespace-nowrap" data-node-id="100:12">
+                Other action
+              </p>
+            </div>
+          </div>
+          <div className="border border-[var(--color\/neutral\/10,#dbdbdb)] border-solid content-stretch flex items-center px-[var(--spacing\/0_75rem,12px)] py-[var(--padding\/0_75rem,12px)] relative rounded-[var(--corner-radius\/4rem,64px)] shrink-0" data-node-id="100:13" data-name="iconbutton">
+            <div className="relative shrink-0 size-[20px]" data-node-id="100:14" data-name="icon">
+              <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgArrow} />
+            </div>
+          </div>
+        </div>
+        <div className="border border-[var(--color\/neutral\/5,#f1f1f1)] border-solid content-stretch flex flex-col h-[300px] items-start max-w-[520px] overflow-clip relative rounded-[var(--corner-radius\/0_5rem,8px)] shadow-[0px_4px_8px_-2px_rgba(16,24,40,0.1),0px_2px_4px_-2px_rgba(16,24,40,0.06)] shrink-0 w-[488px]" data-node-id="100:15" data-name="photo-wrapper">
+          <img alt="" className="absolute inset-0 max-w-none object-cover size-full" src={imgPhoto} />
+        </div>
+        <Card />
+      </div>
+    </div>
+  );
+}
+
+These styles are contained in the design: Heading/H1: Font(family: "font/family/heading", style: font/weight/Bold, size: font-size/heading/h1, weight: 700, lineHeight: line-height/heading/H1, letterSpacing: -2.5), Heading/H6: Font(family: "font/family/heading", style: font/weight/Semi Bold, size: font-size/heading/h6, weight: 600, lineHeight: line-height/heading/H6, letterSpacing: -2), Body/Large/Regular: Font(family: "font/family/body", style: font/weight/Regular, size: font-size/body/Lg, weight: 400, lineHeight: line-height/body/Lg, letterSpacing: -0.25), Body/Medium/Regular: Font(family: "font/family/body", style: font/weight/Regular, size: font-size/body/Md, weight: 400, lineHeight: line-height/body/Md, letterSpacing: -0.25), Button/Regular: Font(family: "font/family/body", style: font/weight/Semi Bold, size: font-size/body/Md, weight: 600, lineHeight: line-height/body/Md, letterSpacing: -0.25), Button/Small: Font(family: "font/family/body", style: font/weight/Semi Bold, size: font-size/body/Sm, weight: 600, lineHeight: line-height/body/Sm, letterSpacing: 0), Overline/Medium: Font(family: "font/family/overline", style: font/weight/Medium, size: font-size/overline/Md, weight: 500, lineHeight: line-height/overline/Md, letterSpacing: 4), Shadow/Small: Effect(type: DROP_SHADOW, color: #1018280F, offset: (0, 1), radius: 2, spread: 0); Effect(type: DROP_SHADOW, color: #1018281A, offset: (0, 1), radius: 3, spread: 0), Shadow/Medium: Effect(type: DROP_SHADOW, color: #1018280F, offset: (0, 2), radius: 4, spread: -2); Effect(type: DROP_SHADOW, color: #1018281A, offset: (0, 4), radius: 8, spread: -2).
+
+Image assets are stored on a localhost server. Clients can use these images directly in code as a way to view the image assets the same way they would other remote servers.

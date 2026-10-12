@@ -1,0 +1,115 @@
+<section id="1:1" name="Sample Page" x="0" y="0" width="3107" height="3000">
+  <frame id="1:127" name="Sample Page [Desktop]" x="100" y="0" width="1440" height="1824">
+    <instance id="1:100" name="navbar" x="0" y="0" width="1440" height="80" />
+    <frame id="1:101" name="hero" x="0" y="80" width="1440" height="220" />
+    <frame id="1:106" name="features" x="0" y="300" width="1440" height="500">
+      <frame id="1:107" name="wrapper" x="0" y="0" width="1440" height="500">
+        <frame id="1:108" name="container" x="96" y="96" width="1248" height="308">
+          <frame id="1:109" name="heading-block" x="0" y="0" width="1248" height="60">
+            <text id="1:110" name="h4" x="0" y="0" width="1248" height="32" />
+            <text id="1:111" name="p__md" x="0" y="36" width="1248" height="24" />
+          </frame>
+          <frame id="1:105" name="card-row" x="0" y="108" width="1248" height="200">
+            <frame id="1:102" name="card" x="0" y="0" width="400" height="200" />
+            <frame id="1:103" name="card" x="424" y="0" width="400" height="200" />
+            <frame id="1:104" name="card" x="848" y="0" width="400" height="200" />
+          </frame>
+        </frame>
+      </frame>
+    </frame>
+    <frame id="1:120" name="gallery" x="0" y="800" width="1440" height="724">
+      <frame id="1:121" name="wrapper" x="0" y="0" width="1440" height="724">
+        <frame id="1:122" name="container" x="96" y="96" width="1248" height="532">
+          <frame id="1:123" name="heading-block" x="0" y="0" width="1248" height="60">
+            <text id="1:124" name="h4" x="0" y="0" width="1248" height="32" />
+            <text id="1:125" name="p__md" x="0" y="36" width="1248" height="24" />
+          </frame>
+          <frame id="1:115" name="card-row" x="0" y="108" width="1248" height="200">
+            <frame id="1:112" name="card" x="0" y="0" width="400" height="200" />
+            <frame id="1:113" name="card" x="424" y="0" width="400" height="200" />
+            <frame id="1:114" name="card" x="848" y="0" width="400" height="200" />
+          </frame>
+          <frame id="1:119" name="card-row" x="0" y="332" width="1248" height="200">
+            <frame id="1:116" name="card" x="0" y="0" width="400" height="200" />
+            <frame id="1:117" name="card" x="424" y="0" width="400" height="200" />
+            <frame id="1:118" name="card" x="848" y="0" width="400" height="200" />
+          </frame>
+        </frame>
+      </frame>
+    </frame>
+    <instance id="1:126" name="footer" x="0" y="1524" width="1440" height="300" />
+  </frame>
+  <frame id="1:152" name="Sample Page [Tablet]" x="1660" y="0" width="834" height="1644">
+    <instance id="1:128" name="navbar" x="0" y="0" width="834" height="64" />
+    <frame id="1:129" name="hero" x="0" y="64" width="834" height="200" />
+    <frame id="1:133" name="features" x="0" y="264" width="834" height="452">
+      <frame id="1:134" name="wrapper" x="0" y="0" width="834" height="452">
+        <frame id="1:135" name="container" x="40" y="72" width="754" height="308">
+          <frame id="1:136" name="heading-block" x="0" y="0" width="754" height="60">
+            <text id="1:137" name="h4" x="0" y="0" width="754" height="32" />
+            <text id="1:138" name="p__md" x="0" y="36" width="754" height="24" />
+          </frame>
+          <frame id="1:132" name="card-row" x="0" y="108" width="754" height="200">
+            <frame id="1:130" name="card" x="0" y="0" width="369" height="200" />
+            <frame id="1:131" name="card" x="385" y="0" width="369" height="200" />
+          </frame>
+        </frame>
+      </frame>
+    </frame>
+    <frame id="1:145" name="gallery" x="0" y="716" width="834" height="668">
+      <frame id="1:146" name="wrapper" x="0" y="0" width="834" height="668">
+        <frame id="1:147" name="container" x="40" y="72" width="754" height="524">
+          <frame id="1:148" name="heading-block" x="0" y="0" width="754" height="60">
+            <text id="1:149" name="h4" x="0" y="0" width="754" height="32" />
+            <text id="1:150" name="p__md" x="0" y="36" width="754" height="24" />
+          </frame>
+          <frame id="1:141" name="card-row" x="0" y="108" width="754" height="200">
+            <frame id="1:139" name="card" x="0" y="0" width="369" height="200" />
+            <frame id="1:140" name="card" x="385" y="0" width="369" height="200" />
+          </frame>
+          <frame id="1:144" name="card-row" x="0" y="324" width="754" height="200">
+            <frame id="1:142" name="card" x="0" y="0" width="369" height="200" />
+            <frame id="1:143" name="card" x="385" y="0" width="369" height="200" />
+          </frame>
+        </frame>
+      </frame>
+    </frame>
+    <instance id="1:151" name="footer" x="0" y="1384" width="834" height="260" />
+  </frame>
+  <frame id="1:176" name="Sample Page [Mobile]" x="2614" y="0" width="393" height="2320">
+    <instance id="1:153" name="navbar" x="0" y="0" width="393" height="64" />
+    <frame id="1:154" name="hero" x="0" y="64" width="393" height="180" />
+    <frame id="1:158" name="features" x="0" y="244" width="393" height="616">
+      <frame id="1:159" name="wrapper" x="0" y="0" width="393" height="616">
+        <frame id="1:160" name="container" x="20" y="48" width="353" height="520">
+          <frame id="1:161" name="heading-block" x="0" y="0" width="353" height="60">
+            <text id="1:162" name="h4" x="0" y="0" width="353" height="32" />
+            <text id="1:163" name="p__md" x="0" y="36" width="353" height="24" />
+          </frame>
+          <frame id="1:157" name="card-list" x="0" y="108" width="353" height="412">
+            <frame id="1:155" name="card" x="0" y="0" width="353" height="200" />
+            <frame id="1:156" name="card" x="0" y="212" width="353" height="200" />
+          </frame>
+        </frame>
+      </frame>
+    </frame>
+    <frame id="1:169" name="gallery" x="0" y="860" width="393" height="1040">
+      <frame id="1:170" name="wrapper" x="0" y="0" width="393" height="1040">
+        <frame id="1:171" name="container" x="20" y="48" width="353" height="944">
+          <frame id="1:172" name="heading-block" x="0" y="0" width="353" height="60">
+            <text id="1:173" name="h4" x="0" y="0" width="353" height="32" />
+            <text id="1:174" name="p__md" x="0" y="36" width="353" height="24" />
+          </frame>
+          <frame id="1:168" name="card-list" x="0" y="108" width="353" height="836">
+            <frame id="1:164" name="card" x="0" y="0" width="353" height="200" />
+            <frame id="1:165" name="card" x="0" y="212" width="353" height="200" />
+            <frame id="1:166" name="card" x="0" y="424" width="353" height="200" />
+            <frame id="1:167" name="card" x="0" y="636" width="353" height="200" />
+          </frame>
+        </frame>
+      </frame>
+    </frame>
+    <instance id="1:175" name="footer" x="0" y="1900" width="393" height="420" />
+  </frame>
+</section>
+

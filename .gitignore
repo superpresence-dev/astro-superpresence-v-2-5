@@ -1,0 +1,44 @@
+# build output
+dist/
+
+# generated types
+.astro/
+
+# dependencies
+node_modules/
+
+# identities for scripts/push-both.sh
+.push-both.env
+
+# findings for improving the Figma skill (may hold client designs)
+.feedback/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# environment variables
+.env
+.env.production
+
+# macOS-specific files
+.DS_Store
+
+# jetbrains setting folder
+.idea/
+
+# local agent settings
+.claude/settings.local.json
+
+# project-specific Figma variable exports
+Responsive.json
+Static.json
+
+# design data dropped into figma/ (keep only its README)
+figma/*
+!figma/README.md
+
+# real Figma metadata used to test the layout slicer
+.agents/skills/lumos-import-figma/samples/

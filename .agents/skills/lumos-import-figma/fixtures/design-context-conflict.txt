@@ -1,0 +1,17 @@
+export default function SamplePageTablet() {
+  return (
+    <div className="flex flex-col items-start relative size-full" data-name="Sample Page [Tablet]" data-node-id="200:1">
+      <p className="font-[var(--font\/weight\/bold,normal)] leading-[var(--line-height\/heading\/h1,60px)] text-[length:var(--font-size\/heading\/h1,54px)] tracking-[-1.13px]" data-node-id="200:2">
+        Sample heading
+      </p>
+      <p className="font-[var(--font\/weight\/medium,normal)] leading-[var(--line-height\/body\/lg,28px)] text-[length:var(--font-size\/body\/lg,19px)] tracking-[-0.04px]" data-node-id="200:3">
+        Sample lead, medium
+      </p>
+      <p className="font-[var(--font\/weight\/regular,normal)] leading-[var(--line-height\/body\/lg,28px)] text-[length:var(--font-size\/body\/lg,19px)] tracking-[-0.04px]" data-node-id="200:4">
+        Sample lead, regular
+      </p>
+    </div>
+  );
+}
+
+These styles are contained in the design: Heading/H1: Font(family: "font/family/heading", style: font/weight/Bold, size: font-size/heading/h1, weight: 700, lineHeight: line-height/heading/H1, letterSpacing: -2.5), Body/Large/Medium: Font(family: "font/family/body", style: font/weight/Medium, size: font-size/body/Lg, weight: 500, lineHeight: line-height/body/Lg, letterSpacing: -0.25), Body/Large/Regular: Font(family: "font/family/body", style: font/weight/Regular, size: font-size/body/Lg, weight: 400, lineHeight: line-height/body/Lg, letterSpacing: -0.25).

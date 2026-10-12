@@ -1,0 +1,24 @@
+const imgHero = "http://localhost:3845/assets/0a1b2c3d.png";
+
+export default function SamplePageDesktop() {
+  return (
+    <div className="bg-[var(--color\/neutral\/0,white)] flex flex-col items-start relative size-full" data-name="Sample Page [Desktop]" data-node-id="100:1">
+      <div className="flex flex-col gap-[var(--spacing\/2rem,32px)] px-[112px] py-[var(--padding\/5rem,80px)]" data-name="intro-section" data-node-id="100:2">
+        <p className="font-[var(--font\/weight\/bold,normal)] leading-[var(--line-height\/heading\/h1,60px)] text-[length:var(--font-size\/heading\/h1,54px)] tracking-[-1.35px]" data-node-id="100:3">
+          Sample heading
+        </p>
+        <p className="font-[var(--font\/weight\/medium,normal)] leading-[var(--line-height\/body\/lg,28px)] text-[length:var(--font-size\/body\/lg,19px)] tracking-[-0.0475px]" data-node-id="100:4">
+          Sample lead paragraph
+        </p>
+        <p className="font-[var(--font\/weight\/regular,normal)] leading-[var(--line-height\/body\/md,25px)] text-[length:var(--font-size\/body\/md,17px)] tracking-[0px]" data-node-id="100:5">
+          Sample body paragraph
+        </p>
+        <p className="font-[var(--font\/weight\/medium,normal)] leading-[var(--line-height\/overline\/md,22px)] text-[length:var(--font-size\/overline\/md,15px)] tracking-[0.75px] uppercase" data-node-id="100:6">
+          Sample label
+        </p>
+      </div>
+    </div>
+  );
+}
+
+These styles are contained in the design: Heading/H1: Font(family: "font/family/heading", style: font/weight/Bold, size: font-size/heading/h1, weight: 700, lineHeight: line-height/heading/H1, letterSpacing: -2.5), Body/Large/Medium: Font(family: "font/family/body", style: font/weight/Medium, size: font-size/body/Lg, weight: 500, lineHeight: line-height/body/Lg, letterSpacing: -0.25), Body/Medium/Regular: Font(family: "font/family/body", style: font/weight/Regular, size: font-size/body/Md, weight: 400, lineHeight: line-height/body/Md, letterSpacing: 0), Overline/Medium: Font(family: "font/family/overline", style: font/weight/Medium, size: font-size/overline/Md, weight: 500, lineHeight: line-height/overline/Md, letterSpacing: 5).
