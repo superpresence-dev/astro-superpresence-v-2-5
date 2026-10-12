@@ -1,68 +1,78 @@
-<p align="center">
-  <img src=".github/assets/banner.png" alt="Lumos For Astro" width="720">
-</p>
+# Superpresence V2.5
 
-<p align="center">
-  <a href="https://www.npmjs.com/package/create-lumos"><img alt="npm version" src="https://img.shields.io/npm/v/create-lumos?labelColor=1E1E1E&color=C6FB50"></a>
-  <a href="LICENSE"><img alt="license" src="https://img.shields.io/npm/l/create-lumos?labelColor=1E1E1E&color=C6FB50"></a>
-  <a href="https://github.com/lumosframework/lumos-for-astro/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/lumosframework/lumos-for-astro/actions/workflows/ci.yml/badge.svg"></a>
-</p>
+Marketing site for [Superpresence](https://superpresence.co), built with
+[Lumos for Astro](https://lumosframework.com) from the Figma file
+**Superpresence – V2.5**.
 
-A component and styling framework for building Astro sites, designed around
-efficiency, scalability and accessibility.
+Preview: https://superpresence-v-2-5.astro-lumos-custom.workers.dev
 
-Documentation lives at **[lumosframework.com](https://lumosframework.com)**.
+## Status
 
-> **This is a customised template (`astro-lumos-custom`).** Tokens in `src/styles/base.css` are explicit per-breakpoint values (mobile < 768px, tablet 768–991px, desktop ≥ 992px) sliced from a Figma file, not fluid `clamp()`. The palette and layout values belong to that original design; replace them with the `lumos-import-figma` skill for a new project.
-
-> **Beta.** Every `0.x` release is allowed to break things, and the component
-> props and their placements are the parts still moving — the tokens, layers and
-> CSS are not. `v1.0.0` is where the API gets committed to; breaking it after
-> that would take a `v2.0.0`.
->
-> Starting a site before then does not strand it. `create-lumos` stamps the
-> commit your site came from, and `/lumos-upgrade-version` three-way merges each
-> release into your own changes and pixel-diffs every page, so an upgrade is a
-> reviewed diff rather than a rewrite. The badge above carries the current
-> release.
+| Area | State |
+| --- | --- |
+| Homepage sections (hero → CTA) | Built from Figma |
+| Navbar | Built from the navbar inside the hero frame; dropdowns and the open mobile menu are not in Figma yet |
+| Footer | Still the Lumos template footer; to be sliced from Figma node `4771:4822` |
+| Value section icons | One icon used for all four; the four Figma icons still need exporting |
+| FAQ answers 2–8 | Lorem ipsum placeholders |
+| Links | Most `href`s are `#` |
+| Helvetica Neue | Not loaded yet; falls back to the system Helvetica Neue / Helvetica / Arial |
 
 ## Getting started
 
-```sh
-npm create lumos@latest my-site
-```
-
-That scaffolds a new site from this repository and installs its dependencies
-with whichever package manager you ran it with. Then:
+Node 22.12 or newer is required.
 
 ```sh
-cd my-site
+npm install
 npm run dev
 ```
 
-| Script            | What it does                      |
-| ----------------- | --------------------------------- |
-| `npm run dev`     | Starts the dev server             |
-| `npm run build`   | Builds the site to `dist/`        |
-| `npm run preview` | Serves the built site             |
-| `npm run check`   | Type-checks every `.astro` file   |
-| `npm run format`  | Formats the project with Prettier |
+| Script | What it does |
+| --- | --- |
+| `npm run dev` | Starts the dev server at http://localhost:4321 |
+| `npm run build` | Builds the site to `dist/` |
+| `npm run preview` | Serves the built site |
+| `npm run check` | Type-checks every `.astro` file |
+| `npm run format` | Formats the project with Prettier |
+| `npm run slice` | Reads the `figma/` folder and reports tokens to reconcile |
+| `npm run verify` | Compares the running page against the Figma frames |
 
-Node 22.12 or newer is required.
+## Deploying
 
-## Documentation
+The site deploys as an assets-only Cloudflare Worker named
+`superpresence-v-2-5` (see `wrangler.jsonc`):
 
-Component reference, styling guides and examples are at
-[lumosframework.com](https://lumosframework.com).
+```sh
+npm run build
+npx wrangler deploy
+```
 
-## Contributing
+## Project structure
 
-Read
-[CONTRIBUTING.md](https://github.com/lumosframework/lumos-for-astro/blob/main/CONTRIBUTING.md)
-first — a pull request needs the
-[CLA](https://github.com/lumosframework/lumos-for-astro/blob/main/CLA.md)
-signed before it can be merged.
+```
+src/
+  assets/home/          Images exported from Figma for the homepage
+  assets/icons/         Shared icons (arrow, menu, nav plus…)
+  components/content/   Homepage section contents (HomeStat, HomeService…)
+  components/section/   Sections styled as a whole (HomeHero, HomeQuote, HomeCta)
+  components/global/    Nav and Footer
+  pages/index.astro     Homepage
+  styles/base.css       Design tokens (type, spacing, colour, shadows, buttons)
+```
+
+Tokens are explicit per-breakpoint values: mobile < 768px, tablet 768–991px,
+desktop ≥ 992px.
+
+## Working on the design
+
+- Read [LUMOS.md](LUMOS.md) before adding pages, components or styles.
+- Figma work goes through the `lumos-import-figma` skill in
+  `.agents/skills/`. Put Figma exports in `figma/` (git-ignored) and run
+  `npm run slice`.
+- Fonts: Stack Sans Headline comes from Google Fonts via `astro.config.mjs`.
+  Helvetica Neue needs licensed files in `src/assets/fonts/` and a local
+  `fonts` entry.
 
 ## License
 
-[MIT](LICENSE)
+Built on Lumos for Astro, [MIT](LICENSE).
