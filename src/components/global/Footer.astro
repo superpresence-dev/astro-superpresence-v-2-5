@@ -238,8 +238,6 @@ const timeIn = (zone: string) =>
     .footer_wrap {
       --footer-background: var(--color-primary-98);
       --footer-line: color-mix(in lab, var(--color-neutral-0) 12%, transparent);
-      /* Figma strokes sit inside the box. */
-      --button-border-inset: var(--border-width);
       display: flex;
       justify-content: center;
       padding: var(--space-4rem) var(--site-margin) 0;
@@ -324,8 +322,8 @@ const timeIn = (zone: string) =>
         }
       }
       & .field-control {
-        --_field-pad-block: calc(var(--space-0-75rem) - var(--border-width));
-        --_field-pad-inline: calc(var(--space-1rem) - var(--border-width));
+        --_field-pad-block: var(--space-0-75rem);
+        --_field-pad-inline: var(--space-1rem);
         background-color: color-mix(
           in lab,
           var(--color-neutral-0) 8%,

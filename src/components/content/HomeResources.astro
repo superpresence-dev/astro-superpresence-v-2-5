@@ -67,7 +67,7 @@ const posts = [
                 <Paragraph
                   tag="span"
                   variant="overline-small"
-                  class="home-resources_tag"
+                  class="home-resources_tag tag-pill"
                 >
                   {post.tag}
                 </Paragraph>
@@ -131,9 +131,6 @@ const posts = [
       grid-area: action;
       display: flex;
       justify-content: center;
-      /* Figma counts the link underline inside the button height. */
-      padding-block: var(--space-0-5rem)
-        calc(var(--space-0-5rem) - var(--border-width));
     }
 
     .home-resources_list {
@@ -187,16 +184,6 @@ const posts = [
       gap: var(--space-0-75rem);
       color: var(--color-neutral-40);
       letter-spacing: 0.02em;
-    }
-
-    .home-resources_tag {
-      /* Stroke sits inside the tag in Figma. */
-      padding: calc(var(--space-0-25rem) - var(--border-width))
-        calc(var(--space-0-5rem) - var(--border-width));
-      background-color: var(--color-neutral-2);
-      border: var(--border-width) solid var(--color-neutral-5);
-      border-radius: var(--radius-0-125rem);
-      white-space: nowrap;
     }
 
     .home-resources_title {

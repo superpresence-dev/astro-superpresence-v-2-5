@@ -96,12 +96,19 @@
   --button-radius: var(--radius-0-125rem);
   --button-padding-block: var(--space-0-75rem);
   --button-padding-inline: var(--space-1-25rem);
-  --button-border-inset: 0rem;
+  /* Figma draws strokes inside the box. */
+  --button-border-inset: var(--border-width);
   --button-gap: var(--space-0-75rem);
   --button-font-size: var(--text-main);
   --button-font-weight: var(--primary-medium);
   --button-line-height: var(--text-main-line-height);
   --button-letter-spacing: var(--text-main-letter-spacing);
+  /* A link button fills the same frame as a button in Figma: 0.5rem around
+     the link, its underline inside. */
+  --button-link-margin-block: calc(var(--space-0-5rem) - var(--border-width) / 2);
+
+  /* Form fields: Figma draws the stroke inside the box. */
+  --field-border-inset: var(--border-width);
 
   /* Borders & focus */
   --border-width: 0.0625rem;

@@ -49,7 +49,7 @@ const works = Array.from({ length: 4 }, () => ({
               </div>
             </div>
             <div class="home-work_content">
-              <span class="home-work_tag text-style-overline-small">
+              <span class="home-work_tag tag-pill text-style-overline-small">
                 {work.tag}
               </span>
               <Heading tag="h3" variant="h5" class="home-work_text">
@@ -158,13 +158,6 @@ const works = Array.from({ length: 4 }, () => ({
         gap: var(--space-0-75rem);
       }
       .home-work_tag {
-        /* Figma draws the border inside the tag. */
-        padding: calc(var(--space-0-25rem) - var(--border-width))
-          calc(var(--space-0-5rem) - var(--border-width));
-        background-color: var(--color-neutral-2);
-        border: var(--border-width) solid var(--color-neutral-5);
-        border-radius: var(--radius-0-125rem);
-        color: var(--color-neutral-40);
         letter-spacing: 0.02em;
       }
       .home-work_text {
@@ -173,13 +166,9 @@ const works = Array.from({ length: 4 }, () => ({
         margin-bottom: 0;
         color: var(--color-neutral-90);
       }
-      /* The Figma link sits in a frame padded by 0.5rem, its underline inside. */
       .home-work_actions {
         margin-top: 0;
         align-items: center;
-        > .button_wrap {
-          margin-block: calc(var(--space-0-5rem) - var(--border-width) / 2);
-        }
       }
     }
   }

@@ -73,7 +73,7 @@ const industries = [
               </div>
               <ul class="home-industry_tags" role="list">
                 {industry.tags.map((tag) => (
-                  <li class="home-industry_tag text-style-overline-small">
+                  <li class="tag-pill text-style-overline-small">
                     <Fragment set:html={tag} />
                   </li>
                 ))}
@@ -157,17 +157,6 @@ const industries = [
       margin: 0;
       padding: 0;
       list-style: none;
-    }
-
-    /* Figma draws the tag stroke inside its box. */
-    .home-industry_tag {
-      padding: calc(var(--space-0-25rem) - var(--border-width))
-        calc(var(--space-0-5rem) - var(--border-width));
-      background-color: var(--color-neutral-2);
-      border: var(--border-width) solid var(--color-neutral-5);
-      border-radius: var(--radius-0-125rem);
-      color: var(--color-neutral-40);
-      white-space: nowrap;
     }
   }
 </style>

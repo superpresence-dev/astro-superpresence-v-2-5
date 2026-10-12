@@ -173,6 +173,17 @@
   text-align: inherit;
 }
 
+/* Small bordered label, e.g. a case study or article category. Figma draws
+   the stroke inside, so the padding gives it back. */
+.tag-pill {
+  padding: calc(var(--space-0-25rem) - var(--border-width)) calc(var(--space-0-5rem) - var(--border-width));
+  background-color: var(--color-neutral-2);
+  border: var(--border-width) solid var(--color-neutral-5);
+  border-radius: var(--radius-0-125rem);
+  color: var(--color-neutral-40);
+  white-space: nowrap;
+}
+
 .field {
   display: flex;
   flex-direction: column;
@@ -192,8 +203,9 @@
   --_field-pad-block: 0.75em;
   --_field-pad-inline: 1em;
   width: 100%;
-  min-height: calc(1lh + var(--_field-pad-block) * 2 + var(--border-width) * 2);
-  padding: var(--_field-pad-block) var(--_field-pad-inline);
+  --_field-inset: var(--field-border-inset, 0rem);
+  min-height: calc(1lh + (var(--_field-pad-block) - var(--_field-inset) + var(--border-width)) * 2);
+  padding: calc(var(--_field-pad-block) - var(--_field-inset)) calc(var(--_field-pad-inline) - var(--_field-inset));
   background-color: var(--background-2);
   color: inherit;
   border: var(--border-width) solid transparent;
