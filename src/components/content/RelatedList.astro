@@ -1,0 +1,63 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import { slotContent } from "@/utils/slots.ts";
+
+type Props = HTMLAttributes<"div"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Section heading. Omit to render nothing. */
+  heading?: string;
+  /** Spacing around the block. `spaced` carries its own padding above and below. */
+  variant?: "default" | "spaced";
+};
+
+const {
+  render = true,
+  heading,
+  variant = "default",
+  class: className,
+  ...rest
+} = Astro.props;
+
+const content = await slotContent(Astro.slots);
+---
+
+{
+  render && heading && content && (
+    <div
+      class:list={[
+        "related-list_wrap",
+        variant !== "default" && variant,
+        className,
+      ]}
+      {...rest}
+    >
+      <Heading tag="h2" variant="h3" class="related-list_title">
+        {heading}
+      </Heading>
+      <Fragment set:html={content} />
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .related-list_wrap {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3-5rem);
+      width: 100%;
+      padding-top: var(--space-4rem);
+
+      &.spaced {
+        padding-block: var(--space-6-5rem);
+      }
+    }
+
+    .related-list_title {
+      margin: 0;
+      color: var(--color-neutral-90);
+    }
+  }
+</style>

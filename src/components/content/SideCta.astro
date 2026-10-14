@@ -1,0 +1,163 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Img from "@/components/media/Img.astro";
+import Button from "@/components/Button.astro";
+import ctaRender from "@/assets/blog/cta-render.png";
+
+type Props = HTMLAttributes<"div"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Card heading. Omit to render nothing. */
+  heading?: string;
+  /** Text below the heading. */
+  text?: string;
+  /** Text of the main button. */
+  buttonText?: string;
+  /** Link of the main button. */
+  buttonHref?: string;
+  /** Small text before the secondary link. */
+  note?: string;
+  /** Text of the secondary link. */
+  linkText?: string;
+  /** Destination of the secondary link. */
+  linkHref?: string;
+};
+
+const {
+  render = true,
+  heading,
+  text,
+  buttonText,
+  buttonHref,
+  note,
+  linkText,
+  linkHref,
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+{
+  render && heading && (
+    <div class:list={["side-cta_wrap gradient-stroke", className]} {...rest}>
+      <div class="gradient-bar" />
+      <div class="side-cta_content">
+        <div class="side-cta_render">
+          <Img src={ctaRender} alt="" transparent width={120} />
+        </div>
+        <div class="side-cta_text">
+          <Heading tag="h2" variant="h5">
+            {heading}
+          </Heading>
+          {text && (
+            <Paragraph variant="main" class="side-cta_muted">
+              {text}
+            </Paragraph>
+          )}
+        </div>
+      </div>
+      <div class="side-cta_actions">
+        {buttonText && (
+          <Button element="link" href={buttonHref} class="side-cta_button">
+            {buttonText}
+          </Button>
+        )}
+        {(note || linkText) && (
+          <div class="side-cta_micro">
+            {note && (
+              <Paragraph variant="small" class="side-cta_muted">
+                {note}
+              </Paragraph>
+            )}
+            {linkText && (
+              <Button element="link" href={linkHref} variant="link" arrow class="side-cta_link">
+                {linkText}
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .side-cta_wrap {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1-5rem);
+      padding-bottom: calc(var(--space-1-5rem) - 0.125rem);
+      overflow: clip;
+
+      & :is(.heading, .text) {
+        margin: 0;
+      }
+    }
+
+    .side-cta_content {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-2rem);
+      padding-inline: calc(var(--space-1-5rem) - 0.125rem);
+    }
+
+    .side-cta_render {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: var(--icon-4xl);
+      height: var(--icon-4xl);
+
+      > .image {
+        width: auto;
+        height: 91.5%;
+      }
+    }
+
+    .side-cta_text {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-0-75rem);
+
+      & .heading {
+        color: var(--color-neutral-90);
+        text-wrap: wrap;
+      }
+    }
+
+    .side-cta_muted {
+      color: var(--color-neutral-60);
+    }
+
+    .side-cta_actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-0-75rem);
+      margin-top: calc(var(--space-2rem) - var(--space-1-5rem));
+      padding-inline: calc(var(--space-1-5rem) - 0.125rem);
+    }
+
+    .side-cta_micro {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-0-75rem);
+    }
+
+    .side-cta_link {
+      --button-font-size: var(--text-small);
+      --button-line-height: var(--text-small-line-height);
+      --button-letter-spacing: var(--text-small-letter-spacing);
+      --button-link-margin-block: var(--space-0-25rem);
+      --button-gap: var(--space-0-5rem);
+
+      & .button_mark {
+        --_size: var(--icon-xs);
+      }
+    }
+  }
+</style>

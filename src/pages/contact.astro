@@ -1,0 +1,99 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import ContactHero from "@/components/section/ContactHero.astro";
+import LogoStrip from "@/components/content/LogoStrip.astro";
+import ContactSteps from "@/components/content/ContactSteps.astro";
+import HomeDifference from "@/components/content/HomeDifference.astro";
+import HomeFaq from "@/components/content/HomeFaq.astro";
+
+const placeholder =
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.";
+---
+
+<Layout
+  title="Contact"
+  description="Tell us about your project. We reply within 24 hours."
+  navTheme="light"
+>
+  {/* Hero */}
+  <ContactHero />
+  {/* Logos */}
+  <Section paddingTop="none" paddingBottom="none">
+    <LogoStrip />
+  </Section>
+  {/* Steps */}
+  <Section>
+    <ContactSteps />
+  </Section>
+  {/* Difference */}
+  <Section>
+    <HomeDifference
+      eyebrow="The Superpresence Difference"
+      heading="Still not sure? Here's what changes"
+      lead=""
+      boxes={[
+        {
+          title: "Superpresence",
+          featured: true,
+          items: [
+            "Positioning aligned with the company's current status",
+            "A distinct brand that makes competitors look generic",
+            "Prospects show up to calls already half-sold",
+            "CRO pages showing clear, effective data",
+            "On-brand designs that engage and differentiate",
+            "Launch faster with a high-speed Webflow site",
+            "High converting websites",
+          ],
+        },
+        {
+          title: "Traditional agency",
+          featured: false,
+          items: [
+            "The site reflects who you were two years ago",
+            "You look the same as (or worse than) your competitors",
+            "Your team isn't proud to share the website link",
+            "Conversions are flat and nobody can explain why",
+            "Old messaging and design miss your ICP",
+            "Slow time to market due to delayed website updates",
+            "Low conversion rates",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* FAQ */}
+  <Section>
+    <HomeFaq
+      eyebrow="Frequently asked questions"
+      heading="Still have a few questions?"
+      items={[
+        {
+          question: "Do I need a complete brief?",
+          answer:
+            "Not at all. Having a clear idea of what you want to achieve is all you need to begin the conversation. From there, we'll work closely with you to develop and refine your goals. Together, we'll shape the entire process to ensure your vision becomes a reality.",
+        },
+        {
+          question: "How quickly will you get a response?",
+          answer: placeholder,
+        },
+        {
+          question: "Should our website focus on features or benefits?",
+          answer: placeholder,
+        },
+        {
+          question: "What types of projects do you take on?",
+          answer: placeholder,
+        },
+        {
+          question: "Do you work with international clients?",
+          answer: placeholder,
+        },
+        {
+          question: "What happens if we're not the right fit?",
+          answer: placeholder,
+        },
+      ]}
+    />
+  </Section>
+</Layout>

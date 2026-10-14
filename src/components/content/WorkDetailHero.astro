@@ -1,0 +1,219 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import type { ImageMetadata } from "astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Img from "@/components/media/Img.astro";
+import Marquee from "@/components/interactive/Marquee.astro";
+import BackLink from "@/components/content/BackLink.astro";
+
+type Props = HTMLAttributes<"div"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Page heading. Omit to render nothing. */
+  heading?: string;
+  /** Client name, used as the logo's alt text. */
+  client?: string;
+  /** Client logo. */
+  logo?: ImageMetadata;
+  /** Key results shown under the heading. */
+  stats?: { value: string; label: string }[];
+  /** Images for the scrolling strip. */
+  gallery?: ImageMetadata[];
+  /** Back link URL. */
+  backHref?: string;
+  /** Back link text. */
+  backText?: string;
+};
+
+const {
+  render = true,
+  heading,
+  client,
+  logo,
+  stats = [],
+  gallery = [],
+  backHref = "/work",
+  backText = "Back to all case studies",
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+{
+  render && heading && (
+    <div class:list={["work-detail-hero_wrap", className]} {...rest}>
+      <BackLink href={backHref}>{backText}</BackLink>
+      <div class="work-detail-hero_layout">
+        <div class="work-detail-hero_heading">
+          <div class="work-detail-hero_title">
+            {logo && (
+              <Img
+                src={logo}
+                alt={client ?? ""}
+                transparent
+                class="work-detail-hero_logo"
+              />
+            )}
+            <Heading tag="h1" variant="h3">
+              {heading}
+            </Heading>
+          </div>
+          {stats.length > 0 && (
+            <dl class="work-detail-hero_stats">
+              {stats.map((stat) => (
+                <div class="work-detail-hero_stat">
+                  <dt class="work-detail-hero_stat-value text-style-h4">
+                    {stat.value}
+                  </dt>
+                  <dd class="work-detail-hero_stat-label">
+                    <Paragraph tag="span" variant="main">
+                      {stat.label}
+                    </Paragraph>
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          )}
+        </div>
+        {gallery.length > 0 && (
+          <Marquee
+            controls={false}
+            label={`${client ?? "Project"} images`}
+            class="work-detail-hero_gallery"
+          >
+            {gallery.map((image) => (
+              <div class="work-detail-hero_image">
+                <Img src={image} alt="" />
+              </div>
+            ))}
+          </Marquee>
+        )}
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .work-detail-hero_wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-3-5rem);
+      width: 100%;
+      padding-block: var(--space-3rem) var(--space-2rem);
+
+      & :is(.heading, .text) {
+        margin: 0;
+      }
+    }
+
+    .work-detail-hero_layout {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3-5rem);
+      width: 100%;
+    }
+
+    .work-detail-hero_heading {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2rem);
+    }
+
+    .work-detail-hero_title {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-1-25rem);
+      max-width: 55rem;
+      @media (width >= 48rem) and (width < 62rem) {
+        max-width: 40rem;
+      }
+
+      & .heading {
+        color: var(--color-neutral-90);
+        text-wrap: wrap;
+      }
+    }
+
+    .work-detail-hero_logo {
+      width: auto;
+      height: var(--icon-xl);
+    }
+
+    .work-detail-hero_stats {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1-25rem);
+      margin: calc(var(--border-width) * -1) 0 0;
+      border-top: var(--border-width) solid var(--color-neutral-10);
+      @media (width >= 48rem) {
+        flex-direction: row;
+      }
+    }
+
+    .work-detail-hero_stat {
+      display: flex;
+      flex: 1 1 0;
+      flex-direction: column;
+      gap: var(--space-0-5rem);
+      max-width: 19.5625rem;
+      padding: var(--space-2rem) var(--space-1-5rem) 0 0;
+    }
+
+    .work-detail-hero_stat-value {
+      margin: 0;
+      color: var(--color-neutral-90);
+      white-space: nowrap;
+    }
+
+    .work-detail-hero_stat-label {
+      margin: 0;
+      color: var(--color-neutral-60);
+    }
+
+    .work-detail-hero_gallery.marquee_wrap {
+      --_gap-size: var(--space-1-5rem);
+      --_speed: 8s;
+      width: 100vw;
+      margin-inline: calc(50% - 50vw);
+
+      & .marquee_viewport {
+        mask-image: none;
+      }
+      /* Starts where the design draws it: the middle image centred. */
+      & .marquee_track {
+        animation-delay: calc(var(--_duration) * -0.2975);
+        @media (width >= 48rem) {
+          animation-delay: calc(var(--_duration) * -0.2546);
+        }
+        @media (width >= 62rem) {
+          animation-delay: calc(var(--_duration) * -0.1325);
+        }
+      }
+    }
+
+    .work-detail-hero_image {
+      height: 11.25rem;
+      aspect-ratio: 640 / 359;
+      min-height: 0;
+      overflow: hidden;
+      border: var(--border-width) solid var(--color-neutral-5);
+      border-radius: var(--radius-0-25rem);
+      @media (width >= 48rem) {
+        height: 19.625rem;
+      }
+      @media (width >= 62rem) {
+        height: 22.4375rem;
+      }
+
+      > .image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+</style>

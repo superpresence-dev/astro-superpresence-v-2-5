@@ -1,0 +1,16 @@
+<svg width="31.4" height="13.4" viewBox="0 0 31.4 13.4" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Vector 2186" filter="url(#filter0_f_6682_30880)">
+<path d="M1.2 1.2L30.2 1.2L30.2 12.2" stroke="url(#paint0_linear_6682_30880)" stroke-width="1.6" stroke-linecap="round"/>
+</g>
+<defs>
+<filter id="filter0_f_6682_30880" x="2.98023e-08" y="2.98023e-08" width="31.4" height="13.4" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="0.2" result="effect1_foregroundBlur_6682_30880"/>
+</filter>
+<linearGradient id="paint0_linear_6682_30880" x1="8.2" y1="-2.8" x2="28.799" y2="12.5768" gradientUnits="userSpaceOnUse">
+<stop offset="0.163118" stop-color="#D306EE" stop-opacity="0"/>
+<stop offset="1" stop-color="#D306EE"/>
+</linearGradient>
+</defs>
+</svg>

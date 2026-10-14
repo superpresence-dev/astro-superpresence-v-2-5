@@ -11,11 +11,13 @@ import { SITE_NAME } from "@/consts.ts";
 interface Props {
   /** Set to `false` to omit the component. */
   render?: boolean;
+  /** Color theme. `dark` sits over a photo, `light` over a white page. */
+  theme?: "dark" | "light";
   /** Fix the nav over the page. */
   overlap?: boolean;
 }
 
-const { render = true, overlap = false } = Astro.props;
+const { render = true, theme = "dark", overlap = false } = Astro.props;
 
 const links = [
   { label: "What we do", href: "#", more: true },
@@ -23,13 +25,13 @@ const links = [
   { label: "Why us", href: "#", more: true },
   { label: "Our work", href: "#", more: false },
   { label: "Pricing", href: "#", more: false },
-  { label: "Resources", href: "#", more: true },
+  { label: "Resources", href: "/resources", more: true },
 ];
 ---
 
 {
   render && (
-    <header class:list={["nav_wrap", "theme-dark", overlap && "overlap"]}>
+    <header class:list={["nav_wrap", `theme-${theme}`, overlap && "overlap"]}>
       <div class="nav_inner">
         <a class="nav_logo" href="/" aria-label={SITE_NAME}>
           <Icon src={logo} variant="full-width" />
@@ -127,6 +129,7 @@ const links = [
 <style is:global>
   @layer components {
     .nav_wrap {
+      --_menu-background: var(--color-neutral-95);
       position: sticky;
       top: 0;
       z-index: 100;
@@ -147,7 +150,18 @@ const links = [
       }
 
       &.open {
-        background-color: var(--color-neutral-95);
+        background-color: var(--_menu-background);
+      }
+
+      &.theme-light {
+        --_menu-background: var(--background);
+        background-color: var(--background);
+        background-image: none;
+        color: var(--heading);
+
+        .nav_status {
+          color: var(--text);
+        }
       }
     }
 
@@ -208,8 +222,7 @@ const links = [
         background: radial-gradient(
           circle,
           var(--color-accent-success-40) 0 50%,
-          color-mix(in lab, var(--color-accent-success-40) 24%, transparent)
-            50%
+          color-mix(in lab, var(--color-accent-success-40) 24%, transparent) 50%
         );
       }
 
@@ -231,11 +244,14 @@ const links = [
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 1.75rem;
+      width: 2.125rem;
       aspect-ratio: 1;
       margin-left: var(--space-0-5rem);
       color: inherit;
       transition: opacity var(--hover-duration) var(--hover-ease);
+      @media (width >= 48rem) {
+        width: 2.5rem;
+      }
 
       & .icon {
         --_size: 1.3125rem;
@@ -268,7 +284,7 @@ const links = [
       overflow-x: clip;
       overflow-y: auto;
       overscroll-behavior: contain;
-      background-color: var(--color-neutral-95);
+      background-color: var(--_menu-background);
       transition:
         grid-template-rows var(--open-duration) var(--open-ease),
         visibility var(--open-duration) var(--open-ease);

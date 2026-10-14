@@ -1,0 +1,167 @@
+title: Investment firms
+description: Websites for investment firms across Asia. We build sites that show your thesis and track record with the discretion your firm needs.
+order: 3
+
+hero:
+  eyebrow: For investment firms
+  heading: Investors check your<br />website before your deck
+  text: LPs, founders and co-investors look you up before the first meeting. We build sites that show your thesis and track record with the discretion your firm needs.
+  image: ../../assets/industries/investment-firms/hero.jpg
+
+problem:
+  heading: The strongest fund doesn't<br />always win the allocation
+  lead: Founders and LPs read the site as evidence of how the firm thinks.
+  items:
+    - title: Your site says less than your one-pager
+      text: LPs find a logo and an email address, and nothing that shows how you invest.
+    - title: Founders choose firms that look right
+      text: Your terms are competitive, but the sharper site gets the first call.
+    - title: AI answers get your strategy wrong
+      text: Ask an AI tool about your firm and it describes a fund you don't run.
+
+who:
+  heading: We help investment firms<br />across Asia close that gap
+  lead: From private equity to family offices, the firms where a weak site costs the most.
+  items:
+    - icon: coins
+      title: Private equity
+      text: Founders of growing companies check how you work with management teams.
+    - icon: chart
+      title: Venture capital
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: user-circle
+      title: Family offices
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: analytics
+      title: Asset & wealth management
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: building
+      title: Real estate investment
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: documents
+      title: Corporate finance & advisory
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+  note: Don't see your firm type? Tell us what you do.
+
+build:
+  heading: Built around how capital chooses a firm
+  image: ../../assets/industries/investment-firms/build.jpg
+  items:
+    - title: Firm overview page
+      text: Your thesis, written so founders clearly recognise and connect with it immediately.
+    - title: Portfolio showcase
+      text: The work, shown with the right discretion to maintain professionalism and trustworthiness.
+    - title: Insights and investor letters
+      text: Thinking that earns the second meeting and builds a strong foundation for success.
+    - title: Private LP areas
+      text: Sensitive material, held securely behind the right door to protect confidentiality always.
+    - title: Founder and LP enquiry flows
+      text: A clear route to the right person for quick and effective communication every time.
+    - title: Compliance-ready content
+      text: Written with what you're allowed to say, ensuring compliance and clear communication.
+
+difference:
+  heading: What changes when<br />your site is built for growth
+  lead: The difference shows up in who reaches out.
+  without:
+    - Thesis unclear, so anyone might approach
+    - Track record stays hidden from LPs
+    - LPs meet a site that undercuts the pitch
+    - Founders researching investors never find you
+    - Compliance buries whatever you wanted to say
+    - Fund news sits years out of date
+  with:
+    - Your thesis helps founders and LPs self-select
+    - Portfolio and track record shown within disclosure
+    - LPs get a credible first impression pre-fundraising
+    - Founders researching investors find you and reach out
+    - Compliance handled without burying the message
+    - Fund news and team changes stay current
+
+process:
+  heading: How we build a site that<br />wins the allocation
+  steps:
+    - title: Research & Strategy
+      text: We study your peers, your mandate and how LPs and founders find you before anything is designed, so nothing on the site is built on assumptions.
+      points:
+        - Peer and competitor review
+        - Sitemap built around your strategies
+        - Audience mapping for LPs and founders
+    - title: Visual Design
+      text: Every screen is drawn for your firm, so the site carries the weight your reputation already has when an LP opens it.
+      points:
+        - Fully custom design
+        - Premium visual standard
+        - Design for authority and trust
+    - title: Messaging & Copywriting
+      text: Professional writers make your thesis clear in plain English, written with compliance review in mind.
+      points:
+        - Thesis and strategy messaging
+        - Portfolio and team copy
+        - Copy written in English
+    - title: UI/UX Design
+      text: Every page moves the right visitor towards a conversation, and keeps the wrong ones out of your inbox.
+      points:
+        - Investor and founder journeys
+        - Private sections where needed
+        - Responsive on every device
+    - title: Development & QA
+      text: We build on the latest tech stack, fast and structured for search engines, and test everything before launch.
+      points:
+        - Latest tech stack build
+        - Fast load speeds
+        - SEO-ready structure
+
+growth:
+  heading: What a website built to win<br />deals does
+  lead: Six improvements that help founders, LPs and co-investors read the firm clearly, and reach out.
+  items:
+    - title: Conversion-focused UX
+      text: Every page moves the right people to reach out.
+    - title: Fast load speeds
+      text: Portfolio and insights open instantly for LPs anytime.
+    - title: Search and AI visibility
+      text: Founders researching investors find you first every time.
+    - title: Analytics
+      text: You see which content brings founder approaches.
+    - title: A CMS the team runs
+      text: Your team posts news without a developer.
+    - title: Security and scale
+      text: The site stays dependable through every stage of fundraise.
+
+value:
+  heading: Everything it takes to win<br />founders and LPs, in one team
+  items:
+    - title: Built for English-speaking buyers
+      text: LPs and founders judge you in English. We write for them, so your thesis never reads translated.
+    - title: AI-native, not AI-dependent
+      text: We use AI to research your sectors, portfolio and peers fast. Experts direct it and sign off every line, so nothing generic ships.
+    - title: Web design that wins business
+      text: Every page makes your thesis and track record easy to judge, then leads founders to pitch.
+    - title: The whole team, none of the overhead
+      text: Your fund gets the whole team, from strategist to QA, with nobody to recruit, onboard or manage.
+    - title: You look sharper than your competitors
+      text: Design and detail that look institutional, so founders and LPs rate you above peer funds.
+  writerLine: Series A capital for Southeast Asian fintech.
+
+faq:
+  heading: What partners usually ask us
+  items:
+    - question: Who actually works on our site?
+      answer: Expert people direct every stage, supported by mid-level and junior team members working under that direction. Kevin leads strategy personally.
+    - question: Can you work within our compliance requirements?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: We can't name LPs or portfolio companies. Can you still build a credible site?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: How much of our partners' time will this take?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Can you build a private area for LPs?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Do we get separate pages for each fund and strategy?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: How long does it take?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+
+cta:
+  heading: Ready for the right conversations<br />to find you?
+  text: Tell us about the firm and where your deal flow comes from today, and we'll shape the right scope around it.

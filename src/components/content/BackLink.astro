@@ -1,0 +1,58 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Icon from "@/components/media/Icon.astro";
+import arrow from "@/assets/icons/arrow-full.svg";
+import { slotContent } from "@/utils/slots.ts";
+
+type Props = HTMLAttributes<"a"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Link URL. Omit to render nothing. */
+  href?: string;
+};
+
+const { render = true, href, class: className, ...rest } = Astro.props;
+
+const content = await slotContent(Astro.slots);
+---
+
+{
+  render && href && content && (
+    <a href={href} class:list={["back-link_wrap", className]} {...rest}>
+      <Icon src={arrow} variant="sm" class="back-link_icon" />
+      <span>
+        <Fragment set:html={content} />
+      </span>
+    </a>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .back-link_wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-0-5rem);
+      margin-block: var(--space-0-5rem);
+      padding-block: var(--space-0-25rem)
+        calc(var(--space-0-25rem) - var(--border-width));
+      color: var(--color-neutral-90);
+      font-size: var(--text-main);
+      font-weight: var(--primary-medium);
+      line-height: var(--text-main-line-height);
+      letter-spacing: var(--text-main-letter-spacing);
+      text-decoration: none;
+      border-bottom: var(--border-width) solid var(--color-neutral-10);
+      transition: border-color var(--hover-duration) var(--hover-ease);
+      @media (hover: hover) {
+        &:hover {
+          border-color: var(--color-neutral-90);
+        }
+      }
+    }
+
+    .back-link_icon {
+      rotate: 180deg;
+    }
+  }
+</style>

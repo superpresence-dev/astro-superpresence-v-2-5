@@ -1,0 +1,163 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Icon from "@/components/media/Icon.astro";
+import arrow from "@/assets/icons/pagination-arrow.svg";
+
+type Props = HTMLAttributes<"nav"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Current page number, starting at 1. */
+  currentPage?: number;
+  /** Total number of pages. Omit or set to 1 to render nothing. */
+  lastPage?: number;
+  /** URL of page 1. Later pages append `/<number>`. */
+  baseUrl?: string;
+  /** Accessible label. */
+  label?: string;
+};
+
+const {
+  render = true,
+  currentPage = 1,
+  lastPage = 1,
+  baseUrl = "",
+  label = "Pagination",
+  class: className,
+  ...rest
+} = Astro.props;
+
+const base = baseUrl.replace(/\/$/, "");
+const href = (page: number) => (page === 1 ? base || "/" : `${base}/${page}`);
+
+const pages: (number | "gap")[] =
+  lastPage <= 6
+    ? Array.from({ length: lastPage }, (_, i) => i + 1)
+    : currentPage <= 3
+      ? [1, 2, 3, 4, "gap", lastPage]
+      : currentPage >= lastPage - 2
+        ? [1, "gap", lastPage - 3, lastPage - 2, lastPage - 1, lastPage]
+        : [1, "gap", currentPage - 1, currentPage, currentPage + 1, "gap", lastPage];
+
+const previous = currentPage > 1 ? href(currentPage - 1) : undefined;
+const next = currentPage < lastPage ? href(currentPage + 1) : undefined;
+---
+
+{
+  render && lastPage > 1 && (
+    <nav
+      class:list={["pagination_wrap", className]}
+      aria-label={label}
+      {...rest}
+    >
+      {previous ? (
+        <a class="pagination_arrow back" href={previous} aria-label="Previous page">
+          <Icon src={arrow} variant="sm" />
+        </a>
+      ) : (
+        <span class="pagination_arrow back" aria-hidden="true">
+          <Icon src={arrow} variant="sm" />
+        </span>
+      )}
+      <ul class="pagination_list" role="list">
+        {pages.map((page) => (
+          <li class="pagination_item">
+            {page === "gap" ? (
+              <span class="pagination_link gap" aria-hidden="true">
+                ...
+              </span>
+            ) : (
+              <a
+                class="pagination_link"
+                href={href(page)}
+                aria-current={page === currentPage ? "page" : undefined}
+                aria-label={`Page ${page}`}
+              >
+                {page}
+              </a>
+            )}
+          </li>
+        ))}
+      </ul>
+      {next ? (
+        <a class="pagination_arrow" href={next} aria-label="Next page">
+          <Icon src={arrow} variant="sm" />
+        </a>
+      ) : (
+        <span class="pagination_arrow" aria-hidden="true">
+          <Icon src={arrow} variant="sm" />
+        </span>
+      )}
+    </nav>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .pagination_wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-1-5rem);
+    }
+
+    .pagination_list {
+      display: flex;
+      align-items: center;
+      gap: var(--space-0-125rem);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .pagination_item {
+      margin: 0;
+    }
+
+    .pagination_arrow,
+    .pagination_link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: var(--icon-3xl);
+      height: var(--icon-3xl);
+      text-decoration: none;
+      transition: color var(--hover-duration) var(--hover-ease);
+    }
+
+    .pagination_arrow {
+      color: var(--color-neutral-40);
+      &.back .icon {
+        rotate: 180deg;
+      }
+      &:is(span) {
+        opacity: 0.5;
+      }
+      @media (hover: hover) {
+        &:is(a):hover {
+          color: var(--color-neutral-90);
+        }
+      }
+    }
+
+    .pagination_link {
+      color: var(--color-neutral-60);
+      font-size: var(--text-main);
+      font-weight: var(--primary-medium);
+      line-height: var(--text-main-line-height);
+      letter-spacing: var(--text-main-letter-spacing);
+      border-bottom: 0.125rem solid transparent;
+      &[aria-current="page"] {
+        color: var(--color-neutral-90);
+        border-bottom-color: var(--color-primary-60);
+      }
+      &.gap {
+        font-weight: var(--primary-regular);
+      }
+      @media (hover: hover) {
+        &:is(a):hover {
+          color: var(--color-neutral-90);
+        }
+      }
+    }
+  }
+</style>

@@ -1,0 +1,202 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import type { ImageMetadata } from "astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Img from "@/components/media/Img.astro";
+import FormattedDate from "@/components/utility/FormattedDate.astro";
+import BackLink from "@/components/content/BackLink.astro";
+
+type Props = HTMLAttributes<"div"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Post title. Omit to render nothing. */
+  heading?: string;
+  /** Category label. */
+  tag?: string;
+  /** Publish date. */
+  date?: Date;
+  /** Cover image. */
+  image?: ImageMetadata;
+  /** Author shown under the title. */
+  author?: { name: string; role: string; avatar: ImageMetadata };
+  /** Back link URL. */
+  backHref?: string;
+  /** Back link text. */
+  backText?: string;
+};
+
+const {
+  render = true,
+  heading,
+  tag,
+  date,
+  image,
+  author,
+  backHref = "/blog",
+  backText = "Back to articles",
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+{
+  render && heading && (
+    <div class:list={["blog-post-hero_wrap", className]} {...rest}>
+      <BackLink href={backHref}>{backText}</BackLink>
+      <div class="blog-post-hero_layout">
+        <div class="blog-post-hero_content">
+          {(tag || date) && (
+            <div class="blog-post-hero_details">
+              {tag && (
+                <Paragraph
+                  tag="span"
+                  variant="overline-small"
+                  class="blog-post-hero_tag tag-pill"
+                >
+                  {tag}
+                </Paragraph>
+              )}
+              {date && (
+                <Paragraph tag="span" variant="overline-small">
+                  <FormattedDate date={date} format={{ dateStyle: "medium" }} />
+                </Paragraph>
+              )}
+            </div>
+          )}
+          <Heading tag="h1" variant="h3" class="blog-post-hero_title">
+            {heading}
+          </Heading>
+          {author && (
+            <div class="blog-post-hero_author">
+              <div class="blog-post-hero_avatar">
+                <Img src={author.avatar} alt="" width={96} />
+              </div>
+              <div class="blog-post-hero_author-text">
+                <Paragraph variant="large" class="blog-post-hero_author-name">
+                  {author.name}
+                </Paragraph>
+                <Paragraph variant="small" class="blog-post-hero_author-role">
+                  {author.role}
+                </Paragraph>
+              </div>
+            </div>
+          )}
+        </div>
+        {image && (
+          <div class="blog-post-hero_image">
+            <Img src={image} alt="" loading="eager" fetchPriority="high" />
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .blog-post-hero_wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-3-5rem);
+      width: 100%;
+      padding-block: var(--space-3rem);
+
+      & :is(.heading, .text) {
+        margin: 0;
+      }
+    }
+
+    .blog-post-hero_layout {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3-5rem);
+      width: 100%;
+      @media (width >= 62rem) {
+        flex-direction: row;
+        align-items: flex-start;
+      }
+    }
+
+    .blog-post-hero_content {
+      display: flex;
+      flex: 1 1 0;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-2rem);
+      min-width: 0;
+    }
+
+    .blog-post-hero_details {
+      display: flex;
+      align-items: center;
+      gap: var(--space-0-75rem);
+      color: var(--color-neutral-40);
+
+      > .text {
+        letter-spacing: var(--letter-spacing-tag);
+      }
+    }
+
+    .blog-post-hero_title {
+      color: var(--color-neutral-90);
+      text-wrap: wrap;
+    }
+
+    .blog-post-hero_author {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1-25rem);
+    }
+
+    .blog-post-hero_avatar {
+      flex: none;
+      width: var(--icon-3xl);
+      aspect-ratio: 1;
+      min-height: 0;
+      overflow: hidden;
+      border-radius: var(--radius-0-125rem);
+
+      > .image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .blog-post-hero_author-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.125rem;
+    }
+
+    .blog-post-hero_author-name {
+      color: var(--color-neutral-90);
+      font-weight: var(--primary-medium);
+    }
+
+    .blog-post-hero_author-role {
+      color: var(--color-neutral-60);
+    }
+
+    .blog-post-hero_image {
+      flex: none;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      min-height: 0;
+      overflow: hidden;
+      border: var(--border-width) solid var(--color-neutral-5);
+      border-radius: var(--radius-0-25rem);
+      @media (width >= 62rem) {
+        width: 42.5rem;
+      }
+
+      > .image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+</style>

@@ -9,7 +9,7 @@ interface Props extends HTMLAttributes<"form"> {
   name?: string;
   /** Form endpoint. Omit to skip submission. */
   action?: string;
-  /** Message shown after submission. */
+  /** Message shown after submission. A `success` slot replaces it. */
   successMessage?: string;
   /** Message shown after an error. */
   errorMessage?: string;
@@ -27,6 +27,7 @@ const {
 } = Astro.props;
 
 const content = await slotContent(Astro.slots);
+const success = await slotContent(Astro.slots, "success");
 ---
 
 {
@@ -46,9 +47,15 @@ const content = await slotContent(Astro.slots);
         <Fragment set:html={content} />
       </form>
 
-      <p class="form_note form_note-sent text-style-main" role="status">
-        {successMessage}
-      </p>
+      {success ? (
+        <div class="form_note form_note-sent form_note-custom" role="status">
+          <Fragment set:html={success} />
+        </div>
+      ) : (
+        <p class="form_note form_note-sent text-style-main" role="status">
+          {successMessage}
+        </p>
+      )}
       <p class="form_note form_note-failed text-style-main" role="alert">
         {errorMessage}
       </p>
@@ -115,6 +122,12 @@ const content = await slotContent(Astro.slots);
       padding: var(--space-1-5rem) var(--space-2rem);
       border: var(--border-width) solid var(--border);
       border-radius: var(--radius-0-5rem);
+    }
+
+    .form_note-custom {
+      padding: 0;
+      border: 0;
+      border-radius: 0;
     }
 
     .form_wrap[data-state="sent"] {

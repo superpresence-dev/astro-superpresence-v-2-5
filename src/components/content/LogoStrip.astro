@@ -1,0 +1,158 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Marquee from "@/components/interactive/Marquee.astro";
+import Img from "@/components/media/Img.astro";
+import logoOne from "@/assets/contact/logo-strip-1.svg";
+import logoTwo from "@/assets/contact/logo-strip-2.svg";
+import logoThree from "@/assets/contact/logo-strip-3.svg";
+import logoFour from "@/assets/contact/logo-strip-4.svg";
+import logoFive from "@/assets/contact/logo-strip-5.svg";
+import logoSix from "@/assets/contact/logo-strip-6.svg";
+import logoSeven from "@/assets/contact/logo-strip-7.svg";
+import rallymatesMark from "@/assets/contact/logo-strip-rallymates-leaf.svg";
+import rallymatesWord from "@/assets/contact/logo-strip-rallymates.svg";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Label beside the logos. */
+  label?: string;
+}
+
+const {
+  render = true,
+  label = "Trusted by ambitious companies across APAC",
+  class: className,
+  ...rest
+} = Astro.props;
+
+const logosBefore = [logoOne, logoTwo, logoThree, logoFour, logoFive];
+const logosAfter = [logoSix, logoSeven];
+---
+
+{
+  render && (
+    <div class:list={["logo-strip_wrap", className]} {...rest}>
+      <Paragraph variant="overline-small" class="logo-strip_label">
+        {label}
+      </Paragraph>
+      <Marquee label="Client logos" controls={false} class="logo-strip_logos">
+        {logosBefore.map((logo) => (
+          <div class="logo-strip_logo">
+            <Img src={logo} transparent class="logo-strip_logo-image" />
+          </div>
+        ))}
+        <div class="logo-strip_logo">
+          <div class="logo-strip_rallymates" role="img" aria-label="Rallymates">
+            <Img
+              src={rallymatesMark}
+              transparent
+              class="logo-strip_rallymates-leaf"
+            />
+            <span class="logo-strip_rallymates-ball" />
+            <Img
+              src={rallymatesWord}
+              transparent
+              class="logo-strip_rallymates-word"
+            />
+          </div>
+        </div>
+        {logosAfter.map((logo) => (
+          <div class="logo-strip_logo">
+            <Img src={logo} transparent class="logo-strip_logo-image" />
+          </div>
+        ))}
+      </Marquee>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .logo-strip_wrap {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1-5rem);
+      width: 100%;
+      margin-block: var(--space-2rem) var(--space-3rem);
+      padding-top: calc(var(--space-1-25rem) - var(--border-width));
+      border-top: var(--border-width) solid var(--color-neutral-5);
+      @media (width >= 62rem) {
+        flex-direction: row;
+        align-items: center;
+        gap: var(--space-3rem);
+      }
+
+      .logo-strip_label {
+        margin: 0;
+        color: var(--color-neutral-60);
+        letter-spacing: var(--letter-spacing-tag);
+        @media (width >= 62rem) {
+          flex: none;
+          width: 15rem;
+          text-wrap: balance;
+        }
+      }
+
+      .logo-strip_logos {
+        --_gap-size: var(--space-1-25rem);
+        flex: 1 1 0;
+        min-width: 0;
+      }
+
+      .logo-strip_logo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 10rem;
+        height: 4.5rem;
+        padding-inline: var(--space-1-25rem);
+      }
+
+      .logo-strip_logo-image {
+        flex: none;
+        width: auto;
+        max-width: none;
+        height: 1.75rem;
+      }
+
+      .logo-strip_rallymates {
+        container-type: inline-size;
+        position: relative;
+        flex: none;
+        width: 7.554375rem;
+        aspect-ratio: 120.87 / 28;
+
+        .logo-strip_rallymates-leaf {
+          position: absolute;
+          top: 6.09cqw;
+          left: 0.925cqw;
+          width: 10.59cqw;
+          height: auto;
+          max-width: none;
+          rotate: -10.13deg;
+        }
+
+        .logo-strip_rallymates-ball {
+          position: absolute;
+          top: 4.786cqw;
+          left: 8.22cqw;
+          width: 4.35cqw;
+          aspect-ratio: 1;
+          border-radius: var(--radius-full);
+          background-color: var(--color-neutral-60);
+        }
+
+        .logo-strip_rallymates-word {
+          position: absolute;
+          top: 5.07cqw;
+          left: 16.16cqw;
+          width: 83.3cqw;
+          height: auto;
+          max-width: none;
+        }
+      }
+    }
+  }
+</style>

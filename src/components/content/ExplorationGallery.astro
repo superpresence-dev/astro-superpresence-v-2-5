@@ -1,0 +1,214 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import type { ImageMetadata } from "astro";
+import Img from "@/components/media/Img.astro";
+import Button from "@/components/Button.astro";
+import BlogCategories from "@/components/content/BlogCategories.astro";
+import { slotContent } from "@/utils/slots.ts";
+
+export interface ExplorationItem {
+  /** Describes the image; used as its alt text. */
+  title: string;
+  category: string;
+  image: ImageMetadata;
+}
+
+type Props = HTMLAttributes<"div"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Gallery images, in display order. Omit or leave empty to render nothing. */
+  items?: ExplorationItem[];
+  /** Filter tabs after "All", in display order. Omit to hide the tabs. */
+  categories?: readonly string[];
+  /** Label of the tab that shows every item. */
+  allLabel?: string;
+  /** Items shown at first, and added by each "load more".
+   *
+   * @min 1
+   * @int */
+  pageSize?: number;
+  /** Text of the "load more" button. */
+  loadMoreText?: string;
+};
+
+const {
+  render = true,
+  items = [],
+  categories = [],
+  allLabel = "All",
+  pageSize = 12,
+  loadMoreText = "Load more",
+  class: className,
+  ...rest
+} = Astro.props;
+
+const aside = await slotContent(Astro.slots, "aside");
+const tabs = categories.length
+  ? [{ label: allLabel, value: "" }, ...categories.map((c) => ({ label: c, value: c }))]
+  : [];
+---
+
+{
+  render && items.length > 0 && (
+    <div
+      class:list={["exploration-gallery_wrap", className]}
+      data-exploration-gallery
+      data-page-size={pageSize}
+      {...rest}
+    >
+      <BlogCategories items={tabs} current="" label="Filter by category" />
+      <div class:list={["exploration-gallery_body", aside && "with-aside"]}>
+        <div class="exploration-gallery_main">
+          <ul class="exploration-gallery_list" role="list">
+            {items.map((item, index) => (
+              <li
+                class="exploration-gallery_item"
+                data-category={item.category}
+                hidden={index >= pageSize}
+              >
+                <Img src={item.image} alt={item.title} class="exploration-gallery_image" />
+              </li>
+            ))}
+          </ul>
+          <Button
+            variant="link"
+            arrow
+            class="exploration-gallery_more"
+            data-load-more
+            hidden={items.length <= pageSize}
+          >
+            {loadMoreText}
+          </Button>
+        </div>
+        {aside && (
+          <aside class="exploration-gallery_aside">
+            <Fragment set:html={aside} />
+          </aside>
+        )}
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .exploration-gallery_wrap {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2rem);
+      width: 100%;
+      padding-top: var(--space-4rem);
+    }
+
+    .exploration-gallery_body {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-2rem);
+      align-items: start;
+      @media (width >= 62rem) {
+        &.with-aside {
+          grid-template-columns: minmax(0, 1fr) 23.4375rem;
+        }
+      }
+    }
+
+    .exploration-gallery_main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2rem);
+      min-width: 0;
+    }
+
+    .exploration-gallery_list {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-1-25rem);
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      @media (width >= 48rem) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .exploration-gallery_item {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      min-height: 0;
+      margin: 0;
+      overflow: hidden;
+      border-radius: var(--radius-0-125rem);
+      &[hidden] {
+        display: none;
+      }
+    }
+
+    .exploration-gallery_image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .exploration-gallery_more {
+      --button-link-margin-block: var(--space-0-5rem);
+      &[hidden] {
+        display: none;
+      }
+    }
+
+    .exploration-gallery_aside {
+      display: none;
+      @media (width >= 62rem) {
+        position: sticky;
+        top: calc(var(--nav-height) + var(--space-2rem));
+        display: block;
+      }
+    }
+  }
+</style>
+
+<script>
+  const init = () => {
+    document
+      .querySelectorAll<HTMLElement>("[data-exploration-gallery]:not([data-ready])")
+      .forEach((gallery) => {
+        gallery.dataset.ready = "";
+        const pageSize = Number(gallery.dataset.pageSize) || 12;
+        const items = [...gallery.querySelectorAll<HTMLElement>("[data-category]")];
+        const tabs = [...gallery.querySelectorAll<HTMLButtonElement>("[data-filter]")];
+        const more = gallery.querySelector<HTMLElement>("[data-load-more]");
+        let filter = "";
+        let shown = pageSize;
+
+        const update = () => {
+          const matching = items.filter(
+            (item) => !filter || item.dataset.category === filter,
+          );
+          items.forEach((item) => (item.hidden = true));
+          matching.slice(0, shown).forEach((item) => (item.hidden = false));
+          if (more) more.hidden = matching.length <= shown;
+        };
+
+        tabs.forEach((tab) =>
+          tab.addEventListener("click", () => {
+            filter = tab.dataset.filter ?? "";
+            shown = pageSize;
+            tabs.forEach((t) => t.setAttribute("aria-pressed", String(t === tab)));
+            update();
+          }),
+        );
+
+        more?.addEventListener("click", () => {
+          shown += pageSize;
+          update();
+        });
+      });
+  };
+
+  init();
+  document.addEventListener("astro:page-load", init);
+</script>

@@ -1,0 +1,61 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import HeroListing from "@/components/content/HeroListing.astro";
+import ExplorationGallery from "@/components/content/ExplorationGallery.astro";
+import SideCta from "@/components/content/SideCta.astro";
+import HomeCta from "@/components/section/HomeCta.astro";
+import { EXPLORATION_CATEGORIES } from "@/content.config.ts";
+
+const items = (await getCollection("explorations"))
+  .sort((a, b) => a.data.order - b.data.order)
+  .map(({ data }) => ({
+    title: data.title,
+    category: data.category,
+    image: data.image,
+  }));
+---
+
+<Layout
+  title="Explorations"
+  description="Not all designs become finished projects. Here, we share ideas, experiments, visuals, and ongoing discoveries along the way."
+  navTheme="light"
+>
+  {/* Hero */}
+  <Section paddingTop="none" paddingBottom="none">
+    <HeroListing
+      eyebrow="Explorations from the studio"
+      heading="A look inside how we<br />think, explore, and make"
+      text="Not all designs become finished projects. Here, we share ideas, experiments, visuals, and ongoing discoveries along the way."
+    />
+  </Section>
+  {/* Showcase */}
+  <Section paddingTop="none">
+    <ExplorationGallery
+      items={items}
+      categories={EXPLORATION_CATEGORIES}
+      loadMoreText="Load more design"
+    >
+      <SideCta
+        slot="aside"
+        heading="Does your homepage need a refresh?"
+        text="If the top of your homepage isn't doing its job, the rest of your site won't get a chance to. Get a glimpse of how we’d work on your site."
+        buttonText="Request free design"
+        buttonHref="/contact"
+        note="Or ready to start a project?"
+        linkText="Get in touch"
+        linkHref="/contact"
+      />
+    </ExplorationGallery>
+  </Section>
+  {/* CTA */}
+  <HomeCta
+    eyebrow="Have something worth exploring?"
+    eyebrowVariant="overline-main"
+    heading="Some of the best work<br />starts with a question"
+    text="Not sure about the answer yet? No worries. Bring us your problem, idea, or even a rough draft. We'll explore it together from there."
+    buttonText="Book a strategy call"
+    buttonHref="/contact"
+  />
+</Layout>

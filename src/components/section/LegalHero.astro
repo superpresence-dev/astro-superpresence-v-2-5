@@ -1,0 +1,115 @@
+---
+import type { ComponentProps, HTMLAttributes } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Img from "@/components/media/Img.astro";
+import background from "@/assets/legal/header.jpg";
+
+interface Props
+  extends HTMLAttributes<"section">,
+    Pick<ComponentProps<typeof Section>, "render"> {
+  /** Page heading. Omit to render nothing. */
+  heading?: string;
+  /** Small label below the heading, e.g. the last-updated date. */
+  meta?: string;
+}
+
+const {
+  render = true,
+  heading,
+  meta,
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+{
+  heading && (
+    <Section
+      render={render}
+      theme="dark"
+      paddingTop="none"
+      paddingBottom="none"
+      containerClass="legal-hero_layout"
+      class:list={["legal-hero_wrap", className]}
+      {...rest}
+    >
+      <Img
+        src={background}
+        slot="background"
+        loading="eager"
+        fetchPriority="high"
+        class="legal-hero_image"
+      />
+      <div slot="background" class="legal-hero_fade" />
+      <div class="legal-hero_content">
+        <Heading tag="h1" variant="h1" class="legal-hero_title">
+          {heading}
+        </Heading>
+        {meta && (
+          <Paragraph variant="overline-small" class="legal-hero_meta">
+            {meta}
+          </Paragraph>
+        )}
+      </div>
+    </Section>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .legal-hero_wrap {
+      --_fade-height: 10rem;
+      @media (width >= 48rem) {
+        --_fade-height: 11.25rem;
+      }
+      @media (width >= 62rem) {
+        --_fade-height: 12.5rem;
+      }
+      overflow: clip;
+
+      .legal-hero_image {
+        object-fit: cover;
+      }
+
+      .legal-hero_fade {
+        background-image: linear-gradient(to bottom, transparent, #171717);
+        background-position: bottom;
+        background-repeat: no-repeat;
+        background-size: 100% var(--_fade-height);
+      }
+
+      .legal-hero_layout {
+        padding-top: calc(var(--nav-height) + var(--space-4rem) + var(--space-3rem));
+        padding-bottom: calc(var(--space-4rem) + var(--space-3rem));
+      }
+
+      .legal-hero_content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-0-75rem);
+        width: 100%;
+        max-width: calc(55rem + 2 * var(--space-3rem));
+        margin-inline: auto;
+        padding-inline: var(--space-3rem);
+        text-align: center;
+
+        & > * {
+          margin: 0;
+        }
+      }
+
+      .legal-hero_title {
+        color: var(--color-neutral-0);
+      }
+
+      .legal-hero_meta {
+        max-width: 33.75rem;
+        color: var(--color-neutral-10);
+        letter-spacing: var(--letter-spacing-tag);
+      }
+    }
+  }
+</style>

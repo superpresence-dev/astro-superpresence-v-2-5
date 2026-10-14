@@ -1,0 +1,215 @@
+---
+import type { ComponentProps, HTMLAttributes } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Icon from "@/components/media/Icon.astro";
+import ContactForm from "@/components/content/ContactForm.astro";
+import pointIcon from "@/assets/contact/hero-point-item.svg";
+import statIcon from "@/assets/contact/hero-stat.svg";
+
+interface Props
+  extends
+    HTMLAttributes<"section">,
+    Pick<ComponentProps<typeof Section>, "render"> {}
+
+const { render = true, class: className, ...rest } = Astro.props;
+
+const points = [
+  "Analyze your site to see what works and fails.",
+  "Define your project scope to know what to build.",
+  "Find where Superpresence helps by spotting biggest impacts.",
+  "Agree on next steps with clear process and timeline.",
+];
+
+const stats = [
+  { value: "50%", label: "Increase in Leads" },
+  { value: "60%", label: "Increase in User Engagement" },
+];
+---
+
+<Section
+  render={render}
+  paddingTop="none"
+  paddingBottom="none"
+  containerClass="contact-hero_layout"
+  class:list={["contact-hero_wrap", className]}
+  {...rest}
+>
+  <div class="contact-hero_intro">
+    <div class="contact-hero_heading">
+      <div class="contact-hero_title-group">
+        <Heading tag="h1" variant="h3">
+          Have a project in mind?
+          <br />
+          Let’s figure it out together.
+        </Heading>
+        <Paragraph variant="large" class="contact-hero_text">
+          We partner with a small number of brands at a time to give each
+          project focused attention. Share your challenges and goals to help us
+          support your next steps.
+        </Paragraph>
+      </div>
+      <div class="contact-hero_points">
+        <Paragraph variant="overline-small" class="contact-hero_points-label">
+          What to expect next
+        </Paragraph>
+        <ul class="contact-hero_point-list" role="list">
+          {
+            points.map((point) => (
+              <li class="contact-hero_point">
+                <Icon src={pointIcon} class="contact-hero_point-icon" />
+                <Paragraph tag="span" variant="main" class="weight-medium">
+                  {point}
+                </Paragraph>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+    <ul class="contact-hero_stats" role="list">
+      {
+        stats.map((stat) => (
+          <li class="contact-hero_stat">
+            <Icon src={statIcon} class="contact-hero_stat-icon" />
+            <div class="contact-hero_stat-content">
+              <p class="contact-hero_stat-value text-style-h5">{stat.value}</p>
+              <Paragraph variant="xsmall">{stat.label}</Paragraph>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+  <ContactForm class="contact-hero_form" />
+</Section>
+
+<style is:global>
+  @layer components {
+    .contact-hero_wrap {
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .contact-hero_layout {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2rem);
+        padding-top: var(--space-4rem);
+        padding-bottom: var(--space-2rem);
+        @media (width >= 62rem) {
+          display: grid;
+          grid-template-columns: minmax(0, 600fr) minmax(0, 680fr);
+          align-items: start;
+        }
+      }
+
+      .contact-hero_intro,
+      .contact-hero_form {
+        width: 100%;
+      }
+
+      .contact-hero_intro {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2rem);
+      }
+
+      .contact-hero_heading {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1-5rem);
+      }
+
+      .contact-hero_title-group {
+        max-width: 37.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        @media (width >= 62rem) {
+          max-width: 33.75rem;
+        }
+      }
+
+      .contact-hero_text {
+        max-width: 30rem;
+      }
+
+      .contact-hero_points {
+        max-width: 33.75rem;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+        padding: var(--space-0-75rem) 0 var(--space-0-75rem)
+          calc(var(--space-1-5rem) - var(--border-width));
+        border-left: var(--border-width) solid var(--color-neutral-5);
+      }
+
+      .contact-hero_points-label {
+        color: var(--color-neutral-40);
+      }
+
+      .contact-hero_point-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-125rem);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .contact-hero_point {
+        display: flex;
+        align-items: center;
+        gap: var(--space-0-75rem);
+        margin: 0;
+        padding-block: var(--space-0-125rem);
+      }
+
+      .contact-hero_point-icon {
+        --_size: var(--icon-sm);
+        color: var(--color-primary-60);
+      }
+
+      .contact-hero_stats {
+        width: 100%;
+        display: flex;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        @media (width >= 62rem) {
+          max-width: 33.75rem;
+        }
+      }
+
+      .contact-hero_stat {
+        flex: 1 1 0;
+        min-width: 0;
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-0-75rem);
+        margin: 0;
+        padding-block: var(--space-1-25rem);
+      }
+
+      .contact-hero_stat-icon {
+        --_size: 1.5rem;
+        color: var(--color-primary-60);
+      }
+
+      .contact-hero_stat-content {
+        flex: 1 1 0;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-125rem);
+      }
+
+      .contact-hero_stat-value {
+        margin: 0;
+        color: var(--color-neutral-90);
+      }
+    }
+  }
+</style>

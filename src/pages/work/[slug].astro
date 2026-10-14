@@ -1,0 +1,81 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import WorkDetailHero from "@/components/content/WorkDetailHero.astro";
+import WorkDetail from "@/components/content/WorkDetail.astro";
+import RelatedList from "@/components/content/RelatedList.astro";
+import WorkList from "@/components/content/WorkList.astro";
+import HomeCta from "@/components/section/HomeCta.astro";
+import { workUrl, sortWorks } from "@/utils/work.ts";
+
+export const getStaticPaths = (async () => {
+  const works = sortWorks(await getCollection("work"));
+  return works.map((work) => ({
+    params: { slug: work.id },
+    props: {
+      work,
+      related: works.filter((other) => other.id !== work.id).slice(0, 2),
+    },
+  }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  work: CollectionEntry<"work">;
+  related: CollectionEntry<"work">[];
+}
+
+const { work, related } = Astro.props;
+const { data } = work;
+const { Content } = await render(work);
+
+const relatedItems = related.map(({ id, data }) => ({
+  title: data.title,
+  client: data.client,
+  industry: data.industry,
+  thumbnail: data.thumbnail,
+  logo: data.logo,
+  href: workUrl(id),
+}));
+---
+
+<Layout title={data.title} description={data.about?.description} navTheme="light">
+  {/* Hero */}
+  <Section paddingTop="none" paddingBottom="none">
+    <WorkDetailHero
+      heading={data.title}
+      client={data.client}
+      logo={data.logo}
+      stats={data.stats}
+      gallery={data.gallery}
+    />
+  </Section>
+  {/* Detail */}
+  <Section paddingTop="none">
+    <WorkDetail
+      client={data.client}
+      logo={data.logo}
+      industry={data.industry}
+      project={data.about}
+      shareUrl={new URL(Astro.url.pathname, Astro.site ?? Astro.url).href}
+    >
+      <Content />
+    </WorkDetail>
+  </Section>
+  {/* Related */}
+  <Section paddingTop="none">
+    <RelatedList heading="Related work">
+      <WorkList items={relatedItems} />
+    </RelatedList>
+  </Section>
+  {/* CTA */}
+  <HomeCta
+    eyebrow="Have something worth exploring?"
+    eyebrowVariant="overline-main"
+    heading="Some of the best work<br />starts with a question"
+    text="Not sure about the answer yet? No worries. Bring us your problem, idea, or even a rough draft. We'll explore it together from there."
+    buttonText="Start a conversation"
+    buttonHref="/contact"
+  />
+</Layout>

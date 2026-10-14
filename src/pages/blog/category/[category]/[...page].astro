@@ -1,0 +1,35 @@
+---
+import type { GetStaticPaths, Page } from "astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+import { BLOG_CATEGORIES } from "@/content.config.ts";
+import BlogIndexLayout from "@/layouts/BlogIndexLayout.astro";
+import { BLOG_PAGE_SIZE, blogCategoryUrl, sortPosts } from "@/utils/blog.ts";
+import { slug } from "@/utils/slug.ts";
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = sortPosts(await getCollection("blog"));
+  return BLOG_CATEGORIES.flatMap((category) =>
+    paginate(
+      posts.filter((post) => post.data.category === category),
+      {
+        params: { category: slug(category) },
+        props: { category },
+        pageSize: BLOG_PAGE_SIZE,
+      },
+    ),
+  );
+}) satisfies GetStaticPaths;
+
+interface Props {
+  page: Page<CollectionEntry<"blog">>;
+  category: string;
+}
+
+const { page, category } = Astro.props;
+---
+
+<BlogIndexLayout
+  page={page}
+  baseUrl={blogCategoryUrl(category)}
+  category={category}
+/>

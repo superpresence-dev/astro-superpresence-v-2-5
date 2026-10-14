@@ -1,0 +1,1086 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Img from "@/components/media/Img.astro";
+import Icon from "@/components/media/Icon.astro";
+import boxTexture from "@/assets/industries/value-box-texture.jpg";
+import writerAvatar from "@/assets/industries/value-writer-avatar.svg";
+import writerCursor from "@/assets/industries/value-writer-cursor.svg";
+import aiTiles from "@/assets/industries/value-ai-tiles.svg";
+import dashboardTrend from "@/assets/industries/value-dashboard-trend.svg";
+import dashboardTail from "@/assets/industries/value-dashboard-tail.svg";
+import dashboardEnquiry from "@/assets/industries/value-dashboard-enquiry.svg";
+import teamLineBlue from "@/assets/industries/value-team-line-blue.svg";
+import teamLinePurple from "@/assets/industries/value-team-line-purple.svg";
+import teamCornerOrange from "@/assets/industries/value-team-corner-orange.svg";
+import teamCornerMagenta from "@/assets/industries/value-team-corner-magenta.svg";
+import teamStrategy from "@/assets/industries/value-team-strategy.svg";
+import teamMarketing from "@/assets/industries/value-team-marketing.svg";
+import teamDesign from "@/assets/industries/value-team-design.svg";
+import teamDev from "@/assets/industries/value-team-dev.svg";
+import teamStrategyTexture from "@/assets/industries/value-team-strategy-texture.jpg";
+import teamMarketingTexture from "@/assets/industries/value-team-marketing-texture.jpg";
+import teamDesignTexture from "@/assets/industries/value-team-design-texture.jpg";
+import teamDevTexture from "@/assets/industries/value-team-dev-texture.jpg";
+import competitorCursor from "@/assets/industries/value-competitor-cursor.svg";
+import yourCursor from "@/assets/industries/value-your-cursor.svg";
+import competitorSite from "@/assets/industries/value-competitor-site.png";
+import yourSite from "@/assets/industries/value-your-site.png";
+
+type Item = { title: string; text: string };
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading?: string;
+  /** The five boxes in order: writer, AI, web design, team, competitors. */
+  items?: Item[];
+  /** Sentence shown in the writer card of the first illustration. */
+  writerLine?: string;
+}
+
+const defaultItems: Item[] = [
+  {
+    title: "Built for English-speaking buyers",
+    text: "Your clients judge advisers in English. We write for them, so your expertise never reads translated.",
+  },
+  {
+    title: "AI-native, not AI-dependent",
+    text: "We use AI to research your market, peers and client questions fast. Experts direct it and sign off every line, so nothing generic ships.",
+  },
+  {
+    title: "Web design that wins business",
+    text: "Every page shows clients what you do and who you do it for, then leads them to get in touch.",
+  },
+  {
+    title: "The whole team, none of the overhead",
+    text: "Your firm gets the whole team, from strategist to QA, with nobody to recruit, onboard or manage.",
+  },
+  {
+    title: "You look sharper than your competitors",
+    text: "Design and tone that match the quality of your advice, so you stand out from larger firms.",
+  },
+];
+
+const {
+  render = true,
+  eyebrow = "What you get",
+  heading = "Everything it takes to win<br />more clients, in one team",
+  items = defaultItems,
+  writerLine = "Cross-border deals between Thailand and Japan.",
+  class: className,
+  ...rest
+} = Astro.props;
+
+const textured = [1, 3, 4];
+
+const members = [
+  {
+    name: "Strategy lead",
+    key: "strategy",
+    avatar: teamStrategy,
+    texture: teamStrategyTexture,
+  },
+  {
+    name: "Marketing lead",
+    key: "marketing",
+    avatar: teamMarketing,
+    texture: teamMarketingTexture,
+  },
+  {
+    name: "Design lead",
+    key: "design",
+    avatar: teamDesign,
+    texture: teamDesignTexture,
+  },
+  { name: "Dev lead", key: "dev", avatar: teamDev, texture: teamDevTexture },
+];
+---
+
+{
+  render && (
+    <div class:list={["industry-value_wrap", className]} {...rest}>
+      <div class="industry-value_intro">
+        <Paragraph variant="overline-small" class="industry-value_eyebrow">
+          {eyebrow}
+        </Paragraph>
+        <Heading tag="h2" variant="h3" class="industry-value_heading">
+          <Fragment set:html={heading} />
+        </Heading>
+      </div>
+      <div class="industry-value_layout">
+        {items.slice(0, 5).map((item, index) => (
+          <article
+            class:list={[
+              "industry-value_box",
+              textured.includes(index) && "textured",
+            ]}
+          >
+            {textured.includes(index) && (
+              <div class="industry-value_backdrop" aria-hidden="true">
+                <Img
+                  src={boxTexture}
+                  class="industry-value_backdrop-image"
+                  fetchPriority="low"
+                />
+              </div>
+            )}
+            <div class="industry-value_content">
+              <Heading tag="h3" variant="h5" class="industry-value_title">
+                {item.title}
+              </Heading>
+              <Paragraph variant="main" class="industry-value_text">
+                {item.text}
+              </Paragraph>
+            </div>
+            <div class="industry-value_visual" aria-hidden="true">
+              {index === 0 && (
+                <div class="industry-value_art industry-value_writer">
+                  <div class="industry-value_writer-hint">
+                    <span>Generic wording...</span>
+                  </div>
+                  <div class="industry-value_writer-card industry-value_writer-before">
+                    <span>Translated</span>
+                    <div class="industry-value_writer-sheet">
+                      <span class="industry-value_writer-bar" />
+                      <span class="industry-value_writer-bar" />
+                      <span class="industry-value_writer-bar" />
+                    </div>
+                  </div>
+                  <div class="industry-value_writer-card industry-value_writer-after">
+                    <span>With our writer</span>
+                    <div class="industry-value_writer-sheet">
+                      <span class="industry-value_writer-line">
+                        {writerLine}
+                      </span>
+                    </div>
+                  </div>
+                  <Img
+                    src={writerCursor}
+                    transparent
+                    class="industry-value_writer-cursor"
+                  />
+                  <div class="industry-value_writer-badge">
+                    <span class="industry-value_writer-avatar">
+                      <Img src={writerAvatar} transparent />
+                    </span>
+                    Superpresence writer
+                  </div>
+                </div>
+              )}
+              {index === 1 && (
+                <Img src={aiTiles} transparent class="industry-value_ai" />
+              )}
+              {index === 2 && (
+                <div class="industry-value_art industry-value_dash">
+                  <span class="industry-value_dash-rule" />
+                  <span class="industry-value_dash-rule horizontal" />
+                  <Img
+                    src={dashboardTrend}
+                    transparent
+                    class="industry-value_dash-trend"
+                  />
+                  <div class="industry-value_dash-badge">
+                    74%
+                    <Icon
+                      src={dashboardTail}
+                      class="industry-value_dash-tail"
+                    />
+                  </div>
+                  <span class="industry-value_dash-dot">
+                    <span />
+                  </span>
+                  <div class="industry-value_dash-card">
+                    <div class="industry-value_dash-head">
+                      <span class="industry-value_dash-label">
+                        Enquires this month
+                      </span>
+                      <span class="industry-value_dash-date">Sep 1-30</span>
+                    </div>
+                    <div class="industry-value_dash-figures">
+                      <div class="industry-value_dash-count">
+                        <span class="industry-value_dash-number">148</span>
+                        <span class="industry-value_dash-total">/200</span>
+                      </div>
+                      <span class="industry-value_dash-bar" />
+                    </div>
+                    <p class="industry-value_dash-note">
+                      You’re at <strong>74%</strong> of this month’s target,
+                      avareging
+                      <br />
+                      <strong>5 inquires</strong> a day.
+                    </p>
+                  </div>
+                  <div class="industry-value_dash-toast">
+                    <Icon
+                      src={dashboardEnquiry}
+                      class="industry-value_dash-icon"
+                    />
+                    <span>New enquiry received</span>
+                  </div>
+                </div>
+              )}
+              {index === 3 && (
+                <div class="industry-value_art industry-value_team">
+                  <span class="industry-value_team-frame" />
+                  <Img
+                    src={teamLineBlue}
+                    transparent
+                    class="industry-value_team-link top"
+                  />
+                  <Img
+                    src={teamLinePurple}
+                    transparent
+                    class="industry-value_team-link bottom"
+                  />
+                  <Img
+                    src={teamCornerOrange}
+                    transparent
+                    class="industry-value_team-corner top"
+                  />
+                  <Img
+                    src={teamCornerMagenta}
+                    transparent
+                    class="industry-value_team-corner bottom"
+                  />
+                  {members.map((member) => (
+                    <div
+                      class:list={["industry-value_team-member", member.key]}
+                    >
+                      <Img
+                        src={member.texture}
+                        variant="densities"
+                        width={110}
+                        class="industry-value_team-texture"
+                      />
+                      <Img
+                        src={member.avatar}
+                        transparent
+                        class="industry-value_team-avatar"
+                      />
+                      <span class="industry-value_team-name">
+                        {member.name}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {index === 4 && (
+                <div class="industry-value_art industry-value_rival">
+                  <span class="industry-value_rival-tag">Competitor</span>
+                  <Img
+                    src={competitorCursor}
+                    transparent
+                    class="industry-value_rival-cursor"
+                  />
+                  <div class="industry-value_rival-site">
+                    <Img src={competitorSite} variant="densities" width={412} />
+                  </div>
+                  <div class="industry-value_rival-site yours">
+                    <Img src={yourSite} variant="densities" width={552} />
+                  </div>
+                  <span class="industry-value_rival-tag yours">Your firm</span>
+                  <Img
+                    src={yourCursor}
+                    transparent
+                    class="industry-value_rival-cursor yours"
+                  />
+                </div>
+              )}
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .industry-value_wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-3-5rem);
+
+      .industry-value_intro {
+        width: 100%;
+        max-width: 55rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-0-75rem);
+        text-align: center;
+      }
+      .industry-value_eyebrow {
+        margin: 0;
+        color: var(--color-neutral-30);
+      }
+      .industry-value_heading {
+        margin: 0;
+      }
+      .industry-value_layout {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: var(--space-1-5rem);
+      }
+
+      /* Box */
+      .industry-value_box {
+        position: relative;
+        width: 100%;
+        max-width: 23.4375rem;
+        aspect-ratio: 1 / 1;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1-5rem);
+        padding: var(--space-1-5rem);
+        overflow: clip;
+        background-color: var(--color-neutral-2);
+        outline: var(--border-width) solid var(--color-neutral-5);
+        outline-offset: calc(var(--border-width) * -1);
+        border-radius: var(--radius-0-25rem);
+        @media (width >= 48rem) {
+          flex: 0 0 calc(50% - var(--space-1-5rem) / 2);
+        }
+        @media (width >= 62rem) {
+          flex: 1 1 calc((100% - var(--space-1-5rem) * 2) / 3);
+          max-width: none;
+          min-height: 28.25rem;
+          aspect-ratio: auto;
+          &:nth-child(n + 4) {
+            flex-basis: calc((100% - var(--space-1-5rem)) / 2);
+          }
+        }
+      }
+      .industry-value_backdrop {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        &::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background-image: linear-gradient(
+            to bottom,
+            rgb(255 255 255 / 0) 58.173%,
+            rgb(255 255 255 / 0.15) 88.253%,
+            rgb(255 255 255 / 0.3) 106.41%
+          );
+        }
+      }
+      .industry-value_backdrop-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.4;
+        background-color: transparent;
+      }
+      .industry-value_content {
+        position: relative;
+        width: 100%;
+        max-width: 28.125rem;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-5rem);
+      }
+      .industry-value_title {
+        margin: 0;
+      }
+      .industry-value_text {
+        margin: 0;
+        color: var(--color-neutral-60);
+      }
+      .industry-value_box:nth-child(-n + 3) .industry-value_text {
+        max-width: 22.5rem;
+      }
+      .industry-value_visual {
+        position: relative;
+        flex: 1 1 0;
+        min-height: 0;
+        @media (width >= 62rem) {
+          flex-basis: auto;
+          min-height: 16.875rem;
+        }
+        overflow: clip;
+        &:has(.industry-value_team, .industry-value_rival) {
+          overflow: visible;
+        }
+      }
+      .industry-value_art {
+        position: absolute;
+        container-type: inline-size;
+        font-family: var(--primary-family);
+        font-weight: var(--primary-medium);
+        img {
+          display: block;
+          max-width: none;
+        }
+      }
+
+      /* Writer */
+      .industry-value_writer {
+        top: 1.34375rem;
+        left: 50%;
+        width: 14.869rem;
+        max-width: 100%;
+        aspect-ratio: 258 / 244.5;
+        translate: -50% 0;
+        @media (width >= 62rem) {
+          top: 0.75rem;
+          width: 16.125rem;
+          aspect-ratio: 258 / 256;
+        }
+
+        .industry-value_writer-hint {
+          position: absolute;
+          top: 0;
+          left: 50%;
+          padding: 1.55cqw 4.651cqw;
+          translate: -50% 0;
+          border-radius: 3.101cqw;
+          background-color: var(--color-neutral-0);
+          filter: drop-shadow(0 0.853cqw 0.775cqw rgb(0 0 0 / 0.04));
+          font-size: 3.876cqw;
+          line-height: 5.426cqw;
+          white-space: nowrap;
+          span {
+            background-image: linear-gradient(
+              90deg,
+              #2b2b2b 16.685%,
+              rgb(43 43 43 / 0.52) 61.18%,
+              rgb(43 43 43 / 0.4) 105.67%
+            );
+            background-clip: text;
+            color: transparent;
+          }
+        }
+        .industry-value_writer-card {
+          position: absolute;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 1.55cqw;
+          padding: 1.163cqw;
+          overflow: clip;
+          border-radius: 3.101cqw;
+          box-shadow:
+            inset 0 0 0 var(--border-width) var(--color-neutral-0),
+            0 0 6.279cqw 0 rgb(0 0 0 / 0.04),
+            0 0.853cqw 1.628cqw 0 rgb(0 0 0 / 0.06);
+          font-size: 4.651cqw;
+          line-height: 6.977cqw;
+          letter-spacing: var(--letter-spacing-neg-0-5);
+          text-align: center;
+        }
+        .industry-value_writer-before {
+          top: 11.628cqw;
+          left: 15.116cqw;
+          width: 69.767cqw;
+          background-color: var(--color-neutral-2);
+          color: var(--color-neutral-80);
+        }
+        .industry-value_writer-after {
+          top: 44.38cqw;
+          @media (width >= 62rem) {
+            top: 48.837cqw;
+          }
+          left: 0;
+          width: 100%;
+          height: 34.109cqw;
+          background-image: radial-gradient(
+            ellipse 50.388cqw 29.07cqw at 53.682cqw 0,
+            #6e92f9 0%,
+            #547bec 16.735%,
+            #3964df 33.471%,
+            #1f4dd2 50.206%,
+            #1242cb 58.574%,
+            #0536c5 66.941%,
+            #032688 100%
+          );
+          color: var(--color-neutral-0);
+        }
+        .industry-value_writer-sheet {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 1.55cqw;
+          padding: 3.101cqw 3.876cqw;
+          border-radius: 1.55cqw;
+          @media (width >= 62rem) {
+            padding: 4.651cqw 3.876cqw;
+          }
+          background-color: var(--color-neutral-0);
+          box-shadow:
+            0 0.155cqw 4.729cqw 0 rgb(0 0 0 / 0.01),
+            0 0.465cqw 1.628cqw 0 rgb(0 0 0 / 0.03);
+        }
+        .industry-value_writer-bar {
+          width: 55.426cqw;
+          height: 1.55cqw;
+          border-radius: 0.155cqw;
+          background-image: linear-gradient(
+            90deg,
+            #eeeeee,
+            #f9f9f9 83.636%,
+            #ffffff 104.55%
+          );
+          box-shadow: 0 0.116cqw 0.465cqw 0 rgb(0 0 0 / 0.03);
+          &:nth-child(2) {
+            width: 100%;
+            background-image: linear-gradient(
+              90deg,
+              #f4f4f4,
+              #f9f9f9 70%,
+              #ffffff
+            );
+          }
+        }
+        .industry-value_writer-line {
+          max-width: 72.868cqw;
+          color: var(--color-neutral-80);
+          font-size: 5.426cqw;
+          letter-spacing: normal;
+        }
+        .industry-value_writer-badge {
+          position: absolute;
+          top: 83.14cqw;
+          left: 39.147cqw;
+          @media (width >= 62rem) {
+            top: 87.597cqw;
+          }
+          display: flex;
+          align-items: center;
+          gap: 2.326cqw;
+          padding: 1.938cqw 3.488cqw 1.938cqw 1.938cqw;
+          border-radius: 3.101cqw;
+          background-color: var(--color-primary-60);
+          box-shadow: inset 0 0 0 var(--border-width) var(--color-neutral-0);
+          filter: drop-shadow(-0.465cqw 1.279cqw 1.202cqw rgb(0 0 0 / 0.03));
+          color: var(--color-neutral-0);
+          font-size: 4.651cqw;
+          font-weight: var(--primary-regular);
+          line-height: 4.651cqw;
+          letter-spacing: 0.01em;
+          white-space: nowrap;
+        }
+        .industry-value_writer-avatar {
+          position: relative;
+          flex: none;
+          width: 7.752cqw;
+          height: 7.752cqw;
+          img {
+            position: absolute;
+            top: -1.395cqw;
+            left: -1.86cqw;
+            width: 11.473cqw;
+            height: 11.473cqw;
+          }
+        }
+        .industry-value_writer-cursor {
+          position: absolute;
+          top: 80.182cqw;
+          left: 33.234cqw;
+          width: 9.072cqw;
+          height: auto;
+          rotate: -39.44deg;
+          @media (width >= 62rem) {
+            top: 84.64cqw;
+          }
+        }
+      }
+
+      /* AI */
+      .industry-value_ai {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 19.0773rem;
+        height: auto;
+        max-width: none;
+        translate: -50% -50%;
+        @media (width >= 62rem) {
+          width: 23.6875rem;
+        }
+      }
+
+      /* Dashboard */
+      .industry-value_dash {
+        top: 50%;
+        left: 50%;
+        width: 20.2446rem;
+        max-width: calc(100% + var(--space-1-5rem));
+        aspect-ratio: 372.5 / 276;
+        translate: -50% -50%;
+        @media (width >= 62rem) {
+          top: 0;
+          width: 23.28125rem;
+          translate: -50% 0;
+        }
+
+        .industry-value_dash-rule {
+          position: absolute;
+          top: 0;
+          left: 74.228cqw;
+          width: var(--border-width);
+          height: 100%;
+          background-image: repeating-linear-gradient(
+            to bottom,
+            var(--color-neutral-10) 0 0.805cqw,
+            transparent 0.805cqw 1.477cqw
+          );
+          mask-image: linear-gradient(
+            to bottom,
+            transparent,
+            #000 25%,
+            #000 75%,
+            transparent
+          );
+          &.horizontal {
+            top: 8.054cqw;
+            left: 0.94cqw;
+            width: auto;
+            right: 0;
+            height: var(--border-width);
+            background-image: repeating-linear-gradient(
+              to right,
+              var(--color-neutral-10) 0 0.805cqw,
+              transparent 0.805cqw 1.477cqw
+            );
+            mask-image: linear-gradient(
+              to right,
+              transparent,
+              #000 25%,
+              #000 75%,
+              transparent
+            );
+          }
+        }
+        .industry-value_dash-trend {
+          position: absolute;
+          top: 8.709cqw;
+          left: -0.204cqw;
+          width: 73.511cqw;
+          height: auto;
+        }
+        .industry-value_dash-badge {
+          position: absolute;
+          top: 4.43cqw;
+          left: 56.51cqw;
+          display: flex;
+          align-items: center;
+          gap: 1.074cqw;
+          padding: 0.537cqw 1.074cqw;
+          border-radius: 1.074cqw;
+          background-color: var(--color-neutral-0);
+          filter: drop-shadow(0 0.054cqw 0.161cqw rgb(0 0 0 / 0.02))
+            drop-shadow(0 0.322cqw 0.43cqw rgb(0 0 0 / 0.06));
+          color: var(--color-neutral-90);
+          font-size: 3.758cqw;
+          line-height: 1.35;
+          &::before {
+            content: "";
+            width: 1.074cqw;
+            height: 1.074cqw;
+            border-radius: var(--radius-full);
+            background-color: var(--color-primary-60);
+          }
+        }
+        .industry-value_dash-tail {
+          --_size: 1.342cqw;
+          position: absolute;
+          top: 50%;
+          left: 12.349cqw;
+          aspect-ratio: 5 / 8;
+          translate: 0 -50%;
+          color: var(--color-neutral-0);
+        }
+        .industry-value_dash-dot {
+          position: absolute;
+          top: 4.295cqw;
+          left: 71.007cqw;
+          width: 6.443cqw;
+          height: 6.443cqw;
+          padding: 1.074cqw;
+          border-radius: var(--radius-full);
+          background-color: var(--color-neutral-0);
+          box-shadow:
+            0 0.591cqw 0.43cqw rgb(6 66 238 / 0.02),
+            0 0.322cqw 0.43cqw rgb(6 66 238 / 0.12);
+          span {
+            display: block;
+            width: 100%;
+            height: 100%;
+            padding: 0.805cqw;
+            border-radius: var(--radius-full);
+            background-color: var(--color-neutral-0);
+            box-shadow:
+              0 0.322cqw 0.43cqw rgb(6 66 238 / 0.05),
+              0 0.591cqw 0.537cqw rgb(6 66 238 / 0.1);
+            &::before {
+              content: "";
+              display: block;
+              width: 100%;
+              height: 100%;
+              border-radius: var(--radius-full);
+              background-color: var(--color-primary-60);
+            }
+          }
+        }
+        .industry-value_dash-card {
+          position: absolute;
+          top: 19.195cqw;
+          left: 11.946cqw;
+          width: 75.973cqw;
+          display: flex;
+          flex-direction: column;
+          gap: 3.221cqw;
+          padding: 2.148cqw 3.221cqw;
+          @media (width >= 62rem) {
+            top: 14.228cqw;
+            gap: 4.295cqw;
+            padding: 3.221cqw 4.295cqw;
+          }
+          border-radius: 2.148cqw;
+          background-color: var(--color-neutral-0);
+          box-shadow:
+            -0.805cqw 1.342cqw 1.745cqw 0 rgb(209 209 209 / 0.1),
+            -2.685cqw 5.638cqw 3.221cqw 0 rgb(209 209 209 / 0.09),
+            -6.174cqw 12.886cqw 4.295cqw 0 rgb(209 209 209 / 0.05),
+            -11.275cqw 22.819cqw 5.101cqw 0 rgb(209 209 209 / 0.01);
+        }
+        .industry-value_dash-head {
+          display: flex;
+          align-items: baseline;
+          justify-content: space-between;
+          white-space: nowrap;
+        }
+        .industry-value_dash-label {
+          color: var(--color-neutral-80);
+          font-size: 3.221cqw;
+          line-height: 4.832cqw;
+          letter-spacing: var(--letter-spacing-neg-0-5);
+        }
+        .industry-value_dash-date {
+          color: var(--color-neutral-30);
+          font-size: 2.953cqw;
+          font-weight: var(--primary-regular);
+          line-height: 1.35;
+        }
+        .industry-value_dash-figures {
+          display: flex;
+          flex-direction: column;
+          gap: 1.074cqw;
+        }
+        .industry-value_dash-count {
+          display: flex;
+          align-items: baseline;
+          gap: 2.148cqw;
+          font-weight: var(--primary-regular);
+          white-space: nowrap;
+        }
+        .industry-value_dash-number {
+          color: var(--color-neutral-80);
+          font-family: var(--secondary-family);
+          font-size: 6.98cqw;
+          line-height: 9.128cqw;
+          letter-spacing: var(--letter-spacing-neg-1);
+        }
+        .industry-value_dash-total {
+          color: var(--color-neutral-30);
+          font-size: 3.221cqw;
+          line-height: 4.832cqw;
+          letter-spacing: var(--letter-spacing-neg-0-5);
+        }
+        .industry-value_dash-bar {
+          height: 1.074cqw;
+          border-radius: 0.537cqw;
+          background-color: var(--color-neutral-2);
+          &::before {
+            content: "";
+            display: block;
+            width: 41.342cqw;
+            height: 100%;
+            border-radius: 0.537cqw;
+            background-color: var(--color-primary-60);
+          }
+        }
+        .industry-value_dash-note {
+          margin: 0;
+          color: var(--color-neutral-30);
+          font-size: 3.221cqw;
+          font-weight: var(--primary-regular);
+          line-height: 1.35;
+          white-space: nowrap;
+          strong {
+            color: var(--color-neutral-80);
+            font-weight: var(--primary-medium);
+          }
+        }
+        .industry-value_dash-toast {
+          position: absolute;
+          top: 61.477cqw;
+          left: 28.591cqw;
+          display: flex;
+          align-items: center;
+          gap: 2.148cqw;
+          padding: 1.074cqw 2.148cqw;
+          border-radius: 2.148cqw;
+          background-color: var(--color-neutral-0);
+          filter: drop-shadow(0 0.591cqw 0.537cqw rgb(0 0 0 / 0.04));
+          font-size: 3.221cqw;
+          line-height: 4.832cqw;
+          letter-spacing: var(--letter-spacing-neg-0-5);
+          white-space: nowrap;
+          span {
+            background-image: linear-gradient(
+              90deg,
+              #0642ee 18.782%,
+              rgb(238 6 145 / 0.52) 68.866%,
+              rgb(238 72 6 / 0.4) 118.95%
+            );
+            background-clip: text;
+            color: transparent;
+          }
+        }
+        .industry-value_dash-icon {
+          --_size: 4.295cqw;
+          color: var(--color-primary-60);
+        }
+      }
+
+      /* Team */
+      .industry-value_team {
+        top: 50%;
+        left: 50%;
+        width: 21.875rem;
+        max-width: calc(100% + var(--space-1-5rem));
+        aspect-ratio: 2 / 1;
+        translate: -50% -50%;
+        @media (width >= 62rem) {
+          width: 35.75rem;
+        }
+
+        .industry-value_team-frame {
+          position: absolute;
+          top: 12.85cqw;
+          left: 12.762cqw;
+          width: 72.552cqw;
+          height: 24.476cqw;
+          border: var(--border-width) solid var(--color-neutral-10);
+        }
+        .industry-value_team-link {
+          position: absolute;
+          top: 12.64cqw;
+          left: 33.007cqw;
+          width: 9.161cqw;
+          height: auto;
+          &.bottom {
+            top: 37.115cqw;
+            left: 57.832cqw;
+            scale: -1 1;
+          }
+        }
+        .industry-value_team-corner {
+          position: absolute;
+          top: 12.64cqw;
+          left: 80.035cqw;
+          width: 5.49cqw;
+          height: auto;
+          &.bottom {
+            top: 35.192cqw;
+            left: 12.552cqw;
+            rotate: 180deg;
+          }
+        }
+        .industry-value_team-member {
+          --_tint: rgb(0 123 255 / 0.12);
+          --_tint-start: 20.752%;
+          position: absolute;
+          top: 3.234cqw;
+          left: 3.147cqw;
+          width: 19.231cqw;
+          height: 19.231cqw;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 0.699cqw;
+          padding: 1.399cqw;
+          overflow: clip;
+          background-color: var(--color-neutral-0);
+          box-shadow:
+            0.175cqw 0.35cqw 0.35cqw 0 rgb(212 212 212 / 0.1),
+            0.524cqw 1.049cqw 0.612cqw 0 rgb(212 212 212 / 0.09),
+            1.049cqw 2.448cqw 0.787cqw 0 rgb(212 212 212 / 0.05),
+            1.923cqw 4.371cqw 0.962cqw 0 rgb(212 212 212 / 0.01);
+          &::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(
+              136.47deg,
+              var(--_tint) var(--_tint-start),
+              rgb(255 255 255 / 0.12) 51.501%,
+              var(--_tint) 99.854%
+            );
+          }
+          &.marketing {
+            --_tint: rgb(245 92 151 / 0.12);
+            --_tint-start: 23.353%;
+            top: 27.71cqw;
+            left: 27.972cqw;
+          }
+          &.design {
+            --_tint: rgb(253 163 104 / 0.12);
+            --_tint-start: 23.353%;
+            left: 52.797cqw;
+          }
+          &.dev {
+            --_tint: rgb(118 1 255 / 0.12);
+            --_tint-start: 23.353%;
+            top: 27.71cqw;
+            left: 75.699cqw;
+          }
+        }
+        .industry-value_team-texture {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          opacity: 0.1;
+          background-color: transparent;
+        }
+        .industry-value_team-avatar {
+          position: relative;
+          z-index: 1;
+          width: 10.49cqw;
+          height: 10.49cqw;
+        }
+        .industry-value_team-name {
+          position: relative;
+          z-index: 1;
+          color: var(--color-neutral-60);
+          font-size: 2.448cqw;
+          line-height: 3.497cqw;
+          letter-spacing: var(--letter-spacing-neg-0-5);
+          white-space: nowrap;
+        }
+      }
+
+      /* Competitors */
+      .industry-value_rival {
+        top: 0.63625rem;
+        left: 0.65625rem;
+        width: 32.2816rem;
+        aspect-ratio: 665 / 309;
+        @media (width >= 62rem) {
+          top: 0.6875rem;
+          left: 1.125rem;
+          width: 41.5625rem;
+        }
+
+        .industry-value_rival-tag {
+          position: absolute;
+          z-index: 1;
+          top: 9.642cqw;
+          left: 0.761cqw;
+          height: 3.706cqw;
+          display: flex;
+          align-items: center;
+          padding: 0 1.549cqw;
+          border-radius: 0.517cqw;
+          background-color: var(--color-neutral-40);
+          box-shadow: inset 0 0 0 var(--border-width) var(--color-neutral-0);
+          filter: drop-shadow(-0.155cqw 0.426cqw 0.4cqw rgb(0 0 0 / 0.03));
+          color: var(--color-neutral-0);
+          font-size: 1.549cqw;
+          line-height: 1.2;
+          letter-spacing: var(--letter-spacing-neg-1);
+          white-space: nowrap;
+          &.yours {
+            top: 0;
+            left: 41.134cqw;
+            height: 5.423cqw;
+            padding: 0 2.324cqw;
+            border-radius: 0.775cqw;
+            background-color: var(--color-primary-60);
+            filter: drop-shadow(-0.232cqw 0.639cqw 0.6cqw rgb(0 0 0 / 0.03));
+            font-size: 2.324cqw;
+          }
+        }
+        .industry-value_rival-cursor {
+          position: absolute;
+          z-index: 1;
+          top: 12.449cqw;
+          left: 11.186cqw;
+          width: 3.022cqw;
+          height: auto;
+          rotate: 135deg;
+          &.yours {
+            top: 4.21cqw;
+            left: 37.984cqw;
+            width: 4.533cqw;
+            rotate: 45deg;
+            scale: 1 -1;
+          }
+        }
+        .industry-value_rival-site {
+          position: absolute;
+          top: 16.328cqw;
+          left: 0;
+          width: 61.945cqw;
+          height: 31.579cqw;
+          overflow: clip;
+          border-radius: 0.173cqw;
+          opacity: 0.5;
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+          &::after {
+            content: "";
+            position: absolute;
+            top: 0.758cqw;
+            left: 2.598cqw;
+            width: 7.667cqw;
+            height: 2.339cqw;
+            background-color: var(--color-neutral-0);
+          }
+          &.yours {
+            top: 6.767cqw;
+            left: 19.549cqw;
+            width: 83.008cqw;
+            height: 42.105cqw;
+            border-radius: 0.602cqw;
+            opacity: 1;
+            box-shadow:
+              0 2.556cqw 5.714cqw 0 rgb(0 0 0 / 0.1),
+              0 10.376cqw 10.376cqw 0 rgb(0 0 0 / 0.09),
+              0 23.459cqw 14.135cqw 0 rgb(0 0 0 / 0.05),
+              0 41.805cqw 16.692cqw 0 rgb(0 0 0 / 0.01);
+            &::after {
+              inset: 0;
+              width: auto;
+              height: auto;
+              border-radius: inherit;
+              background-color: transparent;
+              box-shadow: inset 0 0 0 var(--border-width)
+                var(--color-neutral-10);
+            }
+          }
+        }
+      }
+    }
+  }
+</style>

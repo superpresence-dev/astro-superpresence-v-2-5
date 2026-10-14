@@ -1,0 +1,386 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Tabs from "@/components/interactive/Tabs.astro";
+import TabLink from "@/components/interactive/TabLink.astro";
+import Form from "@/components/form/Form.astro";
+import Input from "@/components/form/Input.astro";
+import Select from "@/components/form/Select.astro";
+import Textarea from "@/components/form/Textarea.astro";
+import Button from "@/components/Button.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Img from "@/components/media/Img.astro";
+import check from "@/assets/contact/success-check.png";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Form endpoint. Omit to skip submission. */
+  action?: string;
+  /** Link to the call booking page. */
+  bookingHref?: string;
+  /** Link to the privacy policy. */
+  privacyHref?: string;
+}
+
+const {
+  render = true,
+  action,
+  bookingHref = "#",
+  privacyHref = "#",
+  class: className,
+  ...rest
+} = Astro.props;
+
+const services = [
+  "New website",
+  "Website redesign",
+  "Webflow development",
+  "Conversion optimisation",
+  "Something else",
+];
+
+const budgets = ["Under $10k", "$10k – $25k", "$25k – $50k", "$50k and above"];
+---
+
+{
+  render && (
+    <Tabs id="contact" class:list={["contact-form_wrap", className]} {...rest}>
+      <TabLink slot="links" class="text-style-h6">
+        Fill a form
+      </TabLink>
+      <TabLink slot="links" class="text-style-h6">
+        Book a call
+      </TabLink>
+
+      <div class="contact-form_box">
+        <Form name="contact" action={action}>
+          <Input
+            label="Full name"
+            name="name"
+            placeholder="John Doe"
+            required
+          />
+          <Input
+            variant="email"
+            label="Email address"
+            name="email"
+            placeholder="john@superpresence.co"
+            required
+          />
+          <Input
+            label="Company name"
+            name="company"
+            placeholder="Superpresence"
+            autocomplete="organization"
+            required
+          />
+          <Input
+            label="Website link"
+            name="website"
+            placeholder="superpresence.co"
+            inputmode="url"
+            autocomplete="url"
+            required
+          />
+          <Select
+            label="What can we help with?"
+            name="service"
+            placeholder="Choose one"
+            options={services}
+            required
+            class="contact-form_wide"
+          />
+          <Select
+            label="Estimated budget"
+            name="budget"
+            placeholder="Choose one"
+            options={budgets}
+            required
+            class="contact-form_wide"
+          />
+          <Textarea
+            label="What's the challenge?"
+            name="challenge"
+            placeholder="Tell us what you're trying to improve, build, or figure out ..."
+            minLines={3}
+            required
+            class="contact-form_wide"
+          />
+          <div class="contact-form_cta contact-form_wide">
+            <Button type="submit" class="contact-form_submit">
+              Submit request
+            </Button>
+            <Paragraph variant="small" class="contact-form_legal">
+              By clicking the submit button, you agree to our{" "}
+              <a href={privacyHref}>privacy policy</a>
+            </Paragraph>
+          </div>
+
+          <div slot="success" class="contact-form_success">
+            <div class="contact-form_check">
+              <Img src={check} transparent height={100} />
+            </div>
+            <div class="contact-form_success-text">
+              <Heading tag="h2" variant="h4">
+                We’ve got your message
+                <br />
+                and we’re already on it.
+              </Heading>
+              <Paragraph variant="main">
+                Our team is carefully reviewing your request
+                <br />
+                to provide a personalized and accurate response.
+              </Paragraph>
+            </div>
+          </div>
+        </Form>
+      </div>
+
+      <div class="contact-form_box contact-form_call">
+        <div class="contact-form_call-text">
+          <Heading tag="h2" variant="h4">
+            Book a 30-min discovery call
+          </Heading>
+          <Paragraph variant="main">
+            Pick a time that suits you. We'll walk through your goals and tell
+            you honestly whether we're the right fit.
+          </Paragraph>
+        </div>
+        <Button element="link" href={bookingHref} arrow>
+          Choose a time
+        </Button>
+      </div>
+    </Tabs>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .contact-form_wrap {
+      gap: var(--space-1-25rem);
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .tabs_links {
+        box-shadow: inset 0 calc(var(--border-width) * -1) 0
+          var(--color-neutral-5);
+      }
+
+      .tabs_link {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: var(--space-0-75rem);
+        min-width: 0;
+        padding: var(--space-1-25rem) var(--space-1-25rem)
+          calc(var(--space-1-25rem) - 0.125rem);
+        border-bottom: 0.125rem solid transparent;
+        color: var(--color-neutral-40);
+        white-space: nowrap;
+        &.is-active {
+          border-bottom-color: var(--color-primary-60);
+          color: var(--color-neutral-90);
+          &::after {
+            content: "";
+            flex: none;
+            width: 0.375rem;
+            aspect-ratio: 1;
+            background-color: var(--color-primary-60);
+          }
+        }
+        @media (hover: hover) {
+          &:hover {
+            color: var(--color-neutral-90);
+          }
+        }
+      }
+
+      .tabs_panels {
+        overflow: visible;
+      }
+    }
+
+    .contact-form_box {
+      min-height: 45.75rem;
+      display: flex;
+      flex-direction: column;
+      padding: calc(var(--space-2rem) - var(--border-width))
+        calc(var(--space-1-25rem) - var(--border-width));
+      background-color: var(--color-neutral-0);
+      border: var(--border-width) solid var(--color-neutral-5);
+      border-radius: var(--radius-0-25rem);
+      box-shadow:
+        0 0.0625rem 0.125rem rgb(16 24 40 / 0.06),
+        0 0.0625rem 0.1875rem rgb(16 24 40 / 0.1);
+      @media (width >= 48rem) {
+        min-height: 38.4375rem;
+        padding-inline: calc(var(--space-2rem) - var(--border-width));
+      }
+      @media (width >= 62rem) {
+        min-height: 43.75rem;
+      }
+
+      &:has([data-state="sent"]) {
+        box-shadow:
+          0 1rem 2rem rgb(15 15 15 / 0.05),
+          0 0.0125rem 2rem rgb(6 66 238 / 0.03),
+          0 4.5rem 1.8125rem rgb(0 0 0 / 0.01),
+          0 2.5rem 1.5rem rgb(0 0 0 / 0.02);
+      }
+
+      .form_wrap {
+        display: grid;
+        gap: var(--space-1-5rem);
+      }
+
+      .form_fields,
+      .form_note-sent {
+        grid-area: 1 / 1;
+      }
+
+      .form_note-sent {
+        align-self: center;
+      }
+
+      .form_fields {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--space-1-5rem) var(--space-0-75rem);
+        @media (width >= 48rem) {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      .form_wrap[data-state="sent"] .form_fields {
+        display: grid;
+        visibility: hidden;
+      }
+
+      .contact-form_wide {
+        grid-column: 1 / -1;
+      }
+
+      .field {
+        gap: var(--space-0-5rem);
+      }
+
+      .field-label {
+        gap: 0.25em;
+        color: var(--color-neutral-60);
+        font-size: var(--overline-small);
+        line-height: var(--overline-small-line-height);
+        letter-spacing: var(--letter-spacing-tag);
+        text-transform: uppercase;
+      }
+
+      .field-star {
+        color: inherit;
+      }
+
+      .field-control {
+        --_field-pad-block: var(--space-0-75rem);
+        --_field-pad-inline: var(--space-1rem);
+        background-color: var(--color-neutral-2);
+        border-color: var(--color-neutral-5);
+        border-radius: var(--radius-0-125rem);
+        &::placeholder {
+          color: var(--color-neutral-30);
+        }
+        @media (hover: hover) {
+          &:hover:not(:disabled) {
+            background-color: var(--color-neutral-5);
+          }
+        }
+      }
+
+      .form-select_field:has(option[value=""]:checked) {
+        color: inherit;
+      }
+
+      .form-select_mark {
+        --_size: 1rem;
+        color: var(--color-neutral-90);
+      }
+
+      .form-textarea_field {
+        min-height: 6.75rem;
+      }
+
+      .contact-form_cta {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+        margin-top: calc(var(--space-2rem) - var(--space-1-5rem));
+      }
+
+      .contact-form_submit {
+        width: 100%;
+      }
+
+      .contact-form_legal {
+        text-align: center;
+        a {
+          color: var(--color-neutral-90);
+          font-weight: var(--primary-medium);
+          text-decoration: underline;
+          text-decoration-color: var(--color-primary-60);
+          text-decoration-thickness: 0.07em;
+          text-underline-offset: 0.2em;
+        }
+      }
+    }
+
+    .contact-form_success {
+      width: 100%;
+      margin-inline: auto;
+      max-width: 33.75rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2rem);
+      text-align: center;
+    }
+
+    .contact-form_check {
+      width: 5.0625rem;
+      aspect-ratio: 112 / 100;
+      min-height: 0;
+      overflow: hidden;
+      @media (width >= 48rem) {
+        width: 6.1875rem;
+      }
+      @media (width >= 62rem) {
+        width: 7rem;
+      }
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .contact-form_success-text {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-0-75rem);
+      .text {
+        max-width: 30rem;
+      }
+    }
+
+    .contact-form_call {
+      align-items: flex-start;
+      gap: var(--space-2rem);
+    }
+
+    .contact-form_call-text {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-0-75rem);
+    }
+  }
+</style>

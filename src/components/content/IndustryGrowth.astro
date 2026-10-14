@@ -1,0 +1,231 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Button from "@/components/Button.astro";
+import Icon from "@/components/media/Icon.astro";
+import Img from "@/components/media/Img.astro";
+import highlight from "@/assets/industries/growth-highlight.jpg";
+import { industryIcons } from "@/utils/industries.ts";
+
+type Item = { title: string; text: string };
+type Stat = { value: string; label: string };
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading: string;
+  /** Text under the heading. Omit to leave it out. */
+  lead?: string;
+  /** Improvements in order; each takes the icon at its position. */
+  items: Item[];
+  /** Figure in the highlighted card. */
+  stat?: Stat;
+  /** Button text. */
+  buttonText?: string;
+  /** Button link. */
+  buttonHref?: string;
+}
+
+const {
+  render = true,
+  eyebrow = "Built for growth",
+  heading,
+  lead,
+  items,
+  stat = {
+    value: "20%",
+    label: "Average lift in enquiries for clients running ads",
+  },
+  buttonText = "See our works",
+  buttonHref = "/work",
+  class: className,
+  ...rest
+} = Astro.props;
+
+const icons = ["chart", "bolt", "search", "analytics", "cms", "security"].map(
+  (name) => industryIcons[name],
+);
+---
+
+{
+  render && heading && items?.length > 0 && (
+    <div class:list={["industry-growth_wrap", className]} {...rest}>
+      <div class="industry-growth_intro">
+        <Paragraph variant="overline-small" class="industry-growth_eyebrow">
+          {eyebrow}
+        </Paragraph>
+        <Heading tag="h2" variant="h3">
+          <Fragment set:html={heading} />
+        </Heading>
+        {lead && (
+          <Paragraph variant="large" class="industry-growth_lead">
+            {lead}
+          </Paragraph>
+        )}
+      </div>
+      <div class="industry-growth_layout">
+        <ul class="industry-growth_list" role="list">
+          {items.map((item, index) => (
+            <li class="industry-growth_item">
+              <Icon src={icons[index % icons.length]} class="industry-growth_icon" />
+              <div class="industry-growth_content">
+                <Heading tag="h3" variant="h6">
+                  {item.title}
+                </Heading>
+                <Paragraph variant="main" class="industry-growth_text">
+                  {item.text}
+                </Paragraph>
+              </div>
+            </li>
+          ))}
+        </ul>
+        <div class="industry-growth_highlight theme-dark">
+          <Img src={highlight} class="industry-growth_highlight-image" />
+          <div class="industry-growth_stat">
+            <Paragraph variant="h1" class="industry-growth_value">
+              {stat.value}
+            </Paragraph>
+            <Paragraph variant="large" class="industry-growth_label weight-medium">
+              {stat.label}
+            </Paragraph>
+          </div>
+          <Button element="link" href={buttonHref} arrow>
+            {buttonText}
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .industry-growth_wrap {
+      --_icon: 1.5rem;
+      --_item-height: 11.25rem;
+      @media (width >= 48rem) {
+        --_icon: 1.75rem;
+        --_item-height: 12.5rem;
+      }
+      @media (width >= 62rem) {
+        --_icon: 2rem;
+        --_item-height: 13.125rem;
+      }
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3-5rem);
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .industry-growth_intro {
+        max-width: 40rem;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+      }
+
+      .industry-growth_eyebrow {
+        color: var(--color-neutral-30);
+      }
+
+      .industry-growth_lead {
+        max-width: 30rem;
+        color: var(--color-neutral-60);
+      }
+
+      .industry-growth_layout {
+        display: flex;
+        flex-direction: column;
+        border-radius: var(--radius-0-5rem);
+        background-color: var(--color-neutral-10);
+        @media (width >= 62rem) {
+          flex-direction: row;
+        }
+      }
+
+      .industry-growth_list {
+        flex: 1 1 0;
+        min-width: 0;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        margin: 0;
+        padding: 0;
+        @media (width >= 48rem) {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      .industry-growth_item {
+        height: var(--_item-height);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin: 0;
+        padding: var(--space-1-5rem);
+        background-color: var(--color-neutral-0);
+        border: var(--border-width) solid var(--color-neutral-10);
+        border-radius: var(--radius-0-5rem);
+      }
+
+      .industry-growth_icon {
+        --_size: var(--_icon);
+        color: var(--brand);
+      }
+
+      .industry-growth_content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-5rem);
+      }
+
+      .industry-growth_text {
+        color: var(--color-neutral-60);
+      }
+
+      .industry-growth_highlight {
+        position: relative;
+        isolation: isolate;
+        min-height: 12.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: var(--space-1-5rem);
+        padding: var(--space-2rem);
+        overflow: clip;
+        border: var(--border-width) solid var(--color-neutral-10);
+        border-radius: var(--radius-0-5rem);
+        @media (width >= 62rem) {
+          flex: none;
+          width: 22.5rem;
+        }
+      }
+
+      .industry-growth_highlight-image {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .industry-growth_stat {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-5rem);
+      }
+
+      .industry-growth_label {
+        color: var(--color-neutral-10);
+      }
+    }
+  }
+</style>

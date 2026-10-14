@@ -1,0 +1,99 @@
+---
+import type { GetStaticPaths } from "astro";
+import {
+  getCollection,
+  getEntry,
+  render,
+  type CollectionEntry,
+} from "astro:content";
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import BlogPostHero from "@/components/content/BlogPostHero.astro";
+import BlogPostBody from "@/components/content/BlogPostBody.astro";
+import BlogSubscribe from "@/components/content/BlogSubscribe.astro";
+import RelatedList from "@/components/content/RelatedList.astro";
+import BlogList from "@/components/content/BlogList.astro";
+import HomeCta from "@/components/section/HomeCta.astro";
+import { blogPostUrl, sortPosts } from "@/utils/blog.ts";
+
+export const getStaticPaths = (async () => {
+  const posts = sortPosts(await getCollection("blog"));
+  return posts.map((post) => {
+    const others = posts.filter((other) => other.id !== post.id);
+    const suggested = [
+      ...others.filter((other) => other.data.category === post.data.category),
+      ...others.filter((other) => other.data.category !== post.data.category),
+    ].slice(0, 3);
+    return { params: { slug: post.id }, props: { post, suggested } };
+  });
+}) satisfies GetStaticPaths;
+
+interface Props {
+  post: CollectionEntry<"blog">;
+  suggested: CollectionEntry<"blog">[];
+}
+
+const { post, suggested } = Astro.props;
+const { data } = post;
+const { Content, headings } = await render(post);
+
+const authorEntry = data.author ? await getEntry(data.author) : undefined;
+const author = authorEntry && {
+  ...authorEntry.data,
+  bio: authorEntry.body?.trim(),
+};
+
+const suggestedItems = suggested.map(({ id, data }) => ({
+  title: data.title,
+  tag: data.tag,
+  date: data.date,
+  thumbnail: data.thumbnail,
+  href: blogPostUrl(id),
+}));
+---
+
+<Layout title={data.title} type="article" navTheme="light">
+  {/* Hero */}
+  <Section paddingTop="none" paddingBottom="none">
+    <BlogPostHero
+      heading={data.title}
+      tag={data.tag}
+      date={data.date}
+      image={data.thumbnail}
+      author={author}
+    />
+  </Section>
+  {/* Article */}
+  <Section paddingTop="none">
+    <BlogPostBody
+      headings={headings}
+      takeaways={data.takeaways}
+      author={author}
+    >
+      <Content />
+    </BlogPostBody>
+  </Section>
+  {/* Subscribe */}
+  <Section paddingTop="none" paddingBottom="none">
+    <BlogSubscribe
+      eyebrow="+1200 readers"
+      heading="Stay ahead of the curve!<br />Subscribe now for expert insights"
+      text="Hear directly from clients about their journey with Superpresence<br />— our collaboration, expertise, and the results achieved."
+    />
+  </Section>
+  {/* Suggested */}
+  <Section paddingTop="none" paddingBottom="none">
+    <RelatedList heading="Suggested articles" variant="spaced">
+      <BlogList items={suggestedItems} variant="single-row" />
+    </RelatedList>
+  </Section>
+  {/* CTA */}
+  <HomeCta
+    eyebrow="Limited projects for Q4"
+    eyebrowVariant="overline-main"
+    heading="See what your website should be doing"
+    text="Hop on a free 30-min call with us. Bring the business challenge, and we’ll work out what needs to change."
+    buttonText="Book a strategy call"
+    buttonHref="/contact"
+  />
+</Layout>

@@ -1,0 +1,79 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+
+type Props = HTMLAttributes<"div"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Page heading. Accepts `<br>` for a forced line break. Omit to render nothing. */
+  heading?: string;
+  /** Intro paragraph below the heading. */
+  text?: string;
+};
+
+const {
+  render = true,
+  eyebrow,
+  heading,
+  text,
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+{
+  render && heading && (
+    <div class:list={["hero-listing_wrap", className]} {...rest}>
+      {eyebrow && (
+        <Paragraph variant="overline-small" class="hero-listing_eyebrow">
+          {eyebrow}
+        </Paragraph>
+      )}
+      <Heading tag="h1" variant="h1" class="hero-listing_title">
+        <Fragment set:html={heading} />
+      </Heading>
+      {text && (
+        <Paragraph variant="large" class="hero-listing_text">
+          {text}
+        </Paragraph>
+      )}
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .hero-listing_wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-0-75rem);
+      width: 100%;
+      max-width: 46.875rem;
+      padding-block: calc(var(--space-4rem) + var(--space-2rem));
+
+      & :is(.heading, .text) {
+        margin: 0;
+      }
+    }
+
+    .hero-listing_eyebrow {
+      color: var(--color-neutral-30);
+    }
+
+    .hero-listing_title {
+      color: var(--color-neutral-90);
+    }
+
+    .hero-listing_text {
+      max-width: 33.75rem;
+      color: var(--color-neutral-60);
+      @media (width >= 48rem) and (width < 62rem) {
+        max-width: 30rem;
+      }
+    }
+  }
+</style>

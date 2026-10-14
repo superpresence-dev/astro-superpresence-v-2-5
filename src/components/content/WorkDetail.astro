@@ -1,0 +1,338 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import type { ImageMetadata } from "astro";
+import Button from "@/components/Button.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import ArticleBody from "@/components/content/ArticleBody.astro";
+import Img from "@/components/media/Img.astro";
+import Icon from "@/components/media/Icon.astro";
+import linkIcon from "@/assets/icons/share-link.svg";
+import linkedinIcon from "@/assets/icons/share-linkedin.svg";
+import facebookIcon from "@/assets/icons/share-facebook.svg";
+import { slotContent } from "@/utils/slots.ts";
+
+export interface WorkAbout {
+  description: string;
+  website?: string;
+  country?: string;
+  teamSize?: string;
+}
+
+type Props = HTMLAttributes<"div"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Client name. */
+  client?: string;
+  /** Client logo. */
+  logo?: ImageMetadata;
+  /** Client industry. */
+  industry?: string;
+  /** Project facts for the side panel. Omit to hide the panel. */
+  project?: WorkAbout;
+  /** Absolute URL of this page, for the share links. */
+  shareUrl?: string;
+  /** Side panel button text. */
+  buttonText?: string;
+  /** Side panel button link. */
+  buttonHref?: string;
+};
+
+const {
+  render = true,
+  client,
+  logo,
+  industry,
+  project: about,
+  shareUrl,
+  buttonText = "Get results like these",
+  buttonHref = "/contact",
+  class: className,
+  ...rest
+} = Astro.props;
+
+const content = await slotContent(Astro.slots);
+
+const facts = [
+  { label: "Industry", value: industry },
+  { label: "Country", value: about?.country },
+  { label: "Team size", value: about?.teamSize },
+].filter((fact) => fact.value);
+
+const websiteLabel = about?.website
+  ?.replace(/^https?:\/\/(www\.)?/, "")
+  .replace(/\/$/, "");
+
+const share = shareUrl ? encodeURIComponent(shareUrl) : "";
+---
+
+{
+  render && content && (
+    <div class:list={["work-detail_wrap", className]} {...rest}>
+      <ArticleBody class="work-detail_article">
+        <Fragment set:html={content} />
+      </ArticleBody>
+      {about && (
+        <aside class="work-detail_aside" aria-label="About this project">
+          <div class="work-detail_about">
+            <Paragraph variant="overline-small" class="work-detail_about-label">
+              About this project
+            </Paragraph>
+            <div class="work-detail_about-content">
+              {logo && (
+                <Img
+                  src={logo}
+                  alt={client ?? ""}
+                  transparent
+                  class="work-detail_logo"
+                />
+              )}
+              <div class="work-detail_overview">
+                {client && (
+                  <Heading tag="h2" variant="h6">
+                    {client}
+                  </Heading>
+                )}
+                <Paragraph variant="main" class="work-detail_description">
+                  {about.description}
+                </Paragraph>
+                {about.website && (
+                  <a
+                    href={about.website}
+                    class="work-detail_website text-style-main"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    {websiteLabel}
+                  </a>
+                )}
+              </div>
+              {facts.length > 0 && (
+                <dl class="work-detail_facts">
+                  {facts.map((fact) => (
+                    <div class="work-detail_fact">
+                      <dt class="work-detail_fact-label text-style-overline-small">
+                        {fact.label}
+                      </dt>
+                      <dd class="work-detail_fact-value text-style-main">
+                        {fact.value}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              )}
+            </div>
+            <Button element="link" href={buttonHref} class="work-detail_button">
+              {buttonText}
+            </Button>
+          </div>
+          {shareUrl && (
+            <ul class="work-detail_share" role="list" aria-label="Share">
+              <li>
+                <button
+                  type="button"
+                  class="work-detail_share-link"
+                  aria-label="Copy link"
+                  data-copy-url={shareUrl}
+                >
+                  <Icon src={linkIcon} variant="m" />
+                </button>
+              </li>
+              <li>
+                <a
+                  class="work-detail_share-link"
+                  href={`https://www.linkedin.com/sharing/share-offsite/?url=${share}`}
+                  target="_blank"
+                  rel="noopener"
+                  aria-label="Share on LinkedIn"
+                >
+                  <Icon src={linkedinIcon} variant="m" />
+                </a>
+              </li>
+              <li>
+                <a
+                  class="work-detail_share-link"
+                  href={`https://www.facebook.com/sharer/sharer.php?u=${share}`}
+                  target="_blank"
+                  rel="noopener"
+                  aria-label="Share on Facebook"
+                >
+                  <Icon src={facebookIcon} variant="m" />
+                </a>
+              </li>
+            </ul>
+          )}
+        </aside>
+      )}
+    </div>
+  )
+}
+
+<script>
+  for (const button of document.querySelectorAll<HTMLButtonElement>(
+    "[data-copy-url]",
+  )) {
+    button.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(button.dataset.copyUrl ?? "");
+        button.setAttribute("aria-label", "Link copied");
+        button.dataset.copied = "";
+        setTimeout(() => {
+          button.setAttribute("aria-label", "Copy link");
+          delete button.dataset.copied;
+        }, 2000);
+      } catch {
+        /* Clipboard blocked: the link stays where it was. */
+      }
+    });
+  }
+</script>
+
+<style is:global>
+  @layer components {
+    .work-detail_wrap {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-3rem);
+      width: 100%;
+      padding-top: var(--space-4rem);
+      @media (width >= 62rem) {
+        grid-template-columns: minmax(0, 54rem) 25rem;
+        justify-content: space-between;
+        align-items: start;
+      }
+
+      & :is(.heading, .text) {
+        margin: 0;
+      }
+    }
+
+    /* Side panel */
+    .work-detail_aside {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1-5rem);
+      width: 100%;
+      max-width: 25rem;
+      @media (width >= 62rem) {
+        position: sticky;
+        top: calc(var(--nav-height) + var(--space-2rem));
+      }
+    }
+
+    .work-detail_about {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1-5rem);
+      padding: calc(var(--space-1-5rem) - var(--border-width));
+      background-color: var(--color-neutral-2);
+      border: var(--border-width) solid var(--color-neutral-5);
+      border-radius: var(--radius-0-25rem);
+    }
+
+    .work-detail_about-label {
+      color: var(--color-neutral-40);
+    }
+
+    .work-detail_about-content {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-1-5rem);
+    }
+
+    .work-detail_logo {
+      width: auto;
+      height: var(--icon-xl);
+    }
+
+    .work-detail_overview {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-0-75rem);
+
+      & .heading {
+        color: var(--color-neutral-90);
+      }
+    }
+
+    .work-detail_description {
+      color: var(--color-neutral-60);
+    }
+
+    .work-detail_website {
+      color: var(--color-neutral-90);
+      font-weight: var(--primary-medium);
+      text-decoration: underline var(--color-primary-60);
+      text-underline-offset: 0.2em;
+    }
+
+    .work-detail_facts {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-0-125rem);
+      width: 100%;
+      margin: 0;
+    }
+
+    .work-detail_fact {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-0-75rem);
+      padding-block: calc(var(--space-0-75rem) - var(--border-width))
+        var(--space-0-75rem);
+      border-top: var(--border-width) solid var(--color-neutral-5);
+    }
+
+    .work-detail_fact-label {
+      flex: 1 1 0;
+      margin: 0;
+      color: var(--color-neutral-40);
+      letter-spacing: var(--letter-spacing-tag);
+    }
+
+    .work-detail_fact-value {
+      flex: 1 1 0;
+      margin: 0;
+      color: var(--color-neutral-60);
+      text-align: right;
+    }
+
+    .work-detail_button {
+      width: 100%;
+    }
+
+    .work-detail_share {
+      display: flex;
+      gap: var(--space-0-75rem);
+      margin: 0;
+      padding: calc(var(--space-1-5rem) - var(--border-width)) 0 0;
+      list-style: none;
+      border-top: var(--border-width) solid var(--color-neutral-5);
+    }
+
+    .work-detail_share-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: calc(var(--space-0-75rem) - var(--border-width));
+      color: var(--color-neutral-90);
+      background-color: var(--color-neutral-2);
+      border: var(--border-width) solid var(--color-neutral-5);
+      border-radius: var(--radius-0-125rem);
+      cursor: pointer;
+      transition:
+        background-color var(--hover-duration) var(--hover-ease),
+        border-color var(--hover-duration) var(--hover-ease);
+      @media (hover: hover) {
+        &:hover {
+          background-color: var(--color-neutral-5);
+        }
+      }
+      &[data-copied] {
+        border-color: var(--color-primary-60);
+      }
+    }
+  }
+</style>

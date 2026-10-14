@@ -1,0 +1,311 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Icon from "@/components/media/Icon.astro";
+import check from "@/assets/icons/check-small.svg";
+
+type Step = { title: string; text: string; points: string[] };
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading: string;
+  /** Steps in order, numbered automatically. */
+  steps: Step[];
+}
+
+const {
+  render = true,
+  eyebrow = "Our process",
+  heading,
+  steps,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const stepId = (index: number) => `process-step-${index + 1}`;
+const number = (index: number) => `(${String(index + 1).padStart(2, "0")})`;
+---
+
+{
+  render && heading && steps?.length > 0 && (
+    <div class:list={["industry-process_wrap", className]} {...rest}>
+      <div class="industry-process_intro">
+        <Paragraph variant="overline-small" class="industry-process_eyebrow">
+          {eyebrow}
+        </Paragraph>
+        <Heading tag="h2" variant="h3">
+          <Fragment set:html={heading} />
+        </Heading>
+      </div>
+      <div class="industry-process_layout">
+        <nav class="industry-process_nav" aria-label="Process steps">
+          <ul class="industry-process_nav-list" role="list">
+            {steps.map((step, index) => (
+              <li>
+                <a
+                  href={`#${stepId(index)}`}
+                  class="industry-process_nav-link text-style-main weight-medium"
+                  data-process-link={stepId(index)}
+                  aria-current={index === 0 ? "location" : undefined}
+                >
+                  {step.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <ol class="industry-process_list">
+          {steps.map((step, index) => (
+            <li id={stepId(index)} class="industry-process_step">
+              <div class="industry-process_content">
+                <div class="industry-process_heading">
+                  <Paragraph
+                    tag="span"
+                    variant="overline-small"
+                    class="industry-process_number"
+                  >
+                    {number(index)}
+                  </Paragraph>
+                  <Heading tag="h3" variant="h5">
+                    {step.title}
+                  </Heading>
+                  <Paragraph variant="main" class="industry-process_text">
+                    {step.text}
+                  </Paragraph>
+                </div>
+                <ul class="industry-process_points" role="list">
+                  {step.points.map((point) => (
+                    <li class="industry-process_point">
+                      <Icon src={check} class="industry-process_check" />
+                      <Paragraph
+                        tag="span"
+                        variant="main"
+                        class="industry-process_text"
+                      >
+                        {point}
+                      </Paragraph>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div class="industry-process_visual" aria-hidden="true" />
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  )
+}
+
+<script>
+  for (const nav of document.querySelectorAll<HTMLElement>(
+    ".industry-process_nav",
+  )) {
+    const links = [
+      ...nav.querySelectorAll<HTMLAnchorElement>("[data-process-link]"),
+    ];
+    const steps = links
+      .map((link) => document.getElementById(link.dataset.processLink ?? ""))
+      .filter((step): step is HTMLElement => !!step);
+
+    const setCurrent = (id: string) => {
+      for (const link of links) {
+        if (link.dataset.processLink === id) {
+          link.setAttribute("aria-current", "location");
+        } else {
+          link.removeAttribute("aria-current");
+        }
+      }
+    };
+
+    /* The current step is the last one whose top has passed the middle of
+       the viewport. */
+    const update = () => {
+      const line = innerHeight / 2;
+      let current = steps[0];
+      for (const step of steps) {
+        if (step.getBoundingClientRect().top <= line) current = step;
+      }
+      if (current) setCurrent(current.id);
+    };
+
+    let queued = false;
+    addEventListener(
+      "scroll",
+      () => {
+        if (queued) return;
+        queued = true;
+        requestAnimationFrame(() => {
+          queued = false;
+          update();
+        });
+      },
+      { passive: true },
+    );
+    update();
+  }
+</script>
+
+<style is:global>
+  @layer components {
+    .industry-process_wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3-5rem);
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .industry-process_intro {
+        max-width: 46.875rem;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+      }
+
+      .industry-process_eyebrow,
+      .industry-process_number {
+        color: var(--color-neutral-30);
+      }
+
+      .industry-process_layout {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-4rem);
+      }
+
+      .industry-process_nav {
+        display: none;
+        @media (width >= 62rem) {
+          position: sticky;
+          top: calc(var(--nav-height) + var(--space-2rem));
+          flex: none;
+          display: block;
+          width: 18.75rem;
+          padding-block: var(--space-1-5rem);
+          border-left: var(--border-width) solid var(--color-neutral-5);
+        }
+      }
+
+      .industry-process_nav-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-125rem);
+        margin: 0;
+        padding: 0;
+      }
+
+      .industry-process_nav-link {
+        display: block;
+        padding: var(--space-0-5rem) var(--space-2rem);
+        border-left: 0.125rem solid transparent;
+        color: var(--color-neutral-30);
+        text-decoration: none;
+        transition:
+          color 200ms,
+          border-color 200ms;
+        &:hover {
+          color: var(--color-neutral-60);
+        }
+        &[aria-current] {
+          border-left-color: var(--brand);
+          color: var(--color-neutral-90);
+        }
+      }
+
+      .industry-process_list {
+        flex: 1 1 0;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3-5rem);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .industry-process_step {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1-5rem);
+        margin: 0;
+        padding-bottom: var(--space-2rem);
+        scroll-margin-top: calc(var(--nav-height) + var(--space-2rem));
+        @media (width >= 48rem) {
+          flex-direction: row;
+          align-items: stretch;
+          gap: var(--space-3-5rem);
+        }
+      }
+
+      .industry-process_content {
+        width: 100%;
+        max-width: 23.4375rem;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1-5rem);
+        padding-block: var(--space-2rem);
+        @media (width >= 48rem) {
+          flex: none;
+          justify-content: space-between;
+        }
+      }
+
+      .industry-process_heading {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+      }
+
+      .industry-process_text {
+        color: var(--color-neutral-60);
+      }
+
+      .industry-process_points {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        padding: 0;
+      }
+
+      .industry-process_point {
+        display: flex;
+        align-items: center;
+        gap: var(--space-0-75rem);
+        margin: 0;
+        padding-block: var(--space-0-25rem);
+      }
+
+      .industry-process_check {
+        --_size: 1.25rem;
+        color: var(--brand);
+      }
+
+      .industry-process_visual {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        border-radius: var(--radius-0-5rem);
+        background-color: var(--color-neutral-0);
+        background-image: linear-gradient(
+          136.47deg,
+          rgb(0 123 255 / 0.12) 20.75%,
+          rgb(255 255 255 / 0.12) 51.5%,
+          rgb(0 123 255 / 0.12) 99.85%
+        );
+        @media (width >= 48rem) {
+          flex: 1 1 0;
+          min-width: 0;
+          width: auto;
+          align-self: center;
+        }
+      }
+    }
+  }
+</style>

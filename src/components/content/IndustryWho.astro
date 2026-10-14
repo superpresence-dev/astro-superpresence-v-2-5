@@ -1,0 +1,240 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Button from "@/components/Button.astro";
+import Icon from "@/components/media/Icon.astro";
+import { industryIcons } from "@/utils/industries.ts";
+
+type Item = { icon: string; title: string; text?: string };
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading: string;
+  /** Text under the heading. Omit to leave it out. */
+  lead?: string;
+  /** Kinds of client. One with `text` opens on click to show it; the first one starts open. */
+  items: Item[];
+  /** Small text before the link. Omit to leave it out. */
+  note?: string;
+  /** Link text. */
+  linkText?: string;
+  /** Link destination. */
+  linkHref?: string;
+}
+
+const {
+  render = true,
+  eyebrow = "Who we work with",
+  heading,
+  lead,
+  items,
+  note,
+  linkText = "Get in touch",
+  linkHref = "/contact",
+  class: className,
+  ...rest
+} = Astro.props;
+
+const firstWithText = items?.findIndex((item) => item.text);
+const group = "industry-who";
+---
+
+{
+  render && heading && items?.length > 0 && (
+    <div class:list={["industry-who_wrap", className]} {...rest}>
+      <div class="industry-who_intro">
+        <Paragraph variant="overline-small" class="industry-who_eyebrow">
+          {eyebrow}
+        </Paragraph>
+        <Heading tag="h2" variant="h3">
+          <Fragment set:html={heading} />
+        </Heading>
+        {lead && (
+          <Paragraph variant="large" class="industry-who_lead">
+            {lead}
+          </Paragraph>
+        )}
+      </div>
+      <div class="industry-who_body">
+        <ul class="industry-who_list">
+          {items.map((item, index) => (
+            <li class="industry-who_item">
+              {item.text ? (
+                <details
+                  name={group}
+                  open={index === firstWithText}
+                  class="industry-who_details"
+                >
+                  <summary class="industry-who_header">
+                    <Icon
+                      src={industryIcons[item.icon]}
+                      class="industry-who_icon"
+                    />
+                    <Heading tag="h3" variant="h5">
+                      {item.title}
+                    </Heading>
+                  </summary>
+                  <Paragraph variant="main" class="industry-who_text">
+                    {item.text}
+                  </Paragraph>
+                </details>
+              ) : (
+                <div class="industry-who_header">
+                  <Icon
+                    src={industryIcons[item.icon]}
+                    class="industry-who_icon"
+                  />
+                  <Heading tag="h3" variant="h5">
+                    {item.title}
+                  </Heading>
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+        <div class="industry-who_footer">
+          {note && (
+            <Paragraph variant="main" class="industry-who_note">
+              {note}
+            </Paragraph>
+          )}
+          <Button element="link" href={linkHref} variant="link" arrow>
+            {linkText}
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .industry-who_wrap {
+      --_icon: 1.5rem;
+      --_column-gap: var(--space-0-5rem);
+      @media (width >= 48rem) {
+        --_icon: 1.75rem;
+        --_column-gap: var(--space-3rem);
+      }
+      @media (width >= 62rem) {
+        --_icon: 2rem;
+      }
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3-5rem);
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .industry-who_intro {
+        width: 100%;
+        max-width: 55rem;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+      }
+
+      .industry-who_eyebrow {
+        color: var(--color-neutral-30);
+      }
+
+      .industry-who_lead {
+        color: var(--color-neutral-60);
+      }
+
+      .industry-who_body {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3rem);
+        @media (width >= 62rem) {
+          max-width: 56.125rem;
+          margin-left: auto;
+        }
+      }
+
+      .industry-who_list {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        align-items: start;
+        gap: var(--space-0-5rem) var(--_column-gap);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        @media (width >= 48rem) {
+          grid-template-columns: repeat(2, minmax(0, 26.5625rem));
+        }
+      }
+
+      .industry-who_item {
+        margin: 0;
+        padding-block: var(--space-1-5rem);
+        border-top: var(--border-width) solid var(--color-neutral-5);
+      }
+
+      .industry-who_header {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-1-25rem);
+      }
+
+      .industry-who_details {
+        interpolate-size: allow-keywords;
+        &::details-content {
+          block-size: 0;
+          overflow: hidden;
+          content-visibility: hidden;
+          transition:
+            block-size var(--open-duration) var(--open-ease),
+            content-visibility var(--open-duration) var(--open-ease)
+              allow-discrete;
+        }
+        &[open]::details-content {
+          block-size: auto;
+          content-visibility: visible;
+        }
+      }
+
+      summary.industry-who_header {
+        cursor: pointer;
+        list-style: none;
+        &::-webkit-details-marker {
+          display: none;
+        }
+      }
+
+      .industry-who_icon {
+        --_size: var(--_icon);
+        color: var(--brand);
+      }
+
+      .industry-who_text {
+        padding-top: var(--space-0-75rem);
+        padding-left: calc(var(--_icon) + var(--space-1-25rem));
+        color: var(--color-neutral-60);
+      }
+
+      .industry-who_footer {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-0-75rem);
+        @media (width >= 48rem) {
+          flex-direction: row;
+          align-items: center;
+        }
+      }
+
+      .industry-who_note {
+        color: var(--color-neutral-60);
+      }
+    }
+  }
+</style>

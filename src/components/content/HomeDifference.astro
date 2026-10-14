@@ -7,14 +7,28 @@ import logo from "@/assets/home/difference-logo-wrapper.svg";
 import building from "@/assets/home/icon1.svg";
 import check from "@/assets/home/difference-list-item.svg";
 
+type Box = {
+  title: string;
+  featured: boolean;
+  items: string[];
+};
+
 interface Props extends HTMLAttributes<"div"> {
   /** Set to `false` to omit the component. */
   render?: boolean;
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. */
+  heading?: string;
+  /** Text under the heading. Omit to leave it out. */
+  lead?: string;
+  /** The two boxes compared, in display order. */
+  boxes?: Box[];
+  /** Lead width: `narrow` wraps it under the heading, `full` lets it run to 40rem. */
+  leadWidth?: "narrow" | "full";
 }
 
-const { render = true, class: className, ...rest } = Astro.props;
-
-const boxes = [
+const defaultBoxes: Box[] = [
   {
     title: "Superpresence",
     featured: true,
@@ -40,6 +54,17 @@ const boxes = [
     ],
   },
 ];
+
+const {
+  render = true,
+  eyebrow = "Comparing agencies",
+  heading = "Why Superpresence, and not another agency?",
+  lead = "Other agencies can build you a good website. We build one that wins you business.",
+  boxes = defaultBoxes,
+  leadWidth = "narrow",
+  class: className,
+  ...rest
+} = Astro.props;
 ---
 
 {
@@ -47,15 +72,19 @@ const boxes = [
     <div class:list={["home-difference_wrap", className]} {...rest}>
       <div class="home-difference_intro">
         <Paragraph variant="overline-small" class="home-difference_eyebrow">
-          Comparing agencies
+          {eyebrow}
         </Paragraph>
         <Heading tag="h2" variant="h3" class="home-difference_title">
-          Why Superpresence, and not another agency?
+          {heading}
         </Heading>
-        <Paragraph variant="large" class="home-difference_lead">
-          Other agencies can build you a good website. We build one that wins
-          you business.
-        </Paragraph>
+        {lead && (
+          <Paragraph
+            variant="large"
+            class:list={["home-difference_lead", leadWidth]}
+          >
+            {lead}
+          </Paragraph>
+        )}
       </div>
       <div class="home-difference_layout">
         {boxes.map((box) => (
@@ -132,6 +161,9 @@ const boxes = [
         @media (width >= 62rem) {
           max-width: 24.375rem;
         }
+        &.full {
+          max-width: 40rem;
+        }
       }
       .home-difference_layout {
         width: 100%;
@@ -163,14 +195,30 @@ const boxes = [
           flex: 1 1 0;
         }
         &.featured {
+          position: relative;
           padding-top: 0;
           overflow: clip;
           background-color: var(--color-neutral-0);
-          outline: 0.125rem solid var(--color-neutral-0);
-          outline-offset: -0.125rem;
+          outline: 0;
           box-shadow: var(--shadow-3xlarge);
           @media (width >= 62rem) {
             box-shadow: var(--shadow-2xlarge);
+          }
+          &::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border: 0.125rem solid transparent;
+            border-radius: inherit;
+            background:
+              var(--gradient-stroke-image) border-box,
+              linear-gradient(var(--color-neutral-10), var(--color-neutral-10))
+                border-box;
+            mask:
+              linear-gradient(#000 0 0) padding-box,
+              linear-gradient(#000 0 0);
+            mask-composite: exclude;
+            pointer-events: none;
           }
         }
       }

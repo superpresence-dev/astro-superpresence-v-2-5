@@ -6,17 +6,23 @@ import Button from "@/components/Button.astro";
 import Heading from "@/components/typography/Heading.astro";
 import Paragraph from "@/components/typography/Paragraph.astro";
 
+type Item = { question: string; answer: string };
+
 type Props = HTMLAttributes<"div"> & {
   /** Set to `false` to omit the component. */
   render?: boolean;
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. */
+  heading?: string;
+  /** Questions and answers, the first one open. */
+  items?: Item[];
 };
-
-const { render = true, class: className, ...rest } = Astro.props;
 
 const lorem =
   "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.";
 
-const items = [
+const defaultItems: Item[] = [
   {
     question:
       "Can't we build this with AI or a template for a fraction of the price?",
@@ -37,6 +43,15 @@ const items = [
   { question: "What does it cost, and is it worth it?", answer: lorem },
   { question: "How long does it take?", answer: lorem },
 ];
+
+const {
+  render = true,
+  eyebrow = "Questions we hear",
+  heading = "The things you'd ask on a first call",
+  items = defaultItems,
+  class: className,
+  ...rest
+} = Astro.props;
 ---
 
 {
@@ -44,10 +59,10 @@ const items = [
     <div class:list={["home-faq_wrap", className]} {...rest}>
       <div class="home-faq_heading">
         <Paragraph variant="overline-small" class="home-faq_eyebrow">
-          Questions we hear
+          {eyebrow}
         </Paragraph>
         <Heading tag="h2" variant="h3">
-          The things you'd ask on a first call
+          {heading}
         </Heading>
       </div>
 

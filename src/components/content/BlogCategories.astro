@@ -1,0 +1,129 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export interface BlogCategoryLink {
+  label: string;
+  /** Link destination. Leave out and set `value` to render a filter button. */
+  href?: string;
+  /** Filter value, written to `data-filter` on a button. */
+  value?: string;
+}
+
+type Props = HTMLAttributes<"nav"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Category links or filter buttons, in display order. Omit or leave empty to render nothing. */
+  items?: BlogCategoryLink[];
+  /** `href` (link) or `value` (button) of the current category. */
+  current?: string;
+  /** Accessible label. */
+  label?: string;
+};
+
+const {
+  render = true,
+  items = [],
+  current,
+  label = "Blog categories",
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+{
+  render && items.length > 0 && (
+    <nav
+      class:list={["blog-categories_wrap", className]}
+      aria-label={label}
+      {...rest}
+    >
+      <ul class="blog-categories_list" role="list">
+        {items.map((item) => (
+          <li class="blog-categories_item">
+            {item.href !== undefined ? (
+              <a
+                class="blog-categories_link text-style-h6"
+                href={item.href}
+                aria-current={item.href === current ? "page" : undefined}
+              >
+                {item.label}
+              </a>
+            ) : (
+              <button
+                type="button"
+                class="blog-categories_link text-style-h6"
+                data-filter={item.value}
+                aria-pressed={item.value === current ? "true" : "false"}
+              >
+                {item.label}
+              </button>
+            )}
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .blog-categories_wrap {
+      width: 100%;
+      overflow-x: auto;
+      scrollbar-width: none;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    .blog-categories_list {
+      display: flex;
+      width: max-content;
+      min-width: 100%;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border-bottom: var(--border-width) solid var(--color-neutral-5);
+    }
+
+    .blog-categories_item {
+      flex: none;
+      margin: 0;
+    }
+
+    .blog-categories_link {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-0-75rem);
+      margin-bottom: calc(var(--border-width) * -1);
+      padding: var(--space-1-25rem) var(--space-1-25rem)
+        calc(var(--space-1-25rem) - 0.125rem);
+      color: var(--color-neutral-40);
+      text-decoration: none;
+      white-space: nowrap;
+      background: none;
+      border: 0;
+      border-bottom: 0.125rem solid transparent;
+      cursor: pointer;
+      transition:
+        color var(--hover-duration) var(--hover-ease),
+        border-color var(--hover-duration) var(--hover-ease);
+      &:is([aria-current="page"], [aria-pressed="true"]) {
+        color: var(--color-neutral-90);
+        border-bottom-color: var(--color-primary-60);
+        &::after {
+          content: "";
+          flex: none;
+          width: 0.375rem;
+          height: 0.375rem;
+          background-color: var(--color-primary-60);
+        }
+      }
+      @media (hover: hover) {
+        &:hover {
+          color: var(--color-neutral-90);
+        }
+      }
+    }
+  }
+</style>

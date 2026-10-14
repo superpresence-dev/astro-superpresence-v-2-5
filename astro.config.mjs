@@ -3,6 +3,8 @@ import { defineConfig, fontProviders } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import { SITE_URL } from "./src/consts.ts";
 import { isNoindexRoute } from "./src/utils/seo.ts";
+import { satteri } from "@astrojs/markdown-satteri";
+import legalSections from "./src/utils/legal-sections.ts";
 
 export default defineConfig({
   site: SITE_URL,
@@ -11,6 +13,7 @@ export default defineConfig({
       filter: (page) => !isNoindexRoute(new URL(page).pathname),
     }),
   ],
+  markdown: { processor: satteri({ hastPlugins: [legalSections] }) },
   fonts: [
     {
       name: "Stack Sans Headline",

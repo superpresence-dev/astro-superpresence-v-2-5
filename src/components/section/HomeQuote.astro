@@ -4,15 +4,38 @@ import Section from "@/components/wrapper/Section.astro";
 import Paragraph from "@/components/typography/Paragraph.astro";
 import Img from "@/components/media/Img.astro";
 import background from "@/assets/home/globalwrapper.png";
-import logo from "@/assets/home/logo-10.svg";
-import avatar from "@/assets/home/testimonial-image.png";
+import logoImage from "@/assets/home/logo-10.svg";
+import avatarImage from "@/assets/home/testimonial-image.png";
 
 interface Props
   extends
     HTMLAttributes<"section">,
-    Pick<ComponentProps<typeof Section>, "render"> {}
+    Pick<ComponentProps<typeof Section>, "render"> {
+  /** Testimonial text, without quotation marks. */
+  quote?: string;
+  /** Name of the person quoted. */
+  name?: string;
+  /** Role and company of the person quoted. */
+  jobTitle?: string;
+  /** Portrait of the person quoted. */
+  avatar?: ImageMetadata;
+  /** Company logo. */
+  logo?: ImageMetadata;
+  /** Company name, used as the logo's alt text. */
+  company?: string;
+}
 
-const { render = true, class: className, ...rest } = Astro.props;
+const {
+  render = true,
+  quote = "Superpresence rebuilt our site around what founders and partners actually need from us. It finally looks like the organisation we've become, and the team made the whole process easy.",
+  name = "Billy van der Loo",
+  jobTitle = "President, Bangkok Startup Association",
+  avatar = avatarImage,
+  logo = logoImage,
+  company = "Bangkok Startup Association",
+  class: className,
+  ...rest
+} = Astro.props;
 ---
 
 <Section render={render} class:list={["home-quote_wrap", className]} {...rest}>
@@ -20,23 +43,21 @@ const { render = true, class: className, ...rest } = Astro.props;
   <div slot="background" class="home-quote_fade"></div>
   <div class="home-quote_layout">
     <div class="home-quote_logo">
-      <Img src={logo} alt="Superpresence" class="home-quote_logo-image" />
+      <Img src={logo} alt={company} class="home-quote_logo-image" />
     </div>
     <Paragraph variant="h4" class="home-quote_quote">
-      "Superpresence rebuilt our site around what founders and partners actually
-      need from us. It finally looks like the organisation we've become, and the
-      team made the whole process easy."
+      "{quote}"
     </Paragraph>
     <div class="home-quote_detail">
       <div class="home-quote_avatar">
-        <Img src={avatar} alt="Billy van der Loo" />
+        <Img src={avatar} alt={name} />
       </div>
       <div class="home-quote_person">
         <Paragraph variant="large" class="home-quote_name">
-          Billy van der Loo
+          {name}
         </Paragraph>
         <Paragraph variant="main" class="home-quote_role">
-          President, Bangkok Startup Association
+          {jobTitle}
         </Paragraph>
       </div>
     </div>

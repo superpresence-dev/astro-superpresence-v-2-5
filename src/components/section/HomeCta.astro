@@ -18,9 +18,32 @@ type Props = Omit<
   | "fullHeight"
   | "containerClass"
   | "containerAttrs"
->;
+> & {
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Eyebrow type style. */
+  eyebrowVariant?: "overline-small" | "overline-main";
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading?: string;
+  /** Paragraph below the heading. */
+  text?: string;
+  /** Button text. */
+  buttonText?: string;
+  /** Button link. */
+  buttonHref?: string;
+};
 
-const { render = true, class: className, ...rest } = Astro.props;
+const {
+  render = true,
+  eyebrow = "Free website teardown",
+  eyebrowVariant = "overline-small",
+  heading = "Get a free teardown of your website",
+  text = "Send us your link and we'll review your website: what's working, what's losing buyers, and what we'd change first.",
+  buttonText = "Review my website",
+  buttonHref = "#",
+  class: className,
+  ...rest
+} = Astro.props;
 ---
 
 <Section
@@ -38,19 +61,18 @@ const { render = true, class: className, ...rest } = Astro.props;
 
   <div class="home-cta_content">
     <div class="home-cta_text">
-      <Paragraph variant="overline-small" class="home-cta_eyebrow">
-        Free website teardown
+      <Paragraph variant={eyebrowVariant} class="home-cta_eyebrow">
+        {eyebrow}
       </Paragraph>
       <Heading tag="h2" variant="h2" maxWidth={30}>
-        Get a free teardown of your website
+        <Fragment set:html={heading} />
       </Heading>
       <Paragraph variant="large" class="home-cta_body">
-        Send us your link and we'll review your website: what's working, what's
-        losing buyers, and what we'd change first.
+        {text}
       </Paragraph>
     </div>
     <ButtonWrapper marginTop="0">
-      <Button element="link" href="#" arrow>Review my website</Button>
+      <Button element="link" href={buttonHref} arrow>{buttonText}</Button>
     </ButtonWrapper>
   </div>
 </Section>
@@ -115,7 +137,6 @@ const { render = true, class: className, ...rest } = Astro.props;
 
     .home-cta_eyebrow {
       color: var(--color-neutral-30);
-      letter-spacing: 0.03em;
     }
 
     .home-cta_wrap .heading {

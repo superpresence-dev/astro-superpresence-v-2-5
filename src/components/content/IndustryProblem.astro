@@ -1,0 +1,162 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+
+type Item = { title: string; text: string };
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading: string;
+  /** Text under the heading. Omit to leave it out. */
+  lead?: string;
+  /** Problems in order, numbered automatically. */
+  items: Item[];
+}
+
+const {
+  render = true,
+  eyebrow = "Sound familiar?",
+  heading,
+  lead,
+  items,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const number = (index: number) => `( ${String(index + 1).padStart(2, "0")} )`;
+---
+
+{
+  render && heading && items?.length > 0 && (
+    <div class:list={["industry-problem_wrap", className]} {...rest}>
+      <div class="industry-problem_intro">
+        <Paragraph variant="overline-small" class="industry-problem_eyebrow">
+          {eyebrow}
+        </Paragraph>
+        <Heading tag="h2" variant="h3">
+          <Fragment set:html={heading} />
+        </Heading>
+        {lead && (
+          <Paragraph variant="large" class="industry-problem_lead">
+            {lead}
+          </Paragraph>
+        )}
+      </div>
+      <ol class="industry-problem_list">
+        {items.map((item, index) => (
+          <li class="industry-problem_card">
+            <Paragraph
+              tag="span"
+              variant="overline-small"
+              class="industry-problem_number"
+            >
+              {number(index)}
+            </Paragraph>
+            <div class="industry-problem_content">
+              <Heading tag="h3" variant="h6">
+                {item.title}
+              </Heading>
+              <Paragraph variant="main" class="industry-problem_text">
+                {item.text}
+              </Paragraph>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .industry-problem_wrap {
+      --_card-height: 12.5rem;
+      @media (width >= 48rem) {
+        --_card-height: 14.0625rem;
+      }
+      @media (width >= 62rem) {
+        --_card-height: 15rem;
+      }
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-3-5rem);
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .industry-problem_intro {
+        width: 100%;
+        max-width: 40rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-0-75rem);
+        text-align: center;
+        @media (width >= 62rem) {
+          max-width: 55rem;
+        }
+      }
+
+      .industry-problem_eyebrow {
+        color: var(--color-neutral-30);
+      }
+
+      .industry-problem_lead {
+        max-width: 40rem;
+      }
+
+      .industry-problem_list {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1-5rem);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        @media (width >= 48rem) {
+          flex-direction: row;
+        }
+      }
+
+      .industry-problem_card {
+        min-width: 0;
+        @media (width >= 48rem) {
+          flex: 1 1 0;
+        }
+        height: var(--_card-height);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin: 0;
+        padding: var(--space-1-5rem);
+        overflow: clip;
+        background-color: var(--color-neutral-2);
+        border: var(--border-width) dashed var(--color-neutral-10);
+        border-radius: var(--radius-0-25rem);
+      }
+
+      .industry-problem_number {
+        color: var(--color-neutral-30);
+      }
+
+      .industry-problem_content {
+        max-width: 30rem;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-5rem);
+      }
+
+      .industry-problem_text {
+        color: var(--color-neutral-60);
+      }
+    }
+  }
+</style>

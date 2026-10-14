@@ -1,0 +1,86 @@
+---
+import type { Page } from "astro";
+import type { CollectionEntry } from "astro:content";
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import HeroListing from "@/components/content/HeroListing.astro";
+import ListingShowcase from "@/components/content/ListingShowcase.astro";
+import BlogCategories from "@/components/content/BlogCategories.astro";
+import BlogList from "@/components/content/BlogList.astro";
+import BlogSubscribe from "@/components/content/BlogSubscribe.astro";
+import HomeCta from "@/components/section/HomeCta.astro";
+import { blogCategoryLinks, blogPostUrl } from "@/utils/blog.ts";
+
+interface Props {
+  /** Paginated posts for this URL. */
+  page: Page<CollectionEntry<"blog">>;
+  /** URL of this listing's first page. */
+  baseUrl: string;
+  /** Category name, when the listing is filtered. */
+  category?: string;
+}
+
+const { page, baseUrl, category } = Astro.props;
+
+const items = page.data.map(({ id, data }) => ({
+  title: data.title,
+  tag: data.tag,
+  date: data.date,
+  thumbnail: data.thumbnail,
+  href: blogPostUrl(id),
+}));
+
+const title = [
+  category ? `${category} – Insights` : "Insights",
+  page.currentPage > 1 && `Page ${page.currentPage}`,
+]
+  .filter(Boolean)
+  .join(" – ");
+---
+
+<Layout
+  title={title}
+  description="Discover stories, insights, and ideas from Superpresence — behind-the-scenes views, trends, and the thinking behind our work."
+  navTheme="light"
+>
+  {/* Hero */}
+  <Section paddingTop="none" paddingBottom="none">
+    <HeroListing
+      eyebrow="News & insights"
+      heading="Insight by Superpresence"
+      text="Discover stories, insights, and ideas from Superpresence — behind-the-scenes views, trends, and the thinking behind our work."
+    />
+  </Section>
+  {/* Showcase */}
+  <Section paddingTop="none">
+    <ListingShowcase
+      currentPage={page.currentPage}
+      lastPage={page.lastPage}
+      baseUrl={baseUrl}
+    >
+      <BlogCategories
+        slot="filters"
+        items={blogCategoryLinks()}
+        current={baseUrl}
+      />
+      <BlogList items={items} />
+    </ListingShowcase>
+  </Section>
+  {/* Subscribe */}
+  <Section paddingTop="none" paddingBottom="none">
+    <BlogSubscribe
+      eyebrow="+1200 readers"
+      heading="Stay ahead of the curve!<br />Subscribe now for expert insights"
+      text="Hear directly from clients about their journey with Superpresence<br />— our collaboration, expertise, and the results achieved."
+    />
+  </Section>
+  {/* CTA */}
+  <HomeCta
+    eyebrow="You've reached the end, so now…"
+    eyebrowVariant="overline-main"
+    heading="Stop guessing.<br />Start moving forward."
+    text="30-minute strategy call. No pitch deck. We’ll look at your site together and tell you what we’d change and why."
+    buttonText="Book a strategy call"
+    buttonHref="/contact"
+  />
+</Layout>

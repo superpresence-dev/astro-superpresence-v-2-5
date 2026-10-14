@@ -1,0 +1,19 @@
+---
+import type { GetStaticPaths, Page } from "astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+import BlogIndexLayout from "@/layouts/BlogIndexLayout.astro";
+import { BLOG_PAGE_SIZE, BLOG_URL, sortPosts } from "@/utils/blog.ts";
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = sortPosts(await getCollection("blog"));
+  return paginate(posts, { pageSize: BLOG_PAGE_SIZE });
+}) satisfies GetStaticPaths;
+
+interface Props {
+  page: Page<CollectionEntry<"blog">>;
+}
+
+const { page } = Astro.props;
+---
+
+<BlogIndexLayout page={page} baseUrl={BLOG_URL} />

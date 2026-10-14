@@ -1,0 +1,39 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import LegalHero from "@/components/section/LegalHero.astro";
+import LegalBody from "@/components/content/LegalBody.astro";
+
+export const getStaticPaths = (async () => {
+  const pages = await getCollection("legal");
+  return pages.map((page) => ({ params: { legal: page.id }, props: { page } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  page: CollectionEntry<"legal">;
+}
+
+const { page } = Astro.props;
+const { data } = page;
+const { Content } = await render(page);
+
+const lastUpdated = data.lastUpdated.toLocaleDateString("en-US", {
+  month: "long",
+  day: "numeric",
+  year: "numeric",
+  timeZone: "UTC",
+});
+---
+
+<Layout title={data.title} description={data.description} overlap={true}>
+  {/* Hero */}
+  <LegalHero heading={data.title} meta={`Last updated ${lastUpdated}`} />
+  {/* Body */}
+  <Section>
+    <LegalBody>
+      <Content />
+    </LegalBody>
+  </Section>
+</Layout>

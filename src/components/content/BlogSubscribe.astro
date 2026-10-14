@@ -1,0 +1,176 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Button from "@/components/Button.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Form from "@/components/form/Form.astro";
+import Input from "@/components/form/Input.astro";
+
+type Props = HTMLAttributes<"div"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. Omit to render nothing. */
+  heading?: string;
+  /** Paragraph below the heading. Accepts `<br>` for a forced line break. */
+  text?: string;
+  /** Form endpoint. Omit to skip submission. */
+  action?: string;
+};
+
+const {
+  render = true,
+  eyebrow,
+  heading,
+  text,
+  action,
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+{
+  render && heading && (
+    <div class:list={["blog-subscribe_wrap", className]} {...rest}>
+      <div class="blog-subscribe_layout">
+        <div class="blog-subscribe_text">
+          {eyebrow && (
+            <Paragraph variant="overline-small" class="blog-subscribe_eyebrow">
+              {eyebrow}
+            </Paragraph>
+          )}
+          <Heading tag="h2" variant="h3">
+            <Fragment set:html={heading} />
+          </Heading>
+          {text && (
+            <Paragraph variant="large" class="blog-subscribe_body">
+              <Fragment set:html={text} />
+            </Paragraph>
+          )}
+        </div>
+        <Form name="blog-subscribe" action={action} class="blog-subscribe_form">
+          <Input
+            variant="email"
+            label="Email address"
+            placeholder="Your email address"
+            labelHidden
+            required
+          />
+          <Button type="submit">Subscribe</Button>
+        </Form>
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .blog-subscribe_wrap {
+      width: 100%;
+      margin-block: var(--space-3-5rem);
+      padding-block: calc(var(--space-4rem) - 0.125rem) var(--space-4rem);
+      border-top: 0.125rem solid var(--color-primary-60);
+      border-image: linear-gradient(
+          to right,
+          rgb(113 137 206) 4.95%,
+          rgb(142 155 206) 8.46%,
+          rgb(166 170 206) 11.96%,
+          rgb(186 182 205) 15.47%,
+          rgb(179 176 204) 18.04%,
+          rgb(171 169 203) 20.6%,
+          rgb(162 162 202) 23.16%,
+          rgb(147 150 206) 25.33%,
+          rgb(130 137 209) 27.51%,
+          rgb(111 123 213) 29.68%,
+          rgb(131 150 209) 38.18%,
+          rgb(149 171 206) 46.67%,
+          rgb(162 187 202) 55.16%,
+          rgb(152 174 205) 59.79%,
+          rgb(140 156 207) 64.42%,
+          rgb(126 134 210) 69.05%,
+          rgb(126 134 210) 82.11%,
+          rgb(158 159 203) 84.56%,
+          rgb(184 179 197) 87.02%,
+          rgb(202 193 192) 89.47%,
+          rgb(181 180 196) 92.6%,
+          rgb(152 161 200) 95.72%,
+          rgb(113 137 206) 98.84%
+        )
+        1;
+      @media (width >= 48rem) {
+        padding-inline: var(--space-4rem);
+      }
+
+      & :is(.heading, .text) {
+        margin: 0;
+      }
+    }
+
+    .blog-subscribe_layout {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2rem);
+      max-width: 55rem;
+      margin-inline: auto;
+    }
+
+    .blog-subscribe_text {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-0-75rem);
+      width: 100%;
+      text-align: center;
+    }
+
+    .blog-subscribe_eyebrow {
+      color: var(--color-neutral-30);
+    }
+
+    .blog-subscribe_body {
+      max-width: 40rem;
+      color: var(--color-neutral-60);
+      @media (width < 48rem) {
+        & br {
+          display: none;
+        }
+      }
+    }
+
+    .blog-subscribe_form {
+      width: 100%;
+      @media (width >= 48rem) {
+        width: auto;
+      }
+      & .form_fields {
+        flex-direction: column;
+        gap: var(--space-0-5rem);
+        @media (width >= 48rem) {
+          flex-direction: row;
+          align-items: stretch;
+        }
+      }
+      & .field {
+        @media (width >= 48rem) {
+          width: 25rem;
+        }
+      }
+      & .field-control {
+        --_field-pad-block: var(--space-0-75rem);
+        --_field-pad-inline: var(--space-1-25rem);
+        --field-border-inset: var(--border-width);
+        background-color: var(--color-neutral-2);
+        border-color: var(--color-neutral-5);
+        border-radius: var(--radius-0-125rem);
+        &::placeholder {
+          color: var(--color-neutral-30);
+        }
+      }
+      & .button_wrap {
+        white-space: nowrap;
+      }
+    }
+  }
+</style>

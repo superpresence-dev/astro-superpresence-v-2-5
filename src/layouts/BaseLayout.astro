@@ -15,9 +15,16 @@ type Props = SeoProps & {
    * `paddingTop="navoverlap"` to clear the bar.
    */
   overlap?: boolean;
+  /** Theme for the nav. `light` for a page that starts on white. */
+  navTheme?: "dark" | "light";
 };
 
-const { theme = "inherit", overlap = false, ...seo } = Astro.props;
+const {
+  theme = "inherit",
+  overlap = false,
+  navTheme = "dark",
+  ...seo
+} = Astro.props;
 ---
 
 <!doctype html>
@@ -28,7 +35,7 @@ const { theme = "inherit", overlap = false, ...seo } = Astro.props;
   </head>
   <body>
     <SkipLink />
-    <Nav overlap={overlap} />
+    <Nav theme={navTheme} overlap={overlap} />
     <main id="main" tabindex="-1">
       <slot />
     </main>

@@ -1,0 +1,168 @@
+---
+import type { ComponentProps, HTMLAttributes } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import ButtonWrapper from "@/components/wrapper/ButtonWrapper.astro";
+import Button from "@/components/Button.astro";
+import Icon from "@/components/media/Icon.astro";
+import Img from "@/components/media/Img.astro";
+import background from "@/assets/404/background.png";
+import graphic from "@/assets/404/404.svg";
+
+interface Props
+  extends HTMLAttributes<"section">,
+    Pick<ComponentProps<typeof Section>, "render"> {}
+
+const { render = true, class: className, ...rest } = Astro.props;
+---
+
+<Section
+  render={render}
+  theme="dark"
+  paddingTop="none"
+  paddingBottom="none"
+  containerClass="not-found_layout"
+  class:list={["not-found_wrap", className]}
+  {...rest}
+>
+  <Img
+    src={background}
+    slot="background"
+    loading="eager"
+    fetchPriority="high"
+    class="not-found_image"
+  />
+  <div slot="background" class="not-found_fade"></div>
+  <div class="not-found_content">
+    <div class="not-found_heading">
+      <Heading tag="h1" variant="overline-small" class="not-found_eyebrow">
+        Page not found
+      </Heading>
+      <Icon src={graphic} class="not-found_graphic" aria-label="404" role="img" />
+      <Paragraph variant="large" class="not-found_text">
+        The page you are looking for does not exist or may have been moved.
+        Keep exploring our site.
+      </Paragraph>
+    </div>
+    <ButtonWrapper marginTop="0">
+      <Button element="link" href="/" variant="link" arrow>
+        Back to homepage
+      </Button>
+    </ButtonWrapper>
+  </div>
+</Section>
+
+<style is:global>
+  @layer components {
+    .not-found_wrap {
+      --_base: var(--color-primary-98);
+      --_fade-tall: 11.25rem;
+      --_fade-short: 8.75rem;
+      --_padding-block: var(--space-5-5rem);
+      --_text-width: 30rem;
+      --_graphic-height: 6.25rem;
+      @media (width >= 48rem) {
+        --_graphic-height: 9.375rem;
+      }
+      @media (width >= 62rem) {
+        --_fade-tall: 12.5rem;
+        --_fade-short: 9.375rem;
+        --_padding-block: var(--space-6-5rem);
+        --_text-width: 33.75rem;
+        --_graphic-height: 12.5rem;
+      }
+      min-height: 100svh;
+      overflow: clip;
+      background-color: var(--_base);
+
+      /* Figma stretches the photo past the frame, differently per breakpoint. */
+      .not-found_image {
+        --_image-left: -99.49%;
+        --_image-top: -7.21%;
+        --_image-width: 298.98%;
+        --_image-height: 108.85%;
+        @media (width >= 48rem) {
+          --_image-left: -18.35%;
+          --_image-top: -13.69%;
+          --_image-width: 136.69%;
+          --_image-height: 115.33%;
+        }
+        @media (width >= 62rem) {
+          --_image-left: -8.27%;
+          --_image-top: -22.42%;
+          --_image-width: 116.53%;
+          --_image-height: 124.06%;
+        }
+        inset: auto;
+        left: var(--_image-left);
+        top: var(--_image-top);
+        width: var(--_image-width);
+        height: var(--_image-height);
+        max-width: none;
+        object-fit: fill;
+        opacity: 0.8;
+      }
+
+      .not-found_fade {
+        background-color: color-mix(in lab, var(--_base) 16%, transparent);
+        background-image:
+          linear-gradient(to bottom, transparent, var(--_base)),
+          linear-gradient(to bottom, transparent, var(--_base));
+        background-position: bottom;
+        background-repeat: no-repeat;
+        background-size:
+          100% var(--_fade-tall),
+          100% var(--_fade-short);
+      }
+
+      .not-found_layout {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-top: calc(var(--nav-height) + var(--_padding-block));
+        padding-bottom: var(--_padding-block);
+      }
+
+      .not-found_content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-2rem);
+        text-align: center;
+
+        & > * {
+          margin: 0;
+        }
+      }
+
+      .not-found_heading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-0-75rem);
+
+        & > * {
+          margin: 0;
+        }
+      }
+
+      .not-found_eyebrow {
+        color: var(--color-neutral-30);
+      }
+
+      .not-found_graphic {
+        --_size: auto;
+        height: var(--_graphic-height);
+        aspect-ratio: 465.876 / 200;
+      }
+
+      .not-found_text {
+        max-width: var(--_text-width);
+        color: var(--color-neutral-10);
+        text-wrap: balance;
+      }
+    }
+  }
+</style>

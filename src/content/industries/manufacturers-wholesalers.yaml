@@ -1,0 +1,171 @@
+title: Manufacturers & wholesalers
+description: Websites for manufacturers and wholesalers across Asia. We build sites that turn buyer visits into enquiries, samples and orders.
+order: 4
+
+hero:
+  eyebrow: For manufacturers and exporters
+  heading: Buyers choose the supplier who looks the part
+  text: Importers, brands and distributors judge what you can make from your site before they reply. We build sites that turn those visits into enquiries, samples and orders.
+  image: ../../assets/industries/manufacturers-wholesalers/hero.jpg
+
+problem:
+  heading: Competitors with worse product<br />are winning your enquiries
+  lead: Your product wins in person, but buyers shortlist online before anyone meets you.
+  items:
+    - title: Your site was built for a trade fair
+      text: It went up years ago for one event, and nobody has owned it since.
+    - title: Buyers cannot tell what you offer
+      text: Visitors land on the homepage and leave without understanding your range or capability.
+    - title: The enquiry goes to a weaker supplier
+      text: A buyer compares three sites, and the best one gets the email, whatever the product.
+
+who:
+  heading: For Asian manufacturers and<br />wholesalers selling abroad
+  lead: Every firm here sells to buyers who cannot walk the factory floor, so the website has to do the walking.
+  items:
+    - icon: gem
+      title: Jewellery and gems
+      text: Buyers check stone quality, finishing and certification before they request a sample.
+    - icon: chip
+      title: Electronics and components
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: gear
+      title: Machinery and industrial parts
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: shirt
+      title: Textiles and apparel
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: package
+      title: Packaging and materials
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: documents
+      title: Trading and sourcing companies
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+  note: Don't see your firm type? Tell us what you do.
+
+build:
+  heading: The pages and features buyers<br />expect to find
+  image: ../../assets/industries/manufacturers-wholesalers/build.jpg
+  items:
+    - title: Capability pages
+      text: Your entire process, clearly shown without needing a factory visit or tour.
+    - title: Catalogue and range pages
+      text: Your full product range, easily browsable and shortlistable for quick decisions.
+    - title: Certifications and standards
+      text: Proof is placed exactly where buyers make their final decisions confidently.
+    - title: MOQ and lead times
+      text: Here are the two questions, clearly answered right at the very beginning for you.
+    - title: Enquiry and quote forms
+      text: A quote or sample can be requested quickly, in just a few minutes.
+    - title: Trade fair pages
+      text: One link ahead, with meetings already warmed and ready to start.
+
+difference:
+  heading: What changes once the site is live
+  lead: The same factory, finally presented like it deserves.
+  without:
+    - Trade-show traffic leaves without RFQs
+    - Capability stays unclear to procurement
+    - Certifications buried where no buyer looks
+    - Buyers wait on spec sheets that never come
+    - The site raises audit doubts before a visit
+    - Buyers only find you on Alibaba or at fairs
+    - Distributors work with material that undersells you
+  with:
+    - Trade-show traffic turns into RFQs and samples
+    - OEM, ODM, capacity and MOQ easy to judge
+    - Certifications sit where procurement teams look
+    - Catalogues and spec sheets download and forward
+    - You look audit-ready before anyone books flights
+    - Buyers find you on Google and AI tools
+    - Distributor material represents the factory properly
+
+process:
+  heading: We build the site around<br />how your buyers shortlist suppliers
+  steps:
+    - title: Research & Strategy
+      text: We study your competitors, your services and how buyers find and compare suppliers in your trade, then plan the site around winning that comparison.
+      points:
+        - Competitor and market research
+        - Sitemap built around your services
+        - Marketing funnel mapped end to end
+    - title: Visual Design
+      text: Every screen is drawn for your company, so the site carries the authority of what you actually produce.
+      points:
+        - Fully custom design
+        - Premium visual direction
+        - Authoritative presentation of your range
+    - title: Messaging & Copywriting
+      text: Our writers produce copy that answers what importers and brands want to know, at each step of their decision.
+      points:
+        - Persuasive page copy
+        - English written for buyers
+        - Messages matched to each buyer stage
+    - title: UI/UX Design
+      text: Every page is laid out to move a visitor towards an enquiry, and works on every device your buyer opens.
+      points:
+        - Conversion-focused page flows
+        - Enquiry and quote paths
+        - Responsive on every device
+    - title: Development & QA
+      text: We build on the latest tech stack, fast and structured for search engines and AI tools to read correctly, and test everything before launch.
+      points:
+        - Fast load speeds
+        - SEO-ready structure
+        - Integrated with your tools
+
+growth:
+  heading: What a website built for<br />enquiries does
+  lead: Every improvement below turns your product quality and factory capability into enquiries, samples and orders.
+  items:
+    - title: Conversion-focused UX
+      text: Every page strategically moves buyers closer towards an RFQ.
+    - title: Fast load speeds
+      text: Catalogues and spec sheets open instantly for sourcing teams.
+    - title: Search and AI visibility
+      text: Buyers sourcing on Google and AI tools find you.
+    - title: Analytics
+      text: You see which products drive the most sample requests.
+    - title: A CMS the team runs
+      text: Your team updates products and specs without a developer.
+    - title: Security and scale
+      text: The site handles buyer traffic from every fair.
+
+value:
+  heading: Everything it takes to<br />win more RFQs, in one team
+  items:
+    - title: Built for English-speaking buyers
+      text: Your buyers in Europe, the US and Japan judge you in English. We write for procurement, so nothing reads translated.
+    - title: AI-native, not AI-dependent
+      text: We use AI to map buyers, rivals and specs fast. Experts direct it and sign off every line, so nothing generic ships.
+    - title: Web design that wins business
+      text: Every page moves sourcing teams towards an RFQ, with specs, certifications and capacity where they look first.
+    - title: The whole team, none of the overhead
+      text: Your factory gets the whole team, from strategist to QA, with nobody to recruit, onboard or manage.
+    - title: You look sharper than your competitors
+      text: Design and detail that look audit-ready, so you stand out from older and larger suppliers.
+  writerLine: Die-cast parts for automotive OEMs.
+
+faq:
+  heading: What manufacturers ask us
+  items:
+    - question: Do you work with companies like ours?
+      answer: Yes. We work with manufacturers, wholesalers and trading companies across Asia, and we start every project by learning what you make and how your buyers buy it.
+    - question: Will an agency understand what we make?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Our orders come from fairs and agents. Why do we need a website?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Our buyers already know us. What would a new site do?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: We cannot publish prices or name customers. Can you still build a persuasive site?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Our product photography is poor. Is that a problem?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Do you redesign our old site or build a new one?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: How long does it take?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+
+cta:
+  heading: Ready for buyers to send you<br />something you can quote?
+  text: Tell us what you make, which markets you sell into and how enquiries reach you today, and we'll shape the right scope around it.

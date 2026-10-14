@@ -171,10 +171,10 @@ const timeIn = (zone: string) =>
               &copy;Superpresence, All Rights Reserved{" "}
               <span class="footer_year">{new Date().getFullYear()}</span>
             </p>
-            <a class="footer_tag footer_tag-link" href="#">
+            <a class="footer_tag footer_tag-link" href="/privacy-policy">
               Privacy policy
             </a>
-            <a class="footer_tag footer_tag-link" href="#">
+            <a class="footer_tag footer_tag-link" href="/terms-and-conditions">
               Term of service
             </a>
           </div>
@@ -420,8 +420,27 @@ const timeIn = (zone: string) =>
         color-mix(in lab, var(--color-neutral-0) 8%, transparent),
         color-mix(in lab, var(--color-neutral-0) 3%, transparent)
       );
-      border: var(--border-width) solid var(--footer-line);
+      position: relative;
+      border: var(--border-width) solid transparent;
       border-radius: var(--radius-0-25rem);
+      &::after {
+        content: "";
+        position: absolute;
+        inset: calc(var(--border-width) * -1);
+        border: var(--border-width) solid transparent;
+        border-radius: inherit;
+        background: linear-gradient(
+            to bottom,
+            color-mix(in lab, var(--color-neutral-0) 8%, transparent),
+            color-mix(in lab, var(--color-neutral-0) 3.2%, transparent)
+          )
+          border-box;
+        mask:
+          linear-gradient(#000 0 0) padding-box,
+          linear-gradient(#000 0 0);
+        mask-composite: exclude;
+        pointer-events: none;
+      }
       @media (width >= 48rem) {
         max-width: 28.125rem;
         padding: calc(var(--space-1-5rem) - var(--border-width));
@@ -493,7 +512,7 @@ const timeIn = (zone: string) =>
     .footer_tag {
       font-size: var(--overline-small);
       line-height: var(--overline-small-line-height);
-      letter-spacing: 0.02em;
+      letter-spacing: var(--letter-spacing-tag);
       text-transform: uppercase;
       color: var(--color-neutral-40);
       white-space: nowrap;

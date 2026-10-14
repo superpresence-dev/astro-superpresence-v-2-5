@@ -1,0 +1,169 @@
+title: SaaS & tech
+description: Websites for software companies across Asia. We make a technical product clear in seconds and turn a cold visitor into a booked demo.
+order: 2
+
+hero:
+  eyebrow: Websites for SaaS
+  heading: Your buyers shortlist you<br />from your website
+  text: We build sites for software companies that make a technical product clear in seconds and turn a cold visitor into a booked demo.
+  image: ../../assets/industries/saas-tech/hero.jpg
+
+problem:
+  heading: Your website is losing deals<br />your product would win
+  lead: The product wins evaluations; the site never gets you into one.
+  items:
+    - title: Your developers are building the site
+      text: The people shipping your product are building marketing pages instead, and both fall behind.
+    - title: Visitors can't tell what you sell
+      text: A technical product needs plain words fast, and the site doesn't give them.
+    - title: Ads bring visitors who never book
+      text: You pay for the clicks, and the site sends them away without a demo request.
+
+who:
+  heading: We build websites for<br />technology companies across Asia
+  lead: Firms whose buyers compare vendors online in English before anyone speaks.
+  items:
+    - icon: people
+      title: B2B SaaS
+      text: A buyer checks your pricing and integrations pages before booking a demo.
+    - icon: coins
+      title: Fintech
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: heart
+      title: Healthtech
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: ai
+      title: AI companies
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: shield
+      title: Cybersecurity
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: terminal
+      title: Developer tools
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+  note: Don't see your kind of software? Tell us what you build.
+
+build:
+  heading: The pages a software company<br />actually needs
+  image: ../../assets/industries/saas-tech/build.jpg
+  items:
+    - title: Homepage
+      text: Clearly explain what you do in just one minute to make a strong impression.
+    - title: Product and feature pages
+      text: Features are designed and sold specifically to deliver meaningful outcomes for buyers.
+    - title: Pricing page
+      text: Compare plans easily without missing out on any valuable deals.
+    - title: Demo booking flow
+      text: Book your appointment quickly and effortlessly in just a few clicks.
+    - title: Docs and blog integration
+      text: Keep technical buyers engaged and browsing right on your website.
+    - title: App connection
+      text: A trial can start anywhere, anytime, with anyone involved in the process.
+
+difference:
+  heading: What changes once the site is live
+  lead: What a sharper site changes, line by line.
+  without:
+    - Traffic visits and leaves without a demo
+    - Comparison searches send buyers to competitors
+    - Technical buyers leave unconvinced
+    - Procurement stalls on missing compliance pages
+    - The site undercuts you during a raise
+    - Every page change queues behind engineering
+  with:
+    - Traffic turns into demos and trial sign-ups
+    - Comparison searches land on your honest pages
+    - Integrations, docs and changelog build technical trust
+    - Procurement passes on SOC 2 and ISO pages
+    - Investors see credibility, not just buyers
+    - Marketing ships pages without waiting on engineering
+
+process:
+  heading: We rebuild the site so<br />it wins the vendor comparison
+  steps:
+    - title: Research & Strategy
+      text: We study your competitors and how your buyers choose vendors before anything is designed.
+      points:
+        - Competitor research
+        - Sitemap built around your services
+        - Mapping how buyers find you
+    - title: Visual Design
+      text: Every screen is drawn for your company, so buyers comparing you against three other tabs see the one that belongs on the shortlist.
+      points:
+        - Fully custom design
+        - A look that fits a funded company
+        - A consistent design system
+    - title: Messaging & Copywriting
+      text: "We write product marketing copy: your product in the language your buyers already speak, so a cold visitor gets it before they scroll."
+      points:
+        - Product marketing copy
+        - Your buyer's own language
+        - Calls to action built around demos
+    - title: UI/UX Design
+      text: Every page is built to move a visitor towards a booked demo, on any device.
+      points:
+        - Paths for self-serve and sales-led
+        - Responsive on every device
+        - Demo booking flows
+    - title: Development & QA
+      text: We build on the latest tech stack, then test the site across devices and browsers before launch.
+      points:
+        - Fast load speeds
+        - SEO-ready structure
+        - Integrated with your tools
+
+growth:
+  heading: What growth needs the website to do
+  lead: Six essential things your site must achieve before the product makes the shortlist.
+  items:
+    - title: Conversion-focused UX
+      text: Every page moves visitors towards a demo request.
+    - title: Fast load speeds
+      text: Pages load fast, which keeps trial sign-ups.
+    - title: Search and AI visibility
+      text: Buyers and AI tools find you in comparisons.
+    - title: Analytics
+      text: You can see exactly which pages drive the most sign-ups.
+    - title: A CMS the team runs
+      text: Marketing ships pages and experiments without engineering.
+    - title: Security and scale
+      text: The site remains stable and responsive as traffic steadily grows.
+
+value:
+  heading: Everything it takes to win<br />more demos, in one team
+  items:
+    - title: Built for English-speaking buyers
+      text: Your buyers evaluate software in English. We write for them, so the product never reads translated.
+    - title: AI-native, not AI-dependent
+      text: We use AI to research competitors, reviews and buyer questions fast. Experts direct it and sign off every line, so nothing generic ships.
+    - title: Web design that wins business
+      text: Every page moves visitors towards a demo or a trial, with the proof buyers need to justify it.
+    - title: The whole team, none of the overhead
+      text: Your product gets the whole team, from strategist to QA, with nobody to recruit, onboard or manage.
+    - title: You look sharper than your competitors
+      text: Design and polish that stand up against funded competitors, so buyers compare you favourably.
+  writerLine: Close the month in two days, not ten.
+
+faq:
+  heading: What founders ask before working with us
+  items:
+    - question: Do you work with companies like ours?
+      answer: Yes. We build for B2B SaaS, AI and cybersecurity companies across Asia, and we start every project by learning what your product does and how your buyers choose a vendor.
+    - question: Our product is technical. Can an outside team really get it?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Why not a big international agency?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Why not a local agency?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Our engineers could build it faster. Why hand it to you?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Can you hit a launch date in six weeks?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Redesign or rebuild?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: How long does it take?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+
+cta:
+  heading: Ready to turn the traffic you<br />already pay for into sign-ups?
+  text: Tell us what the product does and where your sign-ups come from today, and we'll shape the right scope around it.

@@ -1,0 +1,159 @@
+---
+import type { ComponentProps, HTMLAttributes } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Img from "@/components/media/Img.astro";
+
+type Item = { title: string; text: string };
+
+interface Props
+  extends
+    HTMLAttributes<"section">,
+    Pick<ComponentProps<typeof Section>, "render"> {
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading: string;
+  /** Background image. */
+  image: ImageMetadata;
+  /** Pages built, in reading order. */
+  items: Item[];
+}
+
+const {
+  render = true,
+  eyebrow = "What we build for you",
+  heading,
+  image,
+  items,
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<Section
+  render={render && Boolean(heading) && items?.length > 0}
+  theme="dark"
+  paddingTop="none"
+  paddingBottom="none"
+  containerClass="industry-build_layout"
+  class:list={["industry-build_wrap", className]}
+  {...rest}
+>
+  <Img src={image} slot="background" class="industry-build_background" />
+  <div slot="background" class="industry-build_shade"></div>
+  <div class="industry-build_intro">
+    <Paragraph variant="overline-small" class="industry-build_eyebrow">
+      {eyebrow}
+    </Paragraph>
+    <Heading tag="h2" variant="h3">
+      <Fragment set:html={heading} />
+    </Heading>
+  </div>
+  <ul class="industry-build_list">
+    {
+      items.map((item) => (
+        <li class="industry-build_item">
+          <Heading tag="h3" variant="h5">
+            {item.title}
+          </Heading>
+          <Paragraph variant="main" class="industry-build_text">
+            {item.text}
+          </Paragraph>
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+<style is:global>
+  @layer components {
+    .industry-build_wrap {
+      --_min-height: 67.5rem;
+      --_shade-angle: 56deg;
+      --_fade-angle: 1.1deg;
+      @media (width >= 48rem) {
+        --_min-height: 42.5rem;
+        --_shade-angle: 25.2deg;
+        --_fade-angle: 0.35deg;
+      }
+      @media (width >= 62rem) {
+        --_min-height: 45rem;
+        --_shade-angle: 16.3deg;
+        --_fade-angle: 0.2deg;
+      }
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .industry-build_background {
+        object-fit: cover;
+      }
+
+      .industry-build_shade {
+        background-image:
+          linear-gradient(
+            var(--_shade-angle),
+            rgb(20 24 28 / 0.8) 22.93%,
+            rgb(20 23 27 / 0.8) 40.35%,
+            rgb(20 23 27 / 0.24) 54.91%
+          ),
+          linear-gradient(
+            var(--_fade-angle),
+            rgb(20 24 28 / 0.9) 0.45%,
+            rgb(20 23 27 / 0.63) 14.81%,
+            rgb(20 23 27 / 0) 57.89%
+          ),
+          linear-gradient(rgb(0 0 0 / 0.24), rgb(0 0 0 / 0.24));
+      }
+
+      .industry-build_layout {
+        min-height: calc(var(--_min-height) + 2 * var(--space-4rem));
+        justify-content: flex-end;
+        align-items: stretch;
+        gap: var(--space-3-5rem);
+        padding-block: var(--space-4rem);
+      }
+
+      .industry-build_intro {
+        max-width: 46.875rem;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+      }
+
+      .industry-build_eyebrow {
+        color: var(--color-neutral-10);
+      }
+
+      .industry-build_list {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--space-1-5rem);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        @media (width >= 48rem) {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      .industry-build_item {
+        max-width: 30rem;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+        margin: 0;
+        padding-block: var(--space-1-5rem);
+        padding-right: var(--space-1-5rem);
+        border-top: var(--border-width) solid var(--color-neutral-60);
+      }
+
+      .industry-build_text {
+        color: var(--color-neutral-5);
+      }
+    }
+  }
+</style>

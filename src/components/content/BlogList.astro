@@ -1,0 +1,155 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import type { ImageMetadata } from "astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Img from "@/components/media/Img.astro";
+import FormattedDate from "@/components/utility/FormattedDate.astro";
+
+export interface BlogItem {
+  title: string;
+  tag: string;
+  date: Date;
+  thumbnail: ImageMetadata;
+  href?: string;
+}
+
+type Props = HTMLAttributes<"div"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Posts to list. Omit or leave empty to render nothing. */
+  items?: BlogItem[];
+  /** Layout. `single-row` keeps tablet to the two posts that fill its row. */
+  variant?: "grid" | "single-row";
+};
+
+const {
+  render = true,
+  items = [],
+  variant = "grid",
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+{
+  render && items.length > 0 && (
+    <div
+      class:list={[
+        "blog-list_wrap",
+        variant !== "grid" && variant,
+        className,
+      ]}
+      {...rest}
+    >
+      {items.map((item) => (
+        <article class="blog-list_item">
+          <div class="blog-list_thumbnail">
+            <Img src={item.thumbnail} alt="" />
+          </div>
+          <div class="blog-list_content">
+            <div class="blog-list_details">
+              <Paragraph
+                tag="span"
+                variant="overline-small"
+                class="blog-list_tag tag-pill"
+              >
+                {item.tag}
+              </Paragraph>
+              <Paragraph
+                tag="span"
+                variant="overline-small"
+                class="blog-list_date"
+              >
+                <FormattedDate date={item.date} format={{ dateStyle: "medium" }} />
+              </Paragraph>
+            </div>
+            <Heading tag="h3" variant="h6" class="blog-list_title">
+              <a href={item.href ?? "#"} class="blog-list_link">
+                {item.title}
+              </a>
+            </Heading>
+          </div>
+        </article>
+      ))}
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .blog-list_wrap {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-1-5rem);
+      width: 100%;
+      @media (width >= 48rem) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        row-gap: var(--space-2rem);
+      }
+      @media (width >= 62rem) {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .blog-list_wrap.single-row > .blog-list_item:nth-child(n + 3) {
+      @media (width >= 48rem) and (width < 62rem) {
+        display: none;
+      }
+    }
+
+    .blog-list_item {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1-25rem);
+    }
+
+    .blog-list_thumbnail {
+      width: 100%;
+      aspect-ratio: 424 / 238;
+      border-radius: var(--radius-0-25rem);
+      overflow: hidden;
+
+      > .image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .blog-list_content {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-0-75rem);
+      padding-right: var(--space-2rem);
+    }
+
+    .blog-list_details {
+      display: flex;
+      align-items: center;
+      gap: var(--space-0-75rem);
+      color: var(--color-neutral-40);
+
+      > .text {
+        margin: 0;
+        letter-spacing: var(--letter-spacing-tag);
+      }
+    }
+
+    .blog-list_title {
+      margin-block: 0;
+      text-wrap: wrap;
+    }
+
+    .blog-list_link {
+      color: inherit;
+      text-decoration: none;
+      &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+      }
+    }
+  }
+</style>

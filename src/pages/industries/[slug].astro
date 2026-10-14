@@ -1,0 +1,127 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import HomeHero from "@/components/section/HomeHero.astro";
+import IndustryProblem from "@/components/content/IndustryProblem.astro";
+import IndustryWho from "@/components/content/IndustryWho.astro";
+import IndustryBuild from "@/components/section/IndustryBuild.astro";
+import HomeDifference from "@/components/content/HomeDifference.astro";
+import IndustryProcess from "@/components/content/IndustryProcess.astro";
+import IndustryGrowth from "@/components/content/IndustryGrowth.astro";
+import IndustryValue from "@/components/content/IndustryValue.astro";
+import HomeQuote from "@/components/section/HomeQuote.astro";
+import HomeFaq from "@/components/content/HomeFaq.astro";
+import HomeCta from "@/components/section/HomeCta.astro";
+import { WORK_URL } from "@/utils/work.ts";
+
+export const getStaticPaths = (async () => {
+  const industries = await getCollection("industries");
+  return industries.map((industry) => ({
+    params: { slug: industry.id },
+    props: { industry },
+  }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  industry: CollectionEntry<"industries">;
+}
+
+const { data } = Astro.props.industry;
+---
+
+<Layout title={data.title} description={data.description} overlap>
+  {/* Hero */}
+  <HomeHero
+    eyebrow={data.hero.eyebrow}
+    heading={data.hero.heading}
+    text={data.hero.text}
+    image={data.hero.image}
+    secondaryText="See our work"
+    secondaryHref={WORK_URL}
+    fade="soft"
+  />
+  {/* Problem */}
+  <Section>
+    <IndustryProblem
+      heading={data.problem.heading}
+      lead={data.problem.lead}
+      items={data.problem.items}
+    />
+  </Section>
+  {/* Who we work with */}
+  <Section>
+    <IndustryWho
+      heading={data.who.heading}
+      lead={data.who.lead}
+      items={data.who.items}
+      note={data.who.note}
+    />
+  </Section>
+  {/* What we build */}
+  <IndustryBuild
+    heading={data.build.heading}
+    image={data.build.image}
+    items={data.build.items}
+  />
+  {/* Difference */}
+  <Section>
+    <HomeDifference
+      eyebrow="The difference it makes"
+      heading={data.difference.heading}
+      lead={data.difference.lead}
+      leadWidth="full"
+      boxes={[
+        {
+          title: "Without Superpresence",
+          featured: false,
+          items: data.difference.without,
+        },
+        {
+          title: "With Superpresence",
+          featured: true,
+          items: data.difference.with,
+        },
+      ]}
+    />
+  </Section>
+  {/* Process */}
+  <Section>
+    <IndustryProcess
+      heading={data.process.heading}
+      steps={data.process.steps}
+    />
+  </Section>
+  {/* Growth */}
+  <Section>
+    <IndustryGrowth
+      heading={data.growth.heading}
+      lead={data.growth.lead}
+      items={data.growth.items}
+      stat={data.growth.stat}
+    />
+  </Section>
+  {/* Value */}
+  <Section>
+    <IndustryValue
+      heading={data.value.heading}
+      items={data.value.items}
+      writerLine={data.value.writerLine}
+    />
+  </Section>
+  {/* Quote */}
+  <HomeQuote {...data.quote} />
+  {/* FAQ */}
+  <Section>
+    <HomeFaq heading={data.faq.heading} items={data.faq.items} />
+  </Section>
+  {/* CTA */}
+  <HomeCta
+    eyebrow="You've reached the end, so now..."
+    heading={data.cta.heading}
+    text={data.cta.text}
+    buttonText="Start your project"
+    buttonHref="/contact"
+  />
+</Layout>

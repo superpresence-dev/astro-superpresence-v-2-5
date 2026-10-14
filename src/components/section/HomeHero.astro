@@ -20,9 +20,41 @@ import rallymatesWord from "@/assets/home/rallymates.svg";
 
 interface Props
   extends HTMLAttributes<"section">,
-    Pick<ComponentProps<typeof Section>, "render"> {}
+    Pick<ComponentProps<typeof Section>, "render"> {
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading?: string;
+  /** Paragraph below the heading. */
+  text?: string;
+  /** Background image. */
+  image?: ImageMetadata;
+  /** Button text. */
+  buttonText?: string;
+  /** Button link. */
+  buttonHref?: string;
+  /** Text of the secondary button. Omit to leave it out. */
+  secondaryText?: string;
+  /** Destination of the secondary button. */
+  secondaryHref?: string;
+  /** Bottom fade over the image: `deep` turns solid below desktop, `soft` stays at 70% on every screen. */
+  fade?: "deep" | "soft";
+}
 
-const { render = true, class: className, ...rest } = Astro.props;
+const {
+  render = true,
+  eyebrow = "Web-design & development agency in Asia",
+  heading = "We make you look like the leader in your category",
+  text = "Your customers compare you with the biggest names in your market before they get in touch. We build the website that wins that comparison, and turns it into enquiries.",
+  image = background,
+  buttonText = "Review my website",
+  buttonHref = "#",
+  secondaryText,
+  secondaryHref = "#",
+  fade = "deep",
+  class: className,
+  ...rest
+} = Astro.props;
 
 const logosBefore = [logoOne, logoTwo, logoThree, logoFour, logoFive];
 const logosAfter = [logoSix, logoSeven];
@@ -34,32 +66,37 @@ const logosAfter = [logoSix, logoSeven];
   paddingTop="none"
   paddingBottom="none"
   containerClass="home-hero_layout"
-  class:list={["home-hero_wrap", className]}
+  class:list={["home-hero_wrap", fade, className]}
   {...rest}
 >
-  <Img
-    src={background}
-    slot="background"
-    loading="eager"
-    fetchPriority="high"
-  />
+  <Img src={image} slot="background" loading="eager" fetchPriority="high" />
   <div slot="background" class="home-hero_fade"></div>
   <div class="home-hero_content">
     <div class="home-hero_heading">
       <Paragraph variant="overline-small" class="home-hero_eyebrow">
-        Web-design &amp; development agency in Asia
+        {eyebrow}
       </Paragraph>
       <Heading tag="h1" class="home-hero_title">
-        We make you look like the leader in your category
+        <Fragment set:html={heading} />
       </Heading>
       <Paragraph variant="large" class="home-hero_text">
-        Your customers compare you with the biggest names in your market before
-        they get in touch. We build the website that wins that comparison, and
-        turns it into enquiries.
+        {text}
       </Paragraph>
     </div>
     <ButtonWrapper marginTop="0">
-      <Button element="link" href="#" arrow>Review my website</Button>
+      <Button element="link" href={buttonHref} arrow>{buttonText}</Button>
+      {
+        secondaryText && (
+          <Button
+            element="link"
+            href={secondaryHref}
+            emphasis="secondary"
+            class="home-hero_secondary"
+          >
+            {secondaryText}
+          </Button>
+        )
+      }
     </ButtonWrapper>
   </div>
   <Marquee label="Client logos" controls={false} class="home-hero_logos">
@@ -115,6 +152,11 @@ const logosAfter = [logoSix, logoSeven];
         --_logos-top: var(--space-0-5rem);
         --_logos-gap: var(--space-2rem);
         --_logo-height: 5rem;
+      }
+      &.soft {
+        --_fade: rgb(23 23 23 / 0.7);
+        --_fade-tall: 12.5rem;
+        --_fade-short: 9.375rem;
       }
       min-height: 100svh;
       overflow: clip;
@@ -172,6 +214,15 @@ const logosAfter = [logoSix, logoSeven];
       .home-hero_text {
         max-width: var(--_text-width);
         color: var(--color-neutral-10);
+      }
+
+      .home-hero_secondary {
+        --button-2-background: color-mix(
+          in lab,
+          var(--color-neutral-0) 12%,
+          transparent
+        );
+        --button-2-border: var(--color-neutral-0);
       }
 
       .home-hero_logos {

@@ -61,10 +61,9 @@ const {
         placeholder={placeholder}
         required={required || undefined}
         rows={minLines}
+        set:text={value ?? ""}
         {...rest}
-      >
-        {value}
-      </textarea>
+      />
     </label>
   )
 }

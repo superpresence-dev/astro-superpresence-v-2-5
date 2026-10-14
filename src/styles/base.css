@@ -85,6 +85,8 @@
   --letter-spacing-neg-0-5: -0.005em;
   --letter-spacing-normal: 0em;
   --letter-spacing-overline: 0.03em;
+  --letter-spacing-overline-main: 0.05em;
+  --letter-spacing-tag: 0.02em;
 
   /* Line height */
   --line-height-small: 1;
@@ -441,7 +443,7 @@
   --text-xsmall-line-height-mobile: 17;
   --text-xsmall-line-height-tablet: 18;
   --text-xsmall-line-height-desktop: 18;
-  --text-xsmall-letter-spacing: var(--letter-spacing-normal);
+  --text-xsmall-letter-spacing: var(--letter-spacing-neg-0-5);
   --text-xsmall-text-transform: none;
   --text-xsmall-margin-top: var(--space-1rem);
   --text-xsmall-margin-bottom: var(--space-1rem);
@@ -477,12 +479,12 @@
   --overline-main-line-height-mobile: 18;
   --overline-main-line-height-tablet: 19;
   --overline-main-line-height-desktop: 20;
-  --overline-main-letter-spacing: var(--letter-spacing-normal);
-  --overline-main-text-transform: none;
+  --overline-main-letter-spacing: var(--letter-spacing-overline-main);
+  --overline-main-text-transform: uppercase;
   --overline-main-margin-top: var(--space-1rem);
   --overline-main-margin-bottom: var(--space-1rem);
   --overline-main-font-family: var(--primary-family);
-  --overline-main-font-weight: var(--primary-medium);
+  --overline-main-font-weight: var(--primary-regular);
   --overline-main-trim-top: var(--primary-trim-top);
   --overline-main-trim-bottom: var(--primary-trim-bottom);
   --overline-main-text-wrap: pretty;
@@ -625,7 +627,7 @@
   --selection-background: var(--ui);
   --selection-text: var(--background);
 
-  --button-background: var(--brand);
+  --button-background: var(--color-neutral-90);
   --button-border: var(--button-background);
   --button-text: var(--brand-text);
   --button-background-hover: var(--ui);

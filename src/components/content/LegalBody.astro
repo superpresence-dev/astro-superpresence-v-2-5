@@ -1,0 +1,140 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import RichText from "@/components/typography/RichText.astro";
+import { slotContent } from "@/utils/slots.ts";
+
+type Props = HTMLAttributes<"div"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+};
+
+const { render = true, class: className, ...rest } = Astro.props;
+
+const content = await slotContent(Astro.slots);
+---
+
+{
+  render && content && (
+    <RichText
+      variant="large"
+      class:list={["legal-body_wrap", className]}
+      {...rest}
+    >
+      <Fragment set:html={content} />
+    </RichText>
+  )
+}
+
+<style is:global>
+  @layer components {
+    /* Sections, subsections and .legal-heading-* come from legal-sections.ts:
+       every `##` opens a .legal-section, every `###`/`####` a padded
+       .legal-sub. */
+    .legal-body_wrap.rich-text {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3-5rem);
+      width: 100%;
+      max-width: 55rem;
+      margin-inline: auto;
+      color: var(--color-neutral-70);
+
+      & :is(.legal-section, .legal-sub) {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1-25rem);
+
+        & > * {
+          margin: 0;
+        }
+      }
+      & .legal-sub {
+        padding-block: var(--space-0-75rem);
+      }
+
+      & :is(h2, h3, h4) {
+        color: var(--color-neutral-90);
+        text-wrap: wrap;
+      }
+      & .legal-heading-h4 {
+        font-family: var(--h4-font-family);
+        font-size: var(--h4);
+        font-weight: var(--h4-font-weight);
+        line-height: var(--h4-line-height);
+        letter-spacing: var(--h4-letter-spacing);
+      }
+      & .legal-heading-h5 {
+        font-family: var(--h5-font-family);
+        font-size: var(--h5);
+        font-weight: var(--h5-font-weight);
+        line-height: var(--h5-line-height);
+        letter-spacing: var(--h5-letter-spacing);
+      }
+      & .legal-heading-h6 {
+        font-family: var(--h6-font-family);
+        font-size: var(--h6);
+        font-weight: var(--h6-font-weight);
+        line-height: var(--h6-line-height);
+        letter-spacing: var(--h6-letter-spacing);
+      }
+
+      & strong {
+        color: var(--color-neutral-90);
+        font-weight: var(--primary-medium);
+      }
+      /* The medium face sits taller than the regular one, so an inline run of
+         it would push its line box past the line height. */
+      & :is(strong, a) {
+        line-height: 1;
+      }
+      & a {
+        color: var(--color-neutral-90);
+        font-weight: var(--primary-medium);
+        text-decoration: underline var(--color-primary-60);
+        text-underline-offset: 0.2em;
+        overflow-wrap: anywhere;
+      }
+      & :is(ul, ol) {
+        padding-left: 1.5em;
+      }
+      & li + li {
+        margin-top: 0;
+      }
+      & li::marker {
+        color: currentcolor;
+      }
+
+      /* Figma keeps the columns fixed and lets the table scroll on mobile. */
+      & .legal-table {
+        overflow-x: auto;
+      }
+      & table {
+        margin: 0;
+        width: 100%;
+        min-width: 47.5rem;
+        @media (width >= 48rem) {
+          min-width: 0;
+        }
+        border-collapse: collapse;
+        table-layout: fixed;
+      }
+      & :is(th, td) {
+        padding: var(--space-0-75rem);
+        border-bottom: var(--border-width) solid var(--color-neutral-10);
+        text-align: left;
+        vertical-align: middle;
+      }
+      & :is(th, td):is(:first-child, :last-child) {
+        width: 8.75rem;
+      }
+      & :is(th, td):nth-child(2) {
+        width: 11.25rem;
+      }
+      & th {
+        background-color: var(--color-neutral-5);
+        color: var(--color-neutral-90);
+        font-weight: var(--primary-semibold);
+      }
+    }
+  }
+</style>

@@ -1,0 +1,254 @@
+[
+  {
+    "id": "exploration-01",
+    "title": "Agent identity starts with email",
+    "category": "Website",
+    "image": "../assets/resources/exploration-1.jpg",
+    "order": 1
+  },
+  {
+    "id": "exploration-02",
+    "title": "3D website screens in motion",
+    "category": "Interaction",
+    "image": "../assets/resources/exploration-4.png",
+    "order": 2
+  },
+  {
+    "id": "exploration-03",
+    "title": "Payroll, treasury and payments landing page",
+    "category": "Print",
+    "image": "../assets/resources/exploration-2.png",
+    "order": 3
+  },
+  {
+    "id": "exploration-04",
+    "title": "Wonder & Dream campaign visual",
+    "category": "Branding",
+    "image": "../assets/resources/exploration-5.png",
+    "order": 4
+  },
+  {
+    "id": "exploration-05",
+    "title": "Brand system on a blue grid",
+    "category": "Illustration",
+    "image": "../assets/resources/exploration-3.png",
+    "order": 5
+  },
+  {
+    "id": "exploration-06",
+    "title": "Business card set",
+    "category": "Website",
+    "image": "../assets/resources/exploration-6.jpg",
+    "order": 6
+  },
+  {
+    "id": "exploration-07",
+    "title": "Agent identity starts with email",
+    "category": "Illustration",
+    "image": "../assets/resources/exploration-1.jpg",
+    "order": 7
+  },
+  {
+    "id": "exploration-08",
+    "title": "3D website screens in motion",
+    "category": "Website",
+    "image": "../assets/resources/exploration-4.png",
+    "order": 8
+  },
+  {
+    "id": "exploration-09",
+    "title": "Payroll, treasury and payments landing page",
+    "category": "Interaction",
+    "image": "../assets/resources/exploration-2.png",
+    "order": 9
+  },
+  {
+    "id": "exploration-10",
+    "title": "Wonder & Dream campaign visual",
+    "category": "Print",
+    "image": "../assets/resources/exploration-5.png",
+    "order": 10
+  },
+  {
+    "id": "exploration-11",
+    "title": "Brand system on a blue grid",
+    "category": "Branding",
+    "image": "../assets/resources/exploration-3.png",
+    "order": 11
+  },
+  {
+    "id": "exploration-12",
+    "title": "Business card set",
+    "category": "Illustration",
+    "image": "../assets/resources/exploration-6.jpg",
+    "order": 12
+  },
+  {
+    "id": "exploration-13",
+    "title": "Agent identity starts with email",
+    "category": "Branding",
+    "image": "../assets/resources/exploration-1.jpg",
+    "order": 13
+  },
+  {
+    "id": "exploration-14",
+    "title": "3D website screens in motion",
+    "category": "Illustration",
+    "image": "../assets/resources/exploration-4.png",
+    "order": 14
+  },
+  {
+    "id": "exploration-15",
+    "title": "Payroll, treasury and payments landing page",
+    "category": "Website",
+    "image": "../assets/resources/exploration-2.png",
+    "order": 15
+  },
+  {
+    "id": "exploration-16",
+    "title": "Wonder & Dream campaign visual",
+    "category": "Interaction",
+    "image": "../assets/resources/exploration-5.png",
+    "order": 16
+  },
+  {
+    "id": "exploration-17",
+    "title": "Brand system on a blue grid",
+    "category": "Print",
+    "image": "../assets/resources/exploration-3.png",
+    "order": 17
+  },
+  {
+    "id": "exploration-18",
+    "title": "Business card set",
+    "category": "Branding",
+    "image": "../assets/resources/exploration-6.jpg",
+    "order": 18
+  },
+  {
+    "id": "exploration-19",
+    "title": "Agent identity starts with email",
+    "category": "Print",
+    "image": "../assets/resources/exploration-1.jpg",
+    "order": 19
+  },
+  {
+    "id": "exploration-20",
+    "title": "3D website screens in motion",
+    "category": "Branding",
+    "image": "../assets/resources/exploration-4.png",
+    "order": 20
+  },
+  {
+    "id": "exploration-21",
+    "title": "Payroll, treasury and payments landing page",
+    "category": "Illustration",
+    "image": "../assets/resources/exploration-2.png",
+    "order": 21
+  },
+  {
+    "id": "exploration-22",
+    "title": "Wonder & Dream campaign visual",
+    "category": "Website",
+    "image": "../assets/resources/exploration-5.png",
+    "order": 22
+  },
+  {
+    "id": "exploration-23",
+    "title": "Brand system on a blue grid",
+    "category": "Interaction",
+    "image": "../assets/resources/exploration-3.png",
+    "order": 23
+  },
+  {
+    "id": "exploration-24",
+    "title": "Business card set",
+    "category": "Print",
+    "image": "../assets/resources/exploration-6.jpg",
+    "order": 24
+  },
+  {
+    "id": "exploration-25",
+    "title": "Agent identity starts with email",
+    "category": "Interaction",
+    "image": "../assets/resources/exploration-1.jpg",
+    "order": 25
+  },
+  {
+    "id": "exploration-26",
+    "title": "3D website screens in motion",
+    "category": "Print",
+    "image": "../assets/resources/exploration-4.png",
+    "order": 26
+  },
+  {
+    "id": "exploration-27",
+    "title": "Payroll, treasury and payments landing page",
+    "category": "Branding",
+    "image": "../assets/resources/exploration-2.png",
+    "order": 27
+  },
+  {
+    "id": "exploration-28",
+    "title": "Wonder & Dream campaign visual",
+    "category": "Illustration",
+    "image": "../assets/resources/exploration-5.png",
+    "order": 28
+  },
+  {
+    "id": "exploration-29",
+    "title": "Brand system on a blue grid",
+    "category": "Website",
+    "image": "../assets/resources/exploration-3.png",
+    "order": 29
+  },
+  {
+    "id": "exploration-30",
+    "title": "Business card set",
+    "category": "Interaction",
+    "image": "../assets/resources/exploration-6.jpg",
+    "order": 30
+  },
+  {
+    "id": "exploration-31",
+    "title": "Agent identity starts with email",
+    "category": "Website",
+    "image": "../assets/resources/exploration-1.jpg",
+    "order": 31
+  },
+  {
+    "id": "exploration-32",
+    "title": "3D website screens in motion",
+    "category": "Interaction",
+    "image": "../assets/resources/exploration-4.png",
+    "order": 32
+  },
+  {
+    "id": "exploration-33",
+    "title": "Payroll, treasury and payments landing page",
+    "category": "Print",
+    "image": "../assets/resources/exploration-2.png",
+    "order": 33
+  },
+  {
+    "id": "exploration-34",
+    "title": "Wonder & Dream campaign visual",
+    "category": "Branding",
+    "image": "../assets/resources/exploration-5.png",
+    "order": 34
+  },
+  {
+    "id": "exploration-35",
+    "title": "Brand system on a blue grid",
+    "category": "Illustration",
+    "image": "../assets/resources/exploration-3.png",
+    "order": 35
+  },
+  {
+    "id": "exploration-36",
+    "title": "Business card set",
+    "category": "Website",
+    "image": "../assets/resources/exploration-6.jpg",
+    "order": 36
+  }
+]

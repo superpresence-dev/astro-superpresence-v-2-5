@@ -1,0 +1,101 @@
+---
+import type { GetStaticPaths, Page } from "astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import HeroListing from "@/components/content/HeroListing.astro";
+import ListingShowcase from "@/components/content/ListingShowcase.astro";
+import WorkList from "@/components/content/WorkList.astro";
+import HomeQuote from "@/components/section/HomeQuote.astro";
+import WorkTestimonials from "@/components/content/WorkTestimonials.astro";
+import HomeCta from "@/components/section/HomeCta.astro";
+import testimonialVideo from "@/assets/work/testimonial-video.jpg";
+import seamlessLogo from "@/assets/work/testimonial-logo-seamless.png";
+import n3xtLogo from "@/assets/work/testimonial-logo-n3xt.png";
+import { sortWorks, workUrl } from "@/utils/work.ts";
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const works = sortWorks(await getCollection("work"));
+  return paginate(works, { pageSize: 10 });
+}) satisfies GetStaticPaths;
+
+interface Props {
+  page: Page<CollectionEntry<"work">>;
+}
+
+const { page } = Astro.props;
+
+const items = page.data.map(({ id, data }) => ({
+  title: data.title,
+  client: data.client,
+  industry: data.industry,
+  thumbnail: data.thumbnail,
+  logo: data.logo,
+  href: workUrl(id),
+}));
+
+const testimonials = [
+  {
+    quote:
+      "“Superpresence’s top-tier team boosted our engagement by 25%, increased conversions by 11%, and cut bounce rates by 20%, delivering exceptional results for our project.”",
+    name: "Phil LaChance",
+    role: "Principal Designer @Seamless.AI",
+    company: "Seamless.AI",
+    logo: seamlessLogo,
+    thumbnail: testimonialVideo,
+  },
+  {
+    quote:
+      "“Their impressive outputs and design shine! One skilled project manager expertly coordinates tasks and adapts priorities swiftly, perfectly aligning efforts with needs. Truly outstanding teamwork and results.”",
+    name: "Aurelien Bonnel",
+    role: "CTO @N3XT",
+    company: "N3XT",
+    logo: n3xtLogo,
+    thumbnail: testimonialVideo,
+  },
+];
+---
+
+<Layout
+  title={page.currentPage > 1 ? `Our work – Page ${page.currentPage}` : "Our work"}
+  description="From strategy to technical execution, explore our case studies to discover the impact of our agency."
+  navTheme="light"
+>
+  {/* Hero */}
+  <Section paddingTop="none" paddingBottom="none">
+    <HeroListing
+      eyebrow="Selected work"
+      heading="Real results.<br />Receipts attached."
+      text="From strategy to technical execution, explore our case studies to discover the impact of our agency."
+    />
+  </Section>
+  {/* Showcase */}
+  <Section paddingTop="none">
+    <ListingShowcase
+      currentPage={page.currentPage}
+      lastPage={page.lastPage}
+      baseUrl="/work"
+    >
+      <WorkList items={items} />
+    </ListingShowcase>
+  </Section>
+  {/* Quote */}
+  <HomeQuote />
+  {/* Testimonials */}
+  <Section>
+    <WorkTestimonials
+      eyebrow="Proven partnerships"
+      heading="What working with us is really like"
+      items={testimonials}
+    />
+  </Section>
+  {/* CTA */}
+  <HomeCta
+    eyebrow="Have something worth exploring?"
+    eyebrowVariant="overline-main"
+    heading="Some of the best work<br />starts with a question"
+    text="Not sure about the answer yet? No worries. Bring us your problem, idea, or even a rough draft. We'll explore it together from there."
+    buttonText="Start a conversation"
+    buttonHref="/contact"
+  />
+</Layout>
