@@ -1,0 +1,169 @@
+title: Artificial intelligence
+description: Websites for AI companies across Asia. We build sites that show what the product does, how it runs and what backs it up.
+order: 5
+
+hero:
+  eyebrow: For AI companies
+  heading: Show buyers what<br />your AI actually does
+  text: Technical buyers arrive sceptical, and most AI sites give them claims instead of answers. We build sites that show what the product does, how it runs and what backs it up.
+  image: ../../assets/industries/artificial-intelligence/hero.jpg
+
+problem:
+  heading: Buyers assume hype<br />until your site proves otherwise
+  lead: Every claim on the site has to survive a technical reader.
+  items:
+    - title: The site still tells the old story
+      text: It was built for the product you sold before the pivot, and that is the first thing a buyer reads.
+    - title: Visitors can't tell what you do
+      text: Technical buyers read the homepage, can't work out the offer, and leave without asking.
+    - title: You sound like every other AI company
+      text: The same words as everyone else, so nothing tells a buyer why you are the safer bet.
+
+who:
+  heading: We build websites for<br />AI companies across Asia
+  lead: The product outgrew the site. Here is what your buyers check before they get in touch.
+  items:
+    - icon: ai
+      title: AI products
+      text: They check what the product actually does before they book a call.
+    - icon: cloud
+      title: AI infrastructure
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: route
+      title: AI agents and automation
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: scan
+      title: Vertical AI
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: bricks
+      title: Data and analytics
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: chat
+      title: AI consultancies
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+  note: Don't see your kind of AI company? Tell us what you build.
+
+build:
+  heading: The pages your buyers expect to find
+  image: ../../assets/industries/artificial-intelligence/build.jpg
+  items:
+    - title: Product pages
+      text: Clearly shows exactly what the product does and how it benefits you.
+    - title: Docs and integration pages
+      text: Engineers require detailed verification from you to ensure accuracy and quality.
+    - title: Security and data handling pages
+      text: Provides early answers to complex enterprise data questions for better decisions.
+    - title: Case studies and proof pages
+      text: Provide proof that their peers will genuinely believe and trust the claims.
+    - title: Pricing and packaging pages
+      text: Serious buyers carefully self-select themselves before scheduling the call or meeting.
+    - title: Launch and campaign pages
+      text: Launches are successfully carried out without needing to rebuild the entire site.
+
+difference:
+  heading: What changes once the site is live
+  lead: The same traffic, read by buyers who believe you.
+  without:
+    - Vague promises leave technical buyers unconvinced
+    - Buyers can't see their problem solved
+    - Procurement asks data questions you missed
+    - Interest stalls at newsletter sign-ups
+    - Developers hunt for docs elsewhere
+    - Hype language makes you sound like everyone
+  with:
+    - Demos and real outputs show what it does
+    - Use cases explained by industry
+    - Data and model-security questions answered early
+    - Interest turns into pilots and proofs of concept
+    - API docs and quickstarts linked from marketing
+    - Specific, checkable claims stand apart from hype
+
+process:
+  heading: We rebuild the site so<br />technical buyers can check it
+  steps:
+    - title: Research & Strategy
+      text: We study your competitors, your product and how your marketing turns visitors into buyers, then plan the site around what we find.
+      points:
+        - Competitor research
+        - Sitemap built around your services
+        - Marketing funnel mapping
+    - title: Visual Design
+      text: Every screen is drawn for your company, so the site looks like the serious option in a category full of lookalikes.
+      points:
+        - Fully custom design
+        - Authoritative visual language
+        - Premium finish on every page
+    - title: Messaging & Copywriting
+      text: Our writers state plainly what the product does and what it runs on, so technical readers trust what they find.
+      points:
+        - Persuasive page copy
+        - Plain-language product claims
+        - Tone set for your buyers
+    - title: UI/UX Design
+      text: Every page is designed to end in an enquiry, and works on whatever device your buyer is holding.
+      points:
+        - Enquiry-led page flows
+        - Conversion-focused UX
+        - Responsive on every device
+    - title: Development & QA
+      text: We build on the latest tech stack, check the structure search engines and AI tools read, and test across devices and browsers before launch.
+      points:
+        - Fast, current build
+        - Structure AI tools read correctly
+        - Integrated with your tools
+
+growth:
+  heading: What a website built for<br />technical buyers does
+  lead: Six improvements that make a technical reader believe the product, and book a demo.
+  items:
+    - title: Conversion-focused UX
+      text: Every page moves buyers closer towards a pilot program.
+    - title: Fast load speeds
+      text: Demos and outputs load instantly for technical visitors.
+    - title: Search and AI visibility
+      text: Buyers researching solutions find your company first.
+    - title: Analytics
+      text: You see exactly which use cases drive pilot requests.
+    - title: A CMS the team runs
+      text: Your team quickly ships new use-case pages fast.
+    - title: Security and scale
+      text: The site grows with your product's releases.
+
+value:
+  heading: Everything it takes to win<br />more pilots, in one team
+  items:
+    - title: Built for English-speaking buyers
+      text: Your buyers judge AI vendors in English. We write for them, so your product never reads translated.
+    - title: AI-native, not AI-dependent
+      text: "We use AI the way you would: hard, and supervised. Experts direct it and sign off every line, so nothing generic ships."
+    - title: Web design that wins business
+      text: Every page turns a technical product into a clear business case, then leads to a pilot request.
+    - title: The whole team, none of the overhead
+      text: Your company gets the whole team, from strategist to QA, with nobody to recruit, onboard or manage.
+    - title: You look sharper than your competitors
+      text: Design and clarity that make rival vendors look generic, so buyers take your pilot seriously.
+  writerLine: Read 10,000 invoices before lunch.
+
+faq:
+  heading: What founders usually ask first
+  items:
+    - question: Can a design team understand what our product does?
+      answer: The research phase exists for this. We study your product, your docs and your buyers before anyone designs anything, and you review the plan before the build starts.
+    - question: Will you make us sound like every other AI company?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Do you work with companies like ours?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Why not ship a site ourselves with AI tools in a week?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: What does the project need from us?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Is it a redesign or a rebuild?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: What happens after launch?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: How long does it take?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+
+cta:
+  heading: Ready to be understood and<br />get the demos to prove it?
+  text: Tell us what the system actually does and who you need to convince, and we'll shape the right scope around it.

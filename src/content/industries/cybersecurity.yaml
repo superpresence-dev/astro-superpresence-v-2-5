@@ -1,0 +1,169 @@
+title: Cybersecurity
+description: Websites for cybersecurity companies across Asia. We build sites that answer what security buyers check and make booking a demo feel low-risk.
+order: 6
+
+hero:
+  eyebrow: For cybersecurity companies
+  heading: Websites that survive<br />a CISO's first read
+  text: Your buyers check what the product does, how it deploys and what evidence backs it, long before they take a call. We build sites that answer those questions and make booking a demo feel low-risk.
+  image: ../../assets/industries/cybersecurity/hero.jpg
+
+problem:
+  heading: Your site isn't answering<br />what your buyers are checking
+  lead: Your product is solid, and the site reads like everyone else's.
+  items:
+    - title: Visitors leave unsure what you sell
+      text: A vague category description leaves technical readers unclear about your product.
+    - title: You lost a shortlist to a weaker product
+      text: The competitor's site explained itself better, and the buyer never saw the difference.
+    - title: Engineers won't share the site
+      text: The team knows the copy won't hold up in front of a technical buyer, so they route people around it.
+
+who:
+  heading: Who this page is for
+  lead: "Cybersecurity companies in Asia selling to technical buyers, often overseas. What these firms share: the client reads the website hard before anyone speaks."
+  items:
+    - icon: ai
+      title: Security software vendors
+      text: They check deployment options, integrations and evidence before requesting a demo.
+    - icon: cloud
+      title: Security service providers
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: route
+      title: Security consulting firms
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: scan
+      title: Compliance firms
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: bricks
+      title: Identity and access companies
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: chat
+      title: Security training providers
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+  note: Don't see your kind of firm? Send us the site and we'll tell you.
+
+build:
+  heading: The pages a security<br />company's site needs
+  image: ../../assets/industries/cybersecurity/build.jpg
+  items:
+    - title: Product pages
+      text: Where an architect carefully decides how the product fits into the design
+    - title: Service pages
+      text: What an engagement includes, from the very start all the way to finish
+    - title: Framework and compliance pages
+      text: Mapped precisely to what your buyers answer for in their specific needs
+    - title: Case study and evidence pages
+      text: Proof your buyers can easily verify themselves with clear, trustworthy evidence
+    - title: About and team pages
+      text: The people behind the company, speaking openly and honestly on the record
+    - title: Demo and enquiry flows
+      text: One clear step that takes you from convinced to fully booked and ready
+
+difference:
+  heading: What changes once the site is live
+  lead: What the same traffic does with a site that explains you properly.
+  without:
+    - CISOs read your claims with doubt
+    - Certifications scattered or missing entirely
+    - No research published, so expertise stays invisible
+    - RFP teams struggle to find basic answers
+    - Partners improvise their own material
+    - Incidents start with a slow, unclear contact
+  with:
+    - CISOs and engineers trust what they read
+    - "Trust centre: certifications and compliance mapping"
+    - Threat research brings expertise and search traffic
+    - Procurement and RFP teams find what they need
+    - Channel partners get material they can use
+    - Incident response gets a clear, fast contact route
+
+process:
+  heading: A site built to pass<br />the checks your buyers run
+  steps:
+    - title: Research & Strategy
+      text: We study your competitors, your services and how your marketing works before anything is designed, so the site answers what your buyers actually look for.
+      points:
+        - Competitor research
+        - Sitemap built around your services
+        - Marketing funnel mapping
+    - title: Visual Design
+      text: Every screen is drawn for your company, with the composure a security buyer expects from a firm they'd trust with their infrastructure.
+      points:
+        - Fully custom design
+        - Authoritative visual system
+        - Premium finish on every page
+    - title: Messaging & Copywriting
+      text: Professional writers produce copy that explains the product precisely, so your engineers never have to rewrite it.
+      points:
+        - Persuasive page copy
+        - Technical accuracy
+        - Clear product explanation
+    - title: UI/UX Design
+      text: Every page is built to lead a technical visitor towards an enquiry, and works on any device they use.
+      points:
+        - Conversion-focused layouts
+        - Enquiry paths on every page
+        - Responsive on every device
+    - title: Development & QA
+      text: We build on the latest tech stack, then test across devices and browsers before launch so nothing breaks in front of a buyer.
+      points:
+        - Fast, SEO-ready build
+        - Tested on every device
+        - Integrated with your tools
+
+growth:
+  heading: What a website that survives<br />scrutiny does
+  lead: Six improvements that let a security buyer trust the site enough to book a demo.
+  items:
+    - title: Conversion-focused UX
+      text: Every page moves security buyers towards contact.
+    - title: Fast load speeds
+      text: Advisories and research open instantly, no delay.
+    - title: Search and AI visibility
+      text: Engineers and CISOs find your research first.
+    - title: Analytics
+      text: You see which research brings the most enquiries.
+    - title: A CMS the team runs
+      text: Advisories go live without waiting on developers' help.
+    - title: Security and scale
+      text: The site stays up even when attention spikes sharply.
+
+value:
+  heading: Everything it takes to win<br />security buyers, in one team
+  items:
+    - title: Built for English-speaking buyers
+      text: CISOs and procurement judge you in English. We write for them, so nothing reads translated or vague.
+    - title: AI-native, not AI-dependent
+      text: We use AI to research threats, vendors and buyer questions fast. Experts direct it and sign off every line, so nothing generic ships.
+    - title: Web design that wins business
+      text: Every page answers what security buyers check first, then leads them to book a demo.
+    - title: The whole team, none of the overhead
+      text: Your company gets the whole team, from strategist to QA, with nobody to recruit, onboard or manage.
+    - title: You look sharper than your competitors
+      text: Design and detail that signal rigour, so you look more credible than the vendors you compete with.
+  writerLine: Find the breach before your auditor does.
+
+faq:
+  heading: What you'd want to know first
+  items:
+    - question: Do you work with companies like ours?
+      answer: Yes. We build sites for companies selling to technical buyers who inspect before they call, and we write copy your engineers can stand behind.
+    - question: Will you understand what we actually do?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Our engineers will end up rewriting the copy, won't they?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: We can't name clients or show incident detail. Can the site still work?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Why not a big international agency?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: What do you need from us?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Redesign or rebuild?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: How long does it take?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+
+cta:
+  heading: Ready to get demos booked with<br />the buyers who scrutinise you hardest?
+  text: Tell us what the product protects and where your deals stall today, and we'll shape the right scope around it.

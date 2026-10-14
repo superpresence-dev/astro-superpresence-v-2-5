@@ -1,0 +1,171 @@
+title: Hotels & hospitality
+description: Websites for independent hotels and resorts across Asia. We build sites that win the booking decision, so more of each booking stays with the property.
+order: 7
+
+hero:
+  eyebrow: Websites for independent hotels
+  heading: Keep more of each booking, starting with the website
+  text: Guests find you on a listing, then open your site to decide where to book. We build sites that win that decision, so more of each booking stays with the property.
+  image: ../../assets/industries/hotels-hospitality/hero.jpg
+
+problem:
+  heading: Commission rises every year,<br />and direct bookings stay flat
+  lead: Every guest your site loses goes back to the listing, and pays the commission.
+  items:
+    - title: The site still shows the old rooms
+      text: The renovation finished months ago, and guests are still looking at the ones you replaced.
+    - title: Guests book back on the listing
+      text: They open your site, it loads slowly on a phone, and they go back to where they found you.
+    - title: The commission line keeps growing
+      text: Every year more of the room rate leaves the property, and the direct share never moves.
+
+who:
+  heading: For properties whose guests<br />check the website first
+  lead: Independent hotels, resorts, boutique properties, serviced residences and villas across Asia. Your guests all run the same check before they book, and the site has to pass it.
+  items:
+    - icon: building
+      title: Independent hotels
+      text: They check whether tonight's rate and this month's rooms are on the site.
+    - icon: leaf
+      title: Resorts
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: storefront
+      title: Boutique properties
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: handshake
+      title: Serviced residences
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: house
+      title: Villas
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: buildings
+      title: Small hotel groups
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+  note: Don't see your kind of property? Tell us about it.
+
+build:
+  heading: The pages your guests actually need
+  image: ../../assets/industries/hotels-hospitality/build.jpg
+  items:
+    - title: Room and suite pages
+      text: Rooms that guests can easily compare and confidently choose for their stay.
+    - title: Rates and offers
+      text: Your best rate, absolutely impossible to miss anywhere else, guaranteed.
+    - title: Restaurant and spa pages
+      text: Stays that naturally extend into longer, more comfortable visits.
+    - title: Local area guide
+      text: The trip, clearly pictured and planned before they even make a booking.
+    - title: Gallery and tours
+      text: Photography displayed exactly the way you captured it, with every detail preserved.
+    - title: Booking path pages
+      text: A user-friendly path designed specifically to work smoothly on any phone.
+
+difference:
+  heading: What changes when more guests book direct
+  lead: What the property gains when the site does its job.
+  without:
+    - Room bookings keep going through OTAs
+    - Direct rate perks never make it onto the page
+    - Guests drop out of booking on their phones
+    - Missing from Google Hotels and AI trip planners
+    - Weddings, MICE and group enquiries never arrive
+    - Outlets sit unnoticed, spend per stay stays low
+    - Source-market questions land on the front desk
+  with:
+    - More bookings direct, fewer through OTAs
+    - Book-direct perks clearly shown on every rate
+    - Booking engine that works smoothly on a phone
+    - Found in Google Hotels and AI trip planners
+    - Weddings, MICE and group enquiries arrive direct
+    - Restaurant, bar and spa pages raise spend per stay
+    - Source markets answered in their own language
+
+process:
+  heading: We build the site that wins<br />the guest's second look
+  steps:
+    - title: Research & Strategy
+      text: We study your competitors and your guests' booking journey before anything is drawn, so the site is built to win the comparison guests are already making.
+      points:
+        - Competitor and market research
+        - Sitemap built around your rooms and rates
+        - Marketing funnel mapping
+    - title: Visual Design
+      text: Every screen is drawn for your property, so the site finally looks as good as the place does.
+      points:
+        - Fully custom design
+        - Photography shown properly
+        - A look that matches the property
+    - title: Messaging & Copywriting
+      text: Professional writers write the site to persuade, so guests trust a stranger enough to book.
+      points:
+        - Persuasive page copy
+        - Room and rate descriptions
+        - Trust-building content
+    - title: UI/UX Design
+      text: Every page leads guests towards the booking, and works on the phone they are actually using.
+      points:
+        - Booking-first page flows
+        - Mobile-first layouts
+        - Clear room and rate comparison
+    - title: Development & QA
+      text: We build on the latest tech stack, fast and easy for search engines and AI tools to read, and test everything before launch.
+      points:
+        - Fast load speeds
+        - SEO-ready structure
+        - Integrated with your tools
+
+growth:
+  heading: What a website built to win enquiries does
+  lead: Six improvements that turn your reputation into enquiries from the right clients.
+  items:
+    - title: Conversion-focused UX
+      text: Every page leads guests towards a direct booking.
+    - title: Fast load speeds
+      text: Pages open fast, even on hotel wifi and phones.
+    - title: Search and AI visibility
+      text: Travellers and AI trip planners find you first.
+    - title: Analytics
+      text: You see which source markets and pages drive bookings.
+    - title: A CMS the team runs
+      text: Your team updates rates and events without a developer.
+    - title: Security and scale
+      text: The site stays up through peak booking season.
+
+value:
+  heading: Everything it takes to win more<br />direct bookings, in one team
+  items:
+    - title: Built for English-speaking buyers
+      text: Your guests read and judge in English. We write and design for them, so nothing on the site reads translated.
+    - title: AI-native, not AI-dependent
+      text: We use AI to research rates, reviews and rival hotels fast. Experts direct it and sign off every line, so nothing generic ships.
+    - title: Web design that wins business
+      text: Every page is designed to turn browsers into direct bookings, so less of your margin goes to the OTAs.
+    - title: The whole team, none of the overhead
+      text: Your hotel gets the whole team, from strategist to QA, with nobody to recruit, onboard or manage.
+    - title: You look sharper than your competitors
+      text: Design, tone and detail that make the resort next door look dated, so guests book you instead.
+  writerLine: Wake up forty steps from the sea.
+
+faq:
+  heading: What owners and GMs ask us
+  items:
+    - question: Do you work with independent hotels and resorts?
+      answer: Yes, hotels, resorts, boutique properties, serviced residences and villas are who this page is for. We're based in Asia and work with operators across the region.
+    - question: The OTAs bring us the guests anyway. Why change anything?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Can you work with our booking engine?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: We shot new photography last year. Isn't that enough?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Nobody here has time to run a website project. How much of our time does this take?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Why not a local web designer?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Why not a big international agency?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: How long does it take?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+
+cta:
+  heading: Ready to win more<br />of your bookings directly?
+  text: Tell us about the property and where your bookings come from today, and we'll shape the right scope around it.
