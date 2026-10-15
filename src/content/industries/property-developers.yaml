@@ -1,0 +1,171 @@
+title: Property developers
+description: Websites for property developers and residence brands across Asia. We build sites that turn paid traffic into registrations and viewing requests.
+order: 9
+
+hero:
+  eyebrow: For property developers
+  heading: Paid traffic should end<br />in registrations
+  text: You are already paying for portal listings, ads and agents to send buyers to the development. We build sites that turn those visitors into registrations and viewing requests.
+  image: ../../assets/industries/property-developers/hero.jpg
+
+problem:
+  heading: Your campaigns pay for visitors<br />the page never converts
+  lead: Buyers judge the development by the website, long before they book a viewing.
+  items:
+    - title: The spend lands on a losing page
+      text: Portal listings and ads bring buyers to a page that gives them nowhere to register.
+    - title: Buyers can't picture living there
+      text: Renders and floorplans are hard to find, so visitors leave without registering.
+    - title: Agents won't send the link
+      text: The people selling your units overseas have nothing they're proud to forward.
+
+who:
+  heading: Who we build sites for
+  lead: Developers and residence brands across Asia whose buyers decide from a screen, often from another country.
+  items:
+    - icon: building
+      title: Condo and villa builders
+      text: They check floorplans and current pricing before booking a viewing.
+    - icon: house
+      title: Branded residences
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: lotus
+      title: Resort residences
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: documents
+      title: Mixed-use master plans
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: scroll
+      title: Projects sold abroad
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: storefront
+      title: Boutique developers
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+  note: Don't see your kind of development? Tell us about the project.
+
+build:
+  heading: The pages a development actually needs
+  image: ../../assets/industries/property-developers/build.jpg
+  items:
+    - title: Development story
+      text: The concept of this place explained clearly in just one minute.
+    - title: Units and floorplans
+      text: Layouts that buyers can easily compare and vividly picture in their minds
+    - title: Location and surroundings
+      text: An honest view of everything surrounding the property, shown clearly and fairly
+    - title: Specification and finishes
+      text: The specific details that buyers frequently request from their agents.
+    - title: Construction progress
+      text: The construction, impressive and easily seen from far beyond the borders.
+    - title: Gallery
+      text: High-quality renders and photography providing ample space to showcase and sell
+
+difference:
+  heading: What the site does for the launch
+  lead: The same development, presented the way buyers expect.
+  without:
+    - Launch interest drifts away before anyone books
+    - Each launch looks like a different developer
+    - Buyers must call before they can shortlist
+    - Overseas buyers lack ownership rules and terms
+    - Agents send PDFs instead of something credible
+    - Buyers hear nothing after the sale
+    - Track record stays invisible to new buyers
+  with:
+    - Launch interest turns into gallery appointments
+    - Launch microsites under one developer brand
+    - Floor plans and availability shortlist buyers
+    - Overseas buyers get rules, terms, roadshow dates
+    - Agents and sales teams send the site confidently
+    - Construction updates keep buyers informed after sale
+    - Completed projects prove track record and handover
+
+process:
+  heading: We build the site around<br />how buyers decide
+  steps:
+    - title: Research & Strategy
+      text: We study your competitors and your buyers before anything is designed, so every page earns its place.
+      points:
+        - Competitor research
+        - Sitemap built around your units
+        - Buyer journey from first look to registration
+    - title: Visual Design
+      text: Every screen is drawn for your development, so the site carries the same weight as the property.
+      points:
+        - Fully custom design
+        - A look that reads as premium
+        - Renders and photography treated with care
+    - title: Messaging & Copywriting
+      text: Professional writers tell the story of the place, the location and the life it offers.
+      points:
+        - Copy written for buyers
+        - Location and lifestyle written plainly
+        - Every page ends in a reason to register
+    - title: UI/UX Design
+      text: "Every page leads somewhere: the floorplans, the gallery, the registration form."
+      points:
+        - Easy registration and booking
+        - Works on every device
+        - Clear paths from every page to an enquiry
+    - title: Development & QA
+      text: We build on the latest tech stack, then test everything across devices and browsers before launch.
+      points:
+        - Fast load speeds
+        - SEO-ready structure
+        - Tested on devices and browsers before launch
+
+growth:
+  heading: What a website built for registrations does
+  lead: Six improvements that turn your campaign spend into qualified registrations and viewings.
+  items:
+    - title: Conversion-focused UX
+      text: Every page moves buyers towards registering or booking.
+    - title: Fast load speeds
+      text: Floor plans and galleries open instantly on phones.
+    - title: Search and AI visibility
+      text: Buyers and AI tools find your launches first.
+    - title: Analytics
+      text: You see which channels fill the sales gallery today.
+    - title: A CMS the team runs
+      text: Your team posts progress and availability without a developer.
+    - title: Security and scale
+      text: Launch traffic spikes never take the site down.
+
+value:
+  heading: Everything it takes to win more<br />buyer registrations, in one team
+  items:
+    - title: Built for English-speaking buyers
+      text: Your buyers in Hong Kong, Singapore and beyond judge you in English. We write for them, so nothing reads translated.
+    - title: AI-native, not AI-dependent
+      text: We use AI to research buyers, launches and rival projects fast. Experts direct it and sign off every line, so nothing generic ships.
+    - title: Web design that wins business
+      text: Every page moves buyers from browsing floor plans to registering interest.
+    - title: The whole team, none of the overhead
+      text: Your project gets the whole team, from strategist to QA, with nobody to recruit, onboard or manage.
+    - title: You look sharper than your competitors
+      text: Design and detail that match the price per square metre, so your project outshines the launch next door.
+  writerLine: Eight minutes on foot to BTS Thong Lo.
+
+faq:
+  heading: What developers ask us
+  items:
+    - question: Do you work with property developers?
+      answer: Yes. We build sites for developers and residence brands across Asia, from condominiums to branded residences and master-planned schemes.
+    - question: Why not a local agency or a big international one?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Our agents bring the buyers. Why does the site matter?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: We already have a brochure and renders. Isn't that enough?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Compliance will strip half the copy. What happens then?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Redesign or rebuild?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: What happens after launch?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: How long does it take?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+
+cta:
+  heading: Ready to turn more of your<br />enquiries into viewings?
+  text: Tell us about the development, the markets you're selling into and how enquiries reach your sales team today, and we'll shape the right scope around it.

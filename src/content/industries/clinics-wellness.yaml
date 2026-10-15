@@ -1,0 +1,172 @@
+title: Clinics & wellness
+description: Websites for medical, dental, spa and fitness practices across Asia. We build sites that show the treatments, introduce the team and make booking simple.
+order: 10
+
+hero:
+  eyebrow: For clinics and wellness practices
+  heading: Websites that help<br />patients choose you<br />with confidence
+  text: We create websites for medical, dental, spa, and fitness practices in Asia, clearly showcasing treatments, introducing staff, and simplifying bookings for local and distant patients.
+  image: ../../assets/industries/clinics-wellness/hero.jpg
+  fade: "#463420"
+
+problem:
+  heading: Patients are choosing between<br />you and three other clinics
+  lead: Every one of them visits your website before they contact you.
+  items:
+    - title: Your site still shows the old clinic
+      text: You've moved, but the photos and details online are years out of date.
+    - title: Visitors can't tell what you offer
+      text: Treatments are described in clinical terms, so late-night readers can't tell what to do next.
+    - title: International enquiries have slowed
+      text: Medical tourists compare clinics abroad, and yours looks the least credible on their shortlist.
+
+who:
+  heading: For practices where<br />trust decides the booking
+  lead: "Every practice below is chosen the same way: someone reads up late at night, shortlists a few places, and books the one they feel safest with. The site is where that decision happens."
+  items:
+    - icon: heart
+      title: Medical and dental clinics
+      text: Parents check your accreditation and where your graduates go before they book a tour.
+    - icon: gem
+      title: Aesthetics clinics
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: lotus
+      title: Spas and retreats
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: dumbbell
+      title: Fitness studios
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: user-circle
+      title: Physio and rehab clinics
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: location
+      title: Multi-location practices
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+  note: Don't see your practice type? Tell us what you do.
+
+build:
+  heading: Pages your patients actually look for
+  image: ../../assets/industries/clinics-wellness/build.jpg
+  items:
+    - title: Treatment pages
+      text: Clearly stated, fully compliant with all your market's specific rules and standards
+    - title: Practitioner profiles
+      text: Credentials that patients can quickly verify within seconds for complete peace of mind
+    - title: A first-visit guide
+      text: A nervous patient can easily picture the entire process clearly now.
+    - title: Photo tours of the space
+      text: Guests always know exactly what to expect during their visit here.
+    - title: International patient pages
+      text: Travel and booking questions answered together for a seamless, hassle-free experience
+    - title: Booking and enquiry paths
+      text: Bookable anytime from your phone, wherever you are, with ease.
+
+difference:
+  heading: The practice looks like the obvious choice
+  lead: What changes from the first week your new site goes live.
+  without:
+    - Treatment research ends without booked consultations
+    - Medical tourists compare clinics elsewhere
+    - Credentials stay hidden, so trust never lands
+    - Treatment pages leave patients confused
+    - Patients phone the desk instead of booking
+    - Insurance and languages unclear, desk overloaded
+    - The clinic reads like a running promotion
+  with:
+    - Treatment research turns into booked consultations
+    - International patients compare you across countries
+    - Credentials and registrations build trust before visits
+    - Treatments and packages explained plainly
+    - Patients book on WhatsApp, LINE or online
+    - Insurance and languages shown, fewer desk calls
+    - The clinic reads as calm and credible
+
+process:
+  heading: A site built to earn the patient's<br />trust before they call
+  steps:
+    - title: Research & Strategy
+      text: We study your competitors, your services and how patients find you, so every page answers the questions your patients actually ask.
+      points:
+        - Competitor research
+        - A sitemap built around your treatments
+        - How patients find you, mapped
+    - title: Visual Design
+      text: We design every page for your practice, so the site looks as calm and credible as the care you provide.
+      points:
+        - Fully custom design
+        - A reassuring look and feel
+        - Premium finish on every page
+    - title: Messaging & Copywriting
+      text: Professional writers explain your treatments in plain language a nervous first-time patient can follow.
+      points:
+        - Persuasive, plain-English copy
+        - Treatment pages written clearly
+        - Practitioner profiles
+    - title: UI/UX Design
+      text: Every page gives the reader a clear next step, and works just as well on the phone they're reading on.
+      points:
+        - Enquiry paths on every page
+        - Responsive on every device
+        - Booking flows that work across time zones
+    - title: Development & QA
+      text: We build on the latest tech stack, so the site loads fast, reads correctly to search engines and AI tools, and is tested on every device and browser before launch.
+      points:
+        - Latest tech stack
+        - Fast, SEO-ready build
+        - Integrated with your tools
+
+growth:
+  heading: What a website built<br />for bookings does
+  lead: Six improvements that help patients choose your practice with confidence, and book.
+  items:
+    - title: Conversion-focused UX
+      text: Every page moves patients towards booking a consultation.
+    - title: Fast load speeds
+      text: Pages open fast on late-night mobile searches.
+    - title: Search and AI visibility
+      text: Patients and AI tools find you when researching treatments.
+    - title: Analytics
+      text: You see which treatments drive consultations.
+    - title: A CMS the team runs
+      text: Staff update treatments and hours without a developer.
+    - title: Security and scale
+      text: Patient-facing pages stay secure as traffic grows.
+
+value:
+  heading: Everything it takes to win more<br />patient bookings, in one team
+  items:
+    - title: Built for English-speaking buyers
+      text: Your patients, expat and international, judge you in English. We write for them, so nothing reads translated.
+    - title: AI-native, not AI-dependent
+      text: We use AI to research treatments, reviews and rival clinics fast. Experts direct it and sign off every line, so nothing generic ships.
+    - title: Web design that wins business
+      text: Every page answers what patients worry about, then leads them to book a consultation.
+    - title: The whole team, none of the overhead
+      text: Your clinic gets the whole team, from strategist to QA, with nobody to recruit, onboard or manage.
+    - title: You look sharper than your competitors
+      text: Design and tone that feel as trustworthy as your doctors, so patients choose you over the clinic down the road.
+  writerLine: Same-week appointments, in English.
+
+faq:
+  heading: What practices usually ask before starting
+  items:
+    - question: Do you work with practices like ours?
+      answer: Yes. We build sites for medical and dental clinics, aesthetics clinics, spas, retreats and fitness studios across Asia, and we understand how patients in this field choose.
+    - question: Can the site bring in more international patients?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: We don't want to look commercial. Can the site still feel like a medical practice?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: We already pay for a booking system and post on Instagram. Why spend on a site?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: The doctors have no time to review copy. How much of their time do you need?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Do you do strategy, or only design?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Can our team update the site after launch?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: How long does it take?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+
+cta:
+  heading: Ready to fill more of<br />your appointment book?
+  text: Tell us about the clinic, who your patients are and how appointments reach you today, and we'll shape the right scope around it.

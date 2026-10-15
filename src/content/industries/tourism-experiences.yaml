@@ -1,0 +1,169 @@
+title: Tourism & experiences
+description: Websites for tour operators, attractions and travel brands across Asia. We build sites that make booking direct the obvious choice.
+order: 11
+
+hero:
+  eyebrow: For tour and travel operators
+  heading: Fewer commissions,<br />more direct bookings
+  text: Marketplaces take a cut of bookings your own site could win. We build sites for tour operators, attractions and travel brands that make booking direct the obvious choice.
+  image: ../../assets/industries/tourism-experiences/hero.jpg
+
+problem:
+  heading: You pay marketplaces for<br />bookings your site should win
+  lead: The experience sells itself in person, but the site undersells it online.
+  items:
+    - title: Each booking includes a commission
+      text: Travellers find you on a marketplace, book there, and a cut of each trip leaves the business.
+    - title: Your best itinerary lives in a PDF
+      text: Travellers who would love the trip never see it, because it sits in an inbox instead of on the site.
+    - title: A trade partner asks for a link
+      text: Agents check your site first, and a weak one makes them hesitate to show you to clients.
+
+who:
+  heading: Made for the businesses<br />that sell experiences
+  lead: "Your website has to convince two audiences at once: travellers planning a trip, and the partners who sell you on. Both judge you online before anyone gets in touch."
+  items:
+    - icon: megaphone
+      title: Tour operators
+      text: Travellers read your itineraries day by day before they ever enquire.
+    - icon: home
+      title: DMCs
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: office
+      title: Luxury travel companies
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: balloon
+      title: Attractions
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: park
+      title: Venues and event spaces
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: security
+      title: Experience providers
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+  note: Don't see your business here? Tell us what you sell.
+
+build:
+  heading: Pages built around how travel is bought
+  image: ../../assets/industries/tourism-experiences/build.jpg
+  items:
+    - title: Itinerary pages
+      text: The page that finalizes and closes the decision-making process completely.
+    - title: Departures and availability
+      text: Current dates carefully checked, verified, and updated for your convenience.
+    - title: Trade and partner pages
+      text: The essential proof agents require to confidently sell you the product.
+    - title: Destination and route pages
+      text: Important details discovered and addressed during the initial planning stage.
+    - title: Enquiry and booking paths
+      text: Just one tap is all it takes to instantly connect with you anytime.
+    - title: Venue and event pages
+      text: Capacity, layouts, and real events all considered for accurate planning.
+
+difference:
+  heading: What changes when travellers book with you
+  lead: What a site built for both audiences does.
+  without:
+    - Marketplaces keep most of every sale
+    - Travellers wait on emails to confirm availability
+    - Custom requests get lost in marketplace forms
+    - Trade enquiries have nowhere proper to land
+    - Strangers hesitate before trusting a deposit
+    - Source-market visitors meet an English-only site
+  with:
+    - More bookings direct, fewer through marketplaces
+    - Live availability and pricing end back-and-forth
+    - Private, custom and group requests arrive directly
+    - Travel agents and incentive planners enquire
+    - Reviews and real photos earn deposit trust
+    - Source markets addressed in their own language
+
+process:
+  heading: Every page built to win the booking
+  steps:
+    - title: Research & Strategy
+      text: We study your competitors, your trips and how travellers find and choose you, so every page answers what they actually check before they enquire.
+      points:
+        - Competitor research
+        - Sitemap built around your trips
+        - Mapping the journey to an enquiry
+    - title: Visual Design
+      text: Every page is drawn for your brand, with the photography and detail that make the trip feel real before anyone arrives.
+      points:
+        - Fully custom design
+        - Real photography-led layouts
+        - A premium look that matches the price
+    - title: Messaging & Copywriting
+      text: Our writers spell out what is included, who the trip suits and why to book with you, so travellers can decide without calling.
+      points:
+        - Itinerary and inclusions copy
+        - Pages written to persuade
+        - Trade-facing credibility copy
+    - title: UI/UX Design
+      text: Every page leads somewhere useful, and the site works just as well on the phone a traveller is holding on a bus.
+      points:
+        - Enquiry paths on every page
+        - Mobile-first layouts
+        - Availability and dates made easy to find
+    - title: Development & QA
+      text: Your site is built on the latest tech stack, loads fast, and is tested across devices and browsers before launch.
+      points:
+        - Fast, current build
+        - Search-ready structure
+        - Integrated with your tools
+
+growth:
+  heading: What a website built for<br />direct enquiries does
+  lead: Six improvements that win travellers while they plan, and give trade partners proof.
+  items:
+    - title: Conversion-focused UX
+      text: Every page moves travellers towards a direct booking.
+    - title: Fast load speeds
+      text: Pages open fast on travellers' phones abroad.
+    - title: Search and AI visibility
+      text: Travellers and AI tools find your experiences.
+    - title: Analytics
+      text: You see which experiences drive direct bookings.
+    - title: A CMS the team runs
+      text: Your team updates availability and seasons without a developer.
+    - title: Security and scale
+      text: The site holds up through high season.
+
+value:
+  heading: Everything it takes to win more<br />direct bookings, in one team
+  items:
+    - title: Built for English-speaking buyers
+      text: Your travellers plan and book in English. We write for them, so nothing on the site reads translated.
+    - title: AI-native, not AI-dependent
+      text: We use AI to research travellers, routes and rival operators fast. Experts direct it and sign off every line, so nothing generic ships.
+    - title: Web design that wins business
+      text: Every page turns browsing into a direct booking, so fewer of your guests come through marketplaces.
+    - title: The whole team, none of the overhead
+      text: Your company gets the whole team, from strategist to QA, with nobody to recruit, onboard or manage.
+    - title: You look sharper than your competitors
+      text: Design and detail that make you the operator to book, ahead of the marketplaces and bigger names.
+  writerLine: Paddle Phang Nga at dawn, before the boats.
+
+faq:
+  heading: What operators usually want to know
+  items:
+    - question: Do you work with businesses like ours?
+      answer: Yes. Tour operators, DMCs, luxury travel companies, attractions and venues are exactly who this page is for. We build sites that serve both travellers and trade partners, because your business needs both.
+    - question: Most of our bookings come through agents and marketplaces. Why does the website matter?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Why not a local agency or a big international one?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Can you connect our booking and availability system?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Our itineraries and departures change constantly. Who keeps the site current?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: We're small. Will a rebuild eat the season?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: What does the project need from us?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: How long does it take?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+
+cta:
+  heading: Ready to take more<br />of your bookings directly?
+  text: Tell us what you run, where your travellers come from and how your bookings arrive today, and we'll shape the right scope around it.

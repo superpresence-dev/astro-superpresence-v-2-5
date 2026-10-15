@@ -39,6 +39,8 @@ interface Props
   secondaryHref?: string;
   /** Bottom fade over the image: `deep` turns solid below desktop, `soft` stays at 70% on every screen. */
   fade?: "deep" | "soft";
+  /** Colour the `soft` fade runs to, as a hex. Mixed at 70% like the default dark. */
+  fadeColor?: string;
 }
 
 const {
@@ -52,6 +54,7 @@ const {
   secondaryText,
   secondaryHref = "#",
   fade = "deep",
+  fadeColor,
   class: className,
   ...rest
 } = Astro.props;
@@ -67,6 +70,7 @@ const logosAfter = [logoSix, logoSeven];
   paddingBottom="none"
   containerClass="home-hero_layout"
   class:list={["home-hero_wrap", fade, className]}
+  style={fadeColor && `--_fade-color: ${fadeColor};`}
   {...rest}
 >
   <Img src={image} slot="background" loading="eager" fetchPriority="high" />
@@ -154,7 +158,7 @@ const logosAfter = [logoSix, logoSeven];
         --_logo-height: 5rem;
       }
       &.soft {
-        --_fade: rgb(23 23 23 / 0.7);
+        --_fade: color-mix(in srgb, var(--_fade-color, rgb(23 23 23)) 70%, transparent);
         --_fade-tall: 12.5rem;
         --_fade-short: 9.375rem;
       }

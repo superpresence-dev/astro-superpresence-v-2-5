@@ -1,0 +1,172 @@
+title: Education
+description: Websites for schools, universities and academies across Asia. We build sites that win the family's decision, and turn it into applications and open day bookings.
+order: 8
+
+hero:
+  eyebrow: Websites for education
+  heading: Your school online,<br />before families ever visit
+  text: Parents and students judge your institution on its website months before they enquire. We build sites that win that decision, and turn it into applications and open day bookings.
+  image: ../../assets/industries/education/hero.jpg
+  fade: "#31271d"
+
+problem:
+  heading: Your school is better than<br />your website is telling families
+  lead: Families judge the school by the website, long before they walk through the gate.
+  items:
+    - title: Enquiries are down on last year
+      text: The admissions cycle opened, and the numbers have not caught up with the year before.
+    - title: Families email the same questions
+      text: Fees, curriculum and entry requirements are on the site somewhere, but parents cannot find them.
+    - title: A competitor looks sharper online
+      text: Their site comes up first, and yours looks like it was built by a committee that stopped meeting.
+
+who:
+  heading: For schools, universities<br />and academies in Asia
+  lead: "Every institution here sells the same thing: a big family decision, made online first. Whoever they are, their families run the same checks on the website before anyone gets in touch."
+  items:
+    - icon: globe
+      title: International schools
+      text: Parents check your accreditation and where your graduates go before they book a tour.
+    - icon: home
+      title: Private and bilingual schools
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: building
+      title: Universities
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: people
+      title: Colleges and foundation courses
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: flag
+      title: Training academies
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+    - icon: translate
+      title: Language & enrichment centers
+      text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+  note: Don't see your institution here? Tell us what you teach and we'll look at your site.
+
+build:
+  heading: The pages your families are looking for
+  image: ../../assets/industries/education/build.jpg
+  items:
+    - title: Curriculum and programme pages
+      text: Clearly explain what you teach, using comparable and relatable words.
+    - title: Fees and admissions pages
+      text: Present the numbers and process transparently, right from the start.
+    - title: Outcomes and leaver destinations
+      text: Show where your graduates actually go and the paths they follow.
+    - title: Staff profiles
+      text: Introduce your teachers by name and share their backgrounds in detail.
+    - title: Open day booking
+      text: A visit was scheduled over the phone, ensuring all details were carefully confirmed.
+    - title: Enquiry and application flows
+      text: Turn interest into applications seamlessly, accessible on any device.
+
+difference:
+  heading: What the new site does for your enrolment
+  lead: The same school, presented the way families expect.
+  without:
+    - Parent research ends without booked tours
+    - Relocating families never find you from abroad
+    - Curriculum and accreditations stay hard to compare
+    - Fees unclear, so parents leave instead of enquiring
+    - Agents hesitate to send families to your site
+    - Careers section fails to attract strong teachers
+    - Open day pages sit out of date for months
+  with:
+    - Parent research turns into tours and applications
+    - Expat families shortlist you before they land
+    - Curriculum and accreditations easy to compare
+    - Fees and admissions timeline published clearly
+    - Agents and HR send families your way confidently
+    - Strong teachers apply through your careers section
+    - Open days stay current without a developer
+
+process:
+  heading: We find out what your families need to know, then build the site that answers it
+  steps:
+    - title: Research & Strategy
+      text: We study your competitors, your programmes and how families find you, so nothing is built on assumptions.
+      points:
+        - Competitor and market research
+        - Sitemap built around your programmes
+        - Marketing funnel mapping
+    - title: Visual Design
+      text: Every page is drawn for your institution, with the authority and polish families expect from a serious school.
+      points:
+        - Fully custom design
+        - Authoritative, premium look
+        - Design system for every page
+    - title: Messaging & Copywriting
+      text: Professional writers explain your curriculum and outcomes in words parents actually read.
+      points:
+        - Persuasive page copy
+        - Curriculum and programme explanations
+        - Fee and admissions messaging
+    - title: UI/UX Design
+      text: Every page is laid out to end in an enquiry or an open day booking, on any device a parent picks up.
+      points:
+        - Conversion-focused page layouts
+        - Mobile-first enquiry flows
+        - Open day and tour booking journeys
+    - title: Development & QA
+      text: We build on the latest tech stack, fast and readable to search engines and AI tools, and test everything before launch.
+      points:
+        - Fast, SEO-ready build
+        - Tested across devices and browsers
+        - Integrated with your tools
+
+growth:
+  heading: What a website built for<br />enrolment does
+  lead: Six improvements that help families and learners choose your institution, and enquire.
+  items:
+    - title: Conversion-focused UX
+      text: Every page moves parents towards a tour booking.
+    - title: Fast load speeds
+      text: Pages open fast for families browsing from abroad.
+    - title: Search and AI visibility
+      text: Relocating parents and AI tools find you first, quickly and efficiently.
+    - title: Analytics
+      text: You see which pages fill tours and applications.
+    - title: A CMS the team runs
+      text: Staff post events and news without waiting on developers.
+    - title: Security and scale
+      text: The site holds up strong through open-day season.
+
+value:
+  heading: Everything it takes to win<br />more families, in one team
+  items:
+    - title: Built for English-speaking buyers
+      text: Your parents, many of them expats, judge schools in English. We write for them, so nothing reads translated.
+    - title: AI-native, not AI-dependent
+      text: We use AI to research families, curricula and rival schools fast. Experts direct it and sign off every line, so nothing generic ships.
+    - title: Web design that wins business
+      text: Every page answers what parents ask first, then leads them to book a tour.
+    - title: The whole team, none of the overhead
+      text: Your school gets the whole team, from strategist to QA, with nobody to recruit, onboard or manage.
+    - title: You look sharper than your competitors
+      text: Design and tone that feel as considered as your teaching, so parents rate you above older schools.
+  writerLine: Small classes, known by name.
+
+faq:
+  heading: What institutions ask us before starting
+  items:
+    - question: Do you work with schools and universities?
+      answer: Yes. This page is written for international and private schools, universities, colleges and training academies in Asia. The same principles apply across all of them, and we adapt the research and pages to your families.
+    - question: Why not a local agency or a big international one?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Will an agency understand how a school actually works?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Who writes the site when our staff are teaching?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Do you do strategy or only design?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Redesign or full rebuild?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: What happens after launch?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: How long does it take?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+
+cta:
+  heading: Ready to fill your next intake?
+  text: Tell us about the school, where your families come from and how enquiries reach you today, and we'll shape the right scope around it.

@@ -113,6 +113,8 @@ const industries = defineCollection({
         heading: z.string(),
         text: z.string(),
         image: image(),
+        /** Colour the bottom fade runs to (hex), when the photo is tinted. Defaults to the neutral dark. */
+        fade: z.string().regex(/^#[0-9a-f]{6}$/i).optional(),
       }),
       problem: z.object({
         heading: z.string(),
