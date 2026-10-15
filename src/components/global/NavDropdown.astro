@@ -1,0 +1,869 @@
+---
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Button from "@/components/Button.astro";
+import Icon from "@/components/media/Icon.astro";
+import Img from "@/components/media/Img.astro";
+import back from "@/assets/icons/arrow-full.svg";
+import heroRedesign from "@/assets/nav/hero-redesign.png";
+import playbook from "@/assets/nav/playbook.png";
+import whySuperpresence from "@/assets/nav/why-superpresence.png";
+import team from "@/assets/nav/team.png";
+import ctaBackground from "@/assets/nav/cta-background.jpg";
+import branding from "@/assets/nav/icons/branding.svg";
+import websiteDesign from "@/assets/nav/icons/website-design.svg";
+import social from "@/assets/nav/icons/social.svg";
+import webflow from "@/assets/nav/icons/webflow.svg";
+import framer from "@/assets/nav/icons/framer.svg";
+import migrate from "@/assets/nav/icons/migrate.svg";
+import maintenance from "@/assets/nav/icons/maintenance.svg";
+import chip from "@/assets/nav/icons/chip.svg";
+import sparkles from "@/assets/nav/icons/sparkles.svg";
+import shield from "@/assets/nav/icons/shield.svg";
+import briefcase from "@/assets/nav/icons/briefcase.svg";
+import banknote from "@/assets/nav/icons/banknote.svg";
+import box from "@/assets/nav/icons/box.svg";
+import hotel from "@/assets/nav/icons/hotel.svg";
+import education from "@/assets/nav/icons/education.svg";
+import property from "@/assets/nav/icons/property.svg";
+import pulse from "@/assets/nav/icons/pulse.svg";
+import blog from "@/assets/nav/icons/blog.svg";
+import roi from "@/assets/nav/icons/roi.svg";
+import { industryUrl } from "@/utils/industries.ts";
+
+interface Props {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+}
+
+const { render = true } = Astro.props;
+
+const services = [
+  [
+    { icon: branding, title: "Branding", text: "Brands built for authority" },
+    {
+      icon: websiteDesign,
+      title: "Website design",
+      text: "High-impact websites that convert",
+    },
+    {
+      icon: social,
+      title: "Social & ad creative",
+      text: "Creative aligned to performance",
+    },
+    {
+      icon: webflow,
+      title: "Webflow development",
+      text: "Built for speed and growth",
+    },
+  ],
+  [
+    {
+      icon: framer,
+      title: "Framer development",
+      text: "Premium builds, shipped fast",
+    },
+    {
+      icon: migrate,
+      title: "Migrate to Webflow",
+      text: "Migration without downtime",
+    },
+    {
+      icon: maintenance,
+      title: "Webflow maintenance",
+      text: "Ongoing performance & updates",
+    },
+  ],
+].map((column) => column.map((item) => ({ ...item, href: "#" })));
+
+const industryGroups = [
+  {
+    label: "Tech",
+    tone: "blue",
+    items: [
+      { icon: chip, title: "SaaS & tech", href: industryUrl("saas-tech") },
+      {
+        icon: sparkles,
+        title: "Artificial intelligence",
+        href: industryUrl("artificial-intelligence"),
+      },
+      {
+        icon: shield,
+        title: "Cybersecurity",
+        href: industryUrl("cybersecurity"),
+      },
+    ],
+  },
+  {
+    label: "Trust-led businesses",
+    tone: "red",
+    items: [
+      {
+        icon: briefcase,
+        title: "Professional services",
+        href: industryUrl("professional-services"),
+      },
+      {
+        icon: banknote,
+        title: "Investment firms",
+        href: industryUrl("investment-firms"),
+      },
+      {
+        icon: box,
+        title: "Manufacturing & wholesalers",
+        href: industryUrl("manufacturers-wholesalers"),
+      },
+    ],
+  },
+  {
+    label: "Experience brands",
+    tone: "green",
+    items: [
+      {
+        icon: hotel,
+        title: "Hotels & tourism",
+        href: industryUrl("hotels-hospitality"),
+      },
+      { icon: education, title: "Education", href: industryUrl("education") },
+      {
+        icon: property,
+        title: "Property developers",
+        href: industryUrl("property-developers"),
+      },
+      {
+        icon: pulse,
+        title: "Clinic & wellness",
+        href: industryUrl("clinics-wellness"),
+      },
+    ],
+  },
+];
+
+const audiences = ["Startups", "Businesses going digital", "Marketing teams"];
+
+const resources = [
+  {
+    icon: blog,
+    title: "Our blog",
+    text: "Insights for digital growth strategies",
+    href: "/blog",
+  },
+  {
+    icon: roi,
+    title: "ROI calculator",
+    text: "Estimate returns before making decisions",
+    href: "/roi-calculator",
+  },
+  {
+    icon: sparkles,
+    title: "Concept work",
+    text: "Steal ideas from our design explorations",
+    href: "/resources",
+  },
+];
+
+const reasons = [
+  {
+    image: whySuperpresence,
+    title: "Why Superpresence",
+    text: "Discover what makes us the right partner for your next growth-focused website.",
+    href: "#",
+  },
+  {
+    image: team,
+    title: "Meet Superpresence team",
+    text: "Get to know the team, experience, and people shaping the work behind Superpresence.",
+    href: "#",
+  },
+];
+
+const panels = [
+  { key: "services", label: "What we do", width: "full" },
+  { key: "industries", label: "Who we work with", width: "full" },
+  { key: "reasons", label: "Why us", width: "narrow" },
+  { key: "resources", label: "Resources", width: "medium" },
+];
+---
+
+{
+  render && (
+    <div class="nav-dropdown_wrap theme-light" data-nav-dropdown>
+      <div class="nav-dropdown_surface" />
+      {panels.map((panel) => (
+        <div
+          class:list={["nav-dropdown_panel", panel.width]}
+          id={`nav-panel-${panel.key}`}
+          data-nav-panel={panel.key}
+          role="region"
+          aria-label={panel.label}
+          inert
+        >
+          <button class="nav-dropdown_back" type="button" data-nav-back>
+            <Icon src={back} class="nav-dropdown_back-icon" />
+            Back
+          </button>
+
+          {panel.key === "services" && (
+            <div class="nav-dropdown_body">
+              <div class="nav-dropdown_row">
+                <div class="nav-dropdown_group">
+                  <Paragraph
+                    variant="overline-small"
+                    class="nav-dropdown_label"
+                  >
+                    What we do
+                  </Paragraph>
+                  <div class="nav-dropdown_columns">
+                    {services.map((column) => (
+                      <ul class="nav-dropdown_list" role="list">
+                        {column.map((item) => (
+                          <li>
+                            <a class="nav-dropdown_item" href={item.href}>
+                              <span class="nav-dropdown_icon">
+                                <Icon src={item.icon} />
+                              </span>
+                              <span class="nav-dropdown_item-text">
+                                <span class="nav-dropdown_item-title">
+                                  {item.title}
+                                </span>
+                                <span class="nav-dropdown_item-description">
+                                  {item.text}
+                                </span>
+                              </span>
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    ))}
+                  </div>
+                </div>
+                <div class="nav-dropdown_feature gradient-stroke">
+                  <Img
+                    src={heroRedesign}
+                    class="nav-dropdown_feature-image"
+                    width={360}
+                  />
+                  <div class="nav-dropdown_feature-content">
+                    <div class="nav-dropdown_feature-text">
+                      <Paragraph variant="h6">
+                        Free homepage hero redesign
+                      </Paragraph>
+                      <Paragraph variant="main">
+                        A test drive, on us. We redesign the first thing
+                        visitors see on your site. Two weeks, start to finish.
+                      </Paragraph>
+                    </div>
+                    <Button element="link" href="/contact" variant="link" arrow>
+                      Claim your free website
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              <div class="nav-dropdown_cta">
+                <Img
+                  src={ctaBackground}
+                  class="nav-dropdown_cta-image"
+                  width={720}
+                />
+                <div class="nav-dropdown_cta-text">
+                  <Paragraph variant="h6">
+                    See where your site is losing leads
+                  </Paragraph>
+                  <Paragraph variant="main">
+                    Get a 10-minute video review pinpointing your site's key
+                    customer losses.
+                  </Paragraph>
+                </div>
+                <Button
+                  element="link"
+                  href="/contact"
+                  class="nav-dropdown_cta-button"
+                >
+                  Review my website
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {panel.key === "industries" && (
+            <div class="nav-dropdown_body">
+              <div class="nav-dropdown_row">
+                {industryGroups.map((group) => (
+                  <div class:list={["nav-dropdown_group", group.tone]}>
+                    <Paragraph
+                      variant="overline-small"
+                      class="nav-dropdown_label"
+                    >
+                      {group.label}
+                    </Paragraph>
+                    <ul class="nav-dropdown_list" role="list">
+                      {group.items.map((item) => (
+                        <li>
+                          <a class="nav-dropdown_item compact" href={item.href}>
+                            <span class="nav-dropdown_icon">
+                              <Icon src={item.icon} />
+                            </span>
+                            <span class="nav-dropdown_item-title">
+                              {item.title}
+                            </span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+                <div class="nav-dropdown_group audience">
+                  <Paragraph
+                    variant="overline-small"
+                    class="nav-dropdown_label"
+                  >
+                    Who we work with
+                  </Paragraph>
+                  <ul class="nav-dropdown_list" role="list">
+                    {audiences.map((audience) => (
+                      <li>
+                        <a class="nav-dropdown_audience text-style-h6" href="#">
+                          {audience}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              <div class="nav-dropdown_cta">
+                <Img
+                  src={ctaBackground}
+                  class="nav-dropdown_cta-image"
+                  width={720}
+                />
+                <div class="nav-dropdown_cta-text">
+                  <Paragraph variant="h6">
+                    Don’t see your industry? We work across verticals on purpose
+                  </Paragraph>
+                </div>
+                <Button
+                  element="link"
+                  href="/contact"
+                  class="nav-dropdown_cta-button"
+                >
+                  Talk to us
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {panel.key === "reasons" && (
+            <div class="nav-dropdown_body">
+              <ul class="nav-dropdown_cards" role="list">
+                {reasons.map((reason) => (
+                  <li>
+                    <a class="nav-dropdown_card" href={reason.href}>
+                      <Img
+                        src={reason.image}
+                        class="nav-dropdown_card-image"
+                        width={360}
+                      />
+                      <span class="nav-dropdown_card-text">
+                        <span class="text-style-h6">{reason.title}</span>
+                        <span class="text-style-main nav-dropdown_card-description">
+                          {reason.text}
+                        </span>
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {panel.key === "resources" && (
+            <div class="nav-dropdown_body">
+              <div class="nav-dropdown_row">
+                <div class="nav-dropdown_group">
+                  <Paragraph
+                    variant="overline-small"
+                    class="nav-dropdown_label"
+                  >
+                    Resources
+                  </Paragraph>
+                  <ul class="nav-dropdown_list" role="list">
+                    {resources.map((item) => (
+                      <li>
+                        <a class="nav-dropdown_item" href={item.href}>
+                          <span class="nav-dropdown_icon">
+                            <Icon src={item.icon} />
+                          </span>
+                          <span class="nav-dropdown_item-text">
+                            <span class="nav-dropdown_item-title">
+                              {item.title}
+                            </span>
+                            <span class="nav-dropdown_item-description">
+                              {item.text}
+                            </span>
+                          </span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div class="nav-dropdown_feature gradient-stroke">
+                  <Img
+                    src={playbook}
+                    class="nav-dropdown_feature-image"
+                    width={360}
+                  />
+                  <div class="nav-dropdown_feature-content">
+                    <div class="nav-dropdown_feature-text">
+                      <Paragraph variant="h6">
+                        Steal our B2B website playbook
+                      </Paragraph>
+                      <Paragraph variant="main">
+                        50+ pages on B2B website conversion — what works, what
+                        doesn't, written for operators.
+                      </Paragraph>
+                    </div>
+                    <Button element="link" href="#" variant="link" arrow>
+                      Get the playbook
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .nav-dropdown_wrap {
+      --_morph: 360ms;
+      --_ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --_slide: 4rem;
+      position: absolute;
+      top: 100%;
+      inset-inline: 0;
+      height: calc(100svh - var(--nav-height));
+      overflow: hidden;
+      visibility: hidden;
+      pointer-events: none;
+      background-color: transparent;
+      color: var(--text);
+      transition: visibility 0s linear var(--_morph);
+      @media (prefers-reduced-motion: reduce) {
+        --_morph: 0ms;
+        --_slide: 0rem;
+      }
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      &.is-open {
+        visibility: visible;
+        pointer-events: auto;
+        transition-delay: 0s;
+      }
+
+      @media (width >= 84rem) {
+        top: calc(100% - 0.25rem);
+        left: 50%;
+        right: auto;
+        width: var(--_width, 0);
+        height: var(--_height, 0);
+        translate: -50% 0;
+        border-radius: var(--radius-0-5rem);
+        opacity: 0;
+        scale: 0.98;
+        transform-origin: top center;
+        transition:
+          width var(--_morph) var(--_ease),
+          height var(--_morph) var(--_ease),
+          opacity var(--open-duration) var(--open-ease),
+          scale var(--open-duration) var(--open-ease),
+          visibility 0s linear var(--open-duration);
+
+        &.is-open {
+          opacity: 1;
+          scale: 1;
+          transition:
+            width var(--_morph) var(--_ease),
+            height var(--_morph) var(--_ease),
+            opacity var(--open-duration) var(--open-ease),
+            scale var(--open-duration) var(--open-ease),
+            visibility 0s;
+        }
+      }
+
+      &.is-snapping,
+      &.is-snapping .nav-dropdown_panel {
+        transition: none;
+      }
+    }
+
+    .nav-dropdown_surface {
+      display: none;
+      @media (width >= 84rem) {
+        display: block;
+        position: absolute;
+        inset: 0;
+        background-color: var(--color-neutral-0);
+        border: var(--border-width) solid var(--color-neutral-5);
+        border-radius: var(--radius-0-5rem);
+        box-shadow:
+          0 0.25rem 0.25rem rgb(16 24 40 / 0.1),
+          0 0.125rem 0.125rem rgb(16 24 40 / 0.06);
+      }
+    }
+
+    /* Panels */
+    .nav-dropdown_panel {
+      position: absolute;
+      inset: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: var(--space-1rem) var(--site-margin) var(--space-2rem);
+      background-color: var(--color-neutral-0);
+      visibility: hidden;
+      translate: 100% 0;
+      transition:
+        translate var(--_morph) var(--_ease),
+        visibility 0s linear var(--_morph);
+
+      &.is-active {
+        visibility: visible;
+        translate: 0 0;
+        transition:
+          translate var(--_morph) var(--_ease),
+          visibility 0s;
+      }
+
+      @media (width >= 84rem) {
+        inset: 0 auto auto 50%;
+        width: min(var(--_panel-width), 100vw - 2 * var(--site-margin));
+        overflow: visible;
+        padding: var(--space-2rem);
+        background-color: transparent;
+        translate: calc(-50% + var(--_offset, 0rem)) 0;
+        opacity: 0;
+        transition:
+          translate var(--_morph) var(--_ease),
+          opacity calc(var(--_morph) * 0.6) var(--_ease),
+          visibility 0s linear var(--_morph);
+
+        &.is-active {
+          translate: -50% 0;
+          opacity: 1;
+          transition:
+            translate var(--_morph) var(--_ease),
+            opacity var(--_morph) var(--_ease),
+            visibility 0s;
+        }
+
+        &.full {
+          --_panel-width: var(--max-width-content);
+        }
+        &.medium {
+          --_panel-width: 56rem;
+        }
+        &.narrow {
+          --_panel-width: 51rem;
+        }
+      }
+    }
+
+    .nav-dropdown_back {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-0-5rem);
+      margin-bottom: var(--space-1-5rem);
+      padding-block: var(--space-0-5rem);
+      color: var(--color-neutral-90);
+      font-size: var(--text-small);
+      font-weight: var(--primary-medium);
+      line-height: var(--text-small-line-height);
+      @media (width >= 84rem) {
+        display: none;
+      }
+    }
+
+    .nav-dropdown_back-icon {
+      --_size: 1rem;
+      rotate: 180deg;
+    }
+
+    .nav-dropdown_body {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2rem);
+    }
+
+    .nav-dropdown_row {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2rem);
+      @media (width >= 84rem) {
+        flex-direction: row;
+        align-items: flex-start;
+      }
+    }
+
+    .nav-dropdown_group {
+      flex: 1 1 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-0-75rem);
+      &.audience {
+        @media (width >= 84rem) {
+          max-width: 25rem;
+        }
+      }
+    }
+
+    .nav-dropdown_label {
+      color: var(--color-neutral-30);
+    }
+
+    .nav-dropdown_columns {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-0-125rem);
+      @media (width >= 84rem) {
+        flex-direction: row;
+        gap: var(--space-1-25rem);
+      }
+    }
+
+    .nav-dropdown_list {
+      flex: 1 1 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-0-125rem);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      .audience & {
+        gap: var(--space-0-25rem);
+      }
+    }
+
+    .nav-dropdown_item {
+      --_icon-box: 3rem;
+      --_icon-radius: var(--radius-0-25rem);
+      --_tone: var(--color-primary-10);
+      --_tone-mid: rgb(243 244 255);
+      display: flex;
+      align-items: center;
+      gap: var(--space-1rem);
+      padding-block: var(--space-0-75rem) calc(var(--space-0-75rem) - 0.125rem);
+      border-bottom: 0.125rem solid transparent;
+      color: var(--color-neutral-90);
+      text-decoration: none;
+      transition: border-color var(--hover-duration) var(--hover-ease);
+      @media (hover: hover) {
+        &:hover {
+          border-bottom-color: var(--color-primary-60);
+        }
+      }
+      &.compact {
+        --_icon-box: 2rem;
+        --_icon-radius: var(--radius-0-125rem);
+        padding-block: var(--space-0-5rem) calc(var(--space-0-5rem) - 0.125rem);
+      }
+      .red & {
+        --_tone: rgb(255 232 232);
+        --_tone-mid: var(--color-neutral-2);
+      }
+      .green & {
+        --_tone: rgb(214 255 226);
+        --_tone-mid: rgb(243 255 245);
+      }
+    }
+
+    .nav-dropdown_icon {
+      flex: none;
+      width: var(--_icon-box);
+      aspect-ratio: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-image: linear-gradient(
+        73.55deg,
+        var(--color-neutral-2) 3.5%,
+        var(--_tone-mid) 54.09%,
+        var(--_tone) 93.98%
+      );
+      border-radius: var(--_icon-radius);
+      .compact & {
+        border: var(--border-width) solid var(--color-neutral-5);
+      }
+      .icon {
+        --_size: 1.25rem;
+      }
+    }
+
+    .nav-dropdown_item-text {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-0-125rem);
+    }
+
+    .nav-dropdown_item-title {
+      font-size: var(--text-main);
+      font-weight: var(--primary-medium);
+      line-height: var(--text-main-line-height);
+      letter-spacing: var(--text-main-letter-spacing);
+    }
+
+    .nav-dropdown_item-description {
+      color: var(--color-neutral-50);
+      font-size: var(--text-small);
+      line-height: var(--text-small-line-height);
+      letter-spacing: var(--text-small-letter-spacing);
+    }
+
+    .nav-dropdown_audience {
+      display: block;
+      padding-block: var(--space-0-25rem);
+      color: var(--color-neutral-90);
+      text-decoration: none;
+      transition: opacity var(--hover-duration) var(--hover-ease);
+      @media (hover: hover) {
+        &:hover {
+          opacity: 0.6;
+        }
+      }
+    }
+
+    /* Highlight card */
+    .nav-dropdown_feature {
+      flex: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: var(--space-1-25rem);
+      width: 100%;
+      max-width: 25rem;
+      padding: calc(var(--space-1-25rem) - 0.125rem);
+      overflow: hidden;
+      @media (width >= 84rem) {
+        min-height: 26.25rem;
+      }
+    }
+
+    .nav-dropdown_feature-image {
+      width: 100%;
+      aspect-ratio: 360 / 202.5;
+      height: auto;
+      object-fit: cover;
+      border-radius: var(--radius-0-25rem);
+    }
+
+    .nav-dropdown_feature-content {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-2rem);
+    }
+
+    .nav-dropdown_feature-text {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-0-5rem);
+    }
+
+    /* Footer call to action */
+    .nav-dropdown_cta {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-1-25rem);
+      padding: var(--space-1-25rem);
+      overflow: hidden;
+      background-color: var(--color-neutral-0);
+      border: var(--border-width) solid var(--color-neutral-5);
+      border-radius: var(--radius-0-25rem);
+      @media (width >= 48rem) {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+
+    .nav-dropdown_cta-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.7;
+    }
+
+    .nav-dropdown_cta-text {
+      position: relative;
+      max-width: 40rem;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-0-25rem);
+    }
+
+    .nav-dropdown_cta-button {
+      position: relative;
+      flex: none;
+    }
+
+    /* Why us cards */
+    .nav-dropdown_cards {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2rem);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      @media (width >= 48rem) {
+        flex-direction: row;
+        & > li {
+          width: 22.5rem;
+          max-width: calc(50% - var(--space-1rem));
+        }
+      }
+    }
+
+    .nav-dropdown_card {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1-25rem);
+      color: var(--color-neutral-90);
+      text-decoration: none;
+      @media (hover: hover) {
+        &:hover .nav-dropdown_card-image {
+          scale: 1.03;
+        }
+      }
+    }
+
+    .nav-dropdown_card-image {
+      width: 100%;
+      aspect-ratio: 360 / 202.5;
+      height: auto;
+      object-fit: cover;
+      border-radius: var(--radius-0-25rem);
+      transition: scale var(--hover-duration) var(--hover-ease);
+    }
+
+    .nav-dropdown_card-text {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-0-5rem);
+    }
+
+    .nav-dropdown_card-description {
+      color: var(--color-neutral-60);
+    }
+  }
+</style>

@@ -7,7 +7,7 @@ import play from "@/assets/icons/play.svg";
 import pause from "@/assets/icons/pause.svg";
 import { slotContent } from "@/utils/slots.ts";
 
-type Emphasis = "primary" | "secondary";
+type Emphasis = "primary" | "secondary" | "brand";
 
 type Tag =
   | (HTMLAttributes<"button"> & {
@@ -202,6 +202,14 @@ const named = {
           color: var(--button-text-hover);
           border-color: var(--button-border-hover);
         }
+      }
+      &.brand {
+        --button-background: var(--brand);
+        --button-border: var(--button-background);
+        --button-text: var(--brand-text);
+        --button-background-hover: var(--color-primary-70);
+        --button-border-hover: var(--button-background-hover);
+        --button-text-hover: var(--brand-text);
       }
       &.secondary {
         --button-background: var(--button-2-background);

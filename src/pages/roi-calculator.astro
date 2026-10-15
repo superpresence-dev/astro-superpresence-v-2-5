@@ -1,0 +1,147 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import RoiHero from "@/components/section/RoiHero.astro";
+import IndustryProblem from "@/components/content/IndustryProblem.astro";
+import RoiCalculator from "@/components/content/RoiCalculator.astro";
+import RoiRead from "@/components/section/RoiRead.astro";
+import IndustryGrowth from "@/components/content/IndustryGrowth.astro";
+import RoiContext from "@/components/section/RoiContext.astro";
+import HomeQuote from "@/components/section/HomeQuote.astro";
+import HomeFaq from "@/components/content/HomeFaq.astro";
+import HomeCta from "@/components/section/HomeCta.astro";
+import { WORK_URL } from "@/utils/work.ts";
+
+const faq = [
+  {
+    question: "How accurate is this calculator?",
+    answer:
+      "It's a directional model, not a forecast. If it shows a $5,000/month gap, the real number for your business might be $3,000 or $8,000 — but it's unlikely to be zero. It also only shows first-deal value, not lifetime value, so the actual impact on your business is probably higher.",
+  },
+  {
+    question: "What conversion rate should my business be aiming for?",
+    answer:
+      "That depends on your industry, where your traffic comes from, and how complex your product is. As a rough guide: most B2B websites converting under 2% have structural issues worth fixing. Above 3% and you're in solid shape — improvements come from testing and optimisation, not a full rebuild.",
+  },
+  {
+    question: "I don't know my current conversion rate. Can I still use this?",
+    answer:
+      "Yes. Check your analytics (Google Analytics, Humblytics, or whatever you're using) for sessions and form submissions over the past 90 days. Divide submissions by sessions — that's your rate. If you're not tracking conversions at all, that's worth sorting out before anything else.",
+  },
+  {
+    question: "How quickly do conversion rates improve after a redesign?",
+    answer:
+      "Most of the impact shows up within 8–12 weeks, once the new site has enough traffic to produce meaningful data. Some things — like fixing page speed or a broken contact form — show results straight away. Others, like repositioning how your business communicates its value, take a bit longer.",
+  },
+  {
+    question: "Can I improve my conversion rate without a full redesign?",
+    answer:
+      "Sometimes. If your site's structure is solid and the issue is a weak headline or a buried CTA, running some tests can close the gap. But if the problem is deeper — unclear positioning, a design that undermines your credibility, or a layout that fights how your buyers actually make decisions — testing won't fix what's fundamentally broken.",
+  },
+  {
+    question: "Doesn't improving conversion rate need more than just design changes?",
+    answer:
+      "It can. If the messaging doesn't land or the positioning is off, design alone won't save it. The strongest results for any business come when strategy, messaging, and design all get addressed together. A good partner will tell you that upfront.",
+  },
+  {
+    question: "My business doesn't get much traffic. Does conversion rate still matter?",
+    answer:
+      "Even more. At a 1% conversion rate, you need 1,000 visitors to get 10 leads. At 3%, you need 333. When traffic is hard to come by or expensive to grow, your conversion rate is the most efficient lever your business has.",
+  },
+  {
+    question: "How much does a website redesign typically cost?",
+    answer:
+      "It depends on the scope. For a mid-market B2B company, a strategy-led redesign from a specialist agency typically runs $8,000–$30,000+. The calculator helps you see whether that investment makes sense when you weigh it against the revenue gap your business is sitting on.",
+  },
+];
+---
+
+<Layout
+  title="Website ROI Calculator"
+  description="Calculate the hidden cost of low website conversion rates and see what your site could be generating with better conversion performance."
+  overlap
+  navTheme="light"
+>
+  {/* Hero */}
+  <RoiHero />
+  {/* Problem */}
+  <Section>
+    <IndustryProblem
+      heading="A weak site leaks value out of everything"
+      items={[
+        {
+          title: "Revenue going to your competitors",
+          text: "Visitors leaving your site go to competitors who convert better, costing you business.",
+        },
+        {
+          title: "Wasted marketing and ad spend",
+          text: "A 1% site needs triple traffic and ad spend to match 3%; the site leaks.",
+        },
+        {
+          title: "The gap compounds every month",
+          text: "A small monthly rate difference adds up to significant money over a year.",
+        },
+      ]}
+    />
+  </Section>
+  {/* Calculator */}
+  <Section id="calculator">
+    <RoiCalculator />
+  </Section>
+  {/* Read your results */}
+  <RoiRead />
+  {/* Where the gap comes from */}
+  <Section>
+    <IndustryGrowth
+      eyebrow="Where the gap comes from"
+      heading="Conversion is a journey shaped<br />by many choices, not a single issue"
+      items={[
+        {
+          title: "Clarity",
+          text: "Visitors understand what you do and why it matters.",
+        },
+        {
+          title: "Positioning & messaging",
+          text: "Stand apart from competitors with a clear, compelling message.",
+        },
+        {
+          title: "Trust",
+          text: "Give visitors clear proof that you’re the right choice.",
+        },
+        {
+          title: "Conversion path",
+          text: "Make the next step clear so visitors become leads.",
+        },
+        {
+          title: "Performance",
+          text: "Get noticed by search and AI, not skimmed or skipped.",
+        },
+        {
+          title: "Design",
+          text: "Show your quality and expertise with a polished, credible design.",
+        },
+      ]}
+      buttonHref={WORK_URL}
+    />
+  </Section>
+  {/* Context */}
+  <RoiContext />
+  {/* Quote */}
+  <HomeQuote />
+  {/* FAQ */}
+  <Section>
+    <HomeFaq
+      eyebrow="Common questions"
+      heading="Common Questions<br />About Website ROI"
+      items={faq}
+    />
+  </Section>
+  {/* CTA */}
+  <HomeCta
+    eyebrow="Your numbers tell a story"
+    heading="Now you know the gap.<br />Let's uncover what's behind it."
+    text="If the calculator shows significant revenue, the next step isn’t always a redesign. First, identify the gap’s cause and if fixing it’s worth the cost."
+    buttonText="Get a free website audit"
+    buttonHref="/contact"
+  />
+</Layout>

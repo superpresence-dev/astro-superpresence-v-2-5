@@ -4,7 +4,7 @@ import { slug } from "@/utils/slug.ts";
 import Icon from "@/components/media/Icon.astro";
 import arrow from "@/assets/icons/arrow.svg";
 
-type SelectOption = string | { value: string; label: string };
+type SelectOption = string | { value: string; label: string; tag?: string };
 
 type Base = {
   /** Set to `false` to omit the component. */
@@ -29,7 +29,7 @@ type Props = HTMLAttributes<"select"> &
     | {
         /** Option source. */
         variant?: "list";
-        /** Options to show. Strings double as labels. */
+        /** Options to show. Strings double as labels; an object's `tag` sits beside its label in the list. */
         options: SelectOption[];
         from?: never;
         to?: never;
@@ -191,7 +191,15 @@ const text = label ?? wording.label;
           </option>
           {entries.map((entry) => (
             <option value={entry.value} selected={entry.value === value}>
-              {entry.label}
+              {entry.tag ? (
+                <Fragment>
+                  <span>{entry.label}</span>
+                  <span class="form-select_tag-gap"> — </span>
+                  <span class="form-select_tag">{entry.tag}</span>
+                </Fragment>
+              ) : (
+                entry.label
+              )}
             </option>
           ))}
         </select>
@@ -309,6 +317,20 @@ const text = label ?? wording.label;
           background-color: var(--background-2);
           outline: 0;
         }
+      }
+
+      .form-select_tag-gap {
+        display: none;
+      }
+
+      .form-select_field option:has(.form-select_tag)::checkmark {
+        margin-inline-start: 0;
+      }
+
+      .form-select_tag {
+        margin-inline-start: auto;
+        color: var(--text-2);
+        font-size: var(--text-xsmall);
       }
 
       .form-select_field option[hidden] {

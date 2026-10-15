@@ -13,7 +13,7 @@ type Props = HTMLAttributes<"div"> & {
   render?: boolean;
   /** Small label above the heading. */
   eyebrow?: string;
-  /** Section heading. */
+  /** Section heading. Accepts `<br>` for a forced line break. */
   heading?: string;
   /** Questions and answers, the first one open. */
   items?: Item[];
@@ -62,7 +62,7 @@ const {
           {eyebrow}
         </Paragraph>
         <Heading tag="h2" variant="h3">
-          {heading}
+          <Fragment set:html={heading} />
         </Heading>
       </div>
 

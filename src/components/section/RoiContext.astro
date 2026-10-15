@@ -1,0 +1,193 @@
+---
+import type { ComponentProps, HTMLAttributes } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Img from "@/components/media/Img.astro";
+import background from "@/assets/roi/context-background.jpg";
+
+type Item = { title: string; text: string };
+
+interface Props
+  extends
+    HTMLAttributes<"section">,
+    Pick<ComponentProps<typeof Section>, "render"> {
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading?: string;
+  /** Traffic sources in order, numbered automatically. */
+  items?: Item[];
+}
+
+const {
+  render = true,
+  eyebrow = "Put the number in context",
+  heading = "A conversion rate only makes sense when you know what drives it",
+  items = [
+    {
+      title: "Paid search",
+      text: "Visitors usually have stronger intent, actively seeking specific solutions or immediate answers online right now.",
+    },
+    {
+      title: "Organic content",
+      text: "Visitors may still be researching and are not necessarily ready to buy or commit to a solution yet.",
+    },
+    {
+      title: "Referral traffic",
+      text: "Visitors bring prior trust from other sources, greatly impacting their decision-making process.",
+    },
+    {
+      title: "Direct traffic",
+      text: "Visitors come directly to the website, often already aware of the brand and returning with clear intent again.",
+    },
+  ],
+  class: className,
+  ...rest
+} = Astro.props;
+
+const number = (index: number) => String(index + 1).padStart(2, "0");
+---
+
+<Section
+  render={render && items.length > 0}
+  theme="dark"
+  paddingTop="none"
+  paddingBottom="none"
+  containerClass="roi-context_layout"
+  class:list={["roi-context_wrap", className]}
+  {...rest}
+>
+  <Img src={background} slot="background" class="roi-context_background" />
+  <div slot="background" class="roi-context_shade"></div>
+  <div class="roi-context_intro">
+    <Paragraph variant="overline-small" class="roi-context_eyebrow">
+      {eyebrow}
+    </Paragraph>
+    <Heading tag="h2" variant="h3">
+      <Fragment set:html={heading} />
+    </Heading>
+  </div>
+  <ol class="roi-context_list">
+    {
+      items.map((item, index) => (
+        <li class="roi-context_item">
+          <div class="roi-context_title">
+            <Paragraph
+              tag="span"
+              variant="overline-small"
+              class="roi-context_number"
+            >
+              {number(index)}
+            </Paragraph>
+            <Heading tag="h3" variant="h5">
+              {item.title}
+            </Heading>
+          </div>
+          <Paragraph variant="main" class="roi-context_text">
+            {item.text}
+          </Paragraph>
+        </li>
+      ))
+    }
+  </ol>
+</Section>
+
+<style is:global>
+  @layer components {
+    .roi-context_wrap {
+      --_min-height: 67.5rem;
+      --_item-height: auto;
+      --_shade-angle: 1deg;
+      --_intro-width: 33.75rem;
+      @media (width >= 48rem) {
+        --_min-height: 50rem;
+        --_item-height: 10rem;
+        --_shade-angle: 0.35deg;
+      }
+      @media (width >= 62rem) {
+        --_item-height: 14.875rem;
+        --_shade-angle: 0.2deg;
+        --_intro-width: 46.875rem;
+      }
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .roi-context_background {
+        object-fit: cover;
+      }
+
+      .roi-context_shade {
+        background-image:
+          linear-gradient(
+            var(--_shade-angle),
+            rgb(25 25 25 / 0.88) 35.98%,
+            rgb(25 25 25 / 0) 88.57%
+          ),
+          linear-gradient(rgb(25 25 25 / 0.32), rgb(25 25 25 / 0.32));
+      }
+
+      .roi-context_layout {
+        min-height: var(--_min-height);
+        justify-content: flex-end;
+        align-items: stretch;
+        gap: var(--space-3-5rem);
+        padding-block: var(--space-4rem);
+      }
+
+      .roi-context_intro {
+        max-width: var(--_intro-width);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+      }
+
+      .roi-context_eyebrow {
+        color: var(--color-neutral-10);
+      }
+
+      .roi-context_list {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--space-1-5rem);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        @media (width >= 48rem) {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        @media (width >= 62rem) {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+      }
+
+      .roi-context_item {
+        max-width: 30rem;
+        min-height: var(--_item-height);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        gap: var(--space-1rem);
+        margin: 0;
+        padding: var(--space-1-5rem);
+        border-left: var(--border-width) solid rgb(255 255 255 / 0.12);
+      }
+
+      .roi-context_title {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-5rem);
+      }
+
+      .roi-context_number {
+        color: var(--color-neutral-30);
+      }
+
+      .roi-context_text {
+        color: var(--color-neutral-10);
+      }
+    }
+  }
+</style>

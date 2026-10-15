@@ -2,10 +2,10 @@
 import Icon from "@/components/media/Icon.astro";
 import Button from "@/components/Button.astro";
 import NavLink from "@/components/global/NavLink.astro";
+import NavDropdown from "@/components/global/NavDropdown.astro";
 import logo from "@/assets/logo/logo.svg";
 import plus from "@/assets/icons/nav-plus.svg";
-import menu from "@/assets/icons/menu.svg";
-import close from "@/assets/icons/close.svg";
+import arrow from "@/assets/icons/arrow-full.svg";
 import { SITE_NAME } from "@/consts.ts";
 
 interface Props {
@@ -20,12 +20,12 @@ interface Props {
 const { render = true, theme = "dark", overlap = false } = Astro.props;
 
 const links = [
-  { label: "What we do", href: "#", more: true },
-  { label: "Who we work with", href: "#", more: true },
-  { label: "Why us", href: "#", more: true },
-  { label: "Our work", href: "#", more: false },
-  { label: "Pricing", href: "#", more: false },
-  { label: "Resources", href: "/resources", more: true },
+  { label: "What we do", panel: "services" },
+  { label: "Who we work with", panel: "industries" },
+  { label: "Why us", panel: "reasons" },
+  { label: "Our work", href: "/work" },
+  { label: "Pricing", href: "#" },
+  { label: "Resources", panel: "resources" },
 ];
 ---
 
@@ -39,20 +39,39 @@ const links = [
         <nav class="nav_menu" id="nav-menu" aria-label="Main">
           <div class="nav_menu_inner">
             <ul class="nav_links">
-              {links.map((link) => (
-                <NavLink href={link.href}>
-                  {link.label}
-                  {link.more && <Icon src={plus} class="nav_link_icon" />}
-                </NavLink>
-              ))}
+              {links.map((link) =>
+                link.panel ? (
+                  <li>
+                    <button
+                      class="nav_link nav_trigger"
+                      type="button"
+                      aria-expanded="false"
+                      aria-controls={`nav-panel-${link.panel}`}
+                      data-nav-trigger={link.panel}
+                    >
+                      {link.label}
+                      <Icon src={plus} class="nav_link_icon nav_trigger_plus" />
+                      <Icon
+                        src={arrow}
+                        class="nav_link_icon nav_trigger_arrow"
+                      />
+                    </button>
+                  </li>
+                ) : (
+                  <NavLink href={link.href ?? "#"}>{link.label}</NavLink>
+                ),
+              )}
             </ul>
+            <p class="nav_status nav_status_menu text-style-overline-small">
+              Limited spots for Q4
+            </p>
           </div>
         </nav>
         <div class="nav_actions">
           <p class="nav_status text-style-overline-small">
             Limited spots for Q4
           </p>
-          <Button element="link" href="#" class="nav_button">
+          <Button element="link" href="/contact" class="nav_button">
             Book a call
           </Button>
           <button
@@ -62,11 +81,15 @@ const links = [
             aria-expanded="false"
             aria-controls="nav-menu"
           >
-            <Icon src={menu} class="nav_toggle_open" />
-            <Icon src={close} class="nav_toggle_close" />
+            <span class="nav_toggle_bars" aria-hidden="true">
+              <span class="nav_toggle_bar" />
+              <span class="nav_toggle_bar" />
+              <span class="nav_toggle_bar" />
+            </span>
           </button>
         </div>
       </div>
+      <NavDropdown />
     </header>
   )
 }
@@ -90,39 +113,217 @@ const links = [
 <script>
   const nav = document.querySelector<HTMLElement>(".nav_wrap");
   const toggle = nav?.querySelector<HTMLButtonElement>(".nav_toggle");
+  const dropdown = nav?.querySelector<HTMLElement>("[data-nav-dropdown]");
+  const desktop = window.matchMedia("(width >= 84rem)");
 
-  if (nav && toggle) {
-    const setOpen = (open: boolean) => {
-      nav.classList.toggle("open", open);
-      toggle.setAttribute("aria-expanded", String(open));
+  if (nav) {
+    const dark = nav.classList.contains("theme-dark");
+    const triggers = [
+      ...nav.querySelectorAll<HTMLButtonElement>("[data-nav-trigger]"),
+    ];
+    const panels = new Map(
+      [...nav.querySelectorAll<HTMLElement>("[data-nav-panel]")].map(
+        (panel) => [panel.dataset.navPanel!, panel],
+      ),
+    );
+    const order = triggers.map((trigger) => trigger.dataset.navTrigger!);
+    let current: string | null = null;
+    let openTimer = 0;
+    let closeTimer = 0;
+
+    /* White state when scrolled past 5% of the screen, or while a menu is open */
+    const setTheme = () => {
+      const scrolled = window.scrollY > window.innerHeight * 0.05;
+      const light =
+        scrolled || current !== null || nav.classList.contains("open");
+      nav.classList.toggle("scrolled", light);
+      if (dark) {
+        nav.classList.toggle("theme-dark", !light);
+        nav.classList.toggle("theme-light", light);
+      }
+    };
+    setTheme();
+    window.addEventListener("scroll", setTheme, { passive: true });
+
+    const size = (panel: HTMLElement) => {
+      dropdown?.style.setProperty("--_width", `${panel.offsetWidth}px`);
+      dropdown?.style.setProperty("--_height", `${panel.offsetHeight}px`);
     };
 
-    toggle.addEventListener("click", () => {
-      setOpen(toggle.getAttribute("aria-expanded") !== "true");
-    });
-
-    nav.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", () => setOpen(false));
-    });
-
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && nav.classList.contains("open")) {
-        setOpen(false);
-        toggle.focus();
-      }
-    });
-
-    document.addEventListener("click", (event) => {
-      const target = event.target;
-      if (!nav.classList.contains("open") || !(target instanceof Node)) return;
-      if (!nav.contains(target)) setOpen(false);
-    });
-
-    window
-      .matchMedia("(width >= 62rem)")
-      .addEventListener("change", (event) => {
-        if (event.matches) setOpen(false);
+    const mark = (key: string | null) => {
+      triggers.forEach((trigger) => {
+        trigger.setAttribute(
+          "aria-expanded",
+          String(trigger.dataset.navTrigger === key),
+        );
       });
+      panels.forEach((panel, panelKey) => {
+        panel.inert = panelKey !== key;
+      });
+    };
+
+    const snap = (callback: () => void) => {
+      dropdown?.classList.add("is-snapping");
+      callback();
+      void dropdown?.offsetWidth;
+      dropdown?.classList.remove("is-snapping");
+    };
+
+    const show = (key: string) => {
+      const panel = panels.get(key);
+      if (!dropdown || !panel || key === current) return;
+      const previous = current ? panels.get(current) : null;
+
+      if (!previous && desktop.matches) {
+        snap(() => {
+          panel.style.setProperty("--_offset", "0rem");
+          panel.classList.add("is-active");
+          size(panel);
+        });
+      } else if (!previous) {
+        panel.classList.add("is-active");
+      } else {
+        const direction = order.indexOf(key) > order.indexOf(current!) ? 1 : -1;
+        panel.style.transition = "none";
+        panel.style.setProperty(
+          "--_offset",
+          `calc(var(--_slide) * ${direction})`,
+        );
+        void panel.offsetWidth;
+        panel.style.transition = "";
+        previous.style.setProperty(
+          "--_offset",
+          `calc(var(--_slide) * ${-direction})`,
+        );
+        previous.classList.remove("is-active");
+        panel.classList.add("is-active");
+        size(panel);
+      }
+
+      dropdown.classList.add("is-open");
+      current = key;
+      mark(key);
+      setTheme();
+    };
+
+    const hide = (instant = false) => {
+      if (!dropdown || current === null) return;
+      const panel = panels.get(current);
+      const reset = () => {
+        panel?.classList.remove("is-active");
+        dropdown.classList.remove("is-open");
+      };
+      if (instant) snap(reset);
+      else reset();
+      current = null;
+      mark(null);
+      setTheme();
+    };
+
+    triggers.forEach((trigger) => {
+      const key = trigger.dataset.navTrigger!;
+
+      trigger.addEventListener("click", () => {
+        window.clearTimeout(openTimer);
+        if (current === key && desktop.matches) hide();
+        else show(key);
+      });
+
+      trigger.addEventListener("pointerenter", (event) => {
+        if (event.pointerType !== "mouse" || !desktop.matches) return;
+        window.clearTimeout(closeTimer);
+        window.clearTimeout(openTimer);
+        if (current) show(key);
+        else openTimer = window.setTimeout(() => show(key), 80);
+      });
+
+      trigger.addEventListener("pointerleave", () => {
+        window.clearTimeout(openTimer);
+      });
+    });
+
+    nav
+      .querySelectorAll<HTMLElement>(".nav_link:not(.nav_trigger)")
+      .forEach((link) => {
+        link.addEventListener("pointerenter", (event) => {
+          if (event.pointerType !== "mouse" || !desktop.matches) return;
+          window.clearTimeout(closeTimer);
+          closeTimer = window.setTimeout(() => hide(), 120);
+        });
+      });
+
+    nav.addEventListener("pointerenter", () => window.clearTimeout(closeTimer));
+    nav.addEventListener("pointerleave", (event) => {
+      if (event.pointerType !== "mouse" || !desktop.matches) return;
+      window.clearTimeout(openTimer);
+      closeTimer = window.setTimeout(() => hide(), 250);
+    });
+
+    nav.addEventListener("focusout", (event) => {
+      if (!desktop.matches) return;
+      const next = event.relatedTarget;
+      if (!(next instanceof Node) || !nav.contains(next)) hide();
+    });
+
+    nav.querySelectorAll("[data-nav-back]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const trigger = triggers.find(
+          (item) => item.dataset.navTrigger === current,
+        );
+        hide();
+        trigger?.focus();
+      });
+    });
+
+    window.addEventListener("resize", () => {
+      const panel = current ? panels.get(current) : null;
+      if (panel && desktop.matches) size(panel);
+    });
+
+    if (toggle) {
+      const setOpen = (open: boolean) => {
+        nav.classList.toggle("open", open);
+        toggle.setAttribute("aria-expanded", String(open));
+        if (!open) hide(true);
+        setTheme();
+      };
+
+      toggle.addEventListener("click", () => {
+        setOpen(toggle.getAttribute("aria-expanded") !== "true");
+      });
+
+      nav.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => setOpen(false));
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape") return;
+        if (current) {
+          const trigger = triggers.find(
+            (item) => item.dataset.navTrigger === current,
+          );
+          hide();
+          if (desktop.matches) trigger?.focus();
+          return;
+        }
+        if (nav.classList.contains("open")) {
+          setOpen(false);
+          toggle.focus();
+        }
+      });
+
+      document.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof Node) || nav.contains(target)) return;
+        if (nav.classList.contains("open")) setOpen(false);
+        else hide();
+      });
+
+      desktop.addEventListener("change", () => {
+        setOpen(false);
+        hide(true);
+      });
+    }
   }
 </script>
 
@@ -143,6 +344,9 @@ const links = [
         rgb(25 25 25 / 0)
       );
       color: var(--text);
+      transition:
+        background-color var(--hover-duration) var(--hover-ease),
+        box-shadow var(--hover-duration) var(--hover-ease);
 
       &.overlap {
         position: fixed;
@@ -162,6 +366,16 @@ const links = [
         .nav_status {
           color: var(--text);
         }
+
+        &.overlap:not(.open, .scrolled) {
+          background-color: transparent;
+        }
+      }
+
+      &.scrolled {
+        box-shadow:
+          0 0.0625rem 0.125rem rgb(16 24 40 / 0.06),
+          0 0.0625rem 0.1875rem rgb(16 24 40 / 0.1);
       }
     }
 
@@ -184,7 +398,7 @@ const links = [
         @media (width >= 48rem) {
           width: 10.0548rem;
         }
-        @media (width >= 62rem) {
+        @media (width >= 84rem) {
           width: 11.172rem;
         }
       }
@@ -253,10 +467,6 @@ const links = [
         width: 2.5rem;
       }
 
-      & .icon {
-        --_size: 1.3125rem;
-      }
-
       @media (hover: hover) {
         &:hover {
           opacity: 0.6;
@@ -264,13 +474,71 @@ const links = [
       }
     }
 
-    .nav_toggle_close,
-    .nav_wrap.open .nav_toggle_open {
-      display: none;
+    /* Hamburger, drawn on a 24-unit grid, morphs into a cross */
+    .nav_toggle_bars {
+      --_box: 1.5rem;
+      --_unit: calc(var(--_box) / 24);
+      --_ease: cubic-bezier(0.65, 0, 0.35, 1);
+      --_duration: 300ms;
+      position: relative;
+      width: var(--_box);
+      aspect-ratio: 1;
+      @media (width >= 48rem) {
+        --_box: 1.75rem;
+      }
     }
 
-    .nav_wrap.open .nav_toggle_close {
-      display: block;
+    .nav_toggle_bar {
+      --_width: 12;
+      --_x: 0;
+      --_y: 0;
+      --_turn: 0deg;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: calc(var(--_width) * var(--_unit));
+      height: calc(1.7 * var(--_unit));
+      background-color: currentColor;
+      translate: calc(-50% + var(--_x) * var(--_unit))
+        calc(-50% + var(--_y) * var(--_unit));
+      rotate: var(--_turn);
+      transition:
+        width var(--_duration) var(--_ease),
+        translate var(--_duration) var(--_ease),
+        rotate var(--_duration) var(--_ease),
+        opacity var(--_duration) var(--_ease);
+      @media (prefers-reduced-motion: reduce) {
+        transition: none;
+      }
+
+      &:nth-child(1) {
+        --_x: -3;
+        --_y: -6;
+      }
+      &:nth-child(2) {
+        --_width: 18;
+      }
+      &:nth-child(3) {
+        --_x: 3;
+        --_y: 6;
+      }
+
+      .nav_wrap.open & {
+        --_x: 0;
+        --_y: 0;
+        &:nth-child(1) {
+          --_width: 16.97;
+          --_turn: 45deg;
+        }
+        &:nth-child(2) {
+          --_width: 0;
+          opacity: 0;
+        }
+        &:nth-child(3) {
+          --_width: 16.97;
+          --_turn: -45deg;
+        }
+      }
     }
 
     .nav_menu {
@@ -280,13 +548,14 @@ const links = [
       display: grid;
       grid-template-rows: 0fr;
       visibility: hidden;
-      max-height: calc(100svh - var(--nav-height));
+      height: 0;
       overflow-x: clip;
       overflow-y: auto;
       overscroll-behavior: contain;
       background-color: var(--_menu-background);
       transition:
         grid-template-rows var(--open-duration) var(--open-ease),
+        height var(--open-duration) var(--open-ease),
         visibility var(--open-duration) var(--open-ease);
     }
 
@@ -298,6 +567,7 @@ const links = [
 
     .nav_wrap.open .nav_menu {
       grid-template-rows: 1fr;
+      height: calc(100svh - var(--nav-height));
       visibility: visible;
     }
 
@@ -309,22 +579,27 @@ const links = [
     .nav_links {
       display: flex;
       flex-direction: column;
-      padding: var(--space-0-75rem) var(--site-margin) var(--space-1-5rem);
-      font-size: var(--text-main);
-      font-weight: var(--primary-medium);
-      letter-spacing: var(--text-main-letter-spacing);
-      & > li + li {
-        border-top: var(--border-width) solid var(--border);
+      padding: var(--space-0-25rem) var(--site-margin) 0;
+      font-family: var(--h4-font-family);
+      font-size: var(--h4);
+      font-weight: var(--h4-font-weight);
+      line-height: var(--h4-line-height);
+      letter-spacing: var(--h4-letter-spacing);
+      & > li {
+        border-bottom: var(--border-width) solid var(--color-neutral-5);
       }
     }
 
     .nav_link {
+      width: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: var(--space-0-25rem);
-      padding-block: var(--space-1rem);
-      color: var(--text);
+      padding-block: var(--space-1-25rem);
+      padding-right: var(--space-1-25rem);
+      color: var(--heading);
+      text-align: start;
       text-decoration: none;
       transition: opacity var(--hover-duration) var(--hover-ease);
       @media (hover: hover) {
@@ -334,11 +609,37 @@ const links = [
       }
     }
 
-    .nav_link_icon {
-      --_size: 1rem;
+    .nav_trigger {
+      cursor: pointer;
     }
 
-    @media (width >= 62rem) {
+    .nav_link_icon {
+      --_size: 1rem;
+      transition:
+        rotate var(--hover-duration) var(--hover-ease),
+        color var(--hover-duration) var(--hover-ease);
+    }
+
+    .nav_trigger_plus {
+      display: none;
+    }
+
+    .nav_trigger_arrow {
+      --_size: 0.875rem;
+    }
+
+    .nav_status.nav_status_menu {
+      display: flex;
+      width: fit-content;
+      margin: var(--space-1-5rem) var(--site-margin) var(--space-2rem);
+      padding-left: var(--space-0-5rem);
+      color: var(--text);
+      @media (width >= 48rem) {
+        display: none;
+      }
+    }
+
+    @media (width >= 84rem) {
       .nav_toggle {
         display: none;
       }
@@ -347,7 +648,7 @@ const links = [
         position: static;
         display: block;
         visibility: visible;
-        max-height: none;
+        height: auto;
         overflow: visible;
         background-color: transparent;
       }
@@ -362,20 +663,39 @@ const links = [
         align-items: center;
         gap: var(--space-0-25rem);
         padding: 0;
+        font-family: inherit;
         font-size: var(--text-small);
+        font-weight: var(--primary-medium);
         letter-spacing: var(--text-small-letter-spacing);
         line-height: var(--text-small-line-height);
-        & > li + li {
-          border-top: 0;
+        & > li {
+          border-bottom: 0;
         }
       }
 
       .nav_link {
+        width: auto;
         justify-content: center;
         padding: var(--space-0-5rem) var(--space-0-75rem);
         white-space: nowrap;
         &:has(.nav_link_icon) {
           padding-right: var(--space-0-5rem);
+        }
+      }
+
+      .nav_trigger_plus {
+        display: block;
+      }
+
+      .nav_trigger_arrow {
+        display: none;
+      }
+
+      .nav_trigger[aria-expanded="true"] {
+        opacity: 1;
+        .nav_trigger_plus {
+          rotate: 45deg;
+          color: var(--color-primary-60);
         }
       }
     }

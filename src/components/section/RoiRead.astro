@@ -1,0 +1,188 @@
+---
+import type { ComponentProps, HTMLAttributes } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Icon from "@/components/media/Icon.astro";
+import Img from "@/components/media/Img.astro";
+import background from "@/assets/roi/read-background.jpg";
+import chart from "@/assets/industries/icons/chart.svg";
+import coins from "@/assets/industries/icons/coins.svg";
+import pointer from "@/assets/roi/pointer.svg";
+
+type Item = { title: string; text: string };
+
+interface Props
+  extends
+    HTMLAttributes<"section">,
+    Pick<ComponentProps<typeof Section>, "render"> {
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading?: string;
+  /** Cards in order; each takes the icon at its position. */
+  items?: Item[];
+}
+
+const {
+  render = true,
+  eyebrow = "Read your results",
+  heading = "Your result isn't just a number.<br />It tells you where the gap is.",
+  items = [
+    {
+      title: "The revenue gap",
+      text: "This is what your business could be generating at a realistic conversion rate, minus what it brings in today. Based on first-deal revenue only.",
+    },
+    {
+      title: "The annual cost of inaction",
+      text: "That monthly gap, stretched over a year. For most B2B businesses, this number is many times larger than what a redesign actually costs.",
+    },
+    {
+      title: "Your marketing ROI and ROAS",
+      text: "Running paid ads on Meta, Google, YouTube, or LinkedIn? Your conversion rate affects cost-per-lead and return on ad spend directly.",
+    },
+  ],
+  class: className,
+  ...rest
+} = Astro.props;
+
+const icons = [chart, coins, pointer];
+---
+
+<Section
+  render={render && items.length > 0}
+  containerClass="roi-read_layout"
+  class:list={["roi-read_wrap", className]}
+  {...rest}
+>
+  <Img src={background} slot="background" class="roi-read_background" />
+  <div slot="background" class="roi-read_fade"></div>
+  <div class="roi-read_intro">
+    <Paragraph variant="overline-small" class="roi-read_eyebrow">
+      {eyebrow}
+    </Paragraph>
+    <Heading tag="h2" variant="h3">
+      <Fragment set:html={heading} />
+    </Heading>
+  </div>
+  <ul class="roi-read_list" role="list">
+    {
+      items.map((item, index) => (
+        <li class="roi-read_card">
+          <Icon src={icons[index % icons.length]} class="roi-read_icon" />
+          <div class="roi-read_content">
+            <Heading tag="h3" variant="h6">
+              {item.title}
+            </Heading>
+            <Paragraph variant="main" class="roi-read_text">
+              {item.text}
+            </Paragraph>
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+<style is:global>
+  @layer components {
+    .roi-read_wrap {
+      --_fade-angle: 183.1deg;
+      --_fade-top: 11.25rem;
+      @media (width >= 48rem) {
+        --_fade-angle: 181.5deg;
+      }
+      @media (width >= 62rem) {
+        --_fade-angle: 180.6deg;
+        --_fade-top: 13.125rem;
+      }
+      background-color: var(--color-neutral-2);
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .roi-read_background {
+        opacity: 0.5;
+      }
+
+      .roi-read_fade {
+        background-image:
+          linear-gradient(to bottom, var(--color-neutral-0), transparent),
+          linear-gradient(
+            var(--_fade-angle),
+            rgb(255 255 255 / 0.6) 6.47%,
+            var(--color-neutral-0) 30%,
+            rgb(255 255 255 / 0.25) 42.94%,
+            var(--color-neutral-0) 115.88%
+          );
+        background-repeat: no-repeat;
+        background-size:
+          100% var(--_fade-top),
+          100% 100%;
+      }
+
+      .roi-read_layout {
+        align-items: center;
+        gap: var(--space-3-5rem);
+      }
+
+      .roi-read_intro {
+        width: 100%;
+        max-width: 55rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-0-75rem);
+        text-align: center;
+      }
+
+      .roi-read_eyebrow {
+        color: var(--color-neutral-30);
+      }
+
+      .roi-read_list {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1-5rem);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        @media (width >= 48rem) {
+          flex-direction: row;
+        }
+      }
+
+      .roi-read_card {
+        min-width: 0;
+        @media (width >= 48rem) {
+          flex: 1 1 0;
+        }
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3-5rem);
+        margin: 0;
+        padding: var(--space-2rem);
+        background-color: var(--color-neutral-0);
+        border: var(--border-width) dashed var(--color-neutral-10);
+        border-radius: var(--radius-0-25rem);
+      }
+
+      .roi-read_icon {
+        --_size: var(--icon-2xl);
+        color: var(--color-primary-60);
+      }
+
+      .roi-read_content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-5rem);
+      }
+
+      .roi-read_text {
+        color: var(--color-neutral-60);
+      }
+    }
+  }
+</style>

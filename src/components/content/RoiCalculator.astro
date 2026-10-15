@@ -1,0 +1,777 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Select from "@/components/form/Select.astro";
+import Button from "@/components/Button.astro";
+import Icon from "@/components/media/Icon.astro";
+import Img from "@/components/media/Img.astro";
+import resultBackground from "@/assets/roi/result-background.jpg";
+import chart from "@/assets/industries/icons/chart.svg";
+import cursor from "@/assets/industries/icons/cursor.svg";
+import security from "@/assets/industries/icons/security.svg";
+import checklist from "@/assets/roi/checklist.svg";
+import {
+  CURRENCIES,
+  VISITOR_OPTIONS,
+  CONVERSION_OPTIONS,
+  CLOSE_OPTIONS,
+  dealOptions,
+} from "@/utils/roi.ts";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading?: string;
+  /** Text under the heading. Omit to leave it out. */
+  lead?: string;
+  /** Button text. */
+  buttonText?: string;
+  /** Button link. */
+  buttonHref?: string;
+}
+
+const {
+  render = true,
+  eyebrow = "Calculate your potential",
+  heading = "See what your website could be generating",
+  lead = "Just four key numbers provide a clear directional insight into your website's revenue potential.",
+  buttonText = "Book your free audit",
+  buttonHref = "/contact",
+  class: className,
+  ...rest
+} = Astro.props;
+
+const steps = [
+  {
+    key: "conversion",
+    icon: chart,
+    title: "Conversion lift",
+    text: "A streamlined path to contact turns baseline traffic into deals.",
+  },
+  {
+    key: "search",
+    icon: cursor,
+    title: "Search visibility",
+    text: "Technical site upgrades capture more high-intent search traffic.",
+  },
+  {
+    key: "qualification",
+    icon: checklist,
+    title: "Lead qualification",
+    text: "Upfront pricing signals filter out poor-fit inquiries automatically.",
+  },
+  {
+    key: "trust",
+    icon: security,
+    title: "Trust and perception",
+    text: "A modern experience accelerates buying decisions that metrics miss.",
+  },
+];
+
+const toOption = (option: { value: number; label: string; tag?: string }) => ({
+  ...option,
+  value: String(option.value),
+});
+---
+
+{
+  render && (
+    <div class:list={["roi-calculator_wrap", className]} {...rest}>
+      <div class="roi-calculator_intro">
+        <Paragraph variant="overline-small" class="roi-calculator_eyebrow">
+          {eyebrow}
+        </Paragraph>
+        <Heading tag="h2" variant="h3">
+          <Fragment set:html={heading} />
+        </Heading>
+        {lead && (
+          <Paragraph variant="large" class="roi-calculator_lead">
+            {lead}
+          </Paragraph>
+        )}
+      </div>
+      <div class="roi-calculator_layout">
+        <form class="roi-calculator_form" data-roi-form novalidate>
+          <div class="roi-calculator_form-heading">
+            <Heading tag="h3" variant="h6">
+              Calculate your revenue upside
+            </Heading>
+            <Paragraph variant="main" class="roi-calculator_form-text">
+              Enter your website details below
+            </Paragraph>
+          </div>
+          <div class="roi-calculator_fields">
+            <Select
+              label="Select your currency"
+              name="currency"
+              placeholder="Choose your currency"
+              options={CURRENCIES.map((currency) => ({
+                value: currency.code,
+                label: `${currency.flag} ${currency.code}`,
+              }))}
+              required
+            />
+            <Select
+              label="Average deal value"
+              name="deal"
+              placeholder="What is each customer worth?"
+              options={dealOptions(CURRENCIES[0]).map(toOption)}
+              required
+              data-roi-deal
+            />
+            <Select
+              label="Monthly website visitors"
+              name="visitors"
+              placeholder="Select monthly traffic volume"
+              options={VISITOR_OPTIONS.map(toOption)}
+              required
+            />
+            <Select
+              label="Website conversion rate"
+              name="conversion"
+              placeholder="Select visitor-to-lead rate"
+              options={CONVERSION_OPTIONS.map(toOption)}
+              required
+            />
+            <Select
+              label="Lead-to-close rate"
+              name="close"
+              placeholder="Select lead-to-deal win rate"
+              options={CLOSE_OPTIONS.map(toOption)}
+              required
+            />
+          </div>
+          <Button
+            type="submit"
+            emphasis="brand"
+            class="roi-calculator_submit"
+            disabled
+          >
+            Calculate my revenue
+          </Button>
+        </form>
+        <div class="roi-calculator_output" aria-live="polite">
+          <div class="roi-calculator_empty" data-roi-empty>
+            <Paragraph variant="overline-small" class="roi-calculator_eyebrow">
+              Instant estimate in seconds—no email required
+            </Paragraph>
+            <Heading tag="h3" variant="h4">
+              Your revenue report will appear here
+            </Heading>
+            <Paragraph variant="main" class="roi-calculator_empty-text">
+              Complete the inputs on the left to reveal your projected annual
+              revenue growth.
+            </Paragraph>
+          </div>
+          <div class="roi-calculator_results" data-roi-results hidden>
+            <div class="roi-calculator_summary theme-dark">
+              <Img
+                src={resultBackground}
+                class="roi-calculator_summary-image"
+                width={960}
+              />
+              <div class="roi-calculator_summary-content">
+                <Heading tag="h3" variant="h6">
+                  Your annual revenue upside with Superpresence
+                </Heading>
+                <div class="roi-calculator_figure">
+                  <div class="roi-calculator_figure-row">
+                    <Paragraph
+                      tag="span"
+                      variant="h3"
+                      class="roi-calculator_total"
+                    >
+                      <span data-roi="newShort" /> /yr
+                    </Paragraph>
+                    <div class="roi-calculator_tags">
+                      <Paragraph
+                        tag="span"
+                        variant="small"
+                        class="roi-calculator_tag"
+                      >
+                        <strong>
+                          +<span data-roi="leads" /> extra leads
+                        </strong>{" "}
+                        / mo
+                      </Paragraph>
+                      <Paragraph
+                        tag="span"
+                        variant="small"
+                        class="roi-calculator_tag"
+                      >
+                        <strong>
+                          +<span data-roi="deals" /> extra deals
+                        </strong>{" "}
+                        / yr
+                      </Paragraph>
+                    </div>
+                  </div>
+                  <Paragraph variant="small" class="roi-calculator_from">
+                    Up from <span data-roi="current" /> a year on your current
+                    site
+                  </Paragraph>
+                </div>
+                <Button
+                  element="link"
+                  href={buttonHref}
+                  class="roi-calculator_cta"
+                >
+                  {buttonText}
+                </Button>
+              </div>
+            </div>
+            <div class="roi-calculator_breakdown">
+              <Heading tag="h3" variant="h6">
+                Revenue breakdown
+              </Heading>
+              <ul class="roi-calculator_list" role="list">
+                {steps.map((step) => (
+                  <li class="roi-calculator_item">
+                    <div class="roi-calculator_item-content">
+                      <span class="roi-calculator_icon">
+                        <Icon src={step.icon} />
+                      </span>
+                      <div class="roi-calculator_item-text">
+                        <Paragraph
+                          tag="span"
+                          variant="large"
+                          class="roi-calculator_item-title weight-medium"
+                        >
+                          {step.title}
+                        </Paragraph>
+                        <Paragraph
+                          tag="span"
+                          variant="main"
+                          class="roi-calculator_item-description"
+                        >
+                          {step.text}
+                        </Paragraph>
+                      </div>
+                    </div>
+                    <Paragraph
+                      tag="span"
+                      variant="h5"
+                      class="roi-calculator_value"
+                      data-roi={step.key}
+                    >
+                      —
+                    </Paragraph>
+                  </li>
+                ))}
+              </ul>
+              <div class="roi-calculator_sum">
+                <Paragraph
+                  tag="span"
+                  variant="h6"
+                  class="roi-calculator_sum-label"
+                >
+                  Total annual revenue gain
+                </Paragraph>
+                <Paragraph
+                  tag="span"
+                  variant="h5"
+                  class="roi-calculator_sum-value"
+                  data-roi="gain"
+                >
+                  —
+                </Paragraph>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+<script>
+  import {
+    CURRENCIES,
+    calculate,
+    dealOptions,
+    formatMoney,
+    formatShort,
+  } from "@/utils/roi.ts";
+
+  document
+    .querySelectorAll<HTMLElement>(".roi-calculator_wrap")
+    .forEach((root) => {
+      const form = root.querySelector<HTMLFormElement>("[data-roi-form]");
+      const deal = root.querySelector<HTMLSelectElement>("[data-roi-deal]");
+      const empty = root.querySelector<HTMLElement>("[data-roi-empty]");
+      const results = root.querySelector<HTMLElement>("[data-roi-results]");
+      const submit = form?.querySelector<HTMLButtonElement>(
+        ".roi-calculator_submit",
+      );
+      if (!form || !deal || !empty || !results || !submit) return;
+
+      const currencyOf = () =>
+        CURRENCIES.find((currency) => currency.code === form.currency.value) ??
+        CURRENCIES[0];
+
+      const fillDeal = () => {
+        const index = deal.selectedIndex;
+        const placeholder = deal.options[0];
+        deal.replaceChildren(
+          placeholder,
+          ...dealOptions(currencyOf()).map(
+            (option) => new Option(option.label, String(option.value)),
+          ),
+        );
+        deal.selectedIndex = index;
+      };
+
+      const set = (key: string, text: string) => {
+        root.querySelectorAll(`[data-roi="${key}"]`).forEach((node) => {
+          node.textContent = text;
+        });
+      };
+
+      form.addEventListener("change", (event) => {
+        if (event.target === form.currency) fillDeal();
+        submit.disabled = !form.checkValidity();
+      });
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (!form.checkValidity()) return;
+        const currency = currencyOf();
+        const result = calculate({
+          deal: Number(form.deal.value),
+          visitors: Number(form.visitors.value),
+          conversion: Number(form.conversion.value),
+          close: Number(form.close.value),
+        });
+        const money = (value: number) => formatMoney(value, currency.symbol);
+        set("newShort", formatShort(result.next, currency.symbol));
+        set("current", money(result.current));
+        set("leads", String(Math.round(result.extraLeads)));
+        set("deals", String(Math.round(result.extraDeals)));
+        set("conversion", money(result.steps.conversion));
+        set("search", money(result.steps.search));
+        set("qualification", money(result.steps.qualification));
+        set("trust", money(result.steps.trust));
+        set("gain", money(result.gain));
+        empty.hidden = true;
+        results.hidden = false;
+        if (results.getBoundingClientRect().top > window.innerHeight) {
+          results.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
+    });
+</script>
+
+<style is:global>
+  @layer components {
+    .roi-calculator_wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-3-5rem);
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .roi-calculator_intro {
+        width: 100%;
+        max-width: 55rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-0-75rem);
+        text-align: center;
+      }
+
+      .roi-calculator_eyebrow {
+        color: var(--color-neutral-30);
+      }
+
+      .roi-calculator_lead {
+        max-width: 33.75rem;
+      }
+
+      .roi-calculator_layout {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--space-2rem);
+        @media (width >= 62rem) {
+          flex-direction: row;
+          align-items: flex-start;
+        }
+      }
+
+      /* Form */
+      .roi-calculator_form {
+        flex: none;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1-25rem);
+        padding: var(--space-2rem);
+        background-color: var(--color-neutral-0);
+        border: var(--border-width) solid var(--color-neutral-5);
+        border-radius: var(--radius-0-25rem);
+        box-shadow:
+          0 0.625rem 0.71875rem rgb(143 143 143 / 0.09),
+          0 2.5625rem 1.28125rem rgb(143 143 143 / 0.02),
+          0 2.5rem 1.75rem rgb(143 143 143 / 0.04),
+          0 10.3125rem 2.0625rem rgb(143 143 143 / 0.01);
+        @media (width >= 62rem) {
+          width: 28.125rem;
+        }
+      }
+
+      .roi-calculator_form-heading {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-5rem);
+        padding-bottom: var(--space-1-25rem);
+        border-bottom: var(--border-width) solid var(--color-neutral-5);
+      }
+
+      .roi-calculator_form-text {
+        color: var(--color-neutral-50);
+      }
+
+      .roi-calculator_fields {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1-25rem);
+      }
+
+      .field {
+        gap: var(--space-0-5rem);
+      }
+
+      .field-label {
+        gap: 0.125em;
+        color: var(--color-neutral-80);
+        font-size: var(--overline-small);
+        line-height: var(--overline-small-line-height);
+        letter-spacing: var(--letter-spacing-tag);
+        text-transform: uppercase;
+      }
+
+      .field-star {
+        color: var(--color-primary-60);
+      }
+
+      .field-control {
+        --_field-pad-block: var(--space-0-75rem);
+        --_field-pad-inline: var(--space-1rem);
+        background-color: var(--color-neutral-2);
+        border-color: var(--color-neutral-5);
+        border-radius: var(--radius-0-125rem);
+        @media (hover: hover) {
+          &:hover:not(:disabled) {
+            background-color: var(--color-neutral-5);
+          }
+        }
+      }
+
+      .form-select_field:has(option[value=""]:checked) {
+        color: var(--color-neutral-40);
+      }
+
+      .form-select_mark {
+        --_size: 1rem;
+        color: var(--color-neutral-90);
+      }
+
+      @supports (appearance: base-select) {
+        .form-select_field:open {
+          background-color: var(--color-neutral-0);
+          border-color: var(--color-primary-60);
+        }
+
+        .form-select_field::picker(select) {
+          margin-block-start: var(--space-0-25rem);
+          padding: 0;
+          background-color: var(--color-neutral-0);
+          border: var(--border-width) solid var(--color-neutral-5);
+          border-radius: var(--radius-0-125rem);
+          box-shadow: 0 0.75rem 1.5rem rgb(16 24 40 / 0.08);
+        }
+
+        .form-select_field option {
+          padding: var(--space-0-75rem) var(--space-1rem);
+          border-radius: 0;
+          font-size: var(--text-main);
+          color: var(--color-neutral-80);
+          &:not(:last-child) {
+            border-bottom: var(--border-width) solid var(--color-neutral-5);
+          }
+          &:hover,
+          &:focus {
+            background-color: var(--color-neutral-2);
+          }
+          &:checked {
+            background-color: var(--color-primary-5);
+            color: var(--color-neutral-90);
+            .form-select_tag {
+              color: var(--color-primary-60);
+            }
+          }
+          &::checkmark {
+            display: none;
+          }
+        }
+      }
+
+      .roi-calculator_submit {
+        width: 100%;
+        &:disabled {
+          opacity: 0.25;
+        }
+      }
+
+      /* Output */
+      .roi-calculator_output {
+        flex: 1 1 0;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        @media (width >= 62rem) {
+          align-self: stretch;
+        }
+      }
+
+      .roi-calculator_empty {
+        flex: 1;
+        min-height: 34.375rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: var(--space-0-5rem);
+        padding: var(--space-3-5rem);
+        background-color: var(--color-neutral-2);
+        border: var(--border-width) solid var(--color-neutral-5);
+        border-radius: var(--radius-0-25rem);
+        text-align: center;
+        &[hidden] {
+          display: none;
+        }
+        @media (width >= 62rem) {
+          min-height: 0;
+        }
+      }
+
+      .roi-calculator_empty-text {
+        max-width: 24rem;
+      }
+
+      .roi-calculator_results {
+        scroll-margin-top: calc(var(--nav-height) + var(--space-1rem));
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1rem);
+        &[hidden] {
+          display: none;
+        }
+      }
+
+      .roi-calculator_summary {
+        position: relative;
+        overflow: hidden;
+        border-radius: var(--radius-0-25rem);
+        background-color: var(--color-primary-90);
+        box-shadow:
+          0 0.0625rem 0.125rem rgb(16 24 40 / 0.06),
+          0 0.0625rem 0.1875rem rgb(16 24 40 / 0.1);
+        &::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background-image: linear-gradient(
+            45.36deg,
+            rgb(0 23 70 / 0.7) 25.75%,
+            rgb(51 136 231 / 0.7) 64.45%,
+            rgb(4 94 241 / 0.7) 99.38%
+          );
+        }
+      }
+
+      .roi-calculator_summary-image {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .roi-calculator_summary-content {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2rem);
+        padding: var(--space-2rem);
+      }
+
+      .roi-calculator_figure {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-5rem);
+        margin-bottom: calc(var(--space-1-25rem) - var(--space-2rem));
+      }
+
+      .roi-calculator_figure-row {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-1rem);
+        @media (width >= 48rem) {
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: flex-end;
+        }
+      }
+
+      .roi-calculator_total {
+        color: var(--color-neutral-0);
+      }
+
+      .roi-calculator_tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-0-5rem);
+      }
+
+      .roi-calculator_tag {
+        padding: var(--space-0-25rem) var(--space-0-75rem);
+        background-color: rgb(255 255 255 / 0.12);
+        border-radius: var(--radius-0-25rem);
+        backdrop-filter: blur(0.75rem);
+        color: var(--color-neutral-10);
+        white-space: nowrap;
+        strong {
+          color: var(--color-neutral-0);
+          font-weight: var(--primary-medium);
+        }
+      }
+
+      .roi-calculator_from {
+        color: var(--color-neutral-10);
+      }
+
+      .roi-calculator_cta {
+        width: 100%;
+      }
+
+      .roi-calculator_breakdown {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1-25rem);
+        padding: var(--space-2rem);
+        background-color: var(--color-neutral-0);
+        border: var(--border-width) solid var(--color-neutral-5);
+        border-radius: var(--radius-0-25rem);
+        box-shadow:
+          0 0.0625rem 0.125rem rgb(16 24 40 / 0.06),
+          0 0.0625rem 0.1875rem rgb(16 24 40 / 0.1);
+      }
+
+      .roi-calculator_list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1-25rem);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .roi-calculator_item {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1-25rem);
+        margin: 0;
+        padding-block: var(--space-1rem);
+        border-bottom: var(--border-width) solid var(--color-neutral-5);
+        &:first-child {
+          border-top: var(--border-width) solid var(--color-neutral-5);
+        }
+        @media (width >= 48rem) {
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+        }
+      }
+
+      .roi-calculator_item-content {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-1rem);
+        @media (width >= 48rem) {
+          flex-direction: row;
+          align-items: center;
+        }
+      }
+
+      .roi-calculator_icon {
+        flex: none;
+        width: 3rem;
+        aspect-ratio: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--color-neutral-2);
+        border: var(--border-width) solid var(--color-neutral-5);
+        border-radius: var(--radius-0-125rem);
+        color: var(--color-primary-60);
+        .icon {
+          --_size: 1.75rem;
+        }
+      }
+
+      .roi-calculator_item-text {
+        max-width: 31.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-125rem);
+      }
+
+      .roi-calculator_item-title {
+        color: var(--color-neutral-90);
+      }
+
+      .roi-calculator_item-description {
+        color: var(--color-neutral-60);
+      }
+
+      .roi-calculator_value {
+        flex: none;
+        color: var(--color-neutral-90);
+      }
+
+      .roi-calculator_sum {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-0-25rem);
+        padding-block: var(--space-1rem);
+        @media (width >= 48rem) {
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+        }
+      }
+
+      .roi-calculator_sum-label {
+        color: var(--color-neutral-90);
+      }
+
+      .roi-calculator_sum-value {
+        color: var(--color-primary-60);
+      }
+    }
+  }
+</style>
