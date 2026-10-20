@@ -30,6 +30,8 @@ interface Props
   secondaryHref?: string;
   /** `logos` puts the paragraph under the heading and a logo strip below; `split` moves the paragraph to the right of the heading and leaves the logos out. */
   variant?: "logos" | "split";
+  /** Lets the `split` heading run to 46.875rem instead of 42.5rem, for a heading with a long line. */
+  wide?: boolean;
   /** Bottom fade over the image: `deep` turns solid below desktop, `soft` stays at 70% on every screen. */
   fade?: "deep" | "soft";
   /** Colour the `soft` fade runs to, as a hex. Mixed at 70% like the default dark. */
@@ -47,6 +49,7 @@ const {
   secondaryText,
   secondaryHref = "#",
   variant = "logos",
+  wide = false,
   fade = "deep",
   fadeColor,
   class: className,
@@ -60,7 +63,7 @@ const {
   paddingTop="none"
   paddingBottom="none"
   containerClass="home-hero_layout"
-  class:list={["home-hero_wrap", variant, fade, className]}
+  class:list={["home-hero_wrap", variant, fade, wide && "wide", className]}
   style={fadeColor && `--_fade-color: ${fadeColor};`}
   {...rest}
 >
@@ -232,6 +235,10 @@ const {
 
         .home-hero_main {
           max-width: 42.5rem;
+        }
+
+        &.wide .home-hero_main {
+          max-width: 46.875rem;
         }
 
         .home-hero_text {

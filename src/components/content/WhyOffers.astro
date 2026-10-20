@@ -9,9 +9,11 @@ import teardown from "@/assets/why/gaps-teardown.png";
 import redesign from "@/assets/why/gaps-redesign.png";
 import check from "@/assets/home/difference-list-item.svg";
 
-type Tone = "blue" | "purple";
+type Tone = "blue" | "purple" | "orange" | "green" | "pink";
 type Choice = {
   tone: Tone;
+  /** Small label above the title. */
+  label?: string;
   image: ImageMetadata;
   title: string;
   text: string;
@@ -27,6 +29,16 @@ type BaseProps = HTMLAttributes<"div"> & {
   heading?: string;
   /** Text under the heading. Omit to leave it out. */
   lead?: string;
+  /** Line of small italic text under the cards. Omit to leave it out. */
+  note?: string;
+  /** Minimum card height in rem at desktop, for `options`. Defaults to the shared 30. */
+  cardHeight?: number;
+  /** Screen width from which `options` cards sit side by side instead of stacked. */
+  columnsFrom?: "tablet" | "desktop";
+  /** Lead width for `options`: `full` lets it run the width of the heading, `narrow` wraps it at 40rem. */
+  leadWidth?: "narrow" | "full";
+  /** Fixed height in rem of each card's text and list, so the text starts at the same height in every card. */
+  contentHeight?: number;
 };
 
 type OffersProps = BaseProps & {
@@ -59,12 +71,18 @@ const {
   variant = "offers",
   href = "/contact",
   options,
+  note,
+  cardHeight,
+  contentHeight,
+  leadWidth = "full",
+  columnsFrom = "tablet",
   class: className,
   ...rest
 } = Astro.props as AllProps;
 
 const offers: {
   tone: Tone;
+  label?: string;
   image: ImageMetadata;
   duration?: string;
   title: string;
@@ -96,7 +114,16 @@ const offers: {
 
 {
   render && offers.length > 0 && (
-    <div class:list={["why-offers_wrap", variant, className]} {...rest}>
+    <div
+      class:list={["why-offers_wrap", variant, leadWidth, columnsFrom, className]}
+      style={[
+        cardHeight && `--_card-height-desktop: ${cardHeight}rem`,
+        contentHeight && `--_content-height: ${contentHeight}rem`,
+      ]
+        .filter(Boolean)
+        .join(";") || undefined}
+      {...rest}
+    >
       <div class="why-offers_intro">
         <Paragraph variant="overline-small" class="why-offers_eyebrow">
           {eyebrow}
@@ -133,6 +160,14 @@ const offers: {
             </div>
             <div class="why-offers_content">
               <div class="why-offers_text">
+                {offer.label && (
+                  <Paragraph
+                    variant="overline-small"
+                    class="why-offers_kicker"
+                  >
+                    {offer.label}
+                  </Paragraph>
+                )}
                 {variant === "offers" && (
                   <Paragraph
                     tag="span"
@@ -174,6 +209,11 @@ const offers: {
           </li>
         ))}
       </ul>
+      {note && (
+        <Paragraph variant="main" class="why-offers_note">
+          {note}
+        </Paragraph>
+      )}
     </div>
   )
 }
@@ -230,8 +270,29 @@ const offers: {
         gap: var(--space-1-25rem);
         margin: 0;
         padding: 0;
+      }
+
+      &.tablet .why-offers_list {
         @media (width >= 48rem) {
           flex-direction: row;
+        }
+      }
+
+      &.desktop .why-offers_list {
+        @media (width >= 62rem) {
+          flex-direction: row;
+        }
+      }
+
+      &.tablet .why-offers_card {
+        @media (width >= 48rem) {
+          flex: 1 1 0;
+        }
+      }
+
+      &.desktop .why-offers_card {
+        @media (width >= 62rem) {
+          flex: 1 1 0;
         }
       }
 
@@ -258,11 +319,49 @@ const offers: {
         );
         border: var(--border-width) solid var(--color-neutral-5);
         border-radius: var(--radius-0-5rem);
-        @media (width >= 48rem) {
-          flex: 1 1 0;
-        }
         @media (width >= 62rem) {
           max-width: 30rem;
+        }
+
+        &.orange {
+          --_tint: #ffd4cc;
+          --_stripe: rgb(255 167 129);
+          --_stripe-low: 0.3;
+          background-image: linear-gradient(
+            205.12deg,
+            var(--_tint) 7.66%,
+            var(--color-neutral-0) 49.76%
+          );
+
+          .why-offers_accent {
+            opacity: 0.8;
+          }
+        }
+
+        &.green {
+          --_tint: #d2ffd7;
+          --_stripe: rgb(141 245 66);
+          --_stripe-low: 0.4;
+          background-image: linear-gradient(
+            211.83deg,
+            var(--_tint) 8.42%,
+            var(--color-neutral-0) 48.74%
+          );
+        }
+
+        &.pink {
+          --_tint: #f6ccff;
+          --_stripe: rgb(255 129 200);
+          --_stripe-low: 0.3;
+          background-image: linear-gradient(
+            199.87deg,
+            var(--_tint) 7.66%,
+            var(--color-neutral-0) 49.76%
+          );
+
+          .why-offers_accent {
+            opacity: 0.8;
+          }
         }
 
         &.purple {
@@ -341,6 +440,7 @@ const offers: {
       }
 
       .why-offers_content {
+        min-height: var(--_content-height, 0);
         display: flex;
         flex-direction: column;
         align-items: flex-start;
@@ -357,7 +457,18 @@ const offers: {
         color: var(--color-primary-60);
       }
 
+      .why-offers_kicker {
+        color: var(--color-neutral-30);
+      }
+
       .why-offers_description {
+        color: var(--color-neutral-60);
+      }
+
+      .why-offers_note {
+        margin-top: calc(var(--space-1-5rem) - var(--space-3-5rem));
+        font-style: italic;
+        text-align: center;
         color: var(--color-neutral-60);
       }
 
@@ -393,11 +504,15 @@ const offers: {
          copy runs long. */
       &.options {
         @media (width >= 62rem) {
-          --_card-height: 30rem;
+          --_card-height: var(--_card-height-desktop, 30rem);
         }
 
         .why-offers_lead {
           max-width: none;
+        }
+
+        &.narrow .why-offers_lead {
+          max-width: 40rem;
         }
 
         .why-offers_card {

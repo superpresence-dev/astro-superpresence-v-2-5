@@ -5,7 +5,12 @@ import Heading from "@/components/typography/Heading.astro";
 import Paragraph from "@/components/typography/Paragraph.astro";
 import Img from "@/components/media/Img.astro";
 
-type Item = { title: string; text: string };
+type Item = {
+  title: string;
+  text: string;
+  /** Step tag shown in a small chip under the text (`steps` only). */
+  tag?: string;
+};
 
 interface Props
   extends
@@ -19,6 +24,10 @@ interface Props
   image: ImageMetadata;
   /** Pages built, in reading order. */
   items: Item[];
+  /** Text under the heading. Omit to leave it out. */
+  lead?: string;
+  /** `pages` is a row of three top-ruled items; `steps` is numbered columns with a left rule, a chip each and a navy shade. */
+  variant?: "pages" | "steps";
 }
 
 const {
@@ -27,6 +36,8 @@ const {
   heading,
   image,
   items,
+  lead,
+  variant = "pages",
   class: className,
   ...rest
 } = Astro.props;
@@ -38,7 +49,7 @@ const {
   paddingTop="none"
   paddingBottom="none"
   containerClass="industry-build_layout"
-  class:list={["industry-build_wrap", className]}
+  class:list={["industry-build_wrap", variant, className]}
   {...rest}
 >
   <Img src={image} slot="background" class="industry-build_background" />
@@ -50,17 +61,36 @@ const {
     <Heading tag="h2" variant="h3">
       <Fragment set:html={heading} />
     </Heading>
+    {lead && (
+      <Paragraph variant="large" class="industry-build_lead">
+        {lead}
+      </Paragraph>
+    )}
   </div>
   <ul class="industry-build_list">
     {
-      items.map((item) => (
+      items.map((item, index) => (
         <li class="industry-build_item">
+          {variant === "steps" && (
+            <Paragraph variant="overline-main" class="industry-build_number">
+              {String(index + 1).padStart(2, "0")}
+            </Paragraph>
+          )}
           <Heading tag="h3" variant="h5">
             {item.title}
           </Heading>
           <Paragraph variant="main" class="industry-build_text">
             {item.text}
           </Paragraph>
+          {item.tag && (
+            <Paragraph
+              tag="span"
+              variant="xsmall"
+              class="industry-build_tag"
+            >
+              {item.tag}
+            </Paragraph>
+          )}
         </li>
       ))
     }
@@ -153,6 +183,65 @@ const {
 
       .industry-build_text {
         color: var(--color-neutral-5);
+      }
+
+      .industry-build_lead {
+        max-width: 38.4375rem;
+        color: var(--color-neutral-10);
+      }
+
+      &.steps {
+        --_min-height: 0rem;
+        @media (width >= 48rem) {
+          --_min-height: 44rem;
+        }
+        @media (width >= 62rem) {
+          --_min-height: 42rem;
+        }
+
+        .industry-build_shade {
+          background-image:
+            linear-gradient(
+              0.2deg,
+              rgb(0 31 61 / 0.9) 35.5%,
+              rgb(0 31 61 / 0.9) 58%,
+              rgb(0 31 61 / 0) 84.3%
+            ),
+            linear-gradient(rgb(0 31 61 / 0.32), rgb(0 31 61 / 0.32));
+        }
+
+        .industry-build_list {
+          @media (width >= 48rem) {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+          @media (width >= 62rem) {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+          }
+        }
+
+        .industry-build_item {
+          gap: var(--space-1rem);
+          padding: var(--space-1-5rem);
+          border-top: 0;
+          border-left: var(--border-width) solid rgb(255 255 255 / 0.12);
+        }
+
+        .industry-build_number {
+          color: var(--color-neutral-30);
+          margin-bottom: calc(var(--space-0-5rem) * -1);
+        }
+
+        .industry-build_text {
+          color: var(--color-neutral-10);
+        }
+
+        .industry-build_tag {
+          align-self: flex-start;
+          padding: var(--space-0-25rem) var(--space-0-5rem);
+          border-radius: var(--radius-0-125rem);
+          background-color: var(--color-primary-95);
+          color: var(--color-neutral-30);
+        }
       }
     }
   }

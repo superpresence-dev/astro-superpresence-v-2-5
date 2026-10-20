@@ -1,0 +1,482 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import HomeHero from "@/components/section/HomeHero.astro";
+import IndustryProblem from "@/components/content/IndustryProblem.astro";
+import ServiceFeatures from "@/components/content/ServiceFeatures.astro";
+import BrandFeatureGraphic from "@/components/content/BrandFeatureGraphic.astro";
+import WhyOffers from "@/components/content/WhyOffers.astro";
+import IndustryBuild from "@/components/section/IndustryBuild.astro";
+import HomeDifference from "@/components/content/HomeDifference.astro";
+import IndustryProcess from "@/components/content/IndustryProcess.astro";
+import BrandProcessGraphic from "@/components/content/BrandProcessGraphic.astro";
+import HomeQuote from "@/components/section/HomeQuote.astro";
+import ServicePoints from "@/components/content/ServicePoints.astro";
+import DesignWhyGraphic from "@/components/content/DesignWhyGraphic.astro";
+import WhyCompare from "@/components/content/WhyCompare.astro";
+import HomeFaq from "@/components/content/HomeFaq.astro";
+import ServiceGrid from "@/components/content/ServiceGrid.astro";
+import HomeCta from "@/components/section/HomeCta.astro";
+import { serviceUrl } from "@/utils/services.ts";
+import heroImage from "@/assets/service/branding/hero.jpg";
+import howImage from "@/assets/service/branding/howit-bg.jpg";
+import tierLogo from "@/assets/service/branding/tier-logo.png";
+import tierIdentity from "@/assets/service/branding/tier-identity.png";
+import tierFull from "@/assets/service/branding/tier-full.png";
+import valueBrand from "@/assets/service/branding/value-brand.png";
+import valueBoth from "@/assets/service/branding/value-both.png";
+import quoteAvatar from "@/assets/service/migrate/quote-avatar.jpg";
+
+const related = [
+  {
+    title: "Website design",
+    text: "Every page designed with intent, from first impression to final click.",
+  },
+  {
+    title: "Social & ad creative",
+    text: "Creative assets designed to capture attention and turn audiences into customers.",
+  },
+  {
+    title: "Webflow development",
+    text: "From polished designs to responsive Webflow experiences built for growth.",
+  },
+  {
+    title: "Framer development",
+    text: "Launch polished Framer websites with speed, flexibility, and lasting performance.",
+  },
+  {
+    title: "Migrate to Webflow",
+    text: "Move your website to Webflow without losing what already works.",
+  },
+  {
+    title: "Webflow maintenance",
+    text: "Keep your Webflow site fast, reliable, updated, and ready for what’s next.",
+  },
+].map((item) => ({ ...item, href: serviceUrl(item.title) }));
+---
+
+<Layout
+  title="Branding"
+  description="Logo, visual identity or full branding, designed to work on your website first, and to read well to English-speaking buyers."
+  overlap
+>
+  {/* Hero */}
+  <HomeHero
+    eyebrow="Branding"
+    heading="An identity your buyers<br />remember, built for the web"
+    text="Logo, visual identity or full branding, designed to work on your website first, and to read well to English-speaking buyers."
+    image={heroImage}
+    buttonText="Start your project"
+    buttonHref="/contact"
+    variant="split"
+    wide
+    fade="soft"
+  />
+  {/* Problem */}
+  <Section>
+    <IndustryProblem
+      heading="Your brand is quietly<br />costing you deals"
+      items={[
+        {
+          title: "You look smaller than you are",
+          text: "The identity was made for a smaller company, and buyers abroad notice.",
+        },
+        {
+          title: "Nothing matches anywhere",
+          text: "The website, decks and social posts all look like different companies.",
+        },
+        {
+          title: "It does not travel",
+          text: "The name, tone or visuals that work at home read differently to English-speaking buyers.",
+        },
+      ]}
+    />
+  </Section>
+  {/* Built for the website */}
+  <Section>
+    <ServiceFeatures
+      items={[
+        {
+          eyebrow: "Built for the website",
+          heading: "Designed to work<br />on your website first",
+          text: "Your colours, type and spacing become the same tokens the website is built from, so the brand looks right on screen from day one.",
+          points: [
+            "Tokens shared by brand and website",
+            "Tested on real pages, not just mockups",
+            "Ready for Webflow or Framer",
+          ],
+        },
+      ]}
+    >
+      <BrandFeatureGraphic slot="visual-1" />
+    </ServiceFeatures>
+  </Section>
+  {/* Tiers */}
+  <Section>
+    <WhyOffers
+      variant="options"
+      eyebrow="Three tiers"
+      heading="From a logo to a complete identity"
+      lead="Each tier builds on the one before, so you can start where you are."
+      cardHeight={34.375}
+      contentHeight={20}
+      columnsFrom="desktop"
+      note="Extra merchandise is available a la carte. We do not do packaging."
+      options={[
+        {
+          tone: "blue",
+          image: tierLogo,
+          label: "Logo",
+          title: "The mark",
+          text: "For companies that need a strong logo and the basics around it.",
+          points: [
+            "Logo concept and moodboard",
+            "Final logo",
+            "Colour palette",
+            "Typefaces",
+          ],
+        },
+        {
+          tone: "purple",
+          image: tierIdentity,
+          label: "Visual Identity",
+          title: "A documented system",
+          text: "A complete visual system, for companies that need a real identity.",
+          points: [
+            "Everything in Logo",
+            "Logo suite: primary, secondary, mark",
+            "Full colour and type system",
+            "Key visual or pattern",
+            "Social profile pack",
+            "Mini style guide",
+          ],
+        },
+        {
+          tone: "orange",
+          image: tierFull,
+          label: "Full Branding",
+          title: "Identity and story",
+          text: "The full identity, the narrative behind it and the collateral it lives on.",
+          points: [
+            "Everything in Visual Identity",
+            "Brand narrative and strategy",
+            "Imagery and layout guidelines",
+            "Brand guidebook",
+            "Stationery and a merchandise set",
+            "Full social kit",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* How it comes together */}
+  <IndustryBuild
+    variant="steps"
+    eyebrow="How it comes together"
+    heading="Four steps, each one you can see"
+    lead="Every step ends with something on the table to react to, and nothing moves on without your sign-off."
+    image={howImage}
+    items={[
+      {
+        title: "Direction",
+        text: "We study your market and buyers, then agree a direction before any logo is drawn.",
+        tag: "Moodboard and brief",
+      },
+      {
+        title: "Logo concepts",
+        text: "Several routes, refined into one mark that works small and large.",
+        tag: "Final logo and suite",
+      },
+      {
+        title: "Visual system",
+        text: "Colour, type and a key visual that hold together across every screen.",
+        tag: "Colour and type system",
+      },
+      {
+        title: "Guidelines",
+        text: "How to use it, written down so your team and partners get it right.",
+        tag: "Style guide or guidebook",
+      },
+    ]}
+  />
+  {/* Scope */}
+  <Section>
+    <HomeDifference
+      eyebrow="Scope"
+      heading="What is in, and what is not"
+      lead="Clear before we start, so nothing turns into a surprise."
+      leadWidth="full"
+      logos={false}
+      columnsFrom="desktop"
+      boxes={[
+        {
+          title: "Included",
+          featured: true,
+          items: [
+            "Logo, colour and type on every tier",
+            "Files ready for web, print and social",
+            "Social profile pack from Visual Identity up",
+            "Stationery and a merchandise set on Full Branding",
+            "Sign-off at every step",
+          ],
+        },
+        {
+          title: "Not included",
+          featured: false,
+          items: [
+            "Packaging design",
+            "Extra merchandise beyond the set (available separately)",
+            "Photography and video",
+            "Ad campaigns and media buying",
+            "A website (see Website design)",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Process */}
+  <Section>
+    <IndustryProcess
+      eyebrow="How we work"
+      heading="Five steps, each signed off<br />before the next"
+      note={{
+        title: "3 feedback rounds included",
+        text: "Each phase is approved before the next one starts, so nothing gets reworked later.",
+      }}
+      steps={[
+        {
+          title: "Discover",
+          label: "Discovery",
+          text: "We study your company, competitors and buyers, at home and abroad.",
+          points: ["Competitor wall", "Buyer research", "Brand audit"],
+        },
+        {
+          title: "Define",
+          text: "We agree the positioning, personality and how the brand should read in English.",
+          points: ["Positioning", "Personality", "English voice"],
+        },
+        {
+          title: "Explore",
+          text: "Three creative routes, reviewed together, one chosen to develop.",
+          points: ["Three routes", "Moodboards", "One direction chosen"],
+        },
+        {
+          title: "Build the system",
+          text: "Logo, colour, type, patterns and imagery developed into one system.",
+          points: ["Logo suite", "Colour and type", "Patterns and imagery"],
+        },
+        {
+          title: "Apply and hand over",
+          text: "The brand applied to your website, decks and collateral, with the guidebook and files.",
+          points: ["Guidebook", "Applied examples", "All source files"],
+        },
+      ]}
+    >
+      <BrandProcessGraphic slot="step-1" variant="discover" />
+      <BrandProcessGraphic slot="step-2" variant="define" />
+      <BrandProcessGraphic slot="step-3" variant="explore" />
+      <BrandProcessGraphic slot="step-4" variant="system" />
+      <BrandProcessGraphic slot="step-5" variant="handover" />
+    </IndustryProcess>
+  </Section>
+  {/* Quote */}
+  <HomeQuote
+    quote="We went from a cookie-cutter template to a custom website that properly reflects the brand… Kevin is super easy to work with, always one message away."
+    name="Max Chernov"
+    jobTitle="YouTuber, 430k subscribers"
+    avatar={quoteAvatar}
+    logo={false}
+  />
+  {/* Why */}
+  <Section>
+    <ServicePoints
+      variant="visual"
+      eyebrow="Why Superpresence"
+      heading="Why companies choose us for their identity"
+      items={[
+        {
+          title: "Built in Asia, written for buyers abroad",
+          text: "We operate in your timezone, understand Asian businesses, and craft content that resonates with English-speaking buyers—never sounding translated.",
+        },
+        {
+          title: "Strategy before pixels",
+          text: "We don’t start designing until what you do, who it is for and why you are clear. Design amplifies clarity; it can’t create it.",
+        },
+        {
+          title: "The whole senior team, one roof",
+          text: "Strategy, design, copy, development, conversion and QA in one accountable team, with nobody for you to hire or manage.",
+        },
+        {
+          title: "Depth over volume",
+          text: "Every project gets senior attention for as long as the problem takes, not a slot sized to a subscription.",
+        },
+        {
+          title: "Copy written by people, in English",
+          text: "Expert copywriters write every page. Not translated, not generated, and built around how your buyers decide.",
+        },
+        {
+          title: "Designed for the screen first",
+          text: "Every identity is tested on real web pages and social posts, not only on a logo sheet.",
+        },
+      ]}
+    >
+      <DesignWhyGraphic slot="visual-1" variant="asia" />
+      <DesignWhyGraphic slot="visual-2" variant="strategy" />
+      <DesignWhyGraphic slot="visual-3" variant="team" />
+      <DesignWhyGraphic slot="visual-4" variant="depth" />
+      <DesignWhyGraphic slot="visual-5" variant="copy" />
+      <DesignWhyGraphic slot="visual-6" variant="screen" />
+    </ServicePoints>
+  </Section>
+  {/* Comparison */}
+  <Section>
+    <WhyCompare
+      variant="marks"
+      eyebrow="The comparison"
+      heading="What each option actually delivers"
+      lead="A quick comparison before you decide who does the work."
+      rows={[
+        "Built for the website",
+        "Reads well to English-speaking buyers",
+        "Clear tiers to choose from",
+        "Guidebook your team can use",
+        "Applied to real pages",
+        "Brand and website by one team",
+      ]}
+      options={[
+        {
+          title: "Superpresence",
+          icon: "brand",
+          featured: true,
+          items: [true, true, true, true, true, true],
+        },
+        {
+          title: "Freelancer",
+          icon: "hire",
+          items: [false, "Sometimes", false, "Sometimes", false, false],
+        },
+        {
+          title: "Typical agency",
+          icon: "agency",
+          items: [
+            "Sometimes",
+            "Varies",
+            "Sometimes",
+            true,
+            "Sometimes",
+            "Varies",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Brand alone or with the website */}
+  <Section>
+    <WhyOffers
+      variant="options"
+      eyebrow="Brand and website"
+      heading="Do the brand alone, or with the website"
+      lead="A build applies a brand. Branding creates one. Doing both with one team means the identity is designed for the screen from day one."
+      cardHeight={30}
+      leadWidth="narrow"
+      options={[
+        {
+          tone: "green",
+          image: valueBrand,
+          label: "Branding",
+          title: "The identity on its own",
+          text: "Logo, system and guidelines your team and partners can use anywhere.",
+          points: [
+            "Logo, Visual Identity or Full Branding",
+            "Ready for web, print and social",
+            "Guidelines your team can follow",
+          ],
+        },
+        {
+          tone: "pink",
+          image: valueBoth,
+          label: "Brand and website",
+          title: "One team, start to finish",
+          text: "The identity and the website designed together, so they launch as one.",
+          points: [
+            "Full Branding as part of a website build",
+            "Tested on real pages before sign-off",
+            "One team, one timeline",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* FAQ */}
+  <Section>
+    <HomeFaq
+      eyebrow="Questions we hear"
+      heading="Before you ask"
+      items={[
+        {
+          question: "How is a brand identity different from a logo?",
+          answer: [
+            "A logo is one mark. An identity is the system around it: colour, type, imagery and the rules for using them, documented so your website, decks and social posts all look like one company.",
+            "If you need the mark and the basics, the Logo tier covers it. If your materials already look inconsistent across channels, you need the identity.",
+          ],
+        },
+        {
+          question: "Which tier do we need?",
+          answer: [
+            "Choose by how many people will use the brand.",
+            "Logo: a founder-led company that needs a credible mark, colours and typefaces now.",
+            "Visual Identity: a team producing a website, decks and social posts that all have to match.",
+            "Full Branding: a repositioning, a new market or a launch that needs the story, a guidebook, stationery and a merchandise set.",
+            "Each tier builds on the one before, so you can start smaller and step up later. We’ll recommend one after the first call.",
+          ],
+        },
+        {
+          question: "Will it work on our website?",
+          answer: [
+            "Yes, because it’s designed for screens first and tested on real web pages before you sign off. Colours, type and spacing are delivered as the same tokens a Webflow or Framer build uses.",
+            "If someone else builds your site, your developer gets those tokens and the guidelines. If you’d like Superpresence to build it, the brand and website can run as one project with one team.",
+          ],
+        },
+        {
+          question: "We already have a logo. Can you refresh it?",
+          answer: [
+            "Yes. A refresh keeps the recognition you’ve built and fixes what’s holding the logo back: dated type, poor legibility at small sizes, or a mark that breaks down on screen.",
+            "We start with an audit of the current identity, then show routes from a light tidy-up to a bigger change, and you decide how far to go.",
+          ],
+        },
+        {
+          question: "How much does branding cost?",
+          answer: [
+            "It depends on how far the work goes: a logo, a full visual identity, or full branding with strategy, guidelines and applied collateral. Each tier is a fixed price, set out in a proposal after a call, and each includes everything in the one below.",
+            "If you need a logo this week on a small budget, a marketplace designer or an AI tool will get you a usable mark faster. We’re for companies whose brand has to hold up in front of serious buyers, starting on the website. Packaging design isn’t something we offer.",
+          ],
+        },
+        {
+          question:
+            "Should we use a branding agency or our web design agency for our identity?",
+          answer: [
+            "If your website is where most buyers meet your brand, use the team that builds the site. Superpresence is a web design agency in Asia that also creates brand identities, so each identity is tested on real pages and turned into the tokens the site is built from.",
+            "For a brand that lives mainly in packaging, retail or print, a specialist branding studio is the better choice. For companies in Hong Kong, Singapore and Thailand selling to English-speaking buyers online, one team for brand and site means nothing gets lost in a handover. Tell us where the brand needs to show up and we’ll recommend a tier.",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Related services */}
+  <Section>
+    <ServiceGrid
+      eyebrow="Related services"
+      heading="After the brand"
+      lead="An identity is only as good as where it shows up first."
+      items={related}
+    />
+  </Section>
+  {/* CTA */}
+  <HomeCta
+    eyebrow="You've reached the end, so now..."
+    heading="Ready to look the part?"
+    text="Tell us where the brand needs to show up and who it needs to win, and we will recommend the right tier."
+    buttonText="Start your project"
+    buttonHref="/contact"
+  />
+</Layout>

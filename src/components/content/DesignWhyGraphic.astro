@@ -14,12 +14,13 @@ import strategy from "@/assets/service/design/why/icon-strategy.svg";
 import design from "@/assets/service/design/why/icon-design.svg";
 import developer from "@/assets/service/design/why/icon-dev.svg";
 import qa from "@/assets/service/design/why/icon-qa.svg";
+import globeIcon from "@/assets/service/icons/globe.svg";
 
 interface Props extends HTMLAttributes<"div"> {
   /** Set to `false` to omit the component. */
   render?: boolean;
-  /** Which illustration: the globe of markets, the strategy questions, the written copy, the team, the conversion figures, or the depth chart. */
-  variant?: "asia" | "strategy" | "copy" | "team" | "convert" | "depth";
+  /** Which illustration: the globe of markets, the strategy questions, the written copy, the team, the conversion figures, the depth chart, or the screen with its colour and type tokens. */
+  variant?: "asia" | "strategy" | "copy" | "team" | "convert" | "depth" | "screen";
 }
 
 const {
@@ -183,6 +184,40 @@ const bars = [
               <dd>Valid</dd>
             </div>
           </dl>
+        </>
+      )}
+      {variant === "screen" && (
+        <>
+          <div class="design-why-graphic_screen">
+            <span class="design-why-graphic_screen-bar">
+              <span class="design-why-graphic_lights">
+                <span />
+                <span />
+                <span />
+              </span>
+              <span class="design-why-graphic_screen-address">
+                <Icon src={globeIcon} class="design-why-graphic_screen-globe" />
+                yoursite.com
+              </span>
+            </span>
+            <span class="design-why-graphic_placeholder">
+              <span class="design-why-graphic_line one" />
+              <span class="design-why-graphic_line two" />
+              <span class="design-why-graphic_line three" />
+            </span>
+            <span class="design-why-graphic_hero" />
+            <span class="design-why-graphic_tint" />
+            <span class="design-why-graphic_ruler" />
+          </div>
+          <span class="design-why-graphic_token colour">
+            <span class="design-why-graphic_token-swatch" />
+            Blue - 600
+          </span>
+          <span class="design-why-graphic_token type">
+            <strong>Aa</strong>
+            <i />
+            Display medium
+          </span>
         </>
       )}
       {variant === "depth" && (
@@ -886,6 +921,143 @@ const bars = [
           font-weight: var(--primary-medium);
           color: var(--color-neutral-95);
         }
+      }
+
+      /* Screen: the identity applied to a page, with its tokens */
+
+      .design-why-graphic_screen {
+        position: absolute;
+        left: calc(35 * var(--_unit));
+        top: calc(55 * var(--_unit));
+        width: calc(297 * var(--_unit));
+        height: calc(224.5 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(21 * var(--_unit));
+        padding: calc(12.8 * var(--_unit)) calc(8.5 * var(--_unit));
+        overflow: clip;
+        border: calc(1 * var(--_unit)) solid #f9f9f9;
+        border-radius: calc(4.3 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        box-shadow: calc(11.8 * var(--_unit)) calc(7.5 * var(--_unit))
+          calc(13.9 * var(--_unit)) rgb(153 153 153 / 0.05);
+        mask-image: linear-gradient(#000 55%, rgb(0 0 0 / 0.35));
+      }
+
+      .design-why-graphic_screen-bar {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: calc(12.8 * var(--_unit));
+      }
+
+      .design-why-graphic_screen-address {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: calc(4.3 * var(--_unit));
+        padding: calc(2.1 * var(--_unit)) calc(27.8 * var(--_unit))
+          calc(2.1 * var(--_unit)) calc(4.3 * var(--_unit));
+        border-radius: calc(4.3 * var(--_unit));
+        background-color: #f9f9f9;
+        font-size: calc(10.7 * var(--_unit));
+        line-height: calc(13 * var(--_unit));
+        color: var(--color-neutral-90);
+      }
+
+      .design-why-graphic_screen-globe {
+        --_size: calc(11.8 * var(--_unit));
+        color: var(--color-neutral-40);
+      }
+
+      .design-why-graphic_placeholder {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(4.3 * var(--_unit));
+      }
+
+      .design-why-graphic_hero {
+        align-self: flex-start;
+        width: calc(134 * var(--_unit));
+        height: calc(110 * var(--_unit));
+        border-radius: calc(2 * var(--_unit));
+        background-image: linear-gradient(
+          172.7deg,
+          rgb(238 238 238) 28.8%,
+          rgb(249 249 249) 70.6%,
+          rgb(255 255 255) 95.5%
+        );
+      }
+
+      .design-why-graphic_tint {
+        position: absolute;
+        left: calc(150 * var(--_unit));
+        top: 0;
+        right: 0;
+        bottom: 0;
+        background-image: linear-gradient(
+          to bottom,
+          rgb(6 66 238 / 0.08),
+          rgb(6 66 238 / 0.04)
+        );
+      }
+
+      .design-why-graphic_ruler {
+        position: absolute;
+        left: calc(150 * var(--_unit));
+        top: 0;
+        bottom: 0;
+        width: calc(3 * var(--_unit));
+        background-color: var(--color-primary-60);
+      }
+
+      .design-why-graphic_token {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+        padding: calc(8 * var(--_unit)) calc(10 * var(--_unit));
+        border-radius: calc(6 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        box-shadow: var(--_shadow-ui);
+        font-weight: var(--primary-medium);
+        white-space: nowrap;
+        &.colour {
+          left: calc(219 * var(--_unit));
+          top: calc(118 * var(--_unit));
+          width: calc(120 * var(--_unit));
+          height: calc(36 * var(--_unit));
+        }
+        &.type {
+          left: calc(202 * var(--_unit));
+          top: calc(171 * var(--_unit));
+          width: calc(152 * var(--_unit));
+          height: calc(39 * var(--_unit));
+          color: var(--color-neutral-60);
+          font-weight: var(--primary-regular);
+          strong {
+            color: var(--color-neutral-90);
+            font-weight: var(--primary-medium);
+            font-size: calc(14 * var(--_unit));
+          }
+          i {
+            width: calc(3 * var(--_unit));
+            height: calc(3 * var(--_unit));
+            border-radius: 50%;
+            background-color: var(--color-neutral-30);
+          }
+        }
+      }
+
+      .design-why-graphic_token-swatch {
+        width: calc(20 * var(--_unit));
+        height: calc(20 * var(--_unit));
+        border-radius: calc(3 * var(--_unit));
+        background-color: var(--color-primary-60);
       }
     }
   }

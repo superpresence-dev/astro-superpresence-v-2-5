@@ -1,0 +1,371 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Img from "@/components/media/Img.astro";
+import Icon from "@/components/media/Icon.astro";
+import photo from "@/assets/service/branding/features-bg.jpg";
+import link from "@/assets/service/branding/features-link.svg";
+import globe from "@/assets/service/icons/globe.svg";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+}
+
+const { render = true, class: className, ...rest } = Astro.props;
+
+const swatches = ["primary", "ink", "grey", "amber", "green"];
+const lines = [1, 2, 3];
+---
+
+{
+  render && (
+    <div
+      class:list={["brand-feature-graphic_wrap", className]}
+      aria-hidden="true"
+      {...rest}
+    >
+      <Img src={photo} class="brand-feature-graphic_photo" />
+      <div class="brand-feature-graphic_stack">
+        <div class="brand-feature-graphic_row">
+          <div class="brand-feature-graphic_card colours">
+            <span class="brand-feature-graphic_label">Colour Styles</span>
+            <span class="brand-feature-graphic_well">
+              {swatches.map((name) => (
+                <span class:list={["brand-feature-graphic_swatch", name]} />
+              ))}
+            </span>
+          </div>
+          <div class="brand-feature-graphic_card">
+            <span class="brand-feature-graphic_label">Text styles</span>
+            <span class="brand-feature-graphic_well type">
+              <span class="brand-feature-graphic_sample">Aa</span>
+            </span>
+          </div>
+        </div>
+        <div class="brand-feature-graphic_link">
+          <Img src={link} transparent />
+        </div>
+        <span class="brand-feature-graphic_badge">Same values</span>
+        <div class="brand-feature-graphic_window">
+          <div class="brand-feature-graphic_toolbar">
+            <span class="brand-feature-graphic_lights">
+              <span />
+              <span />
+              <span />
+            </span>
+            <span class="brand-feature-graphic_address">
+              <Icon src={globe} class="brand-feature-graphic_globe" />
+              yoursite.com
+            </span>
+          </div>
+          <div class="brand-feature-graphic_featured">
+            <span class="brand-feature-graphic_block wide" />
+          </div>
+          <div class="brand-feature-graphic_text">
+            {[329, 237, 283].map((width) => (
+              <span
+                class="brand-feature-graphic_lines"
+                style={`--_width: ${width}`}
+              >
+                {lines.map((line) => (
+                  <span class:list={["brand-feature-graphic_line", `n${line}`]} />
+                ))}
+              </span>
+            ))}
+          </div>
+          <div class="brand-feature-graphic_grid">
+            <span class="brand-feature-graphic_block" />
+            <span class="brand-feature-graphic_block" />
+            <span class="brand-feature-graphic_block" />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .brand-feature-graphic_wrap {
+      --_unit: calc(100cqw / 560);
+      --_shadow-card:
+        0 0 calc(10.9 * var(--_unit)) rgb(0 0 0 / 0.04),
+        0 calc(1.5 * var(--_unit)) calc(2.8 * var(--_unit)) rgb(0 0 0 / 0.06);
+      container-type: inline-size;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      border-radius: var(--radius-0-5rem);
+      font-family: var(--primary-family);
+      color: var(--color-neutral-80);
+
+      .brand-feature-graphic_photo {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .brand-feature-graphic_stack {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        translate: -50% -50%;
+        width: calc(379 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(6 * var(--_unit));
+      }
+
+      .brand-feature-graphic_row {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+      }
+
+      .brand-feature-graphic_card {
+        flex: none;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: calc(4 * var(--_unit));
+        padding: calc(2 * var(--_unit));
+        overflow: clip;
+        border: 1px solid var(--color-neutral-0);
+        border-radius: calc(4 * var(--_unit));
+        background-color: #f9f9f9;
+        box-shadow: var(--_shadow-card);
+        &.colours {
+          width: calc(190 * var(--_unit));
+        }
+        &:not(.colours) {
+          flex: 1 1 0;
+        }
+      }
+
+      .brand-feature-graphic_label {
+        font-size: calc(14 * var(--_unit));
+        line-height: calc(20 * var(--_unit));
+        font-weight: 500;
+        letter-spacing: -0.005em;
+        text-align: center;
+      }
+
+      .brand-feature-graphic_well {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: calc(4 * var(--_unit));
+        padding: calc(4 * var(--_unit));
+        border-radius: calc(2 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        box-shadow:
+          0 calc(0.3 * var(--_unit)) calc(8.2 * var(--_unit)) rgb(0 0 0 / 0.01),
+          0 calc(0.8 * var(--_unit)) calc(2.8 * var(--_unit)) rgb(0 0 0 / 0.03);
+        &.type {
+          justify-content: center;
+          padding: calc(4 * var(--_unit));
+        }
+      }
+
+      .brand-feature-graphic_swatch {
+        flex: none;
+        width: calc(32 * var(--_unit));
+        height: calc(32 * var(--_unit));
+        border: calc(0.67 * var(--_unit)) solid var(--color-neutral-0);
+        border-radius: calc(2.7 * var(--_unit));
+        box-shadow:
+          0 calc(1.5 * var(--_unit)) calc(3.5 * var(--_unit)) rgb(0 0 0 / 0.12),
+          0 0 calc(0.8 * var(--_unit)) rgb(0 0 0 / 0.1);
+        &.primary {
+          background-color: var(--color-primary-60);
+        }
+        &.ink {
+          background-color: var(--color-neutral-80);
+        }
+        &.grey {
+          background-color: var(--color-neutral-10);
+        }
+        &.amber {
+          background-color: #fbbf24;
+        }
+        &.green {
+          background-color: var(--color-accent-success-50);
+        }
+      }
+
+      .brand-feature-graphic_sample {
+        font-family: var(--heading-family, inherit);
+        font-size: calc(26.8 * var(--_unit));
+        line-height: calc(29.5 * var(--_unit));
+        font-weight: 500;
+        letter-spacing: -0.015em;
+        text-align: center;
+        color: var(--color-primary-60);
+      }
+
+      .brand-feature-graphic_link {
+        position: relative;
+        width: calc(195 * var(--_unit));
+        height: calc(72 * var(--_unit));
+        color: var(--color-neutral-0);
+
+        img {
+          position: absolute;
+          inset: -7.41% -2.74%;
+          width: 105.48%;
+          height: 114.82%;
+          max-width: none;
+        }
+      }
+
+      .brand-feature-graphic_badge {
+        position: absolute;
+        top: calc(106 * var(--_unit));
+        left: 50%;
+        translate: -50% 0;
+        width: calc(84 * var(--_unit));
+        padding: calc(2 * var(--_unit)) calc(6 * var(--_unit));
+        border: 1px solid var(--color-neutral-0);
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-primary-60);
+        box-shadow: var(--_shadow-card);
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        font-weight: 500;
+        letter-spacing: -0.005em;
+        text-align: center;
+        color: var(--color-neutral-0);
+      }
+
+      .brand-feature-graphic_window {
+        width: calc(345 * var(--_unit));
+        height: calc(217 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(20 * var(--_unit));
+        padding: calc(12 * var(--_unit)) calc(8 * var(--_unit));
+        overflow: clip;
+        border-radius: calc(8 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        box-shadow:
+          calc(11 * var(--_unit)) calc(7 * var(--_unit)) calc(13 * var(--_unit))
+            rgb(153 153 153 / 0.05),
+          calc(25 * var(--_unit)) calc(17 * var(--_unit)) calc(18 * var(--_unit))
+            rgb(153 153 153 / 0.05),
+          calc(45 * var(--_unit)) calc(30 * var(--_unit)) calc(22 * var(--_unit))
+            rgb(153 153 153 / 0.01);
+      }
+
+      .brand-feature-graphic_toolbar {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: calc(12 * var(--_unit));
+      }
+
+      .brand-feature-graphic_lights {
+        flex: none;
+        display: flex;
+        gap: calc(4 * var(--_unit));
+        padding-left: calc(2 * var(--_unit));
+
+        span {
+          width: calc(6 * var(--_unit));
+          height: calc(6 * var(--_unit));
+          border-radius: 50%;
+          background-color: var(--color-primary-5, #dfe6fd);
+        }
+      }
+
+      .brand-feature-graphic_address {
+        flex: 1 1 0;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: calc(6 * var(--_unit));
+        padding: calc(2 * var(--_unit)) calc(26 * var(--_unit))
+          calc(2 * var(--_unit)) calc(4 * var(--_unit));
+        border-radius: calc(4 * var(--_unit));
+        background-color: #f9f9f9;
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        letter-spacing: -0.005em;
+        color: var(--color-neutral-90);
+      }
+
+      .brand-feature-graphic_globe {
+        --_size: calc(14 * var(--_unit));
+        color: var(--color-neutral-40);
+      }
+
+      .brand-feature-graphic_featured {
+        width: 100%;
+        height: calc(49 * var(--_unit));
+        display: flex;
+        justify-content: center;
+      }
+
+      .brand-feature-graphic_block {
+        flex: 1 1 0;
+        height: 100%;
+        border-radius: calc(2 * var(--_unit));
+        background-image: linear-gradient(
+          172.7deg,
+          rgb(238 238 238) 28.8%,
+          rgb(249 249 249) 70.6%,
+          rgb(255 255 255) 95.5%
+        );
+        &.wide {
+          flex: none;
+          width: calc(257 * var(--_unit));
+        }
+      }
+
+      .brand-feature-graphic_text {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(4 * var(--_unit));
+      }
+
+      .brand-feature-graphic_lines {
+        width: calc(var(--_width) * var(--_unit));
+        display: flex;
+        gap: calc(4 * var(--_unit));
+      }
+
+      .brand-feature-graphic_line {
+        height: calc(4 * var(--_unit));
+        border-radius: calc(0.4 * var(--_unit));
+        background-color: var(--color-neutral-2);
+        box-shadow: 0 calc(0.3 * var(--_unit)) calc(1.2 * var(--_unit))
+          rgb(0 0 0 / 0.03);
+        &.n1 {
+          width: calc(106 * var(--_unit));
+        }
+        &.n2 {
+          flex: 1 1 0;
+        }
+        &.n3 {
+          width: calc(85 * var(--_unit));
+        }
+      }
+
+      .brand-feature-graphic_grid {
+        width: 100%;
+        height: calc(60 * var(--_unit));
+        flex: none;
+        display: flex;
+        gap: calc(8 * var(--_unit));
+      }
+    }
+  }
+</style>

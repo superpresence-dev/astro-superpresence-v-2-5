@@ -5,6 +5,7 @@ export const SERVICE_URL = "/service";
 const serviceSlugs: Record<string, string> = {
   "Website design": "website-design",
   "Migrate to Webflow": "migrate-to-webflow",
+  Branding: "branding",
 };
 
 /** URL of a service by its name, or `#` while its page is not built. */
