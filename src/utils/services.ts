@@ -3,6 +3,7 @@ export const SERVICE_URL = "/service";
 
 /** Service pages built so far, by the name the nav and footer show. */
 const serviceSlugs: Record<string, string> = {
+  "Website design": "website-design",
   "Migrate to Webflow": "migrate-to-webflow",
 };
 

@@ -1,0 +1,892 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Img from "@/components/media/Img.astro";
+import Icon from "@/components/media/Icon.astro";
+import globe from "@/assets/service/design/why/globe.png";
+import flagAu from "@/assets/service/design/why/flag-au.svg";
+import flagHk from "@/assets/service/design/why/flag-hk.svg";
+import flagSg from "@/assets/service/design/why/flag-sg.svg";
+import flagTh from "@/assets/service/design/why/flag-th.svg";
+import markerLine from "@/assets/service/design/why/marker-line.svg";
+import cursor from "@/assets/service/design/why/cursor.svg";
+import connector from "@/assets/service/design/why/connector.svg";
+import strategy from "@/assets/service/design/why/icon-strategy.svg";
+import design from "@/assets/service/design/why/icon-design.svg";
+import developer from "@/assets/service/design/why/icon-dev.svg";
+import qa from "@/assets/service/design/why/icon-qa.svg";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Which illustration: the globe of markets, the strategy questions, the written copy, the team, the conversion figures, or the depth chart. */
+  variant?: "asia" | "strategy" | "copy" | "team" | "convert" | "depth";
+}
+
+const {
+  render = true,
+  variant = "asia",
+  class: className,
+  ...rest
+} = Astro.props;
+
+const places = [
+  { name: "Hongkong", flag: flagHk, key: "hk" },
+  { name: "Thailand", flag: flagTh, key: "th" },
+  { name: "Singapore", flag: flagSg, key: "sg" },
+  { name: "Australia", flag: flagAu, key: "au" },
+];
+
+const questions = ["What you do?", "Who it is for?", "Why you?"];
+
+const roles = [
+  { name: "Strategy", icon: strategy },
+  { name: "Design", icon: design },
+  { name: "Copywriter", icon: design },
+  { name: "Developer", icon: developer },
+  { name: "Conversion & QA", icon: qa },
+];
+
+const bars = [
+  { label: "Sprint model", key: "sprint" },
+  { label: "Retainer hours", key: "retainer" },
+  { label: "Us", key: "us" },
+];
+---
+
+{
+  render && (
+    <div
+      class:list={["design-why-graphic_wrap", variant, className]}
+      aria-hidden="true"
+      {...rest}
+    >
+      {variant === "asia" && (
+        <>
+          <Img src={globe} class="design-why-graphic_globe" />
+          {places.map((place) => (
+            <div class:list={["design-why-graphic_place", place.key]}>
+              <span class="design-why-graphic_label">
+                <span class="design-why-graphic_flag">
+                  <Img src={place.flag} transparent />
+                </span>
+                {place.name}
+              </span>
+              <Icon
+                src={markerLine}
+                class="design-why-graphic_pin"
+              />
+              <span class="design-why-graphic_dot" />
+            </div>
+          ))}
+        </>
+      )}
+      {variant === "strategy" && (
+        <div class="design-why-graphic_steps">
+          <span class="design-why-graphic_track" />
+          {questions.map((question) => (
+            <div class="design-why-graphic_step">
+              <span class="design-why-graphic_marker" />
+              <div class="design-why-graphic_question">
+                <span class="design-why-graphic_fade">{question}</span>
+                <span class="design-why-graphic_input" />
+              </div>
+            </div>
+          ))}
+          <span class="design-why-graphic_badge strategy">
+            <Icon
+              src={cursor}
+              class="design-why-graphic_cursor"
+            />
+            Strategy lead
+          </span>
+        </div>
+      )}
+      {variant === "copy" && (
+        <>
+          <div class="design-why-graphic_copy">
+            <div class="design-why-graphic_draft">
+              <span>First draft, generated</span>
+              <span class="design-why-graphic_lines">
+                <span class="design-why-graphic_line one" />
+                <span class="design-why-graphic_line two" />
+                <span class="design-why-graphic_line three" />
+              </span>
+            </div>
+            <div class="design-why-graphic_message">
+              <span class="design-why-graphic_browser">
+                <span class="design-why-graphic_lights">
+                  <span />
+                  <span />
+                  <span />
+                </span>
+                <span class="design-why-graphic_address" />
+              </span>
+              <span class="design-why-graphic_message-text">
+                Leave your bags with us and go out. We will text you when the
+                room is ready.
+              </span>
+              <span class="design-why-graphic_action" />
+            </div>
+          </div>
+          <span class="design-why-graphic_badge copy">
+            <Icon
+              src={cursor}
+              class="design-why-graphic_cursor"
+            />
+            Senior copywriter
+          </span>
+        </>
+      )}
+      {variant === "team" && (
+        <div class="design-why-graphic_team">
+          <Icon
+            src={connector}
+            class="design-why-graphic_connector"
+          />
+          <ul class="design-why-graphic_roles" role="list">
+            {roles.map((role) => (
+              <li class="design-why-graphic_role">
+                <Icon
+                  src={role.icon}
+                  class="design-why-graphic_role-icon"
+                />
+                {role.name}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {variant === "convert" && (
+        <>
+          <div class="design-why-graphic_enquiries">
+            <span class="design-why-graphic_caption">
+              Enquiries from this page
+            </span>
+            <span class="design-why-graphic_metric">
+              <span class="design-why-graphic_figure">
+                <span class="design-why-graphic_value">4.8%</span>
+                <span class="design-why-graphic_change">up from 1.9%</span>
+              </span>
+              <span class="design-why-graphic_progress">
+                <span class="design-why-graphic_fill" />
+              </span>
+            </span>
+            <span class="design-why-graphic_note">Same traffic, same spend</span>
+          </div>
+          <dl class="design-why-graphic_summary">
+            <div class="design-why-graphic_row">
+              <dt>page speed</dt>
+              <dd>98/100</dd>
+            </div>
+            <div class="design-why-graphic_row">
+              <dt>Schema</dt>
+              <dd>Valid</dd>
+            </div>
+          </dl>
+        </>
+      )}
+      {variant === "depth" && (
+        <div class="design-why-graphic_chart">
+          <span class="design-why-graphic_chart-title">
+            Positioning the offer
+          </span>
+          <div class="design-why-graphic_bars">
+            {bars.map((bar) => (
+              <div class="design-why-graphic_column">
+                <span class:list={["design-why-graphic_bar", bar.key]} />
+                <span class="design-why-graphic_bar-label">{bar.label}</span>
+              </div>
+            ))}
+          </div>
+          <span class="design-why-graphic_tooltip">
+            <span>Buyers interviewed</span>
+            <strong>9</strong>
+          </span>
+        </div>
+      )}
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .design-why-graphic_wrap {
+      --_unit: calc(100cqw / 387);
+      --_badge: #3b63f3;
+      --_shadow-ui:
+        0 calc(1 * var(--_unit)) calc(3 * var(--_unit)) rgb(16 24 40 / 0.1),
+        0 calc(1 * var(--_unit)) calc(2 * var(--_unit)) rgb(16 24 40 / 0.06);
+      --_shadow-float:
+        calc(-23 * var(--_unit)) calc(48 * var(--_unit)) calc(16 * var(--_unit))
+          rgb(209 209 209 / 0.05),
+        calc(-10 * var(--_unit)) calc(21 * var(--_unit))
+          calc(12 * var(--_unit)) rgb(209 209 209 / 0.09),
+        calc(-3 * var(--_unit)) calc(5 * var(--_unit)) calc(6.5 * var(--_unit))
+          rgb(209 209 209 / 0.1);
+      container-type: inline-size;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 387 / 328;
+      overflow: hidden;
+      font-family: var(--primary-family);
+      line-height: 1.5;
+      letter-spacing: -0.005em;
+      color: var(--color-neutral-80);
+
+      /* The wrap's own cqw would read the page, so the base size starts on its children. */
+      > * {
+        font-size: calc(12 * var(--_unit));
+      }
+
+      :is(span, li, dt, dd, strong) {
+        display: block;
+      }
+
+      /* Asia: the globe with the four markets */
+
+      .design-why-graphic_globe {
+        position: absolute;
+        top: calc(11 * var(--_unit));
+        left: calc(38 * var(--_unit));
+        width: calc(314 * var(--_unit));
+        height: calc(314 * var(--_unit));
+        object-fit: cover;
+        opacity: 0.3;
+        mask-image: radial-gradient(
+          47.3% 46.7% at 49.8% 48.9%,
+          #000 96%,
+          transparent 103%
+        );
+      }
+
+      .design-why-graphic_place {
+        --_x: 0;
+        --_y: 0;
+        position: absolute;
+        top: calc(var(--_y) * var(--_unit));
+        left: calc(var(--_x) * var(--_unit));
+
+        &.hk {
+          --_x: 165;
+          --_y: 69;
+        }
+        &.sg {
+          --_x: 147;
+          --_y: 152;
+        }
+        &.au {
+          --_x: 225;
+          --_y: 224;
+        }
+        &.th {
+          --_x: 52;
+          --_y: 115;
+        }
+      }
+
+      .design-why-graphic_label {
+        position: absolute;
+        top: 0;
+        left: calc(23.33 * var(--_unit));
+        display: flex;
+        align-items: center;
+        gap: calc(4 * var(--_unit));
+        padding: calc(1 * var(--_unit)) calc(6 * var(--_unit))
+          calc(1 * var(--_unit)) calc(3 * var(--_unit));
+        white-space: nowrap;
+        color: var(--color-neutral-0);
+        background-color: var(--color-primary-95);
+        border: var(--border-width) solid var(--color-primary-95);
+        border-radius: calc(2 * var(--_unit));
+        filter: drop-shadow(
+            calc(1 * var(--_unit)) calc(1 * var(--_unit))
+              calc(1.5 * var(--_unit)) rgb(4 53 198 / 0.1)
+          )
+          drop-shadow(
+            calc(3 * var(--_unit)) calc(4 * var(--_unit))
+              calc(2.5 * var(--_unit)) rgb(4 53 198 / 0.09)
+          );
+      }
+
+      .th .design-why-graphic_label {
+        left: 0;
+      }
+
+      .design-why-graphic_flag {
+        position: relative;
+        width: calc(14 * var(--_unit));
+        height: calc(10.5 * var(--_unit));
+        overflow: hidden;
+        border: calc(0.4 * var(--_unit)) solid var(--color-neutral-0);
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+
+      .th .design-why-graphic_flag {
+        width: calc(16 * var(--_unit));
+        height: calc(12 * var(--_unit));
+      }
+
+      .au .design-why-graphic_flag {
+        width: calc(13 * var(--_unit));
+        height: calc(9.75 * var(--_unit));
+      }
+
+      .design-why-graphic_pin {
+        position: absolute;
+        top: calc(19 * var(--_unit));
+        left: calc(12 * var(--_unit));
+        width: calc(12.5 * var(--_unit));
+        height: calc(13.5 * var(--_unit));
+        aspect-ratio: auto;
+        max-width: none;
+        overflow: visible;
+        color: var(--color-primary-95);
+      }
+
+      .th .design-why-graphic_pin {
+        left: calc(71 * var(--_unit));
+        scale: -1 1;
+      }
+
+      .design-why-graphic_dot {
+        position: absolute;
+        top: calc(29 * var(--_unit));
+        left: 0;
+        width: calc(16 * var(--_unit));
+        height: calc(16 * var(--_unit));
+        background: radial-gradient(
+          circle,
+          var(--color-primary-95) 0 calc(3 * var(--_unit)),
+          var(--color-neutral-0) calc(3.4 * var(--_unit))
+        );
+        border-radius: 50%;
+        box-shadow:
+          0 calc(2 * var(--_unit)) calc(4 * var(--_unit)) rgb(4 53 198 / 0.1),
+          0 calc(8 * var(--_unit)) calc(8 * var(--_unit)) rgb(4 53 198 / 0.09);
+      }
+
+      .th .design-why-graphic_dot {
+        left: calc(80 * var(--_unit));
+      }
+
+      /* Strategy: three questions on a track */
+
+      .design-why-graphic_steps {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: calc(319.355 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(14.516 * var(--_unit));
+        translate: -50% -50%;
+      }
+
+      .design-why-graphic_track {
+        position: absolute;
+        top: calc(39.92 * var(--_unit));
+        left: calc(26.77 * var(--_unit));
+        width: calc(0.907 * var(--_unit));
+        height: calc(145.161 * var(--_unit));
+        background-color: var(--color-primary-60);
+      }
+
+      .design-why-graphic_step {
+        display: flex;
+        align-items: flex-start;
+        gap: calc(3.629 * var(--_unit));
+      }
+
+      .design-why-graphic_marker {
+        position: relative;
+        flex: none;
+        width: calc(25.403 * var(--_unit));
+        height: calc(25.403 * var(--_unit));
+        margin: calc(14.516 * var(--_unit));
+        background: radial-gradient(
+          circle,
+          var(--color-primary-60) 0 calc(5.44 * var(--_unit)),
+          var(--color-neutral-0) calc(5.84 * var(--_unit))
+        );
+        border-radius: 50%;
+        box-shadow: var(--_shadow-ui);
+      }
+
+      .design-why-graphic_question {
+        min-width: 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: calc(7.258 * var(--_unit));
+        padding: calc(14.516 * var(--_unit)) calc(10.887 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        border-radius: calc(3.629 * var(--_unit));
+        filter: drop-shadow(
+            0 calc(0.907 * var(--_unit)) calc(1.361 * var(--_unit))
+              rgb(16 24 40 / 0.1)
+          )
+          drop-shadow(
+            0 calc(0.907 * var(--_unit)) calc(0.907 * var(--_unit))
+              rgb(16 24 40 / 0.06)
+          );
+      }
+
+      .design-why-graphic_fade {
+        font-size: calc(16.331 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(21.774 * var(--_unit));
+        letter-spacing: -0.007em;
+        color: transparent;
+        background-image: linear-gradient(
+          to right,
+          var(--color-neutral-80) 9.949%,
+          rgb(43 43 43 / 0.3) 23.878%
+        );
+        background-clip: text;
+      }
+
+      .design-why-graphic_input {
+        height: calc(7.258 * var(--_unit));
+        background-color: var(--color-neutral-2);
+        border-radius: calc(0.363 * var(--_unit));
+        box-shadow: 0 calc(0.272 * var(--_unit)) calc(1.089 * var(--_unit))
+          rgb(0 0 0 / 0.03);
+      }
+
+      .design-why-graphic_badge {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        font-weight: var(--primary-medium);
+        color: var(--color-neutral-0);
+        background-color: var(--_badge);
+
+        &.strategy {
+          top: calc(54.4 * var(--_unit));
+          right: calc(11.43 * var(--_unit));
+          padding: calc(3.266 * var(--_unit)) calc(6.532 * var(--_unit));
+          font-size: calc(10.887 * var(--_unit));
+          line-height: calc(16.331 * var(--_unit));
+          border-radius: calc(1.567 * var(--_unit));
+
+          .design-why-graphic_cursor {
+            top: calc(-14.15 * var(--_unit));
+            left: calc(-13.82 * var(--_unit));
+            width: calc(21.116 * var(--_unit));
+          }
+        }
+
+        &.copy {
+          right: calc(19.6 * var(--_unit));
+          bottom: calc(80.8 * var(--_unit));
+          padding: calc(3.6 * var(--_unit)) calc(7.2 * var(--_unit));
+          line-height: calc(18 * var(--_unit));
+          border-radius: calc(1.727 * var(--_unit));
+
+          .design-why-graphic_cursor {
+            top: calc(-15.6 * var(--_unit));
+            left: calc(-15.23 * var(--_unit));
+            width: calc(23.275 * var(--_unit));
+          }
+        }
+      }
+
+      .design-why-graphic_cursor {
+        position: absolute;
+        height: auto;
+        aspect-ratio: 21.116 / 21.667;
+        max-width: none;
+        color: var(--_badge);
+      }
+
+      /* Copy: a generated draft behind the written page */
+
+      .design-why-graphic_copy {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: calc(320 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(12 * var(--_unit));
+        translate: -50% -50%;
+      }
+
+      .design-why-graphic_draft {
+        width: calc(234 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(12 * var(--_unit));
+        padding: calc(12 * var(--_unit)) calc(8 * var(--_unit));
+        text-align: center;
+        color: var(--color-neutral-50);
+        background-color: var(--color-neutral-0);
+        border-radius: calc(8 * var(--_unit));
+        box-shadow: var(--_shadow-ui);
+      }
+
+      .design-why-graphic_lines {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(4 * var(--_unit));
+      }
+
+      .design-why-graphic_line {
+        height: calc(4 * var(--_unit));
+        background-color: var(--color-neutral-2);
+        border-radius: calc(0.4 * var(--_unit));
+        box-shadow: 0 calc(0.3 * var(--_unit)) calc(1.2 * var(--_unit))
+          rgb(0 0 0 / 0.03);
+
+        &.one {
+          width: calc(118 * var(--_unit));
+        }
+        &.two {
+          width: calc(166 * var(--_unit));
+        }
+        &.three {
+          width: calc(85 * var(--_unit));
+        }
+      }
+
+      .design-why-graphic_message {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(20 * var(--_unit));
+        padding: calc(12 * var(--_unit)) calc(8 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        border: var(--border-width) solid var(--color-neutral-2);
+        border-radius: calc(8 * var(--_unit));
+        box-shadow:
+          calc(-19 * var(--_unit)) calc(15 * var(--_unit))
+            calc(15 * var(--_unit)) rgb(201 201 201 / 0.05),
+          calc(-8 * var(--_unit)) calc(7 * var(--_unit)) calc(11 * var(--_unit))
+            rgb(201 201 201 / 0.09),
+          calc(-2 * var(--_unit)) calc(2 * var(--_unit)) calc(6 * var(--_unit))
+            rgb(201 201 201 / 0.1);
+      }
+
+      .design-why-graphic_browser {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: calc(12 * var(--_unit));
+      }
+
+      .design-why-graphic_lights {
+        display: flex;
+        gap: calc(4 * var(--_unit));
+
+        span {
+          width: calc(6 * var(--_unit));
+          height: calc(6 * var(--_unit));
+          background-color: color-mix(
+            in lab,
+            var(--color-primary-60) 12.2%,
+            transparent
+          );
+          border-radius: 50%;
+        }
+      }
+
+      .design-why-graphic_address {
+        flex: 1;
+        height: calc(4 * var(--_unit));
+        opacity: 0.08;
+        background-image: linear-gradient(
+          to right,
+          var(--color-primary-60),
+          rgb(3 38 136 / 0) 110.89%
+        );
+        border-radius: calc(0.4 * var(--_unit));
+      }
+
+      .design-why-graphic_message-text {
+        width: 100%;
+        font-size: calc(14 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(20 * var(--_unit));
+        color: #000;
+      }
+
+      .design-why-graphic_action {
+        width: calc(52 * var(--_unit));
+        height: calc(16 * var(--_unit));
+        background-color: var(--color-primary-60);
+        border-radius: calc(1 * var(--_unit));
+      }
+
+      /* Team: one connector to every role */
+
+      .design-why-graphic_team {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        display: flex;
+        align-items: center;
+        gap: calc(4 * var(--_unit));
+        translate: -50% -50%;
+      }
+
+      .design-why-graphic_connector {
+        flex: none;
+        width: calc(19.387 * var(--_unit));
+        height: calc(248 * var(--_unit));
+        margin: 0 calc(-2.887 * var(--_unit)) 0 calc(-0.5 * var(--_unit));
+        aspect-ratio: auto;
+        overflow: visible;
+        color: var(--color-primary-60);
+      }
+
+      .design-why-graphic_roles {
+        width: calc(273 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(8 * var(--_unit));
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .design-why-graphic_role {
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+        margin: 0;
+        padding: calc(12 * var(--_unit));
+        font-size: calc(16 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(22 * var(--_unit));
+        white-space: nowrap;
+        background-color: var(--color-neutral-2);
+        border-radius: calc(4 * var(--_unit));
+        filter: drop-shadow(
+            0 calc(1.2 * var(--_unit)) calc(1.1 * var(--_unit))
+              rgb(0 0 0 / 0.02)
+          )
+          drop-shadow(
+            calc(0.6 * var(--_unit)) calc(0.8 * var(--_unit))
+              calc(0.6 * var(--_unit)) rgb(0 0 0 / 0.1)
+          );
+      }
+
+      .design-why-graphic_role-icon {
+        flex: none;
+        width: calc(24 * var(--_unit));
+        height: calc(24 * var(--_unit));
+        color: var(--color-primary-60);
+      }
+
+      /* Convert: the enquiry rate over the technical checks */
+
+      .design-why-graphic_enquiries,
+      .design-why-graphic_summary {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        padding: calc(12 * var(--_unit)) calc(16 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        border-radius: calc(8 * var(--_unit));
+        box-shadow: var(--_shadow-float);
+      }
+
+      .design-why-graphic_enquiries {
+        top: calc(51 * var(--_unit));
+        left: calc(51.7 * var(--_unit));
+        width: calc(283 * var(--_unit));
+        gap: calc(16 * var(--_unit));
+      }
+
+      .design-why-graphic_caption {
+        font-weight: var(--primary-medium);
+      }
+
+      .design-why-graphic_metric {
+        display: flex;
+        flex-direction: column;
+        gap: calc(4 * var(--_unit));
+      }
+
+      .design-why-graphic_figure {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .design-why-graphic_value {
+        font-family: var(--secondary-family);
+        font-size: calc(26 * var(--_unit));
+        line-height: calc(34 * var(--_unit));
+        letter-spacing: -0.01em;
+      }
+
+      .design-why-graphic_change {
+        padding: calc(2 * var(--_unit)) calc(4 * var(--_unit));
+        color: var(--color-accent-success-80);
+        background-color: var(--color-accent-success-5);
+        border-radius: calc(2 * var(--_unit));
+        box-shadow: 0 calc(0.5 * var(--_unit)) calc(1.2 * var(--_unit))
+          rgb(0 0 0 / 0.12);
+      }
+
+      .design-why-graphic_progress {
+        height: calc(4 * var(--_unit));
+        background-color: var(--color-neutral-2);
+        border-radius: calc(2 * var(--_unit));
+      }
+
+      .design-why-graphic_fill {
+        width: calc(154 * var(--_unit));
+        height: 100%;
+        background-color: var(--color-primary-60);
+        border-radius: inherit;
+      }
+
+      .design-why-graphic_note {
+        line-height: 1.35;
+        letter-spacing: 0;
+        color: var(--color-neutral-30);
+      }
+
+      .design-why-graphic_summary {
+        top: calc(204 * var(--_unit));
+        left: calc(84.67 * var(--_unit));
+        width: calc(218 * var(--_unit));
+        gap: calc(12 * var(--_unit));
+        line-height: 1.35;
+        letter-spacing: 0;
+      }
+
+      .design-why-graphic_row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        &:first-child {
+          padding-bottom: calc(8 * var(--_unit));
+          border-bottom: var(--border-width) solid var(--color-neutral-2);
+        }
+
+        dt {
+          color: var(--color-neutral-30);
+        }
+
+        dd {
+          margin: 0;
+          font-weight: var(--primary-medium);
+          color: var(--color-neutral-95);
+        }
+      }
+
+      /* Depth: time spent on positioning */
+
+      .design-why-graphic_chart {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: calc(360 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(12 * var(--_unit));
+        padding: calc(12 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        border-radius: calc(7.66 * var(--_unit));
+        box-shadow: var(--_shadow-float);
+        translate: -50% -50%;
+      }
+
+      .design-why-graphic_chart-title {
+        font-size: calc(15.319 * var(--_unit));
+        line-height: calc(21.064 * var(--_unit));
+        color: var(--color-neutral-60);
+      }
+
+      .design-why-graphic_bars {
+        display: flex;
+        align-items: flex-end;
+        gap: calc(7.66 * var(--_unit));
+      }
+
+      .design-why-graphic_column {
+        min-width: 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: calc(7.66 * var(--_unit));
+      }
+
+      .design-why-graphic_bar {
+        width: 100%;
+        background-color: var(--color-neutral-2);
+        border: calc(0.957 * var(--_unit)) solid var(--color-neutral-5);
+        border-radius: calc(7.66 * var(--_unit)) calc(7.66 * var(--_unit)) 0 0;
+        box-shadow: inset 0 0 calc(1.149 * var(--_unit)) rgb(0 0 0 / 0.12);
+
+        &.sprint {
+          height: calc(38.298 * var(--_unit));
+        }
+        &.retainer {
+          height: calc(80.426 * var(--_unit));
+        }
+        &.us {
+          height: calc(161.809 * var(--_unit));
+          background-color: var(--color-primary-60);
+          background-image: repeating-linear-gradient(
+            -45deg,
+            rgb(239 240 255 / 0.12) 0 calc(1.915 * var(--_unit)),
+            transparent calc(1.915 * var(--_unit)) calc(3.83 * var(--_unit))
+          );
+          border: none;
+          box-shadow: none;
+        }
+      }
+
+      .design-why-graphic_bar-label {
+        font-size: calc(13.404 * var(--_unit));
+        line-height: calc(19.149 * var(--_unit));
+        text-align: center;
+        color: var(--color-neutral-40);
+      }
+
+      .design-why-graphic_tooltip {
+        position: absolute;
+        top: calc(78.79 * var(--_unit));
+        left: calc(138.83 * var(--_unit));
+        width: calc(172.34 * var(--_unit));
+        display: flex;
+        justify-content: space-between;
+        padding: calc(10 * var(--_unit)) calc(13 * var(--_unit));
+        font-size: calc(11.489 * var(--_unit));
+        line-height: 1.35;
+        letter-spacing: 0;
+        white-space: nowrap;
+        color: var(--color-neutral-30);
+        background-color: var(--color-neutral-0);
+        border-radius: calc(4 * var(--_unit));
+        box-shadow:
+          0 calc(0.957 * var(--_unit)) calc(0.957 * var(--_unit))
+            rgb(166 166 166 / 0.1),
+          calc(-1.915 * var(--_unit)) calc(3.83 * var(--_unit))
+            calc(2.394 * var(--_unit)) rgb(166 166 166 / 0.09),
+          calc(-3.83 * var(--_unit)) calc(8.617 * var(--_unit))
+            calc(2.872 * var(--_unit)) rgb(166 166 166 / 0.05);
+
+        strong {
+          font-weight: var(--primary-medium);
+          color: var(--color-neutral-95);
+        }
+      }
+    }
+  }
+</style>

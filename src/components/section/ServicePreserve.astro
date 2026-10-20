@@ -8,9 +8,10 @@ import Icon from "@/components/media/Icon.astro";
 import check from "@/assets/icons/check-small.svg";
 import defaultBackground from "@/assets/service/migrate/preserve-background.jpg";
 
-type Group = { title: string; items: string[] };
+type Point = { title: string; text: string };
+type Group<Item> = { title: string; items: Item[] };
 
-type Props = HTMLAttributes<"section"> &
+type BaseProps = HTMLAttributes<"section"> &
   Pick<ComponentProps<typeof Section>, "render"> & {
     /** Small label above the heading. */
     eyebrow?: string;
@@ -18,11 +19,27 @@ type Props = HTMLAttributes<"section"> &
     heading: string;
     /** Text under the heading. Omit to leave it out. */
     lead?: string;
-    /** Lists in order, each under its own title. */
-    groups: Group[];
     /** Background image. */
     image?: ImageMetadata;
   };
+
+type ChecksProps = BaseProps & {
+  /** `checks` sets four lists of ticked lines; `split` sets two columns of titled points under a label. */
+  variant?: "checks";
+  /** Lists in order, each under its own title. */
+  groups: Group<string>[];
+};
+
+type SplitProps = BaseProps & {
+  variant: "split";
+  groups: Group<Point>[];
+};
+
+type Props = ChecksProps | SplitProps;
+type AllProps = BaseProps & {
+  variant?: "checks" | "split";
+  groups: Group<string | Point>[];
+};
 
 const {
   render = true,
@@ -31,9 +48,10 @@ const {
   lead,
   groups,
   image = defaultBackground,
+  variant = "checks",
   class: className,
   ...rest
-} = Astro.props;
+} = Astro.props as AllProps;
 ---
 
 <Section
@@ -42,7 +60,7 @@ const {
   paddingTop="none"
   paddingBottom="none"
   containerClass="service-preserve_layout"
-  class:list={["service-preserve_wrap", className]}
+  class:list={["service-preserve_wrap", variant, className]}
   {...rest}
 >
   <Img src={image} slot="background" class="service-preserve_background" />
@@ -66,22 +84,43 @@ const {
     {
       groups.map((group) => (
         <li class="service-preserve_group">
-          <Heading tag="h3" variant="h5" class="service-preserve_title">
-            {group.title}
-          </Heading>
+          {variant === "split" ? (
+            <Heading
+              tag="h3"
+              variant="overline-main"
+              class="service-preserve_label"
+            >
+              {group.title}
+            </Heading>
+          ) : (
+            <Heading tag="h3" variant="h5" class="service-preserve_title">
+              {group.title}
+            </Heading>
+          )}
           <ul class="service-preserve_items" role="list">
-            {group.items.map((item) => (
-              <li class="service-preserve_item">
-                <Icon src={check} class="service-preserve_check" />
-                <Paragraph
-                  tag="span"
-                  variant="main"
-                  class="service-preserve_text"
-                >
-                  {item}
-                </Paragraph>
-              </li>
-            ))}
+            {group.items.map((item) =>
+              typeof item === "string" ? (
+                <li class="service-preserve_item">
+                  <Icon src={check} class="service-preserve_check" />
+                  <Paragraph
+                    tag="span"
+                    variant="main"
+                    class="service-preserve_text"
+                  >
+                    {item}
+                  </Paragraph>
+                </li>
+              ) : (
+                <li class="service-preserve_point">
+                  <Heading tag="h4" variant="h6">
+                    {item.title}
+                  </Heading>
+                  <Paragraph variant="main" class="service-preserve_detail">
+                    {item.text}
+                  </Paragraph>
+                </li>
+              ),
+            )}
           </ul>
         </li>
       ))
@@ -139,7 +178,10 @@ const {
         color: var(--color-neutral-10);
       }
 
+      /* The container aligns its children to the start, so the grid would
+         shrink to its content; it spans the full width instead. */
       .service-preserve_list {
+        width: 100%;
         display: grid;
         grid-template-columns: minmax(0, 1fr);
         gap: var(--space-1-5rem);
@@ -191,6 +233,68 @@ const {
         flex: 1 1 0;
         min-width: 0;
         color: var(--color-neutral-5);
+      }
+
+      /* Split: two columns of titled points, each under a ruled label. */
+      &.split {
+        .service-preserve_fade {
+          background-image:
+            linear-gradient(
+              -29.78deg,
+              rgb(20 24 28 / 0.9) 29.58%,
+              rgb(20 23 27 / 0.72) 41.89%,
+              rgb(20 23 27 / 0) 59.33%
+            ),
+            linear-gradient(rgb(0 0 0 / 0.24), rgb(0 0 0 / 0.24));
+        }
+
+        .service-preserve_layout {
+          --_height: 76.5rem;
+          @media (width >= 48rem) {
+            --_height: 55rem;
+          }
+          @media (width >= 62rem) {
+            --_height: 55rem;
+          }
+        }
+
+        .service-preserve_list {
+          gap: var(--space-2rem);
+          @media (width >= 62rem) {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+        }
+
+        .service-preserve_group {
+          max-width: none;
+          gap: var(--space-1-5rem);
+          padding: 0;
+        }
+
+        .service-preserve_label {
+          padding-bottom: calc(var(--space-0-75rem) - var(--border-width));
+          border-bottom: var(--border-width) solid var(--color-neutral-50);
+          color: var(--color-neutral-0);
+        }
+
+        .service-preserve_items {
+          gap: var(--space-1rem);
+        }
+
+        .service-preserve_point {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-0-25rem);
+          margin: 0;
+          padding: 0 var(--space-1-5rem)
+            calc(var(--space-1rem) - var(--border-width)) 0;
+          border-bottom: var(--border-width) solid
+            color-mix(in lab, var(--color-neutral-60) 50%, transparent);
+        }
+
+        .service-preserve_detail {
+          color: var(--color-neutral-20);
+        }
       }
     }
   }

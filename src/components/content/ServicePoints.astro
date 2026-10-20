@@ -20,6 +20,7 @@ const icons: Record<string, SvgComponent> = Object.fromEntries(
 );
 
 type Item = { icon: string; title: string; text: string };
+type VisualItem = { icon?: never; title: string; text: string };
 
 type Aside = {
   title: string;
@@ -31,14 +32,23 @@ type Aside = {
 
 type Variant =
   | {
-      /** `feature` shows each icon bare; `platform` sets it in a tile and adds a closing card. */
+      /** `feature` shows each icon bare; `platform` sets it in a tile and adds a closing card; `visual` centres the heading and puts an illustration from the `visual-1`, `visual-2`… slot above each point. */
       variant?: "feature";
       aside?: never;
+      /** Points in order. `icon` is a file name in `src/assets/service/icons`. */
+      items: Item[];
     }
   | {
       variant: "platform";
       /** Dark card after the points. Omit to leave it out. */
       aside?: Aside;
+      items: Item[];
+    }
+  | {
+      variant: "visual";
+      aside?: never;
+      /** Points in order; each one's illustration comes from its `visual-N` slot. */
+      items: VisualItem[];
     };
 
 type Props = HTMLAttributes<"div"> &
@@ -49,16 +59,14 @@ type Props = HTMLAttributes<"div"> &
     eyebrow?: string;
     /** Section heading. Accepts `<br>` for a forced line break. */
     heading: string;
-    /** Points in order. `icon` is a file name in `src/assets/service/icons`. */
-    items: Item[];
   };
 
 type AllProps = HTMLAttributes<"div"> & {
   render?: boolean;
   eyebrow?: string;
   heading: string;
-  items: Item[];
-  variant?: "feature" | "platform";
+  items: (Item | VisualItem)[];
+  variant?: "feature" | "platform" | "visual";
   aside?: Aside;
 };
 
@@ -89,14 +97,20 @@ const {
       </div>
       <div class="service-points_layout">
         <ul class="service-points_list" role="list">
-          {items.map((item) => (
+          {items.map((item, index) => (
             <li class="service-points_card">
-              <span class="service-points_icon" aria-hidden="true">
-                <Icon
-                  src={icons[item.icon]}
-                  variant={variant === "platform" ? "m" : "2xl"}
-                />
-              </span>
+              {variant === "visual" ? (
+                <div class="service-points_visual">
+                  <slot name={`visual-${index + 1}`} />
+                </div>
+              ) : (
+                <span class="service-points_icon" aria-hidden="true">
+                  <Icon
+                    src={item.icon ? icons[item.icon] : undefined}
+                    variant={variant === "platform" ? "m" : "2xl"}
+                  />
+                </span>
+              )}
               <div class="service-points_content">
                 <Heading tag="h3" variant="h6">
                   {item.title}
@@ -167,6 +181,13 @@ const {
         }
       }
 
+      &.visual {
+        --_card-height: 27.5rem;
+        @media (width >= 62rem) {
+          --_card-height: 31.25rem;
+        }
+      }
+
       .service-points_intro {
         width: 100%;
         max-width: 33.75rem;
@@ -176,6 +197,12 @@ const {
         @media (width >= 62rem) {
           max-width: 55rem;
         }
+      }
+
+      &.visual .service-points_intro {
+        align-items: center;
+        align-self: center;
+        text-align: center;
       }
 
       .service-points_eyebrow {
@@ -242,6 +269,14 @@ const {
         background-color: var(--color-neutral-2);
         border: var(--border-width) solid var(--color-neutral-5);
         border-radius: var(--radius-0-125rem);
+      }
+
+      .service-points_visual {
+        width: 100%;
+        min-height: 0;
+        flex: 1;
+        display: flex;
+        align-items: center;
       }
 
       .service-points_content {

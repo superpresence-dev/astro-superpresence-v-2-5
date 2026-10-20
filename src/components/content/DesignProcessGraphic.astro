@@ -1,0 +1,1192 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Icon from "@/components/media/Icon.astro";
+import dots from "@/assets/service/migrate/process-dots.svg";
+import cursor from "@/assets/service/design/process/cursor.svg";
+import search from "@/assets/service/design/process/search.svg";
+import goals from "@/assets/service/design/process/goals.svg";
+import person from "@/assets/service/design/process/person.svg";
+import stand from "@/assets/service/design/process/stand.svg";
+import build from "@/assets/service/design/process/build.svg";
+import fast from "@/assets/service/design/process/fast.svg";
+import seo from "@/assets/service/design/process/seo.svg";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Which phase of a website design project the picture shows. */
+  variant: "strategy" | "copy" | "wireframe" | "visual" | "handoff";
+}
+
+const { render = true, variant, class: className, ...rest } = Astro.props;
+
+const brief = [
+  { icon: search, label: "Market Research", active: true },
+  { icon: goals, label: "Business Goals", small: true },
+  { icon: person, label: "Audience Insights" },
+  { icon: person, label: "Sitemap Plan" },
+];
+const swatches = [
+  "var(--color-primary-60)",
+  "var(--color-neutral-80)",
+  "var(--color-neutral-10)",
+  "var(--color-accent-warning-40)",
+  "var(--color-accent-success-50)",
+];
+const tools = [
+  { icon: build, label: "Clean build" },
+  { icon: fast, label: "Fast load", featured: true },
+  { icon: seo, label: "SEO - Ready", small: true },
+];
+---
+
+{
+  render && variant && (
+    <div
+      class:list={["design-process_wrap", variant, className]}
+      aria-hidden="true"
+      {...rest}
+    >
+      {variant === "strategy" && (
+        <div class="design-process_stage">
+          <span class="design-process_glow" />
+          <div class="design-process_glass">
+            <div class="design-process_brief">
+              <span class="design-process_notch" />
+              <span class="design-process_caption">Strategy brief</span>
+              <ul class="design-process_topics">
+                {brief.map((topic) => (
+                  <li
+                    class:list={[
+                      "design-process_topic",
+                      topic.active && "active",
+                    ]}
+                  >
+                    <Icon
+                      src={topic.icon}
+                      class:list={[
+                        "design-process_topic-icon",
+                        topic.small && "small",
+                      ]}
+                    />
+                    {topic.label}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <div class="design-process_focus">
+            <Icon src={search} class="design-process_focus-icon" />
+            Market Research
+          </div>
+          <span class="design-process_tag lead">
+            <Icon src={cursor} class="design-process_cursor" />
+            Strategy lead
+          </span>
+          <span class="design-process_tag designer">
+            <Icon src={cursor} class="design-process_cursor" />
+            UI Designer
+          </span>
+        </div>
+      )}
+      {variant === "copy" && (
+        <div class="design-process_stage">
+          <div class="design-process_browser">
+            <div class="design-process_bar">
+              <Icon src={dots} class="design-process_dots" />
+              <span class="design-process_address" />
+            </div>
+            <div class="design-process_hero">
+              <div class="design-process_headline">
+                <span class="design-process_highlight" />
+                <span class="design-process_title">
+                  Clear advice for the decisions{" "}
+                  <span class="design-process_accent">
+                    that shape your business
+                  </span>
+                </span>
+                <span class="design-process_edit">Edit now</span>
+              </div>
+              <span class="design-process_lines">
+                <span />
+                <span />
+                <span />
+              </span>
+              <span class="design-process_cta" />
+            </div>
+            <div class="design-process_tiles">
+              <span />
+              <span />
+            </div>
+          </div>
+          <span class="design-process_tag writer">
+            <Icon src={cursor} class="design-process_cursor" />
+            Senior writer
+          </span>
+        </div>
+      )}
+      {variant === "wireframe" && (
+        <div class="design-process_stage">
+          <span class="design-process_blob first" />
+          <span class="design-process_blob second" />
+          <Icon src={stand} class="design-process_stand" />
+          <div class="design-process_monitor">
+            <div class="design-process_screen">
+              <div class="design-process_bar">
+                <Icon src={dots} class="design-process_dots" />
+                <span class="design-process_address" />
+              </div>
+              <span class="design-process_media" />
+              <span class="design-process_info">
+                <span class="design-process_lines">
+                  <span />
+                  <span />
+                  <span />
+                </span>
+                <span class="design-process_cta" />
+              </span>
+              <span class="design-process_cards">
+                <span />
+                <span />
+                <span />
+                <span />
+              </span>
+              <span class="design-process_rows">
+                <span />
+                <span />
+              </span>
+            </div>
+          </div>
+          <div class="design-process_phone">
+            <span class="design-process_speaker" />
+            <span class="design-process_media" />
+            <span class="design-process_lines">
+              <span />
+              <span />
+              <span />
+            </span>
+            <span class="design-process_cta" />
+            <span class="design-process_cards">
+              <span />
+              <span />
+            </span>
+            <span class="design-process_cards tall">
+              <span />
+              <span />
+            </span>
+            <span class="design-process_home" />
+          </div>
+        </div>
+      )}
+      {variant === "visual" && (
+        <div class="design-process_stack">
+          <div class="design-process_panel">
+            <span class="design-process_label">Colour Styles</span>
+            <div class="design-process_sheet">
+              <ul class="design-process_swatches">
+                {swatches.map((color) => (
+                  <li
+                    class="design-process_swatch"
+                    style={`--_fill: ${color};`}
+                  />
+                ))}
+              </ul>
+            </div>
+          </div>
+          <div class="design-process_token">
+            <span class="design-process_swatch" />
+            Blue - 600
+          </div>
+          <div class="design-process_panel">
+            <span class="design-process_label">Text Styles</span>
+            <div class="design-process_sheet">
+              <span class="design-process_type">Aa</span>
+            </div>
+          </div>
+        </div>
+      )}
+      {variant === "handoff" && (
+        <div class="design-process_stack">
+          <div class="design-process_code">
+            <div class="design-process_bar">
+              <Icon src={dots} class="design-process_dots" />
+              <span class="design-process_address" />
+            </div>
+            <div class="design-process_source">
+              <span class="design-process_line">
+                <span class="tag">&lt;section</span>{" "}
+                <span class="attr">class</span>
+                <span class="value">="hero"</span>&gt;
+              </span>
+              <span class="design-process_line indent">
+                <span class="tag">&lt;h1&gt;</span>Commercial advice&lt;/h1&gt;
+              </span>
+              <span class="design-process_line indent">
+                <span class="tag">&lt;a </span>
+                <span class="attr">href</span>=
+                <span class="value">"/contact"</span>
+                <span class="tag">&gt;</span>Get in touch
+                <span class="tag">&lt;/a&gt;</span>
+              </span>
+              <span class="design-process_line tag">&lt;/section&gt;</span>
+              <span class="design-process_line script">
+                <span class="tag">&lt;script</span>{" "}
+                <span class="attr">type</span>
+                ="
+                <span class="value">application/ld+json</span>"&gt;
+              </span>
+            </div>
+          </div>
+          <ul class="design-process_tools">
+            {tools.map((tool) => (
+              <li class="design-process_tool">
+                <span
+                  class:list={[
+                    "design-process_tile",
+                    tool.featured && "featured",
+                  ]}
+                >
+                  <span class="design-process_tile-inner">
+                    <Icon
+                      src={tool.icon}
+                      class:list={[
+                        "design-process_tool-icon",
+                        tool.small && "small",
+                      ]}
+                    />
+                  </span>
+                </span>
+                {tool.label}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    /* An artboard 517 units square that scales as one piece. The colours
+       repeat the migration process pictures, so both pages read as a set. */
+    .design-process_wrap {
+      --_unit: calc(100cqw / 517);
+      --_base: #d4f4f7;
+      --_tint: rgb(213 226 245 / 0.32);
+      --_deep: rgb(5 103 244 / 0.32);
+      --_skeleton: linear-gradient(
+        175deg,
+        #eee 28.8%,
+        #f9f9f9 70.6%,
+        #fff 95.5%
+      );
+      container-type: inline-size;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: clip;
+      color: var(--color-neutral-90);
+      font-family: var(--primary-family);
+      background:
+        linear-gradient(to bottom, var(--_tint) 55.368%, var(--_deep) 96.905%),
+        var(--_base);
+
+      &.copy {
+        --_base: #eceff5;
+        --_tint: rgb(174 224 246 / 0.32);
+      }
+
+      &:is(.wireframe, .visual) {
+        --_base: #ccdcff;
+        --_tint: rgb(128 195 254 / 0.32);
+        --_deep: rgb(6 66 238 / 0.32);
+      }
+
+      &:is(.copy, .wireframe, .visual)::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.4 -0.45'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        opacity: 0.35;
+      }
+
+      &.handoff {
+        --_base: #ebfff6;
+      }
+
+      .icon {
+        --_size: calc(24 * var(--_unit));
+      }
+
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      li {
+        margin: 0;
+      }
+
+      /* =====================
+         Shared pieces
+         ===================== */
+
+      .design-process_stage {
+        position: absolute;
+        top: calc(58.5 * var(--_unit));
+        left: calc(58.5 * var(--_unit));
+        width: calc(400 * var(--_unit));
+        aspect-ratio: 1 / 1;
+      }
+
+      .design-process_stack {
+        position: absolute;
+        top: 50%;
+        left: calc(50% - 0.5 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(24 * var(--_unit));
+        translate: -50% -50%;
+      }
+
+      .design-process_bar {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: calc(12 * var(--_unit));
+      }
+
+      .design-process_dots {
+        --_size: calc(26 * var(--_unit));
+        aspect-ratio: 26 / 6;
+      }
+
+      .design-process_address {
+        flex: 1 1 0;
+        height: calc(4 * var(--_unit));
+        background-image: linear-gradient(
+          to right,
+          var(--brand),
+          rgb(3 38 136 / 0) 110.89%
+        );
+        opacity: 0.08;
+      }
+
+      .design-process_lines {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(4 * var(--_unit));
+        span {
+          height: calc(4.2 * var(--_unit));
+          background-color: var(--color-neutral-2);
+        }
+      }
+
+      .design-process_cta {
+        border-radius: calc(1 * var(--_unit));
+        background-color: var(--brand);
+      }
+
+      .design-process_tag {
+        position: absolute;
+        padding: calc(3.6 * var(--_unit)) calc(7.2 * var(--_unit));
+        border-radius: calc(1.727 * var(--_unit));
+        background-color: #3b63f3;
+        color: var(--color-neutral-0);
+        font-size: calc(12 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(18 * var(--_unit));
+        letter-spacing: -0.005em;
+        white-space: nowrap;
+        &.lead {
+          right: calc(11.6 * var(--_unit));
+          bottom: calc(208.5 * var(--_unit));
+        }
+        &.writer {
+          right: calc(11.6 * var(--_unit));
+          bottom: calc(194.3 * var(--_unit));
+        }
+        &.designer {
+          right: calc(283.1 * var(--_unit));
+          bottom: calc(167.3 * var(--_unit));
+          background-color: #a23eff;
+        }
+      }
+
+      .design-process_cursor {
+        --_size: calc(19.2 * var(--_unit));
+        position: absolute;
+        top: calc(-15.6 * var(--_unit));
+        left: calc(-14.4 * var(--_unit));
+        aspect-ratio: 23.27 / 23.88;
+        overflow: visible;
+        color: #3b63f3;
+        .designer & {
+          top: calc(-14.6 * var(--_unit));
+          right: calc(-14.6 * var(--_unit));
+          left: auto;
+          color: #a23eff;
+          scale: -1 1;
+        }
+      }
+
+      /* =====================
+         Strategy
+         ===================== */
+
+      &.strategy .design-process_stage {
+        overflow: clip;
+      }
+
+      .design-process_glow {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: calc(360 * var(--_unit));
+        aspect-ratio: 1 / 1;
+        border-radius: 50%;
+        background-image: radial-gradient(
+          closest-side,
+          rgb(255 255 255 / 0.5),
+          rgb(255 255 255 / 0)
+        );
+        translate: -50% -50%;
+      }
+
+      .design-process_glass {
+        position: absolute;
+        top: calc(50% - 0.5 * var(--_unit));
+        left: 50%;
+        width: calc(276.757 * var(--_unit));
+        height: calc(320 * var(--_unit));
+        display: flex;
+        align-items: center;
+        padding: calc(8.649 * var(--_unit));
+        border: calc(1.081 * var(--_unit)) solid var(--color-neutral-0);
+        border-radius: calc(23.784 * var(--_unit));
+        background-image: linear-gradient(
+          156deg,
+          rgb(255 255 255 / 0.24) 4.3%,
+          rgb(255 255 255 / 0.17) 21.5%,
+          rgb(255 255 255 / 0.07) 56.2%,
+          rgb(255 255 255 / 0.04) 91%
+        );
+        translate: -50% -50%;
+      }
+
+      .design-process_brief {
+        position: relative;
+        width: calc(259.459 * var(--_unit));
+        height: calc(302.703 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(12.973 * var(--_unit));
+        padding-top: calc(25.946 * var(--_unit));
+        overflow: clip;
+        border: calc(1.081 * var(--_unit)) solid var(--color-neutral-0);
+        border-radius: calc(17.297 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        box-shadow:
+          0 0 calc(17.514 * var(--_unit)) rgb(0 0 0 / 0.04),
+          0 calc(2.378 * var(--_unit)) calc(4.541 * var(--_unit))
+            rgb(0 0 0 / 0.06);
+      }
+
+      .design-process_notch {
+        position: absolute;
+        top: calc(-5.4 * var(--_unit));
+        left: 50%;
+        width: calc(129.73 * var(--_unit));
+        height: calc(17.297 * var(--_unit));
+        border-radius: calc(6.486 * var(--_unit));
+        background-color: #17347c;
+        translate: -50% 0;
+      }
+
+      .design-process_caption {
+        color: var(--color-neutral-40);
+        font-size: calc(10.811 * var(--_unit));
+        line-height: calc(12.973 * var(--_unit));
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      .design-process_topics {
+        flex: 1 0 0;
+        min-height: 0;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: calc(6.486 * var(--_unit));
+        padding: calc(12.973 * var(--_unit)) calc(6.486 * var(--_unit));
+        overflow: clip;
+        border-radius: calc(2.162 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        box-shadow:
+          0 calc(0.432 * var(--_unit)) calc(13.189 * var(--_unit))
+            rgb(0 0 0 / 0.01),
+          0 calc(1.297 * var(--_unit)) calc(4.541 * var(--_unit))
+            rgb(0 0 0 / 0.03);
+      }
+
+      .design-process_topic {
+        flex: none;
+        display: flex;
+        align-items: center;
+        gap: calc(8.649 * var(--_unit));
+        padding: calc(10.811 * var(--_unit));
+        border-radius: calc(6.486 * var(--_unit));
+        background-color: var(--color-neutral-2);
+        color: var(--color-neutral-70);
+        font-size: calc(12.973 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(19.459 * var(--_unit));
+        letter-spacing: -0.005em;
+        white-space: nowrap;
+        &.active {
+          border: calc(2.162 * var(--_unit)) solid var(--brand);
+          border-radius: calc(8.649 * var(--_unit));
+          background-color: var(--color-neutral-0);
+          color: var(--color-neutral-90);
+        }
+      }
+
+      .design-process_topic-icon {
+        --_size: calc(43.243 * var(--_unit));
+        color: var(--color-neutral-70);
+        .active & {
+          padding: calc(4.3 * var(--_unit));
+          color: var(--color-neutral-90);
+        }
+        &.small {
+          --_size: calc(19.459 * var(--_unit));
+        }
+      }
+
+      .design-process_focus {
+        position: absolute;
+        top: calc(50% - 64.54 * var(--_unit));
+        left: calc(50% - 6.69 * var(--_unit));
+        width: calc(289.331 * var(--_unit));
+        display: flex;
+        align-items: center;
+        gap: calc(10.242 * var(--_unit));
+        padding: calc(6 * var(--_unit)) calc(12.802 * var(--_unit));
+        border: calc(2.162 * var(--_unit)) solid var(--brand);
+        border-radius: calc(8.649 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        font-size: calc(15.363 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(23.044 * var(--_unit));
+        letter-spacing: -0.005em;
+        white-space: nowrap;
+        filter: drop-shadow(
+            0 calc(12.973 * var(--_unit)) calc(4.3 * var(--_unit))
+              rgb(16 24 40 / 0.08)
+          )
+          drop-shadow(
+            0 calc(4.324 * var(--_unit)) calc(1.6 * var(--_unit))
+              rgb(16 24 40 / 0.03)
+          );
+        translate: -50% -50%;
+        rotate: 1deg;
+      }
+
+      .design-process_focus-icon {
+        --_size: calc(51.209 * var(--_unit));
+        padding: calc(5.1 * var(--_unit));
+      }
+
+      /* =====================
+         Copy
+         ===================== */
+
+      .design-process_browser {
+        position: absolute;
+        top: calc(50% - 0.3 * var(--_unit));
+        left: calc(50% - 0.5 * var(--_unit));
+        width: calc(338 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(20 * var(--_unit));
+        padding: calc(12 * var(--_unit)) calc(8 * var(--_unit));
+        overflow: clip;
+        border-radius: calc(8 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        box-shadow:
+          calc(11 * var(--_unit)) calc(7 * var(--_unit)) calc(13 * var(--_unit))
+            rgb(153 153 153 / 0.05),
+          calc(25 * var(--_unit)) calc(17 * var(--_unit))
+            calc(18 * var(--_unit)) rgb(153 153 153 / 0.05),
+          calc(45 * var(--_unit)) calc(30 * var(--_unit))
+            calc(22 * var(--_unit)) rgb(153 153 153 / 0.01);
+        translate: -50% -50%;
+      }
+
+      .design-process_hero {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(12 * var(--_unit));
+        .design-process_lines {
+          width: calc(206 * var(--_unit));
+          span {
+            width: 100%;
+          }
+          span:nth-child(2) {
+            width: calc(150 * var(--_unit));
+          }
+          span:nth-child(3) {
+            width: calc(85 * var(--_unit));
+          }
+        }
+        .design-process_cta {
+          width: calc(52 * var(--_unit));
+          height: calc(16 * var(--_unit));
+        }
+      }
+
+      .design-process_headline {
+        position: relative;
+        width: calc(278 * var(--_unit));
+        display: flex;
+        justify-content: center;
+      }
+
+      .design-process_highlight {
+        position: absolute;
+        top: calc(26 * var(--_unit));
+        left: 50%;
+        width: calc(236 * var(--_unit));
+        height: calc(26 * var(--_unit));
+        border-radius: calc(2 * var(--_unit));
+        background:
+          linear-gradient(
+            -89deg,
+            rgb(6 66 238 / 0.18) 1.3%,
+            rgb(255 217 213 / 0.11) 10.7%,
+            rgb(31 54 250 / 0.18) 18%,
+            rgb(31 54 250 / 0.18) 31%,
+            rgb(91 192 255 / 0.11) 44.9%,
+            rgb(0 31 255 / 0.18) 70.3%,
+            rgb(119 117 235 / 0.16) 76.8%,
+            rgb(187 173 255 / 0.13) 84.5%,
+            rgb(6 66 238 / 0.18) 95%
+          ),
+          var(--color-neutral-0);
+        translate: -50% 0;
+      }
+
+      .design-process_title {
+        position: relative;
+        font-family: var(--secondary-family);
+        font-size: calc(20 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(26 * var(--_unit));
+        letter-spacing: -0.01em;
+        text-align: center;
+      }
+
+      .design-process_accent {
+        color: var(--brand);
+      }
+
+      .design-process_edit {
+        position: absolute;
+        top: calc(39 * var(--_unit));
+        left: calc(280 * var(--_unit));
+        color: var(--color-neutral-20);
+        font-size: calc(9 * var(--_unit));
+        font-style: italic;
+        line-height: calc(13 * var(--_unit));
+        letter-spacing: 0.01em;
+        white-space: nowrap;
+        translate: -50% 0;
+      }
+
+      .design-process_tiles {
+        width: 100%;
+        height: calc(60 * var(--_unit));
+        display: flex;
+        gap: calc(8 * var(--_unit));
+        span {
+          flex: 1 1 0;
+          background-image: var(--_skeleton);
+        }
+      }
+
+      /* =====================
+         Wireframe
+         ===================== */
+
+      .design-process_blob {
+        position: absolute;
+        height: calc(59 * var(--_unit));
+        background-color: rgb(0 51 255 / 0.32);
+        filter: blur(calc(40 * var(--_unit)));
+        &.first {
+          top: calc(265.5 * var(--_unit));
+          left: calc(105.5 * var(--_unit));
+          width: calc(151 * var(--_unit));
+        }
+        &.second {
+          top: calc(305.5 * var(--_unit));
+          left: calc(270.5 * var(--_unit));
+          width: calc(115 * var(--_unit));
+        }
+      }
+
+      .design-process_stand {
+        --_size: calc(84 * var(--_unit));
+        position: absolute;
+        top: calc(295.5 * var(--_unit));
+        left: calc(138.5 * var(--_unit));
+        aspect-ratio: 84 / 51;
+        color: var(--color-primary-95);
+      }
+
+      .design-process_monitor {
+        position: absolute;
+        top: calc(52.5 * var(--_unit));
+        left: calc(12.5 * var(--_unit));
+        width: calc(337 * var(--_unit));
+        height: calc(250 * var(--_unit));
+        display: flex;
+        padding: calc(4 * var(--_unit));
+        border-radius: calc(8 * var(--_unit));
+        background-color: var(--color-primary-95);
+      }
+
+      .design-process_screen {
+        flex: 1 1 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(20 * var(--_unit));
+        padding: calc(12 * var(--_unit)) calc(8 * var(--_unit));
+        overflow: clip;
+        border-radius: calc(2 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        .design-process_media {
+          flex: none;
+          width: calc(189 * var(--_unit));
+          height: calc(77 * var(--_unit));
+        }
+        .design-process_lines span:nth-child(1) {
+          width: calc(189 * var(--_unit));
+          height: calc(6.2 * var(--_unit));
+        }
+        .design-process_lines span:nth-child(2) {
+          width: calc(133 * var(--_unit));
+        }
+        .design-process_lines span:nth-child(3) {
+          width: calc(85 * var(--_unit));
+        }
+        .design-process_cta {
+          width: calc(32 * var(--_unit));
+          height: calc(10 * var(--_unit));
+        }
+        .design-process_cards {
+          width: 100%;
+          height: calc(50 * var(--_unit));
+          gap: calc(4 * var(--_unit));
+        }
+      }
+
+      .design-process_media {
+        background-image: var(--_skeleton);
+      }
+
+      .design-process_lines span:nth-child(1):where(.wireframe *) {
+        background-image: linear-gradient(
+          to right,
+          #eee,
+          #f9f9f9 83.6%,
+          #fff 104.5%
+        );
+      }
+
+      .design-process_info {
+        flex: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(10 * var(--_unit));
+      }
+
+      .design-process_cards {
+        flex: none;
+        display: flex;
+        span {
+          flex: 1 1 0;
+          padding: calc(4 * var(--_unit));
+          background-image: var(--_skeleton);
+          &::before {
+            content: "";
+            display: block;
+            width: calc(10 * var(--_unit));
+            aspect-ratio: 1 / 1;
+            background-color: var(--color-neutral-0);
+          }
+        }
+      }
+
+      .design-process_rows {
+        flex: none;
+        display: flex;
+        flex-direction: column;
+        gap: calc(4 * var(--_unit));
+        span {
+          width: calc(222 * var(--_unit));
+          height: calc(4 * var(--_unit));
+          background-image: linear-gradient(
+            to right,
+            var(--color-neutral-2) calc(62 * var(--_unit)),
+            transparent calc(62 * var(--_unit)) calc(66 * var(--_unit)),
+            var(--color-neutral-2) calc(66 * var(--_unit))
+          );
+        }
+        span:nth-child(2) {
+          scale: -1 1;
+        }
+      }
+
+      .design-process_phone {
+        position: absolute;
+        top: calc(126.5 * var(--_unit));
+        left: calc(270.5 * var(--_unit));
+        width: calc(117 * var(--_unit));
+        height: calc(220 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(4 * var(--_unit));
+        padding: calc(4 * var(--_unit));
+        overflow: clip;
+        border: calc(3.5 * var(--_unit)) solid var(--color-primary-95);
+        border-radius: calc(12 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        box-shadow:
+          calc(-4 * var(--_unit)) calc(5 * var(--_unit)) calc(15 * var(--_unit))
+            rgb(66 66 66 / 0.1),
+          calc(-17 * var(--_unit)) calc(21 * var(--_unit))
+            calc(27 * var(--_unit)) rgb(66 66 66 / 0.09),
+          calc(-38 * var(--_unit)) calc(48 * var(--_unit))
+            calc(36 * var(--_unit)) rgb(66 66 66 / 0.05),
+          calc(-67 * var(--_unit)) calc(85 * var(--_unit))
+            calc(43 * var(--_unit)) rgb(66 66 66 / 0.01);
+        .design-process_media {
+          flex: none;
+          width: 100%;
+          height: calc(60 * var(--_unit));
+          margin-top: calc(4 * var(--_unit));
+        }
+        .design-process_lines {
+          width: 100%;
+          margin-top: calc(4 * var(--_unit));
+          span:nth-child(1) {
+            width: 100%;
+            height: calc(5.2 * var(--_unit));
+          }
+          span:nth-child(2) {
+            width: calc(81 * var(--_unit));
+            height: calc(4 * var(--_unit));
+          }
+          span:nth-child(3) {
+            width: calc(57 * var(--_unit));
+            height: calc(4 * var(--_unit));
+          }
+        }
+        .design-process_cta {
+          flex: none;
+          width: calc(26 * var(--_unit));
+          height: calc(8 * var(--_unit));
+          margin-top: calc(4 * var(--_unit));
+        }
+        .design-process_cards {
+          width: 100%;
+          gap: calc(2 * var(--_unit));
+          flex: none;
+          height: calc(50 * var(--_unit));
+          margin-top: calc(4 * var(--_unit));
+          &.tall {
+            margin-top: calc(-2 * var(--_unit));
+          }
+        }
+      }
+
+      .design-process_speaker {
+        flex: none;
+        width: calc(32 * var(--_unit));
+        height: calc(8 * var(--_unit));
+        border-radius: calc(2 * var(--_unit));
+        background-color: var(--color-primary-95);
+      }
+
+      .design-process_home {
+        position: absolute;
+        top: calc(211.5 * var(--_unit));
+        left: calc(50% - 0.5 * var(--_unit));
+        width: calc(40 * var(--_unit));
+        height: calc(3 * var(--_unit));
+        border-radius: calc(2 * var(--_unit));
+        background-color: var(--color-primary-95);
+        translate: -50% 0;
+      }
+
+      /* =====================
+         Visual
+         ===================== */
+
+      &.visual .design-process_stack {
+        width: calc(294 * var(--_unit));
+      }
+
+      .design-process_panel {
+        width: calc(226 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(4 * var(--_unit));
+        padding: calc(2 * var(--_unit));
+        overflow: clip;
+        border: var(--border-width) solid var(--color-neutral-0);
+        border-radius: calc(12 * var(--_unit));
+        background-color: var(--color-neutral-2);
+        box-shadow:
+          0 0 calc(16.2 * var(--_unit)) rgb(0 0 0 / 0.04),
+          0 calc(2.2 * var(--_unit)) calc(4.2 * var(--_unit)) rgb(0 0 0 / 0.06);
+      }
+
+      .design-process_label {
+        color: var(--color-neutral-80);
+        font-size: calc(12 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(18 * var(--_unit));
+        letter-spacing: -0.005em;
+      }
+
+      .design-process_sheet {
+        width: 100%;
+        padding: calc(12 * var(--_unit)) calc(10 * var(--_unit));
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        box-shadow:
+          0 calc(0.4 * var(--_unit)) calc(12.2 * var(--_unit)) rgb(0 0 0 / 0.01),
+          0 calc(1.2 * var(--_unit)) calc(4.2 * var(--_unit)) rgb(0 0 0 / 0.03);
+      }
+
+      .design-process_swatches {
+        height: calc(44 * var(--_unit));
+        display: flex;
+        align-items: center;
+        gap: calc(6 * var(--_unit));
+      }
+
+      .design-process_swatch {
+        flex: 1 1 0;
+        aspect-ratio: 1 / 1;
+        border: var(--border-width) solid var(--color-neutral-0);
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--_fill, var(--brand));
+        box-shadow:
+          0 calc(2.2 * var(--_unit)) calc(5.2 * var(--_unit)) rgb(0 0 0 / 0.12),
+          0 0 calc(1.2 * var(--_unit)) rgb(0 0 0 / 0.1);
+      }
+
+      .design-process_token {
+        height: calc(60 * var(--_unit));
+        display: flex;
+        align-items: center;
+        gap: calc(6 * var(--_unit));
+        padding: calc(8 * var(--_unit)) calc(12 * var(--_unit))
+          calc(8 * var(--_unit)) calc(8 * var(--_unit));
+        border-radius: calc(12 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        color: var(--color-neutral-80);
+        font-size: calc(18 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(24 * var(--_unit));
+        letter-spacing: -0.007em;
+        white-space: nowrap;
+        box-shadow:
+          calc(-3 * var(--_unit)) calc(4 * var(--_unit)) calc(11 * var(--_unit))
+            rgb(64 64 64 / 0.1),
+          calc(-12 * var(--_unit)) calc(15 * var(--_unit))
+            calc(20 * var(--_unit)) rgb(64 64 64 / 0.09),
+          calc(-27 * var(--_unit)) calc(35 * var(--_unit))
+            calc(26 * var(--_unit)) rgb(64 64 64 / 0.05),
+          calc(-48 * var(--_unit)) calc(62 * var(--_unit))
+            calc(31 * var(--_unit)) rgb(64 64 64 / 0.01);
+        .design-process_swatch {
+          flex: none;
+          width: calc(34 * var(--_unit));
+        }
+      }
+
+      .design-process_type {
+        display: block;
+        color: var(--brand);
+        font-family: var(--secondary-family);
+        font-size: calc(40 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(44 * var(--_unit));
+        letter-spacing: -0.015em;
+        text-align: center;
+      }
+
+      /* =====================
+         Handoff
+         ===================== */
+
+      &.handoff .design-process_stack {
+        width: calc(370 * var(--_unit));
+      }
+
+      .design-process_code {
+        width: calc(342 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(16 * var(--_unit));
+        padding: calc(12 * var(--_unit)) calc(8 * var(--_unit));
+        overflow: clip;
+        border-radius: calc(12 * var(--_unit));
+        background-color: rgb(255 255 255 / 0.9);
+        box-shadow:
+          calc(-9 * var(--_unit)) calc(5 * var(--_unit)) calc(22 * var(--_unit))
+            rgb(120 120 120 / 0.1),
+          calc(-35 * var(--_unit)) calc(19 * var(--_unit))
+            calc(40 * var(--_unit)) rgb(120 120 120 / 0.09),
+          calc(-78 * var(--_unit)) calc(43 * var(--_unit))
+            calc(53 * var(--_unit)) rgb(120 120 120 / 0.05),
+          calc(-139 * var(--_unit)) calc(76 * var(--_unit))
+            calc(63 * var(--_unit)) rgb(120 120 120 / 0.01);
+        .design-process_address {
+          background-image: linear-gradient(
+            to right,
+            var(--brand),
+            rgb(3 38 136 / 0) 91.431%
+          );
+        }
+      }
+
+      .design-process_source {
+        display: flex;
+        flex-direction: column;
+        gap: calc(4 * var(--_unit));
+      }
+
+      .design-process_line {
+        display: block;
+        color: var(--color-neutral-70);
+        font-size: calc(16 * var(--_unit));
+        line-height: calc(22 * var(--_unit));
+        letter-spacing: -0.005em;
+        white-space: nowrap;
+        &.indent {
+          padding-inline: calc(24 * var(--_unit));
+        }
+        &.script {
+          padding-inline: calc(20 * var(--_unit));
+        }
+        .tag,
+        &.tag {
+          color: var(--brand);
+        }
+        .attr {
+          color: #d97706;
+        }
+        .value {
+          color: #16a34a;
+        }
+      }
+
+      .design-process_tools {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: calc(32 * var(--_unit));
+        padding: calc(12 * var(--_unit));
+        border-radius: calc(12 * var(--_unit));
+        background-color: rgb(255 255 255 / 0.9);
+      }
+
+      .design-process_tool {
+        min-width: calc(93 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+        color: var(--color-neutral-70);
+        font-size: calc(14 * var(--_unit));
+        line-height: calc(20 * var(--_unit));
+        letter-spacing: -0.005em;
+        white-space: nowrap;
+      }
+
+      .design-process_tile {
+        width: calc(55 * var(--_unit));
+        aspect-ratio: 1 / 1;
+        display: flex;
+        padding: calc(4 * var(--_unit));
+        border-radius: calc(8 * var(--_unit));
+        background-color: rgb(255 255 255 / 0.4);
+        box-shadow:
+          0 calc(1.2 * var(--_unit)) calc(2.2 * var(--_unit)) rgb(0 0 0 / 0.03),
+          0 calc(2.2 * var(--_unit)) calc(4 * var(--_unit)) rgb(0 0 0 / 0.04);
+        &.featured {
+          padding: calc(6 * var(--_unit));
+          background-color: rgb(255 255 255 / 0.5);
+          box-shadow:
+            0 0 calc(3 * var(--_unit)) rgb(0 0 0 / 0.03),
+            0 0 calc(12 * var(--_unit)) rgb(0 0 0 / 0.12);
+        }
+      }
+
+      .design-process_tile-inner {
+        flex: 1 1 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: calc(4 * var(--_unit));
+        color: var(--brand);
+        .featured & {
+          color: var(--color-neutral-0);
+          background-image: radial-gradient(
+            ellipse 140% 140% at 79% 2.5%,
+            #6e92f9 0%,
+            #547bec 16.7%,
+            #3964df 33.5%,
+            #1f4dd2 50.2%,
+            #1242cb 58.6%,
+            #0536c5 66.9%,
+            #032688 100%
+          );
+          filter: drop-shadow(
+              0 calc(2 * var(--_unit)) calc(1 * var(--_unit))
+                rgb(18 66 203 / 0.1)
+            )
+            drop-shadow(
+              calc(2 * var(--_unit)) calc(7 * var(--_unit))
+                calc(1.75 * var(--_unit)) rgb(18 66 203 / 0.09)
+            );
+        }
+      }
+
+      .design-process_tool-icon {
+        --_size: calc(26 * var(--_unit));
+        &.small {
+          --_size: calc(21.5 * var(--_unit));
+        }
+      }
+    }
+  }
+</style>

@@ -1,0 +1,527 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Img from "@/components/media/Img.astro";
+import Icon from "@/components/media/Icon.astro";
+import photo from "@/assets/service/design/tests/background.jpg";
+import globe from "@/assets/service/design/tests/globe.svg";
+import ratingLogo from "@/assets/service/design/tests/rating-logo.svg";
+import check from "@/assets/icons/check-small.svg";
+
+type Variant =
+  | "offer"
+  | "proof"
+  | "established"
+  | "english"
+  | "photos"
+  | "price";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Which part of the page mock is highlighted: the offer headline, the reviews, the whole page, the copy, the photos or the rates. */
+  variant?: Variant;
+}
+
+const {
+  render = true,
+  variant = "offer",
+  class: className,
+  ...rest
+} = Astro.props;
+
+const labels: Record<Variant, string> = {
+  offer: "Offer clear in 10 seconds",
+  proof: "Reviews and ratings up front",
+  established: "Reads as established",
+  english: "Native English copy",
+  photos: "Your real rooms and people",
+  price: "Rates match the promise",
+};
+
+/** The text block is three rows of placeholder bars. */
+const rows = [1, 2, 3];
+const benefits = ["From $38,000", "No booking fees", "8 minutes to BTS"];
+---
+
+{
+  render && (
+    <div
+      class:list={["design-test-graphic_wrap", variant, className]}
+      aria-hidden="true"
+      {...rest}
+    >
+      <Img src={photo} class="design-test-graphic_photo" />
+      <div class="design-test-graphic_window">
+        <div class="design-test-graphic_toolbar">
+          <span class="design-test-graphic_lights">
+            <span />
+            <span />
+            <span />
+          </span>
+          <span class="design-test-graphic_address">
+            <Icon src={globe} class="design-test-graphic_globe" />
+            yoursite.com
+          </span>
+        </div>
+
+        {variant === "offer" && (
+          <>
+            <div class="design-test-graphic_mark headline">
+              <p>Your home in Ekkamai, for a few nights or a few months</p>
+            </div>
+            <div class="design-test-graphic_bars"><span /><span /><span /></div>
+            <div class="design-test-graphic_cards"><span /><span /></div>
+            <div class="design-test-graphic_lines">{rows.map(() => <div class="design-test-graphic_bars"><span /><span /><span /></div>)}</div>
+            <div class="design-test-graphic_cards"><span /><span /><span /></div>
+          </>
+        )}
+
+        {variant === "proof" && (
+          <>
+            <div class="design-test-graphic_bars"><span /><span /><span /></div>
+            <div class="design-test-graphic_mark rating">
+              <div class="design-test-graphic_rating">
+                <Img src={ratingLogo} transparent class="design-test-graphic_rating-logo" />
+                <span>
+                  <strong>4.7</strong> out of <strong>5</strong>
+                </span>
+                <span class="design-test-graphic_dot" />
+                <span>
+                  <strong>200+</strong> reviews
+                </span>
+              </div>
+            </div>
+            <div class="design-test-graphic_cards"><span /><span /></div>
+            <div class="design-test-graphic_lines">{rows.map(() => <div class="design-test-graphic_bars"><span /><span /><span /></div>)}</div>
+            <div class="design-test-graphic_cards"><span /><span /><span /></div>
+          </>
+        )}
+
+        {variant === "established" && (
+          <div class="design-test-graphic_mark page">
+            <div class="design-test-graphic_bars light"><span /><span /><span /></div>
+            <div class="design-test-graphic_hero">
+              <span class="design-test-graphic_hero-card" />
+              <span class="design-test-graphic_button" />
+            </div>
+            <div class="design-test-graphic_cards light"><span /><span /></div>
+            <div class="design-test-graphic_lines light">{rows.map(() => <div class="design-test-graphic_bars"><span /><span /><span /></div>)}</div>
+            <div class="design-test-graphic_cards light"><span /><span /><span /></div>
+          </div>
+        )}
+
+        {variant === "english" && (
+          <>
+            <div class="design-test-graphic_bars"><span /><span /><span /></div>
+            <div class="design-test-graphic_cards"><span /><span /></div>
+            <div class="design-test-graphic_lines">{rows.map(() => <div class="design-test-graphic_bars"><span /><span /><span /></div>)}</div>
+            <div class="design-test-graphic_mark copy">
+              <p>
+                Stay a week or stay a year. The rate drops the longer you
+                book, and there is
+              </p>
+            </div>
+            <div class="design-test-graphic_cards"><span /><span /><span /></div>
+          </>
+        )}
+
+        {variant === "photos" && (
+          <>
+            <div class="design-test-graphic_bars"><span /><span /><span /></div>
+            <div class="design-test-graphic_cards"><span /><span /></div>
+            <div class="design-test-graphic_lines">{rows.map(() => <div class="design-test-graphic_bars"><span /><span /><span /></div>)}</div>
+            <div class="design-test-graphic_mark rooms">
+              <div class="design-test-graphic_cards light tall"><span /><span /><span /></div>
+            </div>
+          </>
+        )}
+
+        {variant === "price" && (
+          <>
+            <div class="design-test-graphic_bars"><span /><span /><span /></div>
+            <div class="design-test-graphic_lines">{rows.map(() => <div class="design-test-graphic_bars"><span /><span /><span /></div>)}</div>
+            <div class="design-test-graphic_cards"><span /><span /><span /></div>
+            <div class="design-test-graphic_lines">{rows.map(() => <div class="design-test-graphic_bars"><span /><span /><span /></div>)}</div>
+            <div class="design-test-graphic_mark rates">
+              {benefits.map((benefit) => (
+                <div class="design-test-graphic_benefit">
+                  <p>{benefit}</p>
+                  <span class="design-test-graphic_bar" />
+                </div>
+              ))}
+            </div>
+            <div class="design-test-graphic_cards"><span /><span /></div>
+          </>
+        )}
+
+        <span class="design-test-graphic_tooltip">
+          <Icon src={check} class="design-test-graphic_check" />
+          {labels[variant]}
+        </span>
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .design-test-graphic_wrap {
+      /* The artboard is the 517px Figma square; the window keeps its size against the shorter side. */
+      --_unit: calc(min(100cqw, 100cqh) / 517);
+      --_card: linear-gradient(
+        175.6deg,
+        #eeeeee 28.8%,
+        #f9f9f9 70.6%,
+        #ffffff 95.5%
+      );
+      --_card-light: linear-gradient(
+          175.6deg,
+          #ffffff 28.8%,
+          #f9f9f9 70.6%,
+          #ffffff 95.5%
+        ),
+        var(--_card);
+      --_line-shadow: 0 calc(0.3 * var(--_unit)) calc(1.2 * var(--_unit))
+        rgb(0 0 0 / 0.03);
+      container-type: size;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      border-radius: var(--radius-0-5rem);
+      font-family: var(--primary-family);
+      color: var(--color-neutral-90);
+
+      p {
+        margin: 0;
+      }
+
+      .design-test-graphic_photo {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .design-test-graphic_window {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        translate: -50% -50%;
+        width: calc(375 * var(--_unit));
+        height: calc(357 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(20 * var(--_unit));
+        padding: calc(12 * var(--_unit)) calc(8 * var(--_unit));
+        overflow: hidden;
+        background-color: var(--color-neutral-0);
+        border-radius: calc(8 * var(--_unit));
+        box-shadow:
+          calc(70 * var(--_unit)) calc(46 * var(--_unit))
+            calc(24 * var(--_unit)) rgb(153 153 153 / 0),
+          calc(45 * var(--_unit)) calc(30 * var(--_unit))
+            calc(22 * var(--_unit)) rgb(153 153 153 / 0.01),
+          calc(25 * var(--_unit)) calc(17 * var(--_unit))
+            calc(18 * var(--_unit)) rgb(153 153 153 / 0.05),
+          calc(11 * var(--_unit)) calc(7 * var(--_unit))
+            calc(13 * var(--_unit)) rgb(153 153 153 / 0.05);
+      }
+
+      .design-test-graphic_toolbar {
+        display: flex;
+        align-items: center;
+        gap: calc(12 * var(--_unit));
+        flex-shrink: 0;
+      }
+
+      .design-test-graphic_lights {
+        display: flex;
+        gap: calc(4 * var(--_unit));
+
+        span {
+          width: calc(6 * var(--_unit));
+          aspect-ratio: 1;
+          border-radius: 50%;
+          background-color: color-mix(
+            in lab,
+            var(--color-primary-60) 12.2%,
+            transparent
+          );
+        }
+      }
+
+      .design-test-graphic_address {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: calc(6 * var(--_unit));
+        padding: calc(2 * var(--_unit)) calc(26 * var(--_unit))
+          calc(2 * var(--_unit)) calc(4 * var(--_unit));
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        letter-spacing: -0.005em;
+        background-color: var(--color-neutral-2);
+        border-radius: calc(4 * var(--_unit));
+      }
+
+      .design-test-graphic_globe {
+        --_size: calc(14 * var(--_unit));
+        color: var(--color-neutral-10);
+      }
+
+      /* Placeholder bars: short, flexible, short. */
+      .design-test-graphic_bars {
+        --_bar: var(--color-neutral-5);
+        display: flex;
+        gap: calc(12 * var(--_unit));
+        flex-shrink: 0;
+
+        span {
+          flex: 1;
+          height: calc(4 * var(--_unit));
+          background-color: var(--_bar);
+          border-radius: calc(0.4 * var(--_unit));
+          box-shadow: var(--_line-shadow);
+
+          &:first-child {
+            flex: 0 0 calc(106 * var(--_unit));
+          }
+
+          &:last-child {
+            flex: 0 0 calc(85 * var(--_unit));
+          }
+        }
+      }
+
+      /* Three rows of text, the lower two narrower. */
+      .design-test-graphic_lines {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(4 * var(--_unit));
+        flex-shrink: 0;
+
+        .design-test-graphic_bars {
+          --_bar: var(--color-neutral-2);
+          width: 100%;
+          gap: calc(4 * var(--_unit));
+
+          &:nth-child(2) {
+            width: calc(237 * var(--_unit));
+          }
+
+          &:nth-child(3) {
+            width: calc(283 * var(--_unit));
+          }
+        }
+      }
+
+      .design-test-graphic_bars.light,
+      .design-test-graphic_lines.light .design-test-graphic_bars {
+        --_bar: var(--color-neutral-0);
+      }
+
+      .design-test-graphic_cards {
+        display: flex;
+        gap: calc(8 * var(--_unit));
+        flex-shrink: 0;
+        height: calc(60 * var(--_unit));
+
+        span {
+          flex: 1;
+          background-image: var(--_card);
+        }
+
+        &.light span {
+          background-image: var(--_card-light);
+        }
+
+        &.tall {
+          height: calc(82 * var(--_unit));
+        }
+      }
+
+      /* The highlighted region: tinted, with a dashed outline. */
+      .design-test-graphic_mark {
+        flex-shrink: 0;
+        background-color: var(--color-primary-5);
+        border: calc(0.6 * var(--_unit)) dashed var(--color-primary-60);
+
+        &.headline {
+          padding: calc(12 * var(--_unit)) calc(4 * var(--_unit)) 0;
+          font-size: calc(18 * var(--_unit));
+          font-weight: var(--primary-medium);
+          line-height: calc(24 * var(--_unit));
+          letter-spacing: -0.007em;
+        }
+
+        &.rating {
+          display: flex;
+          justify-content: center;
+          padding: calc(12 * var(--_unit)) calc(4 * var(--_unit))
+            calc(4 * var(--_unit));
+        }
+
+        &.page {
+          flex: 1;
+          min-height: 0;
+          display: flex;
+          flex-direction: column;
+          gap: calc(20 * var(--_unit));
+          padding: calc(16 * var(--_unit)) calc(8 * var(--_unit))
+            calc(8 * var(--_unit));
+          overflow: hidden;
+        }
+
+        &.copy {
+          padding: calc(4 * var(--_unit));
+          font-size: calc(12 * var(--_unit));
+          line-height: calc(18 * var(--_unit));
+          letter-spacing: -0.005em;
+          color: var(--color-neutral-80);
+        }
+
+        &.rooms {
+          padding: calc(4 * var(--_unit));
+          border-width: var(--_unit);
+        }
+
+        &.rates {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: calc(4 * var(--_unit));
+          padding: calc(4 * var(--_unit));
+          border-width: var(--_unit);
+        }
+      }
+
+      .design-test-graphic_rating {
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+        font-size: calc(14 * var(--_unit));
+        line-height: calc(22 * var(--_unit));
+        color: rgb(16 15 15 / 0.56);
+        white-space: nowrap;
+
+        strong {
+          font-weight: var(--primary-medium);
+          color: var(--color-primary-70);
+        }
+      }
+
+      .design-test-graphic_rating-logo {
+        width: calc(16 * var(--_unit));
+        height: calc(16 * var(--_unit));
+      }
+
+      .design-test-graphic_dot {
+        width: calc(4 * var(--_unit));
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background-color: #d4d4d4;
+      }
+
+      .design-test-graphic_hero {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(4 * var(--_unit));
+        flex-shrink: 0;
+      }
+
+      .design-test-graphic_hero-card {
+        width: calc(255 * var(--_unit));
+        height: calc(60 * var(--_unit));
+        background-image: var(--_card-light);
+      }
+
+      .design-test-graphic_button {
+        width: calc(32 * var(--_unit));
+        height: calc(10 * var(--_unit));
+        background-color: var(--color-primary-60);
+        border-radius: var(--_unit);
+      }
+
+      .design-test-graphic_benefit {
+        display: flex;
+        flex-direction: column;
+        gap: calc(4 * var(--_unit));
+        padding: calc(12 * var(--_unit)) calc(8 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        border: var(--_unit) solid var(--color-neutral-2);
+        border-radius: calc(2 * var(--_unit));
+
+        p {
+          font-size: calc(12 * var(--_unit));
+          font-weight: var(--primary-medium);
+          line-height: calc(18 * var(--_unit));
+          letter-spacing: -0.005em;
+          color: var(--color-neutral-80);
+          white-space: nowrap;
+        }
+      }
+
+      .design-test-graphic_bar {
+        width: calc(85 * var(--_unit));
+        max-width: 100%;
+        height: calc(4.2 * var(--_unit));
+        background-color: var(--color-neutral-2);
+      }
+
+      .design-test-graphic_tooltip {
+        position: absolute;
+        left: 50%;
+        translate: -50% 0;
+        display: flex;
+        align-items: center;
+        gap: calc(4 * var(--_unit));
+        padding: calc(4 * var(--_unit)) calc(6 * var(--_unit));
+        font-size: calc(10 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(12 * var(--_unit));
+        letter-spacing: 0.02em;
+        color: var(--color-neutral-0);
+        white-space: nowrap;
+        background-color: var(--color-primary-60);
+        border-radius: calc(2 * var(--_unit));
+        filter: drop-shadow(
+            calc(2 * var(--_unit)) calc(7 * var(--_unit))
+              calc(3.5 * var(--_unit)) rgb(54 54 54 / 0.09)
+          )
+          drop-shadow(
+            var(--_unit) calc(2 * var(--_unit)) calc(2 * var(--_unit))
+              rgb(54 54 54 / 0.1)
+          );
+      }
+
+      .design-test-graphic_check {
+        --_size: calc(12 * var(--_unit));
+      }
+
+      &.offer .design-test-graphic_tooltip,
+      &.established .design-test-graphic_tooltip {
+        top: calc(44 * var(--_unit));
+      }
+
+      &.proof .design-test-graphic_tooltip {
+        top: calc(68 * var(--_unit));
+      }
+
+      &.photos .design-test-graphic_tooltip {
+        top: calc(189 * var(--_unit));
+      }
+
+      &.price .design-test-graphic_tooltip {
+        top: calc(229 * var(--_unit));
+      }
+
+      &.english .design-test-graphic_tooltip {
+        top: calc(234 * var(--_unit));
+      }
+    }
+  }
+</style>

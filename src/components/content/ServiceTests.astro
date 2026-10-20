@@ -1,0 +1,415 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import { uid } from "@/utils/unique-id.ts";
+
+type Item = { title: string; text: string };
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading: string;
+  /** Text under the heading. Omit to leave it out. */
+  lead?: string;
+  /** Tests in order, numbered automatically. One is open at a time; on desktop they advance on their own. A `visual-1`, `visual-2`… slot fills each test's visual. */
+  items: Item[];
+}
+
+const {
+  render = true,
+  eyebrow = "Our framework",
+  heading,
+  lead,
+  items,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const id = uid("service-tests");
+const number = (index: number) => String(index + 1).padStart(2, "0");
+---
+
+{
+  render && heading && items?.length > 0 && (
+    <div class:list={["service-tests_wrap", className]} {...rest}>
+      <div class="service-tests_intro">
+        <Paragraph variant="overline-small" class="service-tests_eyebrow">
+          {eyebrow}
+        </Paragraph>
+        <Heading tag="h2" variant="h3">
+          <Fragment set:html={heading} />
+        </Heading>
+        {lead && (
+          <Paragraph variant="large" class="service-tests_lead">
+            {lead}
+          </Paragraph>
+        )}
+      </div>
+      <div
+        class="service-tests_list"
+        style={`--_count: ${items.length};`}
+        data-service-tests
+      >
+        {items.map((item, index) => (
+          <div
+            class="service-tests_item"
+            style={`--_row: ${index + 2};`}
+            data-open={index === 0 ? "" : undefined}
+          >
+            <div class="service-tests_row">
+              <Heading tag="h3" variant="h5" class="service-tests_heading">
+                <button
+                  type="button"
+                  class="service-tests_toggle"
+                  id={`${id}-toggle-${index}`}
+                  aria-expanded={index === 0 ? "true" : "false"}
+                  aria-controls={`${id}-text-${index} ${id}-visual-${index}`}
+                >
+                  <Paragraph
+                    tag="span"
+                    variant="overline-main"
+                    class="service-tests_number"
+                  >
+                    {number(index)}
+                  </Paragraph>
+                  <span class="service-tests_title">{item.title}</span>
+                </button>
+              </Heading>
+              <div
+                class="service-tests_panel"
+                id={`${id}-text-${index}`}
+                role="region"
+                aria-labelledby={`${id}-toggle-${index}`}
+                inert={index !== 0}
+              >
+                <div class="service-tests_clip">
+                  <Paragraph variant="main" class="service-tests_text">
+                    {item.text}
+                  </Paragraph>
+                </div>
+              </div>
+              <span class="service-tests_progress" />
+            </div>
+            <div
+              class="service-tests_panel service-tests_visual"
+              id={`${id}-visual-${index}`}
+            >
+              <div class="service-tests_clip">
+                <div class="service-tests_media">
+                  <slot name={`visual-${index + 1}`} />
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+<script>
+  const desktop = window.matchMedia("(width >= 62rem)");
+
+  for (const list of document.querySelectorAll<HTMLElement>(
+    "[data-service-tests]",
+  )) {
+    const items = [
+      ...list.querySelectorAll<HTMLElement>(".service-tests_item"),
+    ];
+
+    const select = (item: HTMLElement) => {
+      for (const other of items) {
+        const open = other === item;
+        other.toggleAttribute("data-open", open);
+        other
+          .querySelector(".service-tests_toggle")
+          ?.setAttribute("aria-expanded", String(open));
+        const panel = other.querySelector<HTMLElement>(".service-tests_panel");
+        if (panel) panel.inert = !open;
+      }
+    };
+
+    for (const item of items) {
+      item
+        .querySelector(".service-tests_toggle")
+        ?.addEventListener("click", () => select(item));
+
+      // The progress line runs out on desktop; then the next test opens.
+      item
+        .querySelector(".service-tests_progress")
+        ?.addEventListener("animationend", () => {
+          if (!desktop.matches || !item.hasAttribute("data-open")) return;
+          select(items[(items.indexOf(item) + 1) % items.length]);
+        });
+    }
+
+    // Off screen the rotation waits, so the reader arrives at the first test.
+    new IntersectionObserver(([entry]) => {
+      list.toggleAttribute("data-paused", !entry.isIntersecting);
+    }).observe(list);
+  }
+</script>
+
+<style is:global>
+  @layer components {
+    .service-tests_wrap {
+      --_rotate-duration: 6s;
+      /* Width of the two-digit number, so the text lines up under the title. */
+      --_number: 1.0625rem;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3-5rem);
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .service-tests_intro {
+        width: 100%;
+        max-width: 55rem;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+      }
+
+      .service-tests_eyebrow {
+        color: var(--color-neutral-30);
+      }
+
+      .service-tests_lead {
+        color: var(--color-neutral-60);
+      }
+
+      .service-tests_list {
+        display: flex;
+        flex-direction: column;
+        @media (width >= 62rem) {
+          display: grid;
+          grid-template-columns: minmax(0, 43.75rem) min(32.3125rem, 45%);
+          /* A flexible first row takes the spare height, so the list sits at the foot of the visual. */
+          grid-template-rows: 1fr repeat(var(--_count), auto) var(
+              --space-1-5rem
+            );
+          justify-content: space-between;
+          column-gap: var(--space-2rem);
+        }
+      }
+
+      .service-tests_item {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        border-bottom: var(--border-width) solid var(--color-neutral-5);
+        transition: border-color var(--open-duration) var(--open-ease);
+        @media (width < 62rem) {
+          &[data-open] {
+            border-bottom-color: var(--color-primary-60);
+          }
+        }
+        @media (width >= 62rem) {
+          display: contents;
+        }
+      }
+
+      .service-tests_row {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        padding-block: var(--space-1rem);
+        @media (width >= 62rem) {
+          grid-column: 1;
+          grid-row: var(--_row);
+          border-bottom: var(--border-width) solid var(--color-neutral-5);
+        }
+      }
+
+      .service-tests_heading {
+        color: var(--color-neutral-30);
+        transition: color var(--open-duration) var(--open-ease);
+      }
+
+      .service-tests_toggle {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-1rem);
+        width: 100%;
+        padding: 0;
+        color: inherit;
+        font: inherit;
+        letter-spacing: inherit;
+        text-align: start;
+        background: none;
+        border: 0;
+        cursor: pointer;
+
+        /* A closed row is clickable across its whole width, not only on the text. */
+        &::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+        }
+      }
+
+      @media (hover: hover) {
+        .service-tests_item:not([data-open])
+          .service-tests_row:hover
+          .service-tests_heading {
+          color: var(--color-neutral-60);
+        }
+      }
+
+      .service-tests_number {
+        flex-shrink: 0;
+        min-width: var(--_number);
+        color: var(--color-neutral-30);
+        transition: color var(--open-duration) var(--open-ease);
+      }
+
+      [data-open] {
+        .service-tests_heading {
+          color: var(--color-neutral-90);
+        }
+
+        .service-tests_toggle {
+          cursor: default;
+
+          /* The open row keeps its text selectable. */
+          &::after {
+            content: none;
+          }
+        }
+
+        .service-tests_number {
+          color: var(--color-primary-60);
+        }
+      }
+
+      /* Closed panels collapse to nothing; the open one grows to its content. */
+      .service-tests_panel {
+        display: grid;
+        grid-template-rows: 0fr;
+        opacity: 0;
+        transition:
+          grid-template-rows var(--open-duration) var(--open-ease),
+          opacity var(--open-duration) var(--open-ease);
+
+        .service-tests_clip {
+          min-height: 0;
+          overflow: hidden;
+        }
+      }
+
+      [data-open] .service-tests_panel {
+        grid-template-rows: 1fr;
+        opacity: 1;
+      }
+
+      .service-tests_text {
+        padding-top: var(--space-0-5rem);
+        padding-left: calc(var(--_number) + var(--space-1rem));
+        color: var(--color-neutral-60);
+      }
+
+      .service-tests_media {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
+        border-radius: var(--radius-0-5rem);
+        @media (width >= 48rem) and (width < 62rem) {
+          aspect-ratio: auto;
+          height: 30rem;
+        }
+
+        > * {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          aspect-ratio: auto;
+        }
+      }
+
+      @media (width < 62rem) {
+        .service-tests_list {
+          padding-block: var(--space-1-5rem);
+        }
+
+        .service-tests_visual .service-tests_media {
+          margin-bottom: var(--space-1rem);
+        }
+
+        .service-tests_progress {
+          display: none;
+        }
+      }
+
+      /* Desktop: every visual shares the right column. The open one dissolves in
+         over the last one, which stays whole until it is covered, so the photo
+         and window they share hold still and only what differs changes. */
+      @media (width >= 62rem) {
+        .service-tests_visual {
+          --_morph: 700ms;
+          grid-column: 2;
+          grid-row: 1 / -1;
+          align-self: start;
+          grid-template-rows: 1fr;
+          visibility: hidden;
+          transition:
+            opacity 0s var(--_morph),
+            visibility 0s var(--_morph);
+        }
+
+        [data-open] .service-tests_visual {
+          z-index: 1;
+          visibility: visible;
+          transition: opacity var(--_morph) cubic-bezier(0.45, 0, 0.2, 1);
+        }
+
+        /* The open test's line fills as its time runs, then the next one opens. */
+        .service-tests_progress {
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: calc(-1 * var(--border-width));
+          height: var(--border-width);
+          background-color: var(--color-primary-60);
+          transform: scaleX(0);
+          transform-origin: left;
+        }
+
+        [data-open] .service-tests_progress {
+          transform: scaleX(1);
+        }
+
+        @media (prefers-reduced-motion: no-preference) {
+          [data-open] .service-tests_progress {
+            animation: service-tests-progress var(--_rotate-duration) linear;
+          }
+
+          /* Hover and mouse clicks keep it running; keyboard focus and
+             scrolling away pause it. */
+          .service-tests_list:is(:has(:focus-visible), [data-paused])
+            .service-tests_progress {
+            animation-play-state: paused;
+          }
+        }
+      }
+    }
+
+    @keyframes service-tests-progress {
+      from {
+        transform: scaleX(0);
+      }
+
+      to {
+        transform: scaleX(1);
+      }
+    }
+  }
+</style>

@@ -18,7 +18,7 @@ interface Props extends HTMLAttributes<"div"> {
   render?: boolean;
   /** Small label above the heading. */
   eyebrow?: string;
-  /** Section heading. */
+  /** Section heading. Accepts `<br>` for a forced line break. */
   heading?: string;
   /** Text under the heading. Omit to leave it out. */
   lead?: string;
@@ -26,6 +26,10 @@ interface Props extends HTMLAttributes<"div"> {
   boxes?: Box[];
   /** Lead width: `narrow` wraps it under the heading, `full` lets it run to 40rem. */
   leadWidth?: "narrow" | "full";
+  /** Set to `false` to leave the logo tile out of each box header. */
+  logos?: boolean;
+  /** Screen width from which the boxes sit side by side instead of stacked. */
+  columnsFrom?: "tablet" | "desktop";
 }
 
 const defaultBoxes: Box[] = [
@@ -62,6 +66,8 @@ const {
   lead = "Other agencies can build you a good website. We build one that wins you business.",
   boxes = defaultBoxes,
   leadWidth = "narrow",
+  logos = true,
+  columnsFrom = "tablet",
   class: className,
   ...rest
 } = Astro.props;
@@ -75,7 +81,7 @@ const {
           {eyebrow}
         </Paragraph>
         <Heading tag="h2" variant="h3" class="home-difference_title">
-          {heading}
+          <Fragment set:html={heading} />
         </Heading>
         {lead && (
           <Paragraph
@@ -86,20 +92,22 @@ const {
           </Paragraph>
         )}
       </div>
-      <div class="home-difference_layout">
+      <div class:list={["home-difference_layout", `columns-${columnsFrom}`]}>
         {boxes.map((box) => (
           <article
             class:list={["home-difference_box", box.featured && "featured"]}
           >
             {box.featured && <div class="home-difference_highlight" />}
             <div class="home-difference_header">
-              <div class="home-difference_logo">
-                {box.featured ? (
-                  <Icon src={logo} class="home-difference_logo-mark" />
-                ) : (
-                  <Icon src={building} class="home-difference_building" />
-                )}
-              </div>
+              {logos && (
+                <div class="home-difference_logo">
+                  {box.featured ? (
+                    <Icon src={logo} class="home-difference_logo-mark" />
+                  ) : (
+                    <Icon src={building} class="home-difference_building" />
+                  )}
+                </div>
+              )}
               <Heading tag="h3" variant="h6" class="home-difference_name">
                 {box.title}
               </Heading>
@@ -171,10 +179,19 @@ const {
         flex-direction: column;
         align-items: center;
         gap: var(--space-1-5rem);
-        @media (width >= 48rem) {
-          flex-direction: row;
-          align-items: flex-start;
-          justify-content: center;
+        &.columns-tablet {
+          @media (width >= 48rem) {
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: center;
+          }
+        }
+        &.columns-desktop {
+          @media (width >= 62rem) {
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: center;
+          }
         }
       }
       .home-difference_box {
@@ -191,8 +208,15 @@ const {
         outline: var(--border-width) solid var(--color-neutral-5);
         outline-offset: calc(var(--border-width) * -1);
         border-radius: var(--radius-0-25rem);
-        @media (width >= 48rem) {
-          flex: 1 1 0;
+        .columns-tablet > & {
+          @media (width >= 48rem) {
+            flex: 1 1 0;
+          }
+        }
+        .columns-desktop > & {
+          @media (width >= 62rem) {
+            flex: 1 1 0;
+          }
         }
         &.featured {
           position: relative;

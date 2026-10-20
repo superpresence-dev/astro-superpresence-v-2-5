@@ -1,0 +1,556 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import HomeHero from "@/components/section/HomeHero.astro";
+import IndustryProblem from "@/components/content/IndustryProblem.astro";
+import ServiceTests from "@/components/content/ServiceTests.astro";
+import DesignTestGraphic from "@/components/content/DesignTestGraphic.astro";
+import ServicePoints from "@/components/content/ServicePoints.astro";
+import WhyOffers from "@/components/content/WhyOffers.astro";
+import IndustryProcess from "@/components/content/IndustryProcess.astro";
+import DesignProcessGraphic from "@/components/content/DesignProcessGraphic.astro";
+import ServicePreserve from "@/components/section/ServicePreserve.astro";
+import HomeQuote from "@/components/section/HomeQuote.astro";
+import DesignWhyGraphic from "@/components/content/DesignWhyGraphic.astro";
+import WhyCompare from "@/components/content/WhyCompare.astro";
+import HomeDifference from "@/components/content/HomeDifference.astro";
+import ServicePromise from "@/components/section/ServicePromise.astro";
+import HomeFaq from "@/components/content/HomeFaq.astro";
+import ServiceGrid from "@/components/content/ServiceGrid.astro";
+import HomeCta from "@/components/section/HomeCta.astro";
+import { serviceUrl } from "@/utils/services.ts";
+import heroImage from "@/assets/service/design/hero.jpg";
+import bringImage from "@/assets/service/design/bring-background.jpg";
+import quoteAvatar from "@/assets/service/migrate/quote-avatar.jpg";
+import optionsNew from "@/assets/service/design/whatwedo-new.png";
+import optionsRedesign from "@/assets/service/design/whatwedo-redesign.png";
+
+const related = [
+  {
+    title: "Brand identity",
+    text: "A refreshed identity gives the new site a look that’s yours alone.",
+  },
+  {
+    title: "Webflow development",
+    text: "We can build your site on Webflow, with a structure your team can extend.",
+  },
+  {
+    title: "Framer development",
+    text: "We can build your site on Framer when speed and iteration matter most.",
+  },
+  {
+    title: "Website migration",
+    service: "Migrate to Webflow",
+    text: "We move your existing content and rankings over without losing either.",
+  },
+  {
+    title: "Webflow maintenance",
+    text: "We keep the site updated and secure after launch, on request.",
+  },
+  {
+    title: "Social & ad creative",
+    text: "Graphics for your ads and social channels that match the new site.",
+  },
+].map(({ service, ...item }) => ({
+  ...item,
+  href: serviceUrl(service ?? item.title),
+}));
+---
+
+<Layout
+  title="Website design"
+  description="Your customers compare carefully before they get in touch. We build your site around how they decide, so they arrive ready to buy and ready to talk."
+  overlap
+>
+  {/* Hero */}
+  <HomeHero
+    eyebrow="Website design"
+    heading="Websites that make you<br />the obvious choice"
+    text="Your customers compare carefully before they get in touch. We build your site around how they decide, so they arrive ready to buy and ready to talk."
+    image={heroImage}
+    buttonText="Book a call"
+    buttonHref="/contact"
+    variant="split"
+    fade="soft"
+  />
+  {/* Problem */}
+  <Section>
+    <IndustryProblem
+      heading="Your website is losing<br />customers you never meet"
+      items={[
+        {
+          title: "The site looks fine, nothing comes in",
+          text: "It reads like everyone else’s, so buyers have no reason to pick you.",
+        },
+        {
+          title: "Visitors can’t tell what you do",
+          text: "They leave before they understand your offer, let alone your advantage.",
+        },
+        {
+          title: "You hesitate before sending the link",
+          text: "The site makes you and your team reluctant to let a prospect see it.",
+        },
+      ]}
+    />
+  </Section>
+  {/* Framework */}
+  <Section>
+    <ServiceTests
+      heading="Six tests every site we design passes"
+      lead="Run them on your current site. Pick one to see where it shows up on the page."
+      items={[
+        {
+          title: "Can a stranger say what you do?",
+          text: "After ten seconds, a first-time visitor can describe your offer back to you.",
+        },
+        {
+          title: "Can they see you’ve done this before?",
+          text: "Client names, project photos and results are visible without hunting portfolio link.",
+        },
+        {
+          title: "Does this look established at first glance?",
+          text: "Type, colour and layout read as serious company within second of arriving.",
+        },
+        {
+          title: "Does it read like it was written in English?",
+          text: "Copy sounds native to buyers abroad, with no local shortland or awkward translation.",
+        },
+        {
+          title: "Are those your real photos and people?",
+          text: "Your actual team, product or place, instead of stock shots that could belong to anyone.",
+        },
+        {
+          title: "Does this design match your price point?",
+          text: "The look and finish signal the same quality as you charge.",
+        },
+      ]}
+    >
+      <DesignTestGraphic slot="visual-1" variant="offer" />
+      <DesignTestGraphic slot="visual-2" variant="proof" />
+      <DesignTestGraphic slot="visual-3" variant="established" />
+      <DesignTestGraphic slot="visual-4" variant="english" />
+      <DesignTestGraphic slot="visual-5" variant="photos" />
+      <DesignTestGraphic slot="visual-6" variant="price" />
+    </ServiceTests>
+  </Section>
+  {/* Sites */}
+  <Section>
+    <ServicePoints
+      eyebrow="Sites we design"
+      heading="The kinds of sites we design"
+      items={[
+        {
+          icon: "site-landing",
+          title: "Landing pages",
+          text: "One page with one job, for a launch, an offer or a campaign.",
+        },
+        {
+          icon: "site-company",
+          title: "Company websites",
+          text: "The main site that explains who you are and wins the enquiry.",
+        },
+        {
+          icon: "site-saas",
+          title: "Product and SaaS sites",
+          text: "Features, use cases and plans laid out so buyers can compare.",
+        },
+        {
+          icon: "site-event",
+          title: "Event websites",
+          text: "Agenda, speakers and registration for conferences, summits and launches.",
+        },
+        {
+          icon: "site-language",
+          title: "Multi-language sites",
+          text: "One site that works for several markets, languages and regions.",
+        },
+        {
+          icon: "site-microsite",
+          title: "Microsites and campaign sites",
+          text: "A focused site for one product, initiative or announcement.",
+        },
+      ]}
+    />
+  </Section>
+  {/* Options */}
+  <Section>
+    <WhyOffers
+      variant="options"
+      eyebrow="Where you’re starting"
+      heading="A new site, or a redesign"
+      lead="Either way, the work starts with the argument your site needs to make, not with how it looks."
+      options={[
+        {
+          tone: "blue",
+          image: optionsNew,
+          title: "A new site",
+          text: "You’re launching, or you’ve outgrown a template that no longer matches the business.",
+          points: [
+            "Strategy and positioning from a blank page",
+            "Structure planned around how your buyers decide",
+            "A look built for you, not adapted from a theme",
+          ],
+        },
+        {
+          tone: "purple",
+          image: optionsRedesign,
+          title: "A redesign",
+          text: "You have a site and some traffic, but it undersells the company behind it.",
+          points: [
+            "We review what the current site is doing first",
+            "Keep what works, rebuild the argument",
+            "A design that finally matches the quality of your work",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Approach */}
+  <Section>
+    <IndustryProcess
+      eyebrow="Our approach"
+      heading="Five phases, each signed off<br />before the next begins"
+      steps={[
+        {
+          title: "Research & Strategy",
+          label: "Research & strategy",
+          text: "We study your company, competitors and buyers before anyone opens a design tool, so the site is built on evidence.",
+          points: [
+            "Strategy and kick-off call",
+            "Buyer research",
+            "Competitor research",
+            "Strategy doc",
+          ],
+        },
+        {
+          title: "Messaging & copy",
+          label: "Messaging & copywriting",
+          text: "Expert copywriters write every page around how your buyers decide, so the words do the selling.",
+          points: [
+            "Page copy for every page",
+            "Written in English for buyers",
+            "Copy reviewed with you before design",
+          ],
+        },
+        {
+          title: "Structure & wireframes",
+          label: "UI/UX design",
+          text: "Every page is planned as a wireframe first. Some studios skip this to move faster. We don’t, because this is where the order of the argument gets decided.",
+          points: [
+            "Sitemap",
+            "Wireframes for every page",
+            "A clear path to getting in touch",
+          ],
+        },
+        {
+          title: "Visual design",
+          text: "Custom high-fidelity design for desktop, tablet and phone, at the standard of the leaders in your category.",
+          points: [
+            "High-fidelity page designs",
+            "Your brand applied to the web",
+            "Custom graphics, product diagrams and icons",
+          ],
+        },
+        {
+          title: "Handoff to build",
+          label: "Development & QA",
+          text: "You get the design source and the thinking behind it, ready for us to build in Webflow or Framer.",
+          points: [
+            "Figma file",
+            "Strategy doc",
+            "Build with us in Webflow or Framer",
+          ],
+        },
+      ]}
+    >
+      <DesignProcessGraphic slot="step-1" variant="strategy" />
+      <DesignProcessGraphic slot="step-2" variant="copy" />
+      <DesignProcessGraphic slot="step-3" variant="wireframe" />
+      <DesignProcessGraphic slot="step-4" variant="visual" />
+      <DesignProcessGraphic slot="step-5" variant="handoff" />
+    </IndustryProcess>
+  </Section>
+  {/* Bring */}
+  <ServicePreserve
+    variant="split"
+    eyebrow="Working together"
+    heading="What you bring, and what we bring"
+    lead="A senior project needs a few things from your side. Here is the split, agreed before we start."
+    image={bringImage}
+    groups={[
+      {
+        title: "What you bring",
+        items: [
+          {
+            title: "A decision-maker",
+            text: "One person who can sign off each phase, so the project keeps moving.",
+          },
+          {
+            title: "Access to your experts",
+            text: "An hour with the people who know your buyers and your product best.",
+          },
+          {
+            title: "Your existing assets",
+            text: "Logo, brand files, photos and any proof you already have.",
+          },
+          {
+            title: "Feedback on time",
+            text: "The schedule holds when feedback and sign-offs arrive when agreed.",
+          },
+        ],
+      },
+      {
+        title: "What we bring",
+        items: [
+          {
+            title: "Strategy and research",
+            text: "Buyer and competitor research, and the plan for every page.",
+          },
+          {
+            title: "Copy for every page",
+            text: "Written in English by expert copywriters, around how your buyers decide.",
+          },
+          {
+            title: "Wireframes, then design",
+            text: "Structure agreed first, then a fully custom design on top of it.",
+          },
+          {
+            title: "Three feedback rounds",
+            text: "Included, with sign-off at the end of every phase.",
+          },
+          {
+            title: "A signed-off Figma file",
+            text: "Ready to build in Webflow or Framer, by the same team.",
+          },
+        ],
+      },
+    ]}
+  />
+  {/* Quote */}
+  <HomeQuote
+    quote="We went from a cookie-cutter template to a custom website that properly reflects the brand… Kevin is super easy to work with, always one message away."
+    name="Max Chernov"
+    jobTitle="YouTuber, 430k subscribers"
+    avatar={quoteAvatar}
+    logo={false}
+  />
+  {/* Why */}
+  <Section>
+    <ServicePoints
+      variant="visual"
+      eyebrow="Why Superpresence"
+      heading="Why companies choose us<br />to design their website"
+      items={[
+        {
+          title: "Built in Asia, written for buyers abroad",
+          text: "We operate in your timezone, understand Asian businesses, and craft content that resonates with English-speaking buyers—never sounding translated.",
+        },
+        {
+          title: "Strategy before pixels",
+          text: "We don’t start designing until what you do, who it is for and why you are clear. Design amplifies clarity; it can’t create it.",
+        },
+        {
+          title: "Copy written by people, in English",
+          text: "Expert copywriters write every page. Not translated, not generated, and built around how your buyers decide.",
+        },
+        {
+          title: "The whole senior team, one roof",
+          text: "Strategy, design, copy, development, conversion and QA in one accountable team, with nobody for you to hire or manage.",
+        },
+        {
+          title: "Built to convert, engineered for search",
+          text: "Conversion structure on the surface; clean structure, schema and speed underneath, so search and AI tools read you correctly.",
+        },
+        {
+          title: "Depth over volume",
+          text: "Every project gets senior attention for as long as the problem takes, not a slot sized to a subscription.",
+        },
+      ]}
+    >
+      <DesignWhyGraphic slot="visual-1" variant="asia" />
+      <DesignWhyGraphic slot="visual-2" variant="strategy" />
+      <DesignWhyGraphic slot="visual-3" variant="copy" />
+      <DesignWhyGraphic slot="visual-4" variant="team" />
+      <DesignWhyGraphic slot="visual-5" variant="convert" />
+      <DesignWhyGraphic slot="visual-6" variant="depth" />
+    </ServicePoints>
+  </Section>
+  {/* Comparison */}
+  <Section>
+    <WhyCompare
+      variant="marks"
+      eyebrow="The comparison"
+      heading="What each option actually delivers"
+      lead="A quick comparison before you decide who designs your site."
+      rows={[
+        "Strategy and buyer research",
+        "Copy by expert copywriters",
+        "Wireframes before design",
+        "Fully custom design",
+        "Feedback rounds",
+        "Sign-off at every phase",
+        "Design and build by one team",
+      ]}
+      options={[
+        {
+          title: "Superpresence",
+          icon: "brand",
+          featured: true,
+          items: [true, true, true, true, "3 included", true, true],
+        },
+        {
+          title: "Freelancer",
+          icon: "hire",
+          items: [
+            false,
+            "Sometimes",
+            "Sometimes",
+            "Sometimes",
+            "Varies",
+            false,
+            false,
+          ],
+        },
+        {
+          title: "Typical agency",
+          icon: "agency",
+          items: [
+            "Sometimes",
+            "Sometimes",
+            true,
+            "Varies",
+            "Varies",
+            "Sometimes",
+            "Varies",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Fit */}
+  <Section>
+    <HomeDifference
+      eyebrow="Is this a fit?"
+      heading="Who we design for,<br />and who we point elsewhere"
+      lead="Honest both ways, so nobody wastes a call."
+      leadWidth="full"
+      logos={false}
+      columnsFrom="desktop"
+      boxes={[
+        {
+          title: "A good fit if you",
+          featured: true,
+          items: [
+            "Sell to English-speaking buyers, abroad or at home",
+            "Sell something where the decision is big and considered",
+            "Want the site to win enquiries, not only look good",
+            "Will put time into who you are for and why you",
+            "Believe in what you sell",
+          ],
+        },
+        {
+          title: "Probably not a fit if",
+          featured: false,
+          items: [
+            "The lowest price or fastest turnaround decides",
+            "The brief is to make it look nice and nothing more",
+            "You want to skip straight to visuals",
+            "You want AI-generated pages shipped as the final site",
+            "You sell low-priced products better served by a marketplace",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Promise */}
+  <ServicePromise
+    eyebrow="Before you commit"
+    heading="See the work before you decide"
+    items={[
+      {
+        value: "Free",
+        title: "A test drive, on us",
+        text: "We watch rankings, traffic and broken links for 30 days after the switch, and fix what comes up.",
+      },
+      {
+        value: "10 min",
+        title: "Video teardown of your site",
+        text: "What is working, what is losing buyers and what we would change first.",
+      },
+      {
+        value: "3 rounds",
+        title: "Feedback included",
+        text: "Plus sign-off at the end of every phase, so nothing moves without your approval.",
+      },
+    ]}
+  />
+  {/* FAQ */}
+  <Section>
+    <HomeFaq
+      eyebrow="Still got questions?"
+      heading="The things you’re probably weighing"
+      items={[
+        {
+          question:
+            "What should we look for in a web design agency in Hong Kong, Singapore or Thailand?",
+          answer:
+            "Look for an agency that settles your positioning and writes the copy before it designs anything, writes in native English, and builds what it designs. Those three decide whether a site wins enquiries from English-speaking buyers, and they’re where most web projects in Asia fall short: strong visuals, weak messaging and proof. Then check the basics: senior people doing the work, a fixed price and scope in writing, QA across devices before launch, and a site your team can update without a developer. Superpresence is a web design agency based in Hong Kong, Singapore and Bangkok, working with companies across Asia Pacific, that does all of this in one team, which has collectively launched 48+ websites.",
+        },
+        {
+          question:
+            "We redesigned before and nothing changed. Why would this be different?",
+          answer:
+            "Most redesigns change the look and leave the message as it was, so buyers still can’t tell what you do or why to pick you. We start where that earlier project didn’t: research into your buyers and competitors, a strategy doc, and copy you approve before any design begins. GA4 and heatmaps are set up at launch, so you can see what changed in your own numbers.",
+        },
+        {
+          question: "Does AI search change what a website needs?",
+          answer:
+            "Yes: the site now has to be readable by AI tools as well as persuasive to people, and both come from the same structure. When a buyer asks ChatGPT or Google’s AI Overviews which agency, supplier or firm to use, those tools draw on sites with a clear page hierarchy, semantic HTML, schema, fast load times and pages that answer the questions buyers ask. Superpresence plans that structure in the wireframe phase, before design. We use AI heavily for research and iteration, and the copy and design that ship are made by people.",
+        },
+        {
+          question: "Will you understand our business?",
+          answer:
+            "Understanding it is the first phase of the project, before anyone opens a design tool. Superpresence works across industries on purpose, from SaaS and professional services to hotels, schools and manufacturers. You bring the expertise in an hour or so with the people who know your buyers best, and our copywriters turn it into pages a buyer understands at first read.",
+        },
+        {
+          question: "Do you only design, or build the site too?",
+          answer:
+            "Both, with the same team, so nothing gets lost between the design file and the live site. The platform follows the job. Webflow when your team will edit the site itself, a custom build (Astro or Next.js) for bookings, enrolment flows or several countries, and sometimes Framer. The price is the same whichever fits.",
+        },
+        {
+          question: "What does website design cost?",
+          answer:
+            "It depends on the site: the number of pages, the functionality (a CRM connection, bookings, a second language), and how much research and copy your positioning needs. Book a call and you’ll get a fixed price, covering design, copy, build and QA, in a proposal within a week. Projects start from US$4,800 for a smaller marketing site. Once live, a Webflow CMS site costs roughly US$25-40 a month in platform and domain fees, paid by you directly (as of June 2026). For companies running ads, the build usually pays back within the first year: clients running ads see on average a 28% lift in enquiries, from the same spend.",
+        },
+        {
+          question:
+            "We need a site fast and on a tight budget. Are you the right agency?",
+          answer:
+            "Probably not, and it’s better to know before a call. Our design process is built for considered decisions: research, copy, wireframes and custom design, each signed off before the next. If speed or price is what matters most right now, a good freelancer or a well-chosen template will serve you better. If the site later needs to win business against serious competitors, we’d be glad to talk then.",
+        },
+        {
+          question: "How long does a website design project take?",
+          answer:
+            "Design and build together take 6 to 12 weeks, depending on how many pages and integrations the site needs. A small fixed site takes 3 to 4 weeks. Book a call and the proposal you receive within a week will set out the schedule for your site, phase by phase.",
+        },
+      ]}
+    />
+  </Section>
+  {/* Related services */}
+  <Section>
+    <ServiceGrid
+      eyebrow="After the design"
+      heading="Then we build it"
+      lead="Your website design can sit alongside the services that feed it."
+      items={related}
+    />
+  </Section>
+  {/* CTA */}
+  <HomeCta
+    eyebrow="You've reached the end, so now..."
+    heading="See what your site is losing"
+    text="Get a free 10-minute video teardown of your current site: what's working, what's losing buyers, and what we'd change first."
+    buttonText="Start your project"
+    buttonHref="/contact"
+  />
+</Layout>
