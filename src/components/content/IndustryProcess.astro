@@ -5,7 +5,14 @@ import Paragraph from "@/components/typography/Paragraph.astro";
 import Icon from "@/components/media/Icon.astro";
 import check from "@/assets/icons/check-small.svg";
 
-type Step = { title: string; text: string; points: string[] };
+type Step = {
+  title: string;
+  /** Text in the side navigation. Defaults to the title. */
+  label?: string;
+  text: string;
+  points: string[];
+};
+type Note = { title: string; text: string };
 
 interface Props extends HTMLAttributes<"div"> {
   /** Set to `false` to omit the component. */
@@ -14,8 +21,10 @@ interface Props extends HTMLAttributes<"div"> {
   eyebrow?: string;
   /** Section heading. Accepts `<br>` for a forced line break. */
   heading: string;
-  /** Steps in order, numbered automatically. */
+  /** Steps in order, numbered automatically. A `step-1`, `step-2`… slot fills that step's visual. */
   steps: Step[];
+  /** Box under the side navigation. Omit to leave it out. */
+  note?: Note;
 }
 
 const {
@@ -23,6 +32,7 @@ const {
   eyebrow = "Our process",
   heading,
   steps,
+  note,
   class: className,
   ...rest
 } = Astro.props;
@@ -53,11 +63,24 @@ const number = (index: number) => `(${String(index + 1).padStart(2, "0")})`;
                   data-process-link={stepId(index)}
                   aria-current={index === 0 ? "location" : undefined}
                 >
-                  {step.title}
+                  {step.label ?? step.title}
                 </a>
               </li>
             ))}
           </ul>
+          {note && (
+            <div class="industry-process_note">
+              <Paragraph
+                variant="main"
+                class="industry-process_note-title weight-medium"
+              >
+                {note.title}
+              </Paragraph>
+              <Paragraph variant="small" class="industry-process_text">
+                {note.text}
+              </Paragraph>
+            </div>
+          )}
         </nav>
         <ol class="industry-process_list">
           {steps.map((step, index) => (
@@ -93,7 +116,9 @@ const number = (index: number) => `(${String(index + 1).padStart(2, "0")})`;
                   ))}
                 </ul>
               </div>
-              <div class="industry-process_visual" aria-hidden="true" />
+              <div class="industry-process_visual" aria-hidden="true">
+                <slot name={`step-${index + 1}`} />
+              </div>
             </li>
           ))}
         </ol>
@@ -194,6 +219,22 @@ const number = (index: number) => `(${String(index + 1).padStart(2, "0")})`;
         }
       }
 
+      .industry-process_note {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-5rem);
+        margin-top: var(--space-1-5rem);
+        padding: var(--space-1-5rem) var(--space-2rem);
+        border: var(--border-width) solid var(--color-neutral-5);
+        border-left: 0;
+        border-radius: 0 var(--radius-0-25rem) var(--radius-0-25rem) 0;
+        background-color: var(--color-neutral-2);
+      }
+
+      .industry-process_note-title {
+        color: var(--heading);
+      }
+
       .industry-process_nav-list {
         display: flex;
         flex-direction: column;
@@ -284,12 +325,13 @@ const number = (index: number) => `(${String(index + 1).padStart(2, "0")})`;
       }
 
       .industry-process_check {
-        --_size: 1.25rem;
+        --_size: var(--icon-sm);
         color: var(--brand);
       }
 
       .industry-process_visual {
         width: 100%;
+        overflow: clip;
         aspect-ratio: 1 / 1;
         border-radius: var(--radius-0-5rem);
         background-color: var(--color-neutral-0);

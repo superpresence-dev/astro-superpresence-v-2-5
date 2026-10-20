@@ -1,0 +1,291 @@
+---
+import type { HTMLAttributes, SvgComponent } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Button from "@/components/Button.astro";
+import Icon from "@/components/media/Icon.astro";
+import Img from "@/components/media/Img.astro";
+import asideImage from "@/assets/service/migrate/points-aside.jpg";
+
+const iconFiles = import.meta.glob<{ default: SvgComponent }>(
+  "/src/assets/service/icons/*.svg",
+  { eager: true },
+);
+
+const icons: Record<string, SvgComponent> = Object.fromEntries(
+  Object.entries(iconFiles).map(([path, file]) => [
+    path.slice(path.lastIndexOf("/") + 1, -".svg".length),
+    file.default,
+  ]),
+);
+
+type Item = { icon: string; title: string; text: string };
+
+type Aside = {
+  title: string;
+  text: string;
+  buttonText?: string;
+  buttonHref?: string;
+  image?: ImageMetadata;
+};
+
+type Variant =
+  | {
+      /** `feature` shows each icon bare; `platform` sets it in a tile and adds a closing card. */
+      variant?: "feature";
+      aside?: never;
+    }
+  | {
+      variant: "platform";
+      /** Dark card after the points. Omit to leave it out. */
+      aside?: Aside;
+    };
+
+type Props = HTMLAttributes<"div"> &
+  Variant & {
+    /** Set to `false` to omit the component. */
+    render?: boolean;
+    /** Small label above the heading. */
+    eyebrow?: string;
+    /** Section heading. Accepts `<br>` for a forced line break. */
+    heading: string;
+    /** Points in order. `icon` is a file name in `src/assets/service/icons`. */
+    items: Item[];
+  };
+
+type AllProps = HTMLAttributes<"div"> & {
+  render?: boolean;
+  eyebrow?: string;
+  heading: string;
+  items: Item[];
+  variant?: "feature" | "platform";
+  aside?: Aside;
+};
+
+const {
+  render = true,
+  eyebrow,
+  heading,
+  items,
+  variant = "feature",
+  aside,
+  class: className,
+  ...rest
+} = Astro.props as AllProps;
+---
+
+{
+  render && heading && items?.length > 0 && (
+    <div class:list={["service-points_wrap", variant, className]} {...rest}>
+      <div class="service-points_intro">
+        {eyebrow && (
+          <Paragraph variant="overline-small" class="service-points_eyebrow">
+            {eyebrow}
+          </Paragraph>
+        )}
+        <Heading tag="h2" variant="h3">
+          <Fragment set:html={heading} />
+        </Heading>
+      </div>
+      <div class="service-points_layout">
+        <ul class="service-points_list" role="list">
+          {items.map((item) => (
+            <li class="service-points_card">
+              <span class="service-points_icon" aria-hidden="true">
+                <Icon
+                  src={icons[item.icon]}
+                  variant={variant === "platform" ? "m" : "2xl"}
+                />
+              </span>
+              <div class="service-points_content">
+                <Heading tag="h3" variant="h6">
+                  {item.title}
+                </Heading>
+                <Paragraph variant="main" class="service-points_text">
+                  {item.text}
+                </Paragraph>
+              </div>
+            </li>
+          ))}
+        </ul>
+        {variant === "platform" && aside && (
+          <div class="service-points_aside theme-dark">
+            <Img
+              src={aside.image ?? asideImage}
+              class="service-points_aside-image"
+            />
+            <div class="service-points_content">
+              <Heading tag="h3" variant="h5">
+                {aside.title}
+              </Heading>
+              <Paragraph variant="large" class="service-points_aside-text">
+                {aside.text}
+              </Paragraph>
+            </div>
+            <Button
+              element="link"
+              href={aside.buttonHref ?? "/contact"}
+              arrow
+              class="service-points_aside-button"
+            >
+              {aside.buttonText ?? "Book a call"}
+            </Button>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .service-points_wrap {
+      --_card-height: 13.125rem;
+      --_aside-height: 13.125rem;
+      @media (width >= 48rem) {
+        --_card-height: 14.0625rem;
+      }
+      @media (width >= 62rem) {
+        --_card-height: 15.625rem;
+      }
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3-5rem);
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      &.platform {
+        --_card-height: 11.25rem;
+        @media (width >= 48rem) {
+          --_card-height: 12.5rem;
+        }
+        @media (width >= 62rem) {
+          --_card-height: 13.125rem;
+        }
+      }
+
+      .service-points_intro {
+        width: 100%;
+        max-width: 33.75rem;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+        @media (width >= 62rem) {
+          max-width: 55rem;
+        }
+      }
+
+      .service-points_eyebrow {
+        color: var(--color-neutral-30);
+      }
+
+      .service-points_layout {
+        display: flex;
+        flex-direction: column;
+        background-color: var(--color-neutral-10);
+        border-radius: var(--radius-0-5rem);
+        @media (width >= 62rem) {
+          flex-direction: row;
+        }
+      }
+
+      .service-points_list {
+        min-width: 0;
+        flex: 1;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        @media (width >= 48rem) {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        @media (width >= 62rem) {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      &.platform .service-points_list {
+        @media (width >= 48rem) {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      .service-points_card {
+        min-width: 0;
+        min-height: var(--_card-height);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: var(--space-1-5rem);
+        margin: 0;
+        padding: var(--space-1-5rem);
+        background-color: var(--color-neutral-0);
+        border: var(--border-width) solid var(--color-neutral-10);
+        border-radius: var(--radius-0-5rem);
+      }
+
+      .service-points_icon {
+        display: flex;
+        color: var(--brand);
+      }
+
+      &.platform .service-points_icon {
+        width: 3rem;
+        height: 3rem;
+        align-items: center;
+        justify-content: center;
+        color: var(--heading);
+        background-color: var(--color-neutral-2);
+        border: var(--border-width) solid var(--color-neutral-5);
+        border-radius: var(--radius-0-125rem);
+      }
+
+      .service-points_content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-5rem);
+      }
+
+      .service-points_text {
+        color: var(--color-neutral-60);
+      }
+
+      .service-points_aside {
+        position: relative;
+        isolation: isolate;
+        min-height: var(--_aside-height);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: var(--space-1-5rem);
+        padding: var(--space-2rem);
+        overflow: hidden;
+        background-color: var(--color-neutral-90);
+        border: var(--border-width) solid var(--color-neutral-10);
+        border-radius: var(--radius-0-5rem);
+        @media (width >= 62rem) {
+          width: 22.5rem;
+          flex: none;
+        }
+      }
+
+      .service-points_aside-image {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .service-points_aside-text {
+        color: var(--color-neutral-10);
+      }
+    }
+  }
+</style>

@@ -1,0 +1,259 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Img from "@/components/media/Img.astro";
+import Icon from "@/components/media/Icon.astro";
+import mark from "@/assets/why/team-mark.png";
+import cursor from "@/assets/why/team-cursor.svg";
+
+type Stat = { value: string; label: string };
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading: string;
+  /** Text under the heading. Omit to leave it out. */
+  lead?: string;
+  /** Figures listed under the text, in order. */
+  stats: Stat[];
+}
+
+const {
+  render = true,
+  eyebrow = "Why does Superpresence exist?",
+  heading,
+  lead,
+  stats,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const roles = [
+  { name: "Strategy", key: "strategy" },
+  { name: "Copywriter", key: "copywriter" },
+  { name: "Developer", key: "developer" },
+  { name: "Design", key: "design" },
+];
+---
+
+{
+  render && heading && stats?.length > 0 && (
+    <div class:list={["why-team_wrap", className]} {...rest}>
+      <div class="why-team_visual" aria-hidden="true">
+        <Img src={mark} transparent class="why-team_mark" />
+        {roles.map((role) => (
+          <div class:list={["why-team_role", role.key]}>
+            <Icon src={cursor} variant="full-width" class="why-team_cursor" />
+            <Paragraph tag="span" variant="h6" class="why-team_tag">
+              {role.name}
+            </Paragraph>
+          </div>
+        ))}
+      </div>
+      <div class="why-team_content">
+        <div class="why-team_intro">
+          <Paragraph variant="overline-small" class="why-team_eyebrow">
+            {eyebrow}
+          </Paragraph>
+          <Heading tag="h2" variant="h3" class="why-team_title">
+            <Fragment set:html={heading} />
+          </Heading>
+          {lead && (
+            <Paragraph variant="large" class="why-team_lead">
+              {lead}
+            </Paragraph>
+          )}
+        </div>
+        <ul class="why-team_stats" role="list">
+          {stats.map((stat) => (
+            <li class="why-team_stat">
+              <Paragraph tag="span" variant="h4" class="why-team_value">
+                {stat.value}
+              </Paragraph>
+              <Paragraph
+                tag="span"
+                variant="main"
+                class="why-team_label weight-medium"
+              >
+                {stat.label}
+              </Paragraph>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .why-team_wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: center;
+      gap: var(--space-5rem);
+      @media (width >= 62rem) {
+        flex-direction: row;
+        align-items: flex-start;
+      }
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .why-team_content {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2rem);
+        @media (width >= 62rem) {
+          flex: 1 1 0;
+        }
+      }
+
+      .why-team_intro {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+      }
+
+      /* Figma breaks the heading greedily, not balanced. */
+      .why-team_title {
+        text-wrap: wrap;
+      }
+
+      .why-team_eyebrow {
+        color: var(--color-neutral-30);
+      }
+
+      .why-team_stats {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+        margin: 0;
+        padding: 0;
+      }
+
+      .why-team_stat {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: var(--space-1rem);
+        margin: 0;
+        /* Figma draws the rule inside the row's height. */
+        padding-top: calc(var(--space-1-5rem) - var(--border-width));
+        border-top: var(--border-width) solid var(--color-neutral-5);
+      }
+
+      .why-team_value {
+        color: var(--heading);
+        white-space: nowrap;
+      }
+
+      .why-team_label {
+        color: var(--color-neutral-60);
+        text-align: end;
+      }
+
+      /* =====================
+         Visual
+         ===================== */
+
+      /* An artboard 595 units wide that scales as one piece. */
+      .why-team_visual {
+        --_unit: calc(100cqw / 595);
+        container-type: inline-size;
+        position: relative;
+        flex: none;
+        width: 100%;
+        aspect-ratio: 595 / 540;
+        overflow: clip;
+        @media (width >= 48rem) {
+          width: 33.75rem;
+        }
+        @media (width >= 62rem) {
+          width: 37.1875rem;
+        }
+      }
+
+      .why-team_mark {
+        position: absolute;
+        top: calc(-14 * var(--_unit));
+        left: calc(13 * var(--_unit));
+        width: calc(569 * var(--_unit));
+        height: auto;
+        max-width: none;
+      }
+
+      .why-team_role {
+        position: absolute;
+        inset: 0;
+
+        &.strategy {
+          --_cursor-x: 323;
+          --_cursor-y: 101;
+          --_tag-x: 351;
+          --_tag-y: 130.07;
+          --_tag-color: var(--color-primary-60);
+        }
+        &.developer {
+          --_cursor-x: 308;
+          --_cursor-y: 315;
+          --_tag-x: 336;
+          --_tag-y: 344.07;
+          --_tag-color: var(--color-accent-warning-60);
+        }
+        &.design {
+          --_cursor-x: 128;
+          --_cursor-y: 372;
+          --_tag-x: 40;
+          --_tag-y: 403.07;
+          --_tag-color: var(--color-accent-success-60);
+          --_cursor-turn: scale(1, -1) rotate(-140.56deg);
+        }
+        &.copywriter {
+          --_cursor-x: 188;
+          --_cursor-y: 182;
+          --_tag-x: 63;
+          --_tag-y: 212.07;
+          --_tag-color: var(--color-accent-failed-50);
+          --_cursor-turn: scale(1, -1) rotate(-140.56deg);
+        }
+      }
+
+      .why-team_cursor {
+        position: absolute;
+        top: calc((var(--_cursor-y) - 0.34) * var(--_unit));
+        left: calc((var(--_cursor-x) - 0.34) * var(--_unit));
+        width: calc(42.9167 * var(--_unit));
+        color: var(--_tag-color);
+        transform: var(--_cursor-turn, rotate(-39.44deg));
+        overflow: visible;
+      }
+
+      .why-team_tag {
+        position: absolute;
+        top: calc(var(--_tag-y) * var(--_unit));
+        left: calc(var(--_tag-x) * var(--_unit));
+        padding: calc(6 * var(--_unit)) calc(16 * var(--_unit));
+        font-size: calc(20 * var(--_unit));
+        line-height: calc(26 * var(--_unit));
+        color: var(--color-neutral-0);
+        white-space: nowrap;
+        background-color: var(--_tag-color);
+        border: calc(2.5 * var(--_unit)) solid var(--color-neutral-0);
+        border-radius: calc(12 * var(--_unit));
+        filter: drop-shadow(
+          calc(-1.2 * var(--_unit)) calc(3.3 * var(--_unit))
+            calc(3.1 * var(--_unit)) rgb(0 0 0 / 0.03)
+        );
+      }
+    }
+  }
+</style>

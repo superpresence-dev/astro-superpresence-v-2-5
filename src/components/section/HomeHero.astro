@@ -5,18 +5,9 @@ import Paragraph from "@/components/typography/Paragraph.astro";
 import Heading from "@/components/typography/Heading.astro";
 import ButtonWrapper from "@/components/wrapper/ButtonWrapper.astro";
 import Button from "@/components/Button.astro";
-import Marquee from "@/components/interactive/Marquee.astro";
+import HeroLogos from "@/components/content/HeroLogos.astro";
 import Img from "@/components/media/Img.astro";
 import background from "@/assets/home/alt-01.png";
-import logoOne from "@/assets/home/logo-3.svg";
-import logoTwo from "@/assets/home/logo-4.svg";
-import logoThree from "@/assets/home/logo-5.svg";
-import logoFour from "@/assets/home/logo-6.svg";
-import logoFive from "@/assets/home/logo-7.svg";
-import logoSix from "@/assets/home/logo-8.svg";
-import logoSeven from "@/assets/home/logo-9.svg";
-import rallymatesMark from "@/assets/home/vector-31-stroke.svg";
-import rallymatesWord from "@/assets/home/rallymates.svg";
 
 interface Props
   extends HTMLAttributes<"section">,
@@ -37,6 +28,8 @@ interface Props
   secondaryText?: string;
   /** Destination of the secondary button. */
   secondaryHref?: string;
+  /** `logos` puts the paragraph under the heading and a logo strip below; `split` moves the paragraph to the right of the heading and leaves the logos out. */
+  variant?: "logos" | "split";
   /** Bottom fade over the image: `deep` turns solid below desktop, `soft` stays at 70% on every screen. */
   fade?: "deep" | "soft";
   /** Colour the `soft` fade runs to, as a hex. Mixed at 70% like the default dark. */
@@ -53,14 +46,12 @@ const {
   buttonHref = "#",
   secondaryText,
   secondaryHref = "#",
+  variant = "logos",
   fade = "deep",
   fadeColor,
   class: className,
   ...rest
 } = Astro.props;
-
-const logosBefore = [logoOne, logoTwo, logoThree, logoFour, logoFive];
-const logosAfter = [logoSix, logoSeven];
 ---
 
 <Section
@@ -69,67 +60,54 @@ const logosAfter = [logoSix, logoSeven];
   paddingTop="none"
   paddingBottom="none"
   containerClass="home-hero_layout"
-  class:list={["home-hero_wrap", fade, className]}
+  class:list={["home-hero_wrap", variant, fade, className]}
   style={fadeColor && `--_fade-color: ${fadeColor};`}
   {...rest}
 >
   <Img src={image} slot="background" loading="eager" fetchPriority="high" />
   <div slot="background" class="home-hero_fade"></div>
   <div class="home-hero_content">
-    <div class="home-hero_heading">
-      <Paragraph variant="overline-small" class="home-hero_eyebrow">
-        {eyebrow}
-      </Paragraph>
-      <Heading tag="h1" class="home-hero_title">
-        <Fragment set:html={heading} />
-      </Heading>
-      <Paragraph variant="large" class="home-hero_text">
-        {text}
-      </Paragraph>
-    </div>
-    <ButtonWrapper marginTop="0">
-      <Button element="link" href={buttonHref} arrow>{buttonText}</Button>
-      {
-        secondaryText && (
-          <Button
-            element="link"
-            href={secondaryHref}
-            emphasis="secondary"
-            class="home-hero_secondary"
-          >
-            {secondaryText}
-          </Button>
-        )
-      }
-    </ButtonWrapper>
-  </div>
-  <Marquee label="Client logos" controls={false} class="home-hero_logos">
-    {
-      logosBefore.map((logo) => (
-        <div class="home-hero_logo">
-          <Img src={logo} transparent class="home-hero_logo-image" />
-        </div>
-      ))
-    }
-    <div class="home-hero_logo">
-      <div class="home-hero_rallymates" role="img" aria-label="Rallymates">
-        <Img src={rallymatesMark} transparent class="home-hero_rallymates-leaf" />
-        <span class="home-hero_rallymates-ball"></span>
-        <Img
-          src={rallymatesWord}
-          transparent
-          class="home-hero_rallymates-word"
-        />
+    <div class="home-hero_main">
+      <div class="home-hero_heading">
+        <Paragraph variant="overline-small" class="home-hero_eyebrow">
+          {eyebrow}
+        </Paragraph>
+        <Heading tag="h1" class="home-hero_title">
+          <Fragment set:html={heading} />
+        </Heading>
+        {
+          variant === "logos" && (
+            <Paragraph variant="large" class="home-hero_text">
+              {text}
+            </Paragraph>
+          )
+        }
       </div>
+      <ButtonWrapper marginTop="0">
+        <Button element="link" href={buttonHref} arrow>{buttonText}</Button>
+        {
+          secondaryText && (
+            <Button
+              element="link"
+              href={secondaryHref}
+              emphasis="secondary"
+              class="home-hero_secondary"
+            >
+              {secondaryText}
+            </Button>
+          )
+        }
+      </ButtonWrapper>
     </div>
     {
-      logosAfter.map((logo) => (
-        <div class="home-hero_logo">
-          <Img src={logo} transparent class="home-hero_logo-image" />
-        </div>
-      ))
+      variant === "split" && (
+        <Paragraph variant="main" class="home-hero_text">
+          {text}
+        </Paragraph>
+      )
     }
-  </Marquee>
+  </div>
+  {variant === "logos" && <HeroLogos class="home-hero_logos" />}
 </Section>
 
 <style is:global>
@@ -143,8 +121,6 @@ const logosAfter = [logoSix, logoSeven];
       --_heading-width: 37.5rem;
       --_text-width: 30rem;
       --_logos-top: var(--space-1-25rem);
-      --_logos-gap: var(--space-1-25rem);
-      --_logo-height: 4.5rem;
       @media (width >= 62rem) {
         --_fade: rgb(23 23 23 / 0.7);
         --_fade-tall: 12.5rem;
@@ -154,8 +130,6 @@ const logosAfter = [logoSix, logoSeven];
         --_heading-width: 46.875rem;
         --_text-width: 33.75rem;
         --_logos-top: var(--space-0-5rem);
-        --_logos-gap: var(--space-2rem);
-        --_logo-height: 5rem;
       }
       &.soft {
         --_fade: color-mix(in srgb, var(--_fade-color, rgb(23 23 23)) 70%, transparent);
@@ -200,6 +174,14 @@ const logosAfter = [logoSix, logoSeven];
         }
       }
 
+      .home-hero_main {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-2rem);
+      }
+
       .home-hero_heading {
         width: 100%;
         display: flex;
@@ -229,65 +211,37 @@ const logosAfter = [logoSix, logoSeven];
         --button-2-border: var(--color-neutral-0);
       }
 
+      &.split {
+        --_content-bottom: var(--space-5rem);
+        --_split-text-width: 25rem;
+
+        .home-hero_layout {
+          grid-template-rows: 1fr;
+          align-items: end;
+        }
+
+        .home-hero_content {
+          max-width: none;
+          gap: var(--space-2-5rem);
+          @media (width >= 62rem) {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-end;
+          }
+        }
+
+        .home-hero_main {
+          max-width: 42.5rem;
+        }
+
+        .home-hero_text {
+          max-width: var(--_split-text-width);
+        }
+      }
+
       .home-hero_logos {
-        --_gap-size: var(--_logos-gap);
-        width: 100vw;
-        margin-inline: calc(50% - 50vw);
         padding-top: var(--_logos-top);
         padding-bottom: var(--space-0-5rem);
-      }
-
-      .home-hero_logo {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 10rem;
-        height: var(--_logo-height);
-        padding-inline: var(--space-1-25rem);
-      }
-
-      .home-hero_logo-image {
-        flex: none;
-        width: auto;
-        max-width: none;
-        height: 1.75rem;
-      }
-
-      .home-hero_rallymates {
-        container-type: inline-size;
-        position: relative;
-        flex: none;
-        width: 7.554375rem;
-        aspect-ratio: 120.87 / 28;
-
-        .home-hero_rallymates-leaf {
-          position: absolute;
-          top: 6.09cqw;
-          left: 0.925cqw;
-          width: 10.59cqw;
-          height: auto;
-          max-width: none;
-          rotate: -10.13deg;
-        }
-
-        .home-hero_rallymates-ball {
-          position: absolute;
-          top: 4.786cqw;
-          left: 8.22cqw;
-          width: 4.35cqw;
-          aspect-ratio: 1;
-          border-radius: var(--radius-full);
-          background-color: var(--color-neutral-20);
-        }
-
-        .home-hero_rallymates-word {
-          position: absolute;
-          top: 5.07cqw;
-          left: 16.16cqw;
-          width: 83.3cqw;
-          height: auto;
-          max-width: none;
-        }
       }
     }
   }

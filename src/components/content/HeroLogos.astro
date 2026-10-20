@@ -1,0 +1,130 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Marquee from "@/components/interactive/Marquee.astro";
+import Img from "@/components/media/Img.astro";
+import logoOne from "@/assets/home/logo-3.svg";
+import logoTwo from "@/assets/home/logo-4.svg";
+import logoThree from "@/assets/home/logo-5.svg";
+import logoFour from "@/assets/home/logo-6.svg";
+import logoFive from "@/assets/home/logo-7.svg";
+import logoSix from "@/assets/home/logo-8.svg";
+import logoSeven from "@/assets/home/logo-9.svg";
+import rallymatesMark from "@/assets/home/vector-31-stroke.svg";
+import rallymatesWord from "@/assets/home/rallymates.svg";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+}
+
+const { render = true, class: className, ...rest } = Astro.props;
+
+const logosBefore = [logoOne, logoTwo, logoThree, logoFour, logoFive];
+const logosAfter = [logoSix, logoSeven];
+---
+
+{
+  render && (
+    <Marquee
+      label="Client logos"
+      controls={false}
+      class:list={["hero-logos_wrap", className]}
+      {...rest}
+    >
+      {logosBefore.map((logo) => (
+        <div class="hero-logos_logo">
+          <Img src={logo} transparent class="hero-logos_image" />
+        </div>
+      ))}
+      <div class="hero-logos_logo">
+        <div class="hero-logos_rallymates" role="img" aria-label="Rallymates">
+          <Img
+            src={rallymatesMark}
+            transparent
+            class="hero-logos_rallymates-leaf"
+          />
+          <span class="hero-logos_rallymates-ball" />
+          <Img
+            src={rallymatesWord}
+            transparent
+            class="hero-logos_rallymates-word"
+          />
+        </div>
+      </div>
+      {logosAfter.map((logo) => (
+        <div class="hero-logos_logo">
+          <Img src={logo} transparent class="hero-logos_image" />
+        </div>
+      ))}
+    </Marquee>
+  )
+}
+
+<style is:global>
+  @layer components {
+    /* Doubled up to outrank the strip's own gap and width. */
+    .hero-logos_wrap.marquee_wrap {
+      --_gap-size: var(--space-1-25rem);
+      --_logo-height: 4.5rem;
+      @media (width >= 62rem) {
+        --_gap-size: var(--space-2rem);
+        --_logo-height: 5rem;
+      }
+      width: 100vw;
+      margin-inline: calc(50% - 50vw);
+
+      .hero-logos_logo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 10rem;
+        height: var(--_logo-height);
+        padding-inline: var(--space-1-25rem);
+      }
+
+      .hero-logos_image {
+        flex: none;
+        width: auto;
+        max-width: none;
+        height: 1.75rem;
+      }
+
+      .hero-logos_rallymates {
+        container-type: inline-size;
+        position: relative;
+        flex: none;
+        width: 7.554375rem;
+        aspect-ratio: 120.87 / 28;
+
+        .hero-logos_rallymates-leaf {
+          position: absolute;
+          top: 6.09cqw;
+          left: 0.925cqw;
+          width: 10.59cqw;
+          height: auto;
+          max-width: none;
+          rotate: -10.13deg;
+        }
+
+        .hero-logos_rallymates-ball {
+          position: absolute;
+          top: 4.786cqw;
+          left: 8.22cqw;
+          width: 4.35cqw;
+          aspect-ratio: 1;
+          border-radius: var(--radius-full);
+          background-color: var(--color-neutral-20);
+        }
+
+        .hero-logos_rallymates-word {
+          position: absolute;
+          top: 5.07cqw;
+          left: 16.16cqw;
+          width: 83.3cqw;
+          height: auto;
+          max-width: none;
+        }
+      }
+    }
+  }
+</style>

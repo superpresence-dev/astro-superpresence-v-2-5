@@ -1,0 +1,175 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Icon from "@/components/media/Icon.astro";
+import check from "@/assets/icons/check-small.svg";
+import { slotContent } from "@/utils/slots.ts";
+
+type Feature = {
+  eyebrow?: string;
+  heading: string;
+  text?: string;
+  points?: string[];
+};
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Rows in order, alternating sides. Each row's visual goes in the slot `visual-1`, `visual-2`, and so on. */
+  items: Feature[];
+}
+
+const { render = true, items, class: className, ...rest } = Astro.props;
+
+const visuals = await Promise.all(
+  (items ?? []).map((_, index) =>
+    slotContent(Astro.slots, `visual-${index + 1}`),
+  ),
+);
+---
+
+{
+  render && items?.length > 0 && (
+    <div class:list={["service-features_wrap", className]} {...rest}>
+      {items.map((item, index) => (
+        <div class="service-features_row">
+          <div class="service-features_content">
+            <div class="service-features_heading">
+              {item.eyebrow && (
+                <Paragraph variant="overline-small" class="service-features_eyebrow">
+                  {item.eyebrow}
+                </Paragraph>
+              )}
+              <Heading tag="h2" variant="h3">
+                <Fragment set:html={item.heading} />
+              </Heading>
+              {item.text && (
+                <Paragraph variant="large" class="service-features_text">
+                  {item.text}
+                </Paragraph>
+              )}
+            </div>
+            {item.points && item.points.length > 0 && (
+              <ul class="service-features_points" role="list">
+                {item.points.map((point) => (
+                  <li class="service-features_point">
+                    <Icon src={check} class="service-features_check" />
+                    <Paragraph tag="span" variant="main" class="service-features_point-text">
+                      {point}
+                    </Paragraph>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          {visuals[index] && (
+            <div class="service-features_visual">
+              <Fragment set:html={visuals[index]} />
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .service-features_wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3-5rem);
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .service-features_row {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2-5rem);
+        padding-bottom: var(--space-2rem);
+        @media (width >= 48rem) {
+          &:nth-child(even) {
+            align-items: flex-end;
+          }
+        }
+        @media (width >= 62rem) {
+          flex-direction: row;
+          align-items: stretch;
+          gap: var(--space-6-5rem);
+          &:nth-child(even) {
+            flex-direction: row-reverse;
+            align-items: stretch;
+          }
+        }
+      }
+
+      .service-features_content {
+        width: 100%;
+        max-width: 33.75rem;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2rem);
+        padding-block: var(--space-2rem);
+        @media (width >= 62rem) {
+          flex: 1 1 22rem;
+          min-width: 0;
+          max-width: none;
+          justify-content: space-between;
+        }
+      }
+
+      .service-features_heading {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+      }
+
+      .service-features_eyebrow {
+        color: var(--color-neutral-30);
+      }
+
+      .service-features_text {
+        max-width: 31.25rem;
+        color: var(--color-neutral-60);
+      }
+
+      .service-features_points {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        padding: 0;
+      }
+
+      .service-features_point {
+        display: flex;
+        align-items: center;
+        gap: var(--space-0-75rem);
+        margin: 0;
+        padding-block: var(--space-0-25rem);
+      }
+
+      .service-features_check {
+        --_size: var(--icon-sm);
+        color: var(--brand);
+      }
+
+      .service-features_point-text {
+        color: var(--color-neutral-60);
+      }
+
+      .service-features_visual {
+        flex: none;
+        width: 100%;
+        max-width: 35rem;
+        @media (width >= 62rem) {
+          flex: 0 1 35rem;
+          align-self: center;
+        }
+      }
+    }
+  }
+</style>

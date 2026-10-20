@@ -10,6 +10,7 @@ import flagAu from "@/assets/footer/flag-au.svg";
 import flagTh from "@/assets/footer/flag-th.svg";
 import flagHk from "@/assets/footer/flag-hk.svg";
 import flagSg from "@/assets/footer/flag-sg.svg";
+import { serviceUrl } from "@/utils/services.ts";
 
 interface Props {
   /** Set to `false` to omit the component. */
@@ -77,6 +78,12 @@ const menus = [
   },
 ];
 
+/* Pages built so far; every other label still points nowhere. */
+const hrefs: Record<string, string> = {
+  "Why Superpresence": "/why-superpresence",
+  "Migrate to Webflow": serviceUrl("Migrate to Webflow"),
+};
+
 const clocks = [
   { flag: flagAu, country: "Australia", zone: "Australia/Sydney" },
   { flag: flagTh, country: "Thailand", zone: "Asia/Bangkok" },
@@ -132,7 +139,10 @@ const timeIn = (zone: string) =>
                 <ul class="footer_list">
                   {menu.links.map((label) => (
                     <li>
-                      <a class="footer_link text-style-main" href="#">
+                      <a
+                        class="footer_link text-style-main"
+                        href={hrefs[label] ?? "#"}
+                      >
                         {label}
                       </a>
                     </li>

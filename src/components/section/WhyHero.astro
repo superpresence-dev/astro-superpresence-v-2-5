@@ -1,0 +1,225 @@
+---
+import type { ComponentProps, HTMLAttributes } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Img from "@/components/media/Img.astro";
+import HeroLogos from "@/components/content/HeroLogos.astro";
+import background from "@/assets/why/hero-background.jpg";
+import siteOne from "@/assets/why/hero-site-1.jpg";
+import siteTwo from "@/assets/why/hero-site-2.jpg";
+import siteThree from "@/assets/why/hero-site-3.jpg";
+
+interface Props
+  extends
+    HTMLAttributes<"section">,
+    Pick<ComponentProps<typeof Section>, "render"> {
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading?: string;
+  /** Paragraph below the heading. */
+  text?: string;
+}
+
+const {
+  render = true,
+  eyebrow = "Why Superpresence",
+  heading = "We create websites that drive growth for Asian businesses",
+  text = "The site that holds your paid traffic and shortens your sales conversations. Built here, written for the English-speaking buyers you're trying to win.",
+  class: className,
+  ...rest
+} = Astro.props;
+
+const sites = [
+  { image: siteOne, position: "start" },
+  { image: siteTwo, position: "center" },
+  { image: siteThree, position: "end" },
+];
+---
+
+<Section
+  render={render}
+  theme="dark"
+  paddingTop="none"
+  paddingBottom="none"
+  containerClass="why-hero_layout"
+  class:list={["why-hero_wrap", className]}
+  {...rest}
+>
+  <Img src={background} slot="background" loading="eager" fetchPriority="high" />
+  <div slot="background" class="why-hero_fade"></div>
+  <div class="why-hero_heading">
+    <Paragraph variant="overline-small" class="why-hero_eyebrow">
+      {eyebrow}
+    </Paragraph>
+    <Heading tag="h1" class="why-hero_title">
+      <Fragment set:html={heading} />
+    </Heading>
+    <Paragraph variant="large" class="why-hero_text">
+      {text}
+    </Paragraph>
+  </div>
+  <div class="why-hero_sites" aria-hidden="true">
+    {
+      sites.map((site) => (
+        <div class:list={["why-hero_site", site.position]}>
+          <Img
+            src={site.image}
+            loading="eager"
+            variant="constrained"
+            sizes="(width >= 62rem) 42rem, 25rem"
+            class="why-hero_site-image"
+          />
+        </div>
+      ))
+    }
+  </div>
+  <HeroLogos class="why-hero_logos" />
+</Section>
+
+<style is:global>
+  @layer components {
+    .why-hero_wrap {
+      --_fade-tall: 5rem;
+      --_fade-short: 3.75rem;
+      @media (width >= 48rem) {
+        --_fade-tall: 10rem;
+        --_fade-short: 7.5rem;
+      }
+      @media (width >= 62rem) {
+        --_fade-tall: 12.5rem;
+        --_fade-short: 9.375rem;
+      }
+      overflow: clip;
+
+      .why-hero_fade {
+        background-image:
+          linear-gradient(to bottom, transparent, #171717),
+          linear-gradient(to bottom, transparent, #171717),
+          linear-gradient(to bottom, transparent, #171717);
+        background-position: bottom;
+        background-repeat: no-repeat;
+        background-size:
+          100% 100%,
+          100% 12.5rem,
+          100% 9.375rem;
+      }
+
+      .why-hero_layout {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+        padding-top: calc(var(--nav-height) + var(--section-space-medium));
+      }
+
+      .why-hero_heading {
+        width: 100%;
+        max-width: 55rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-0-75rem);
+        margin-bottom: var(--space-4-5rem);
+        text-align: center;
+
+        & > * {
+          margin: 0;
+        }
+      }
+
+      /* Figma breaks the heading greedily, not balanced. */
+      .why-hero_title {
+        text-wrap: wrap;
+      }
+
+      .why-hero_eyebrow {
+        color: var(--color-neutral-30);
+      }
+
+      .why-hero_text {
+        max-width: 40rem;
+        color: var(--color-neutral-10);
+      }
+
+      /* =====================
+         Sites
+         ===================== */
+
+      /* One artboard, 1312 units wide, that scales as a piece: past the
+         content width on phones so the middle site stays readable. */
+      .why-hero_sites {
+        --_unit: calc(100cqw / 1312);
+        container-type: inline-size;
+        position: relative;
+        width: 40.5625rem;
+        flex: none;
+        @media (width >= 48rem) {
+          width: 100%;
+        }
+
+        &::before {
+          content: "";
+          display: block;
+          aspect-ratio: 1312 / 378.25;
+        }
+
+        /* The sites sink into the dark band the logos sit on. */
+        &::after {
+          content: "";
+          position: absolute;
+          bottom: 0;
+          left: 50%;
+          z-index: 1;
+          width: 100vw;
+          height: var(--_fade-tall);
+          translate: -50% 0;
+          background-image:
+            linear-gradient(to bottom, transparent, #171717),
+            linear-gradient(to bottom, transparent, #171717);
+          background-position: bottom;
+          background-repeat: no-repeat;
+          background-size:
+            100% var(--_fade-tall),
+            100% var(--_fade-short);
+        }
+      }
+
+      .why-hero_site {
+        position: absolute;
+        top: calc(-32 * var(--_unit));
+        width: calc(659 * var(--_unit));
+        padding: calc(8 * var(--_unit));
+        border-radius: calc(8 * var(--_unit));
+        background-color: rgb(255 255 255 / 0.02);
+        box-shadow: inset 0 0 calc(3.2 * var(--_unit)) 0 rgb(255 255 255 / 0.32);
+
+        &.start {
+          left: calc(-365 * var(--_unit));
+        }
+        &.center {
+          top: 0;
+          left: calc(326 * var(--_unit));
+          width: calc(660 * var(--_unit));
+        }
+        &.end {
+          left: calc(1018 * var(--_unit));
+        }
+      }
+
+      .why-hero_site-image {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 2867 / 1612.6875;
+        object-fit: cover;
+        object-position: left top;
+        border-radius: calc(4 * var(--_unit));
+      }
+
+      .why-hero_logos {
+        padding-block: var(--space-0-5rem);
+      }
+    }
+  }
+</style>

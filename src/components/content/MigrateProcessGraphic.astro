@@ -1,0 +1,803 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Icon from "@/components/media/Icon.astro";
+import check from "@/assets/service/migrate/process-check.svg";
+import pages from "@/assets/service/migrate/process-pages.svg";
+import blog from "@/assets/service/migrate/process-blog.svg";
+import forms from "@/assets/service/migrate/process-forms.svg";
+import globe from "@/assets/service/migrate/process-globe.svg";
+import cursor from "@/assets/service/migrate/process-cursor.svg";
+import cms from "@/assets/service/migrate/process-cms.svg";
+import webflow from "@/assets/service/migrate/process-webflow.svg";
+import dots from "@/assets/service/migrate/process-dots.svg";
+import bracketLeft from "@/assets/service/migrate/process-bracket-left.svg";
+import bracketRight from "@/assets/service/migrate/process-bracket-right.svg";
+import cornerTop from "@/assets/service/migrate/process-corner-top.svg";
+import cornerBottom from "@/assets/service/migrate/process-corner-bottom.svg";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Which step of a migration the picture shows. */
+  variant: "audit" | "rebuild" | "import" | "redirect" | "launch";
+}
+
+const { render = true, variant, class: className, ...rest } = Astro.props;
+
+const audit = [
+  { icon: pages, label: "Pages", count: 184, gap: 72 },
+  { icon: blog, label: "Blog", count: 96, gap: 120 },
+  { icon: forms, label: "Forms", count: 312, gap: 32 },
+];
+const parts = ["Design", "Copy", "Structure"];
+const folders = ["/pages", "/blog posts", "/images and files"];
+const checks = ["Page-by-page check", "Device testing", "Redirects confirmed"];
+---
+
+{
+  render && variant && (
+    <div
+      class:list={["migrate-process_wrap", variant, className]}
+      aria-hidden="true"
+      {...rest}
+    >
+      {variant === "audit" && (
+        <div class="migrate-process_glass">
+          <div class="migrate-process_card">
+            <div class="migrate-process_total">
+              <span class="migrate-process_caption">Site Audit</span>
+              <span class="migrate-process_count">
+                <span class="migrate-process_number">592</span>
+                <span class="migrate-process_note">items found</span>
+              </span>
+            </div>
+            <ul class="migrate-process_rows">
+              {audit.map((row) => (
+                <li class="migrate-process_row" style={`--_gap: ${row.gap};`}>
+                  <span class="migrate-process_pill">
+                    <Icon src={row.icon} class="migrate-process_pill-icon" />
+                    {row.label}
+                  </span>
+                  <span class="migrate-process_value">{row.count}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+      {variant === "rebuild" && (
+        <div class="migrate-process_stage">
+          <div class="migrate-process_build">
+            <ul class="migrate-process_parts">
+              {parts.map((part) => (
+                <li class="migrate-process_part">
+                  <span class="migrate-process_frame">
+                    <span class="migrate-process_chip">
+                      <Icon src={check} class="migrate-process_check" />
+                      {part}
+                    </span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <div class="migrate-process_browser">
+              <div class="migrate-process_bar">
+                <Icon src={dots} class="migrate-process_dots" />
+                <span class="migrate-process_address" />
+              </div>
+              <div class="migrate-process_page">
+                <span class="migrate-process_media" />
+                <span class="migrate-process_lines">
+                  <span />
+                  <span />
+                  <span />
+                </span>
+                <span class="migrate-process_cta" />
+              </div>
+              <div class="migrate-process_tiles">
+                <span />
+                <span />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {variant === "import" && (
+        <div class="migrate-process_stage">
+          <Icon src={bracketRight} class="migrate-process_link" />
+          <div class="migrate-process_tree">
+            <Icon src={bracketLeft} class="migrate-process_branch" />
+            <div class="migrate-process_folders">
+              <span class="migrate-process_source">
+                <Icon src={cms} class="migrate-process_cms" />
+                Old CMS
+              </span>
+              <ul class="migrate-process_paths">
+                {folders.map((folder) => (
+                  <li class="migrate-process_path">{folder}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <Icon src={cornerTop} class="migrate-process_corner top" />
+          <Icon src={cornerBottom} class="migrate-process_corner bottom" />
+          <div class="migrate-process_target">
+            <Icon src={webflow} class="migrate-process_webflow" />
+          </div>
+        </div>
+      )}
+      {variant === "redirect" && (
+        <div class="migrate-process_redirect">
+          <span class="migrate-process_status">301</span>
+          <span class="migrate-process_stem" />
+          <ul class="migrate-process_urls">
+            <li class="migrate-process_url">
+              <span class="migrate-process_old">
+                <Icon src={globe} class="migrate-process_globe" />
+                services.html
+              </span>
+              <span class="migrate-process_new">/services</span>
+            </li>
+            <li class="migrate-process_url">
+              <span class="migrate-process_line long" />
+              <span class="migrate-process_line short" />
+            </li>
+            <li class="migrate-process_url">
+              <span class="migrate-process_line long" />
+              <span class="migrate-process_line short" />
+            </li>
+          </ul>
+        </div>
+      )}
+      {variant === "launch" && (
+        <div class="migrate-process_glass">
+          <div class="migrate-process_card">
+            <span class="migrate-process_title">Pre-launch</span>
+            <ul class="migrate-process_checks">
+              {checks.map((item) => (
+                <li class="migrate-process_item">
+                  <Icon src={check} class="migrate-process_check" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <span class="migrate-process_button">Go live</span>
+          </div>
+        </div>
+      )}
+      {variant === "launch" && (
+        <span class="migrate-process_tag">
+          <Icon src={cursor} class="migrate-process_cursor" />
+          Developer
+        </span>
+      )}
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    /* An artboard 517 units square that scales as one piece. */
+    .migrate-process_wrap {
+      --_unit: calc(100cqw / 517);
+      --_base: #d4f4f7;
+      --_tint: rgb(213 226 245 / 0.32);
+      --_deep: rgb(5 103 244 / 0.32);
+      --_lift: calc(-4 * var(--_unit)) calc(12 * var(--_unit))
+        calc(7 * var(--_unit)) rgb(124 138 208 / 0.1);
+      --_float: drop-shadow(var(--_lift))
+        drop-shadow(
+          calc(-16 * var(--_unit)) calc(48 * var(--_unit))
+            calc(12.5 * var(--_unit)) rgb(124 138 208 / 0.09)
+        )
+        drop-shadow(
+          calc(-36 * var(--_unit)) calc(107 * var(--_unit))
+            calc(17 * var(--_unit)) rgb(124 138 208 / 0.05)
+        );
+      container-type: inline-size;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: clip;
+      color: var(--color-neutral-90);
+      font-family: var(--primary-family);
+      background:
+        linear-gradient(
+          to bottom,
+          var(--_tint) 55.368%,
+          var(--_deep) 96.905%
+        ),
+        var(--_base);
+
+      &:is(.rebuild, .redirect) {
+        --_base: #ccdcff;
+        --_tint: rgb(128 195 254 / 0.32);
+        --_deep: rgb(6 66 238 / 0.32);
+        &::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.4 -0.45'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+          opacity: 0.35;
+        }
+      }
+
+      &.import {
+        --_base: #eceff5;
+        --_tint: rgb(174 224 246 / 0.32);
+      }
+
+      &.launch {
+        --_base: #ebfff6;
+      }
+
+      .icon {
+        --_size: calc(24 * var(--_unit));
+      }
+
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      li {
+        margin: 0;
+      }
+
+      /* =====================
+         Glass card (audit, launch)
+         ===================== */
+
+      .migrate-process_glass {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: calc(370 * var(--_unit));
+        padding: calc(12 * var(--_unit));
+        border: var(--border-width) solid var(--color-neutral-0);
+        border-radius: calc(8 * var(--_unit));
+        background-color: rgb(255 255 255 / 0.32);
+        backdrop-filter: blur(calc(16 * var(--_unit)));
+        filter: var(--_float);
+        translate: -50% -50%;
+      }
+
+      .migrate-process_card {
+        display: flex;
+        flex-direction: column;
+        gap: calc(40 * var(--_unit));
+        padding: calc(24 * var(--_unit));
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-neutral-0);
+      }
+
+      .migrate-process_total,
+      .migrate-process_count {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .migrate-process_count {
+        flex-direction: row;
+        align-items: baseline;
+        gap: calc(8 * var(--_unit));
+      }
+
+      .migrate-process_caption,
+      .migrate-process_note {
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        letter-spacing: -0.005em;
+      }
+
+      .migrate-process_note {
+        color: var(--color-neutral-40);
+      }
+
+      .migrate-process_number {
+        font-family: var(--secondary-family);
+        font-size: calc(40 * var(--_unit));
+        line-height: calc(44 * var(--_unit));
+        letter-spacing: -0.015em;
+      }
+
+      .migrate-process_rows {
+        display: flex;
+        flex-direction: column;
+        gap: calc(16 * var(--_unit));
+      }
+
+      .migrate-process_row {
+        display: flex;
+        align-items: center;
+        gap: calc(var(--_gap) * var(--_unit));
+      }
+
+      .migrate-process_pill {
+        flex: 1 1 0;
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+        padding: calc(8 * var(--_unit)) calc(12 * var(--_unit));
+        border-radius: calc(8 * var(--_unit));
+        background-color: var(--color-primary-5);
+        font-size: calc(18 * var(--_unit));
+        line-height: calc(24 * var(--_unit));
+        letter-spacing: -0.007em;
+      }
+
+      .migrate-process_pill-icon {
+        --_size: calc(20 * var(--_unit));
+        padding: calc(1.5 * var(--_unit));
+        color: var(--brand);
+      }
+
+      .migrate-process_value {
+        font-family: var(--secondary-family);
+        font-size: calc(20 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(26 * var(--_unit));
+        letter-spacing: -0.01em;
+      }
+
+      /* =====================
+         Stage (rebuild, import)
+         ===================== */
+
+      .migrate-process_stage {
+        position: absolute;
+        top: calc(58.5 * var(--_unit));
+        left: calc(58.5 * var(--_unit));
+        width: calc(400 * var(--_unit));
+        aspect-ratio: 1 / 1;
+        overflow: clip;
+      }
+
+      .migrate-process_build {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: calc(394 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(28 * var(--_unit));
+        translate: -50% -50%;
+        mask-image: linear-gradient(
+          to bottom,
+          black 62%,
+          transparent 92%
+        );
+      }
+
+      .migrate-process_parts {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .migrate-process_part {
+        display: flex;
+        align-items: center;
+        & + &::before {
+          content: "";
+          width: calc(16 * var(--_unit));
+          height: calc(2 * var(--_unit));
+          background-color: var(--color-neutral-0);
+        }
+      }
+
+      .migrate-process_frame {
+        padding: calc(6 * var(--_unit));
+        border-radius: calc(8 * var(--_unit));
+        background-color: rgb(255 255 255 / 0.32);
+        backdrop-filter: blur(calc(6 * var(--_unit)));
+      }
+
+      .migrate-process_chip {
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+        padding: calc(12 * var(--_unit));
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        font-size: calc(16 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(22 * var(--_unit));
+        letter-spacing: -0.005em;
+        filter: drop-shadow(
+          calc(-5 * var(--_unit)) calc(7 * var(--_unit))
+            calc(1.55 * var(--_unit)) rgb(43 43 43 / 0.04)
+        );
+      }
+
+      .migrate-process_check {
+        color: var(--brand);
+      }
+
+      .migrate-process_browser {
+        width: calc(384 * var(--_unit));
+        height: calc(286 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(20 * var(--_unit));
+        padding: calc(12 * var(--_unit)) calc(8 * var(--_unit));
+        border-radius: calc(8 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        box-shadow:
+          calc(11 * var(--_unit)) calc(7 * var(--_unit))
+            calc(13 * var(--_unit)) rgb(153 153 153 / 0.05),
+          calc(25 * var(--_unit)) calc(17 * var(--_unit))
+            calc(18 * var(--_unit)) rgb(153 153 153 / 0.05);
+      }
+
+      .migrate-process_bar {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: calc(12 * var(--_unit));
+      }
+
+      .migrate-process_dots {
+        --_size: calc(26 * var(--_unit));
+        aspect-ratio: 26 / 6;
+      }
+
+      .migrate-process_address {
+        flex: 1 1 0;
+        height: calc(4 * var(--_unit));
+        background-image: linear-gradient(
+          to right,
+          var(--brand),
+          rgb(3 38 136 / 0) 110.89%
+        );
+        opacity: 0.08;
+      }
+
+      .migrate-process_page {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(12 * var(--_unit));
+      }
+
+      .migrate-process_media,
+      .migrate-process_tiles span {
+        background-image: linear-gradient(
+          175deg,
+          #eee 28.8%,
+          #f9f9f9 70.6%,
+          #fff 95.5%
+        );
+      }
+
+      .migrate-process_media {
+        width: calc(189 * var(--_unit));
+        height: calc(77 * var(--_unit));
+      }
+
+      .migrate-process_lines {
+        width: calc(206 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(4 * var(--_unit));
+        span {
+          width: 100%;
+          height: calc(4 * var(--_unit));
+          background-color: var(--color-neutral-2);
+        }
+        span:nth-child(2) {
+          width: calc(150 * var(--_unit));
+        }
+        span:nth-child(3) {
+          width: calc(85 * var(--_unit));
+        }
+      }
+
+      .migrate-process_cta {
+        width: calc(52 * var(--_unit));
+        height: calc(16 * var(--_unit));
+        border-radius: calc(1 * var(--_unit));
+        background-color: var(--brand);
+      }
+
+      .migrate-process_tiles {
+        width: 100%;
+        height: calc(60 * var(--_unit));
+        display: flex;
+        gap: calc(8 * var(--_unit));
+        span {
+          flex: 1 1 0;
+        }
+      }
+
+      /* =====================
+         Import
+         ===================== */
+
+      .migrate-process_link {
+        --_size: calc(129 * var(--_unit));
+        position: absolute;
+        top: calc(116.5 * var(--_unit));
+        left: calc(209.5 * var(--_unit));
+        aspect-ratio: 130 / 167.5;
+        color: var(--color-neutral-0);
+      }
+
+      .migrate-process_tree {
+        position: absolute;
+        top: calc(94.5 * var(--_unit));
+        left: calc(13.5 * var(--_unit));
+        display: flex;
+        align-items: center;
+      }
+
+      .migrate-process_branch {
+        --_size: calc(24 * var(--_unit));
+        aspect-ratio: 25 / 168;
+        color: var(--color-neutral-0);
+      }
+
+      .migrate-process_folders {
+        width: calc(172 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: calc(28 * var(--_unit));
+      }
+
+      .migrate-process_paths {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: calc(8 * var(--_unit));
+      }
+
+      .migrate-process_source,
+      .migrate-process_path {
+        display: flex;
+        align-items: center;
+        gap: calc(12 * var(--_unit));
+        padding: calc(8 * var(--_unit)) calc(16 * var(--_unit));
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        white-space: nowrap;
+      }
+
+      .migrate-process_source {
+        width: 100%;
+        font-family: var(--secondary-family);
+        font-size: calc(24 * var(--_unit));
+        line-height: calc(30 * var(--_unit));
+        letter-spacing: -0.01em;
+      }
+
+      .migrate-process_path {
+        min-width: 100%;
+        font-size: calc(18 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(24 * var(--_unit));
+        letter-spacing: -0.007em;
+      }
+
+      .migrate-process_cms {
+        --_size: calc(28 * var(--_unit));
+      }
+
+      .migrate-process_corner {
+        --_size: calc(26.4 * var(--_unit));
+        position: absolute;
+        left: calc(315.3 * var(--_unit));
+        aspect-ratio: 26.4 / 21.4;
+        &.top {
+          top: calc(113.3 * var(--_unit));
+        }
+        &.bottom {
+          top: calc(262.3 * var(--_unit));
+          scale: 1 -1;
+        }
+      }
+
+      .migrate-process_target {
+        position: absolute;
+        top: 50%;
+        left: calc(289.5 * var(--_unit));
+        width: calc(96 * var(--_unit));
+        height: calc(90 * var(--_unit));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: clip;
+        border-radius: calc(8 * var(--_unit));
+        background-color: var(--brand);
+        color: var(--color-neutral-0);
+        translate: 0 -50%;
+        &::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background-image: radial-gradient(
+            ellipse 190% 120% at 0% 0%,
+            #4471f2 0%,
+            #0642ee 40%,
+            #032d9a 70%,
+            #001746 100%
+          );
+          opacity: 0.7;
+        }
+      }
+
+      .migrate-process_webflow {
+        --_size: calc(51 * var(--_unit));
+        position: relative;
+        aspect-ratio: 51 / 32;
+      }
+
+      /* =====================
+         Redirect
+         ===================== */
+
+      .migrate-process_redirect {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: calc(369 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        translate: -50% -50%;
+      }
+
+      .migrate-process_status {
+        padding: calc(12 * var(--_unit)) calc(40 * var(--_unit));
+        border-radius: calc(8 * var(--_unit));
+        background-color: var(--brand);
+        color: var(--color-neutral-0);
+        font-family: var(--secondary-family);
+        font-size: calc(20 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(26 * var(--_unit));
+        letter-spacing: -0.01em;
+      }
+
+      .migrate-process_stem {
+        width: calc(2 * var(--_unit));
+        height: calc(24 * var(--_unit));
+        background-color: var(--color-neutral-0);
+      }
+
+      .migrate-process_urls {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: calc(8 * var(--_unit));
+      }
+
+      .migrate-process_url {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: calc(68 * var(--_unit));
+        padding: calc(28 * var(--_unit));
+        border-radius: calc(20 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        filter: var(--_float);
+        &:first-child {
+          padding-block: calc(26 * var(--_unit));
+        }
+      }
+
+      .migrate-process_old {
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+        color: var(--color-neutral-40);
+        font-family: var(--secondary-family);
+        font-size: calc(20 * var(--_unit));
+        line-height: calc(26 * var(--_unit));
+        letter-spacing: -0.01em;
+      }
+
+      .migrate-process_new {
+        font-family: var(--secondary-family);
+        font-size: calc(24 * var(--_unit));
+        line-height: calc(30 * var(--_unit));
+        letter-spacing: -0.01em;
+      }
+
+      .migrate-process_line {
+        height: calc(12 * var(--_unit));
+        background-color: var(--color-neutral-2);
+        &.long {
+          width: calc(133 * var(--_unit));
+          background-image: linear-gradient(
+            to right,
+            #eee 0%,
+            #f9f9f9 83.6%,
+            #fff 104.5%
+          );
+        }
+        &.short {
+          width: calc(87 * var(--_unit));
+        }
+      }
+
+      /* =====================
+         Launch
+         ===================== */
+
+      &.launch .migrate-process_card {
+        gap: calc(16 * var(--_unit));
+      }
+
+      .migrate-process_title {
+        font-family: var(--secondary-family);
+        font-size: calc(24 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(30 * var(--_unit));
+        letter-spacing: -0.01em;
+      }
+
+      .migrate-process_checks {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .migrate-process_item {
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+        padding-block: calc(20 * var(--_unit));
+        border-bottom: var(--border-width) solid var(--color-neutral-5);
+        font-size: calc(18 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(24 * var(--_unit));
+        letter-spacing: -0.007em;
+        &:last-child {
+          padding-bottom: 0;
+          border-bottom: 0;
+        }
+      }
+
+      .migrate-process_button {
+        padding: calc(12 * var(--_unit)) calc(40 * var(--_unit));
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--brand);
+        color: var(--color-neutral-0);
+        font-size: calc(18 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(24 * var(--_unit));
+        letter-spacing: -0.007em;
+        text-align: center;
+      }
+
+      .migrate-process_tag {
+        position: absolute;
+        right: calc(176.6 * var(--_unit));
+        bottom: calc(212.8 * var(--_unit));
+        padding: calc(3.6 * var(--_unit)) calc(7.2 * var(--_unit));
+        border-radius: calc(1.727 * var(--_unit));
+        background-color: #3b63f3;
+        color: var(--color-neutral-0);
+        font-size: calc(12 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(18 * var(--_unit));
+        letter-spacing: -0.005em;
+        white-space: nowrap;
+      }
+
+      .migrate-process_cursor {
+        --_size: calc(19.2 * var(--_unit));
+        position: absolute;
+        top: calc(-15.6 * var(--_unit));
+        left: calc(-14.4 * var(--_unit));
+        aspect-ratio: 23.27 / 23.88;
+        overflow: visible;
+      }
+    }
+  }
+</style>

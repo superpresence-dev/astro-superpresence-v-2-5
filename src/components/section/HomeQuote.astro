@@ -19,8 +19,8 @@ interface Props
   jobTitle?: string;
   /** Portrait of the person quoted. */
   avatar?: ImageMetadata;
-  /** Company logo. */
-  logo?: ImageMetadata;
+  /** Company logo. Set to `false` to leave it out. */
+  logo?: ImageMetadata | false;
   /** Company name, used as the logo's alt text. */
   company?: string;
 }
@@ -42,9 +42,13 @@ const {
   <Img src={background} slot="background" class="home-quote_background" />
   <div slot="background" class="home-quote_fade"></div>
   <div class="home-quote_layout">
-    <div class="home-quote_logo">
-      <Img src={logo} alt={company} class="home-quote_logo-image" />
-    </div>
+    {
+      logo && (
+        <div class="home-quote_logo">
+          <Img src={logo} alt={company} class="home-quote_logo-image" />
+        </div>
+      )
+    }
     <Paragraph variant="h4" class="home-quote_quote">
       "{quote}"
     </Paragraph>

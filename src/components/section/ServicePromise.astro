@@ -1,0 +1,219 @@
+---
+import type { ComponentProps, HTMLAttributes } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Img from "@/components/media/Img.astro";
+import background from "@/assets/service/migrate/promise-background.jpg";
+import blob from "@/assets/service/migrate/promise-blob.webp";
+
+type Item = { value: string; title: string; text: string };
+
+type Props = HTMLAttributes<"section"> &
+  Pick<ComponentProps<typeof Section>, "render"> & {
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading: string;
+  /** Promises in order, three to a row. */
+  items: Item[];
+};
+
+const {
+  render = true,
+  eyebrow = "Our promise",
+  heading,
+  items,
+  ...rest
+} = Astro.props;
+---
+
+<Section
+  render={render && !!heading && items?.length > 0}
+  class="service-promise_wrap"
+  {...rest}
+>
+  <Img src={background} slot="background" class="service-promise_background" />
+  <div slot="background" class="service-promise_fade"></div>
+  <div class="service-promise_layout">
+    <div class="service-promise_intro">
+      <Paragraph variant="overline-small" class="service-promise_eyebrow">
+        {eyebrow}
+      </Paragraph>
+      <Heading tag="h2" variant="h3">
+        <Fragment set:html={heading} />
+      </Heading>
+    </div>
+    <ul class="service-promise_list" role="list">
+      {
+        items.map((item) => (
+          <li class="service-promise_card theme-dark">
+            <Img src={blob} transparent class="service-promise_blob" />
+            <div class="service-promise_content">
+              <div class="service-promise_heading">
+                <Paragraph
+                  tag="span"
+                  variant="h3"
+                  class="service-promise_value"
+                >
+                  {item.value}
+                </Paragraph>
+                <Heading tag="h3" variant="h6">
+                  {item.title}
+                </Heading>
+              </div>
+              <Paragraph variant="main" class="service-promise_text">
+                {item.text}
+              </Paragraph>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</Section>
+
+<style is:global>
+  @layer components {
+    .service-promise_wrap {
+      --_card-height: 14.0625rem;
+      @media (width >= 48rem) {
+        --_card-height: 17.5rem;
+      }
+      @media (width >= 62rem) {
+        --_card-height: 18.75rem;
+      }
+      padding-bottom: var(--space-4rem);
+      background-color: var(--color-neutral-0);
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .service-promise_background {
+        object-fit: cover;
+        opacity: 0.5;
+      }
+
+      .service-promise_fade {
+        background-image:
+          linear-gradient(
+            to bottom,
+            var(--color-neutral-0),
+            transparent 9.375rem
+          ),
+          linear-gradient(
+            to bottom,
+            transparent 58.17%,
+            color-mix(in srgb, var(--color-neutral-0) 15%, transparent) 88.25%,
+            color-mix(in srgb, var(--color-neutral-0) 30%, transparent) 106.41%
+          );
+      }
+
+      .service-promise_layout {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-3-5rem);
+      }
+
+      .service-promise_intro {
+        width: 100%;
+        max-width: 55rem;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+        text-align: center;
+      }
+
+      .service-promise_eyebrow {
+        color: var(--color-neutral-30);
+      }
+
+      .service-promise_list {
+        width: 100%;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--space-1rem);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        @media (width >= 48rem) {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      .service-promise_card {
+        position: relative;
+        isolation: isolate;
+        min-width: 0;
+        min-height: var(--_card-height);
+        display: flex;
+        margin: 0;
+        padding: var(--space-2rem);
+        overflow: clip;
+        @media (width >= 62rem) {
+          padding-bottom: var(--space-3rem);
+        }
+        background-color: rgb(17 17 17);
+        background-image: linear-gradient(
+          60deg,
+          rgb(4 94 241 / 0.7) 19.58%,
+          rgb(0 105 255 / 0.7) 33.6%,
+          rgb(51 136 231 / 0.7) 54.71%,
+          rgb(0 23 70 / 0.7) 93.64%
+        );
+        border-radius: var(--radius-0-25rem);
+      }
+
+      .service-promise_blob {
+        position: absolute;
+        z-index: -1;
+        left: calc(50% - 3.6325rem);
+        bottom: 4.99rem;
+        width: 47.358rem;
+        height: auto;
+        max-width: none;
+        translate: -50% 50%;
+        rotate: 180deg;
+        scale: 1 -1;
+        pointer-events: none;
+      }
+
+      .service-promise_card:nth-child(3n + 2) .service-promise_blob {
+        left: calc(50% - 3.7763rem);
+        bottom: 3.886rem;
+        rotate: 60deg;
+      }
+
+      .service-promise_card:nth-child(3n) .service-promise_blob {
+        left: calc(50% + 1.8556rem);
+        bottom: 12.572rem;
+        rotate: -120deg;
+      }
+
+      .service-promise_content {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: var(--space-1-5rem);
+      }
+
+      .service-promise_heading {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-5rem);
+      }
+
+      .service-promise_value {
+        color: var(--heading);
+      }
+
+      .service-promise_text {
+        color: var(--color-neutral-10);
+      }
+    }
+  }
+</style>

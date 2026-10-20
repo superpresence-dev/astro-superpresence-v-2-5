@@ -1,0 +1,509 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Img from "@/components/media/Img.astro";
+import Icon from "@/components/media/Icon.astro";
+import scopePhoto from "@/assets/service/migrate/feature-scope.jpg";
+import redirectsPhoto from "@/assets/service/migrate/feature-redirects.jpg";
+import parityPhoto from "@/assets/service/migrate/feature-parity.jpg";
+import design from "@/assets/service/migrate/feature-design.svg";
+import copy from "@/assets/service/migrate/feature-copy.svg";
+import structure from "@/assets/service/migrate/feature-structure.svg";
+import webflow from "@/assets/service/migrate/feature-webflow.svg";
+import cursor from "@/assets/service/migrate/feature-cursor.svg";
+import check from "@/assets/icons/check-small.svg";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Which illustration: the scope stack, the redirect ledger, or the page-by-page check. */
+  variant?: "scope" | "redirects" | "parity";
+}
+
+const {
+  render = true,
+  variant = "scope",
+  class: className,
+  ...rest
+} = Astro.props;
+
+const photos = {
+  scope: scopePhoto,
+  redirects: redirectsPhoto,
+  parity: parityPhoto,
+};
+
+const layers = [
+  { icon: design, label: "Design" },
+  { icon: copy, label: "Copy" },
+  { icon: structure, label: "Structure" },
+];
+
+const redirects = [
+  { from: "/services.html", to: "/services" },
+  { from: "/blog/post-12", to: "/insights/seo" },
+  { from: "/about-us.php", to: "/about" },
+];
+---
+
+{
+  render && (
+    <div
+      class:list={["migrate-feature-graphic_wrap", variant, className]}
+      aria-hidden="true"
+      {...rest}
+    >
+      <Img src={photos[variant]} class="migrate-feature-graphic_photo" />
+      {variant === "scope" && (
+        <div class="migrate-feature-graphic_stack">
+          {layers.map((layer) => (
+            <>
+              <div class="migrate-feature-graphic_glass">
+                <div class="migrate-feature-graphic_layer">
+                  <Icon src={layer.icon} class="migrate-feature-graphic_layer-icon" />
+                  <span>{layer.label}</span>
+                </div>
+              </div>
+              <span class="migrate-feature-graphic_line" />
+            </>
+          ))}
+          <div class="migrate-feature-graphic_target">
+            <div class="migrate-feature-graphic_tile large">
+              <Icon src={webflow} class="migrate-feature-graphic_mark" />
+            </div>
+          </div>
+        </div>
+      )}
+      {variant === "redirects" && (
+        <div class="migrate-feature-graphic_ledger">
+          <div class="migrate-feature-graphic_rows">
+            <ul class="migrate-feature-graphic_card" role="list">
+              {redirects.map((row) => (
+                <li class="migrate-feature-graphic_row">
+                  <span class="migrate-feature-graphic_old">{row.from}</span>
+                  <span class="migrate-feature-graphic_new">{row.to}</span>
+                  <Icon src={check} class="migrate-feature-graphic_check" />
+                </li>
+              ))}
+            </ul>
+            <div class="migrate-feature-graphic_row focus">
+              <span class="migrate-feature-graphic_old">{redirects[1].from}</span>
+              <span class="migrate-feature-graphic_new">{redirects[1].to}</span>
+              <Icon src={check} class="migrate-feature-graphic_check" />
+            </div>
+          </div>
+          <div class="migrate-feature-graphic_badge">
+            <div class="migrate-feature-graphic_tile">
+              <Icon src={check} class="migrate-feature-graphic_tile-check" />
+            </div>
+            <span class="migrate-feature-graphic_count">
+              <strong>150</strong> old URLs mapped
+            </span>
+          </div>
+        </div>
+      )}
+      {variant === "parity" && (
+        <div class="migrate-feature-graphic_parity">
+          <div class="migrate-feature-graphic_card compare">
+            <div class="migrate-feature-graphic_compare-head">
+              <span>Original</span>
+              <span>
+                <span class="migrate-feature-graphic_tile small">
+                  <Icon src={webflow} class="migrate-feature-graphic_mark" />
+                </span>
+              </span>
+            </div>
+            <ul class="migrate-feature-graphic_fields" role="list">
+              <li class="migrate-feature-graphic_field">
+                <span class="migrate-feature-graphic_label">Title</span>
+                <span class="migrate-feature-graphic_old">Corporate law</span>
+                <span class="migrate-feature-graphic_new">Corporate law</span>
+                <Icon src={check} class="migrate-feature-graphic_check" />
+              </li>
+              {[1, 2].map(() => (
+                <li class="migrate-feature-graphic_field">
+                  <span class="migrate-feature-graphic_bar short" />
+                  <span class="migrate-feature-graphic_bar medium" />
+                  <span class="migrate-feature-graphic_bar" />
+                  <Icon src={check} class="migrate-feature-graphic_check" />
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div class="migrate-feature-graphic_approve">
+            <span>Before anything goes live</span>
+            <span class="migrate-feature-graphic_approved">Approved</span>
+          </div>
+          <span class="migrate-feature-graphic_tag">
+            <Img src={cursor} transparent class="migrate-feature-graphic_cursor" />
+            Strategy
+          </span>
+        </div>
+      )}
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .migrate-feature-graphic_wrap {
+      --_unit: calc(100cqw / 560);
+      --_shadow-float:
+        calc(24 * var(--_unit)) calc(40 * var(--_unit)) calc(32 * var(--_unit))
+          rgb(43 43 43 / 0.02),
+        calc(-10 * var(--_unit)) calc(18 * var(--_unit))
+          calc(22 * var(--_unit)) rgb(43 43 43 / 0.03),
+        calc(-5 * var(--_unit)) calc(7 * var(--_unit)) calc(12 * var(--_unit))
+          rgb(43 43 43 / 0.08);
+      --_shadow-card:
+        calc(87 * var(--_unit)) calc(18 * var(--_unit)) calc(54 * var(--_unit))
+          rgb(60 57 57 / 0.05),
+        calc(39 * var(--_unit)) calc(8 * var(--_unit)) calc(40 * var(--_unit))
+          rgb(60 57 57 / 0.09),
+        calc(10 * var(--_unit)) calc(2 * var(--_unit)) calc(22 * var(--_unit))
+          rgb(60 57 57 / 0.1);
+      --_tile: radial-gradient(
+          130% 120% at 7% 8%,
+          rgb(255 255 255 / 0.7) 0%,
+          rgb(193 208 251 / 0.7) 11.5%,
+          rgb(131 161 247 / 0.7) 23%,
+          rgb(68 113 242 / 0.7) 34.6%,
+          rgb(6 66 238 / 0.7) 46.1%,
+          rgb(3 45 154 / 0.7) 73%,
+          rgb(0 23 70 / 0.7) 100%
+        ),
+        var(--color-primary-60);
+      container-type: inline-size;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      border-radius: var(--radius-0-5rem);
+      font-family: var(--primary-family);
+      color: var(--color-neutral-90);
+
+      .migrate-feature-graphic_photo {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      :is(
+          .migrate-feature-graphic_stack,
+          .migrate-feature-graphic_ledger,
+          .migrate-feature-graphic_parity
+        ) {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        translate: -50% -50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .migrate-feature-graphic_tile {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: calc(32 * var(--_unit));
+        height: calc(32 * var(--_unit));
+        border-radius: calc(4 * var(--_unit));
+        background: var(--_tile);
+        color: var(--color-neutral-0);
+        &.large {
+          width: calc(75 * var(--_unit));
+          height: calc(70 * var(--_unit));
+          border-radius: calc(8 * var(--_unit));
+        }
+        &.small {
+          width: calc(34 * var(--_unit));
+          height: calc(32 * var(--_unit));
+          border-radius: calc(2 * var(--_unit));
+        }
+      }
+
+      .migrate-feature-graphic_mark {
+        width: calc(38 * var(--_unit));
+        aspect-ratio: 38 / 24;
+        .small & {
+          width: calc(19 * var(--_unit));
+        }
+      }
+
+      .migrate-feature-graphic_check {
+        --_size: calc(20 * var(--_unit));
+        color: var(--color-primary-60);
+      }
+
+      .migrate-feature-graphic_old {
+        flex: 1 1 0;
+        min-width: 0;
+        color: var(--color-neutral-40);
+      }
+
+      .migrate-feature-graphic_new {
+        flex: 1 1 0;
+        min-width: 0;
+      }
+
+      /* Scope */
+
+      .migrate-feature-graphic_stack {
+        width: calc(334 * var(--_unit));
+      }
+
+      .migrate-feature-graphic_glass {
+        width: 100%;
+        padding: calc(6 * var(--_unit));
+        border-radius: calc(8 * var(--_unit));
+        background-color: rgb(255 255 255 / 0.32);
+        backdrop-filter: blur(calc(6 * var(--_unit)));
+        box-shadow: var(--_shadow-float);
+      }
+
+      .migrate-feature-graphic_layer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: calc(8 * var(--_unit));
+        padding: calc(12 * var(--_unit)) calc(16 * var(--_unit));
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        font-family: var(--secondary-family);
+        font-size: calc(20 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(26 * var(--_unit));
+        letter-spacing: -0.01em;
+      }
+
+      .migrate-feature-graphic_layer-icon {
+        --_size: calc(32 * var(--_unit));
+      }
+
+      .migrate-feature-graphic_line {
+        width: calc(2 * var(--_unit));
+        height: calc(22 * var(--_unit));
+        background-color: var(--color-neutral-0);
+      }
+
+      .migrate-feature-graphic_target {
+        padding: calc(6 * var(--_unit));
+        border: calc(1 * var(--_unit)) solid var(--color-neutral-0);
+        border-radius: calc(8 * var(--_unit));
+        background-color: rgb(255 255 255 / 0.12);
+        backdrop-filter: blur(calc(16 * var(--_unit)));
+      }
+
+      /* Redirects */
+
+      .migrate-feature-graphic_ledger {
+        width: calc(400 * var(--_unit));
+        gap: calc(32 * var(--_unit));
+      }
+
+      .migrate-feature-graphic_rows {
+        display: grid;
+        width: 100%;
+        > * {
+          grid-area: 1 / 1;
+        }
+      }
+
+      .migrate-feature-graphic_card {
+        display: flex;
+        flex-direction: column;
+        border-radius: calc(12 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        list-style: none;
+        margin: 0;
+      }
+
+      .migrate-feature-graphic_rows .migrate-feature-graphic_card {
+        gap: calc(24 * var(--_unit));
+        width: calc(358 * var(--_unit));
+        margin-left: calc(21 * var(--_unit));
+        padding: calc(24 * var(--_unit));
+      }
+
+      .migrate-feature-graphic_row {
+        display: flex;
+        align-items: center;
+        gap: calc(16 * var(--_unit));
+        margin: 0;
+        font-size: calc(18 * var(--_unit));
+        line-height: calc(24 * var(--_unit));
+        letter-spacing: -0.007em;
+        &:not(:last-child) {
+          padding-bottom: calc(20 * var(--_unit));
+          border-bottom: var(--border-width) solid var(--color-neutral-5);
+        }
+        &.focus {
+          align-self: start;
+          margin-top: calc(65 * var(--_unit));
+          padding: calc(24 * var(--_unit)) calc(20 * var(--_unit));
+          border-radius: calc(12 * var(--_unit));
+          background-color: var(--color-neutral-0);
+          box-shadow: var(--_shadow-card);
+          font-family: var(--secondary-family);
+          font-size: calc(20 * var(--_unit));
+          line-height: calc(26 * var(--_unit));
+          letter-spacing: -0.01em;
+        }
+      }
+
+      .migrate-feature-graphic_badge {
+        display: flex;
+        align-items: center;
+        gap: calc(12 * var(--_unit));
+        height: calc(48 * var(--_unit));
+        padding: calc(8 * var(--_unit));
+        border-radius: calc(8 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        box-shadow: var(--_shadow-card);
+      }
+
+      .migrate-feature-graphic_tile-check {
+        --_size: calc(20 * var(--_unit));
+      }
+
+      .migrate-feature-graphic_count {
+        display: flex;
+        align-items: baseline;
+        gap: calc(4 * var(--_unit));
+        color: var(--color-neutral-40);
+        font-size: calc(16 * var(--_unit));
+        line-height: calc(22 * var(--_unit));
+        letter-spacing: -0.005em;
+        white-space: nowrap;
+        strong {
+          color: var(--color-neutral-90);
+          font-family: var(--secondary-family);
+          font-size: calc(24 * var(--_unit));
+          font-weight: var(--primary-medium);
+          line-height: calc(30 * var(--_unit));
+          letter-spacing: -0.01em;
+        }
+      }
+
+      /* Parity */
+
+      .migrate-feature-graphic_parity {
+        width: calc(358 * var(--_unit));
+        gap: calc(16 * var(--_unit));
+        font-size: calc(16 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(22 * var(--_unit));
+        letter-spacing: -0.005em;
+      }
+
+      .migrate-feature-graphic_card.compare {
+        width: 100%;
+        gap: calc(24 * var(--_unit));
+        padding: calc(16 * var(--_unit));
+        box-shadow: var(--_shadow-card);
+      }
+
+      .migrate-feature-graphic_compare-head {
+        display: flex;
+        align-items: center;
+        padding: 0 calc(20 * var(--_unit)) calc(20 * var(--_unit))
+          calc(48 * var(--_unit));
+        border-bottom: var(--border-width) solid var(--color-neutral-5);
+        color: var(--color-neutral-40);
+        text-align: center;
+        > span {
+          flex: 1 1 0;
+          display: flex;
+          justify-content: center;
+        }
+      }
+
+      .migrate-feature-graphic_fields {
+        display: flex;
+        flex-direction: column;
+        gap: calc(20 * var(--_unit));
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .migrate-feature-graphic_field {
+        display: flex;
+        align-items: center;
+        gap: calc(16 * var(--_unit));
+        margin: 0;
+        padding-bottom: calc(20 * var(--_unit));
+        border-bottom: var(--border-width) solid var(--color-neutral-5);
+      }
+
+      .migrate-feature-graphic_label {
+        color: var(--color-neutral-40);
+      }
+
+      .migrate-feature-graphic_bar {
+        flex: 1 1 0;
+        height: calc(12 * var(--_unit));
+        border-radius: calc(0.4 * var(--_unit));
+        background: linear-gradient(
+          90deg,
+          rgb(238 238 238) 0%,
+          rgb(249 249 249) 83.6%,
+          rgb(255 255 255) 104.5%
+        );
+        &.short {
+          flex: none;
+          width: calc(32 * var(--_unit));
+        }
+        &.medium {
+          flex: none;
+          width: calc(113 * var(--_unit));
+        }
+      }
+
+      .migrate-feature-graphic_approve {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: calc(310 * var(--_unit));
+        height: calc(48 * var(--_unit));
+        padding: calc(8 * var(--_unit));
+        border-radius: calc(8 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        box-shadow: var(--_shadow-card);
+        white-space: nowrap;
+      }
+
+      .migrate-feature-graphic_approved {
+        padding: calc(8 * var(--_unit)) calc(12 * var(--_unit));
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-primary-60);
+        color: var(--color-neutral-0);
+        font-size: calc(14 * var(--_unit));
+        line-height: calc(20 * var(--_unit));
+      }
+
+      .migrate-feature-graphic_tag {
+        position: absolute;
+        right: calc(-17.4 * var(--_unit));
+        bottom: calc(-38.2 * var(--_unit));
+        padding: calc(3.6 * var(--_unit)) calc(7.2 * var(--_unit));
+        border-radius: calc(1.727 * var(--_unit));
+        background-color: var(--color-accent-success-60);
+        color: var(--color-neutral-0);
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        white-space: nowrap;
+      }
+
+      .migrate-feature-graphic_cursor {
+        position: absolute;
+        top: calc(-15.6 * var(--_unit));
+        left: calc(-15.235 * var(--_unit));
+        width: calc(23.27 * var(--_unit));
+        max-width: none;
+      }
+    }
+  }
+</style>

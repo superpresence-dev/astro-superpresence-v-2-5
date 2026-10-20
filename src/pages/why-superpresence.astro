@@ -1,0 +1,198 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import WhyHero from "@/components/section/WhyHero.astro";
+import IndustryProblem from "@/components/content/IndustryProblem.astro";
+import WhyTeam from "@/components/content/WhyTeam.astro";
+import WhyFoundation from "@/components/section/WhyFoundation.astro";
+import IndustryGrowth from "@/components/content/IndustryGrowth.astro";
+import WhyCompare from "@/components/content/WhyCompare.astro";
+import WhyOffers from "@/components/content/WhyOffers.astro";
+import ServiceGrid from "@/components/content/ServiceGrid.astro";
+import HomeCta from "@/components/section/HomeCta.astro";
+import { WORK_URL } from "@/utils/work.ts";
+---
+
+<Layout
+  title="Why Superpresence"
+  description="We create websites that drive growth for Asian businesses: built here, written for the English-speaking buyers you're trying to win."
+  overlap
+>
+  {/* Hero */}
+  <WhyHero />
+  {/* Problem */}
+  <Section>
+    <IndustryProblem
+      eyebrow="Recognise these"
+      heading="Most agencies here still treat<br />a website as an art project"
+      items={[
+        {
+          title: "You're paying for a template",
+          text: "The build sits on a theme, and the section order underneath is still someone else's.",
+        },
+        {
+          title: "You could be any competitor",
+          text: "Swap the logo and the page still works, because nothing on it says why you win.",
+        },
+        {
+          title: "You can't prove any of it",
+          text: "No results, no named clients, nothing a stranger can confirm before they call.",
+        },
+        {
+          title: "Your ads land on nothing",
+          text: "Traffic arrives on a page that was never built to hold it, so the spend leaks.",
+        },
+        {
+          title: "You're skipped by search and AI",
+          text: "The page has no structure a machine can parse, so you get summarised thinly.",
+        },
+        {
+          title: "You're skipped by search and AI",
+          text: "The page has no structure a machine can parse, so you get summarised thinly.",
+        },
+      ]}
+    />
+  </Section>
+  {/* Why we exist */}
+  <Section>
+    <WhyTeam
+      heading="The team has done this a few hundred times"
+      lead="Much of it white-label — for years our designers and developers built sites that shipped under the names of agencies in the UK and across Europe, their clients, their logo on the invoice. That's the standard we still build to, except now it ships under ours."
+      stats={[
+        { value: "2×", label: "faster to market" },
+        { value: "8–12", label: "weeks from first call to launch" },
+        { value: "30%", label: "more conversions on average" },
+      ]}
+    />
+  </Section>
+  {/* Foundation */}
+  <WhyFoundation
+    eyebrow="Your marketing’s foundation"
+    heading="We treat the website as the asset<br />everything else runs through"
+    icons={["chart", "bolt", "chat", "notes", "sparkle", "people"]}
+    items={[
+      {
+        title: "Better ROAS and ROI",
+        text: "On the paid traffic you're already buying right now.",
+      },
+      {
+        title: "A stronger first impression",
+        text: "Than the competitors being weighed beside you.",
+      },
+      {
+        title: "Shorter sales conversations",
+        text: "Because the site has done the explaining clearly.",
+      },
+      {
+        title: "More outbound replies",
+        text: "Because prospects check you thoroughly before they reply.",
+      },
+      {
+        title: "Search & AI recommend you",
+        text: "Instead of being summarised thinly or completely skipped.",
+      },
+      {
+        title: "Candidates and partners",
+        text: "Who take you seriously before the first meeting.",
+      },
+    ]}
+    buttonHref={WORK_URL}
+  />
+  {/* Value */}
+  <Section>
+    <IndustryGrowth
+      variant="list"
+      eyebrow="More value, less overhead"
+      heading="Get the expertise, skip the overhead"
+      icons={["people", "scan", "security"]}
+      items={[
+        {
+          title: "No hiring, no overhead",
+          text: "A full department without the headcount, the salaries, or the risk of getting a hire wrong.",
+        },
+        {
+          title: "No suppliers to juggle",
+          text: "One team and one point of contact. Internal coordination stays on our side.",
+        },
+        {
+          title: "Senior people on the work",
+          text: "Faster than an agency, and a higher standard than assembling it from freelancers.",
+        },
+      ]}
+    />
+  </Section>
+  {/* Difference */}
+  <Section>
+    <WhyCompare
+      heading="The three options in front of you"
+      lead="Each option suits a different need. Here's how they compare for a firm like yours."
+      rows={[
+        "Strategy and planning",
+        "Who writes the English copy",
+        "Design",
+        "What it's built for",
+        "Partners' time needed",
+        "Team",
+        "Expert direction",
+      ]}
+      options={[
+        {
+          title: "Superpresence",
+          icon: "brand",
+          featured: true,
+          items: [
+            "Done before design starts",
+            "Professional writers",
+            "Fully custom",
+            "Enquiries and growth",
+            "Reviews and sign-off",
+            "Strategy, design, copy, dev",
+            "Experts direct every stage",
+          ],
+        },
+        {
+          title: "Hiring in-house",
+          icon: "hire",
+          items: [
+            "Fitted around other work",
+            "Whoever on the team can write",
+            "Depends on one hire",
+            "Keeping the site running",
+            "Managing the hire",
+            "One or two people",
+            "Depends on the hire",
+          ],
+        },
+        {
+          title: "Traditional agency",
+          icon: "agency",
+          items: [
+            "Often skipped for speed",
+            "Sometimes translated",
+            "Often a template",
+            "Traffic and channels",
+            "Briefing and chasing",
+            "Split across teams",
+            "Depends on the account team",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Gaps */}
+  <Section>
+    <WhyOffers />
+  </Section>
+  {/* Services */}
+  <Section>
+    <ServiceGrid />
+  </Section>
+  {/* CTA */}
+  <HomeCta
+    eyebrow="You've reached the end, so now…"
+    heading="Your next chapter deserves<br />the right digital team"
+    text="Whether you're rebuilding your website, improving your brand, or planning what's next, we'll help you figure out where to start."
+    buttonText="Start a conversation"
+    buttonHref="/contact"
+  />
+</Layout>

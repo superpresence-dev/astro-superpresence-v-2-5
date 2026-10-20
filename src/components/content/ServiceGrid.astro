@@ -1,0 +1,212 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Icon from "@/components/media/Icon.astro";
+import Img from "@/components/media/Img.astro";
+import arrow from "@/assets/icons/arrow-full.svg";
+import texture from "@/assets/why/service-texture.png";
+
+type Service = { title: string; text: string; href?: string };
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading?: string;
+  /** Text under the heading. Omit to leave it out. */
+  lead?: string;
+  /** Services in order; every second card carries the texture. */
+  items?: Service[];
+}
+
+const defaultItems: Service[] = [
+  {
+    title: "Brand identity",
+    text: "Enhance your visual system with sharper clarity before starting the website redesign.",
+  },
+  {
+    title: "Website design",
+    text: "The strategy and design that come before this build, from the same team.",
+  },
+  {
+    title: "Webflow development",
+    text: "Updates and improvements after launch, from the team that built it.",
+  },
+  {
+    title: "Framer development",
+    text: "Launch polished Framer websites with speed, flexibility, and lasting performance.",
+  },
+  {
+    title: "Website Migration",
+    text: "Creative assets designed to capture attention and turn audiences into customers.",
+  },
+  {
+    title: "Webflow maintenance",
+    text: "Keep your Webflow site fast, reliable, updated, and ready for what's next.",
+  },
+];
+
+const {
+  render = true,
+  eyebrow = "Services that work together",
+  heading = "Your dedicated digital team in Asia",
+  lead = "Everything a website needs, done in-house by the same team. You get the department without building, hiring or managing one.",
+  items = defaultItems,
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+{
+  render && items?.length > 0 && (
+    <div class:list={["service-grid_wrap", className]} {...rest}>
+      <div class="service-grid_intro">
+        <Paragraph variant="overline-small" class="service-grid_eyebrow">
+          {eyebrow}
+        </Paragraph>
+        <Heading tag="h2" variant="h3">
+          <Fragment set:html={heading} />
+        </Heading>
+        {lead && (
+          <Paragraph variant="large" class="service-grid_lead">
+            {lead}
+          </Paragraph>
+        )}
+      </div>
+      <ul class="service-grid_list" role="list">
+        {items.map((item, index) => (
+          <li
+            class:list={["service-grid_item", index % 2 === 1 && "textured"]}
+          >
+            {index % 2 === 1 && (
+              <Img src={texture} class="service-grid_texture" />
+            )}
+            <a class="service-grid_link" href={item.href ?? "#"}>
+              <Heading tag="h3" variant="h5" class="service-grid_title">
+                {item.title}
+              </Heading>
+              <Icon src={arrow} class="service-grid_arrow" />
+            </a>
+            <hr class="service-grid_divider" />
+            <Paragraph variant="main" class="service-grid_text">
+              {item.text}
+            </Paragraph>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .service-grid_wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-3-5rem);
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .service-grid_intro {
+        width: 100%;
+        max-width: 55rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-0-75rem);
+        text-align: center;
+      }
+
+      .service-grid_eyebrow {
+        color: var(--color-neutral-30);
+      }
+
+      .service-grid_lead {
+        max-width: 37.5rem;
+      }
+
+      .service-grid_list {
+        width: 100%;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--space-1-25rem);
+        margin: 0;
+        padding: 0;
+        @media (width >= 48rem) {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        @media (width >= 62rem) {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      .service-grid_item {
+        position: relative;
+        isolation: isolate;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2rem);
+        margin: 0;
+        padding: var(--space-2rem);
+        overflow: clip;
+        background-color: var(--color-neutral-2);
+        border-radius: var(--radius-0-25rem);
+      }
+
+      .service-grid_texture {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.4;
+      }
+
+      /* The whole card answers the click; the link's box is stretched over it. */
+      .service-grid_link {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: var(--space-1-25rem);
+        color: var(--heading);
+        text-decoration: none;
+
+        &::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+        }
+
+        @media (hover: hover) {
+          &:hover .service-grid_arrow {
+            translate: 0.25rem 0;
+          }
+        }
+      }
+
+      .service-grid_arrow {
+        --_size: 1.5rem;
+        transition: translate var(--hover-duration) var(--hover-ease);
+      }
+
+      .service-grid_divider {
+        height: 0;
+        margin: 0 0 calc(var(--border-width) * -1);
+        border: 0;
+        border-top: var(--border-width) solid var(--color-neutral-10);
+      }
+
+      .service-grid_text {
+        color: var(--color-neutral-60);
+      }
+    }
+  }
+</style>

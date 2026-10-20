@@ -1,0 +1,304 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Icon from "@/components/media/Icon.astro";
+import check from "@/assets/icons/check-small.svg";
+import { uid } from "@/utils/unique-id.ts";
+
+type Point = { title: string; text: string };
+type Step = { title: string; points: Point[] };
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading: string;
+  /** Text under the heading. Omit to leave it out. */
+  lead?: string;
+  /** Steps in order, numbered automatically. One opens at a time; the first starts open. */
+  steps: Step[];
+}
+
+const {
+  render = true,
+  eyebrow = "Exactly what we do",
+  heading,
+  lead,
+  steps,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const id = uid("service-steps");
+const number = (index: number) => String(index + 1).padStart(2, "0");
+---
+
+{
+  render && heading && steps?.length > 0 && (
+    <div class:list={["service-steps_wrap", className]} {...rest}>
+      <div class="service-steps_intro">
+        <Paragraph variant="overline-small" class="service-steps_eyebrow">
+          {eyebrow}
+        </Paragraph>
+        <Heading tag="h2" variant="h3">
+          <Fragment set:html={heading} />
+        </Heading>
+        {lead && (
+          <Paragraph variant="large" class="service-steps_lead">
+            {lead}
+          </Paragraph>
+        )}
+      </div>
+      <div class="service-steps_list" data-service-steps>
+        {steps.map((step, index) => (
+          <div
+            class="service-steps_item"
+            data-open={index === 0 ? "" : undefined}
+          >
+            <Heading tag="h3" variant="h4" class="service-steps_heading">
+              <button
+                type="button"
+                class="service-steps_toggle"
+                id={`${id}-toggle-${index}`}
+                aria-expanded={index === 0 ? "true" : "false"}
+                aria-controls={`${id}-panel-${index}`}
+              >
+                <Paragraph
+                  tag="span"
+                  variant="overline-main"
+                  class="service-steps_number"
+                >
+                  {number(index)}
+                </Paragraph>
+                <span class="service-steps_title">{step.title}</span>
+              </button>
+            </Heading>
+            <div
+              class="service-steps_panel"
+              id={`${id}-panel-${index}`}
+              role="region"
+              aria-labelledby={`${id}-toggle-${index}`}
+              inert={index !== 0}
+            >
+              <div class="service-steps_clip">
+                <ul class="service-steps_points" role="list">
+                  {step.points.map((point) => (
+                    <li class="service-steps_point">
+                      <div class="service-steps_point-heading">
+                        <Icon src={check} class="service-steps_check" />
+                        <Paragraph
+                          tag="span"
+                          variant="large"
+                          class="service-steps_point-title weight-medium"
+                        >
+                          {point.title}
+                        </Paragraph>
+                      </div>
+                      <Paragraph
+                        variant="main"
+                        class="service-steps_point-text"
+                      >
+                        {point.text}
+                      </Paragraph>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+<script>
+  for (const list of document.querySelectorAll<HTMLElement>(
+    "[data-service-steps]",
+  )) {
+    const items = [
+      ...list.querySelectorAll<HTMLElement>(".service-steps_item"),
+    ];
+
+    const toggle = (item: HTMLElement, open: boolean) => {
+      item.toggleAttribute("data-open", open);
+      item
+        .querySelector(".service-steps_toggle")
+        ?.setAttribute("aria-expanded", String(open));
+      const panel = item.querySelector<HTMLElement>(".service-steps_panel");
+      if (panel) panel.inert = !open;
+    };
+
+    for (const item of items) {
+      item
+        .querySelector(".service-steps_toggle")
+        ?.addEventListener("click", () => {
+          const open = !item.hasAttribute("data-open");
+          for (const other of items) toggle(other, other === item && open);
+        });
+    }
+  }
+</script>
+
+<style is:global>
+  @layer components {
+    .service-steps_wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3-5rem);
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .service-steps_intro {
+        width: 100%;
+        max-width: 55rem;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+      }
+
+      .service-steps_eyebrow {
+        color: var(--color-neutral-30);
+      }
+
+      .service-steps_list {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .service-steps_item {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        padding-block: var(--space-1-5rem);
+        border-bottom: var(--border-width) solid var(--color-neutral-5);
+        transition: border-color var(--open-duration) var(--open-ease);
+        @media (width >= 62rem) {
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: flex-start;
+          gap: var(--space-1-5rem);
+        }
+
+        &[data-open] {
+          border-bottom-color: var(--color-primary-60);
+        }
+      }
+
+      .service-steps_toggle {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-0-75rem);
+        padding: 0;
+        color: var(--color-neutral-30);
+        font: inherit;
+        letter-spacing: inherit;
+        text-align: start;
+        background: none;
+        border: 0;
+        cursor: pointer;
+        transition: color var(--hover-duration) var(--hover-ease);
+
+        /* A closed row is clickable across its whole width, not only on the text. */
+        &::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+        }
+      }
+
+      @media (hover: hover) {
+        .service-steps_item:not([data-open]):hover .service-steps_toggle {
+          color: var(--color-neutral-60);
+        }
+      }
+
+      .service-steps_number {
+        transition: color var(--open-duration) var(--open-ease);
+      }
+
+      [data-open] .service-steps_toggle {
+        color: var(--color-neutral-90);
+        cursor: default;
+
+        /* The open row keeps its points selectable. */
+        &::after {
+          content: none;
+        }
+
+        .service-steps_number {
+          color: var(--color-primary-60);
+        }
+      }
+
+      /* Closed panels collapse to nothing; the open one grows to its content. */
+      .service-steps_panel {
+        display: grid;
+        grid-template-rows: 0fr;
+        opacity: 0;
+        transition:
+          grid-template-rows var(--open-duration) var(--open-ease),
+          opacity var(--open-duration) var(--open-ease);
+
+        .service-steps_clip {
+          min-height: 0;
+          overflow: hidden;
+        }
+      }
+
+      [data-open] .service-steps_panel {
+        grid-template-rows: 1fr;
+        opacity: 1;
+      }
+
+      .service-steps_points {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1-5rem);
+        margin: 0;
+        padding: 0;
+        @media (width < 62rem) {
+          padding-top: var(--space-2rem);
+        }
+        @media (width >= 48rem) {
+          flex-direction: row;
+        }
+      }
+
+      .service-steps_point {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-5rem);
+        margin: 0;
+        padding-inline: var(--space-0-75rem);
+      }
+
+      .service-steps_point-heading {
+        display: flex;
+        align-items: center;
+        gap: var(--space-0-75rem);
+      }
+
+      .service-steps_check {
+        --_size: var(--icon-sm);
+        color: var(--color-primary-60);
+      }
+
+      .service-steps_point-title {
+        color: var(--color-neutral-90);
+      }
+
+      /* Lines up under the title, past the check and its gap. */
+      .service-steps_point-text {
+        padding-left: calc(1.25rem + var(--space-0-75rem));
+        color: var(--color-neutral-60);
+      }
+    }
+  }
+</style>

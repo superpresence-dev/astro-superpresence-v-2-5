@@ -11,7 +11,7 @@ import { industryIcons } from "@/utils/industries.ts";
 type Item = { title: string; text: string };
 type Stat = { value: string; label: string };
 
-interface Props extends HTMLAttributes<"div"> {
+type Base = HTMLAttributes<"div"> & {
   /** Set to `false` to omit the component. */
   render?: boolean;
   /** Small label above the heading. */
@@ -22,13 +22,36 @@ interface Props extends HTMLAttributes<"div"> {
   lead?: string;
   /** Improvements in order; each takes the icon at its position. */
   items: Item[];
-  /** Figure in the highlighted card. */
+  /** Icon names from `src/assets/industries/icons`, one per item in order. */
+  icons?: string[];
+  /** Layout: `highlight` adds the figure card beside the list, `list` centres the heading over taller items. */
+  variant?: "highlight" | "list";
+};
+
+type Props = Base &
+  (
+    | {
+        variant?: "highlight";
+        /** Figure in the highlighted card. */
+        stat?: Stat;
+        /** Button text. */
+        buttonText?: string;
+        /** Button link. */
+        buttonHref?: string;
+      }
+    | {
+        variant: "list";
+        stat?: never;
+        buttonText?: never;
+        buttonHref?: never;
+      }
+  );
+
+type AllProps = Base & {
   stat?: Stat;
-  /** Button text. */
   buttonText?: string;
-  /** Button link. */
   buttonHref?: string;
-}
+};
 
 const {
   render = true,
@@ -36,6 +59,15 @@ const {
   heading,
   lead,
   items,
+  icons: iconNames = [
+    "chart",
+    "bolt",
+    "search",
+    "analytics",
+    "cms",
+    "security",
+  ],
+  variant = "highlight",
   stat = {
     value: "20%",
     label: "Average lift in enquiries for clients running ads",
@@ -44,16 +76,21 @@ const {
   buttonHref = "/work",
   class: className,
   ...rest
-} = Astro.props;
+} = Astro.props as AllProps;
 
-const icons = ["chart", "bolt", "search", "analytics", "cms", "security"].map(
-  (name) => industryIcons[name],
-);
+const icons = iconNames.map((name) => industryIcons[name]);
 ---
 
 {
   render && heading && items?.length > 0 && (
-    <div class:list={["industry-growth_wrap", className]} {...rest}>
+    <div
+      class:list={[
+        "industry-growth_wrap",
+        variant !== "highlight" && variant,
+        className,
+      ]}
+      {...rest}
+    >
       <div class="industry-growth_intro">
         <Paragraph variant="overline-small" class="industry-growth_eyebrow">
           {eyebrow}
@@ -71,7 +108,10 @@ const icons = ["chart", "bolt", "search", "analytics", "cms", "security"].map(
         <ul class="industry-growth_list" role="list">
           {items.map((item, index) => (
             <li class="industry-growth_item">
-              <Icon src={icons[index % icons.length]} class="industry-growth_icon" />
+              <Icon
+                src={icons[index % icons.length]}
+                class="industry-growth_icon"
+              />
               <div class="industry-growth_content">
                 <Heading tag="h3" variant="h6">
                   {item.title}
@@ -83,20 +123,25 @@ const icons = ["chart", "bolt", "search", "analytics", "cms", "security"].map(
             </li>
           ))}
         </ul>
-        <div class="industry-growth_highlight theme-dark">
-          <Img src={highlight} class="industry-growth_highlight-image" />
-          <div class="industry-growth_stat">
-            <Paragraph variant="h1" class="industry-growth_value">
-              {stat.value}
-            </Paragraph>
-            <Paragraph variant="large" class="industry-growth_label weight-medium">
-              {stat.label}
-            </Paragraph>
+        {variant === "highlight" && (
+          <div class="industry-growth_highlight theme-dark">
+            <Img src={highlight} class="industry-growth_highlight-image" />
+            <div class="industry-growth_stat">
+              <Paragraph variant="h1" class="industry-growth_value">
+                {stat.value}
+              </Paragraph>
+              <Paragraph
+                variant="large"
+                class="industry-growth_label weight-medium"
+              >
+                {stat.label}
+              </Paragraph>
+            </div>
+            <Button element="link" href={buttonHref} arrow>
+              {buttonText}
+            </Button>
           </div>
-          <Button element="link" href={buttonHref} arrow>
-            {buttonText}
-          </Button>
-        </div>
+        )}
       </div>
     </div>
   )
@@ -119,6 +164,28 @@ const icons = ["chart", "bolt", "search", "analytics", "cms", "security"].map(
       display: flex;
       flex-direction: column;
       gap: var(--space-3-5rem);
+
+      &.list {
+        --_icon: 2.5rem;
+        --_item-height: 13.125rem;
+        @media (width >= 48rem) {
+          --_item-height: 14.0625rem;
+        }
+        @media (width >= 62rem) {
+          --_item-height: 15.625rem;
+        }
+        align-items: center;
+
+        .industry-growth_intro {
+          align-items: center;
+          max-width: 46.875rem;
+          text-align: center;
+        }
+
+        .industry-growth_layout {
+          width: 100%;
+        }
+      }
 
       :is(.heading, .text) {
         margin: 0;

@@ -1,0 +1,197 @@
+---
+import type { ComponentProps, HTMLAttributes } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Img from "@/components/media/Img.astro";
+import Icon from "@/components/media/Icon.astro";
+import check from "@/assets/icons/check-small.svg";
+import defaultBackground from "@/assets/service/migrate/preserve-background.jpg";
+
+type Group = { title: string; items: string[] };
+
+type Props = HTMLAttributes<"section"> &
+  Pick<ComponentProps<typeof Section>, "render"> & {
+    /** Small label above the heading. */
+    eyebrow?: string;
+    /** Section heading. Accepts `<br>` for a forced line break. */
+    heading: string;
+    /** Text under the heading. Omit to leave it out. */
+    lead?: string;
+    /** Lists in order, each under its own title. */
+    groups: Group[];
+    /** Background image. */
+    image?: ImageMetadata;
+  };
+
+const {
+  render = true,
+  eyebrow = "What we preserve",
+  heading,
+  lead,
+  groups,
+  image = defaultBackground,
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<Section
+  render={render && !!heading && groups?.length > 0}
+  theme="dark"
+  paddingTop="none"
+  paddingBottom="none"
+  containerClass="service-preserve_layout"
+  class:list={["service-preserve_wrap", className]}
+  {...rest}
+>
+  <Img src={image} slot="background" class="service-preserve_background" />
+  <div slot="background" class="service-preserve_fade"></div>
+  <div class="service-preserve_intro">
+    <Paragraph variant="overline-small" class="service-preserve_muted">
+      {eyebrow}
+    </Paragraph>
+    <Heading tag="h2" variant="h3">
+      <Fragment set:html={heading} />
+    </Heading>
+    {
+      lead && (
+        <Paragraph variant="large" class="service-preserve_muted">
+          {lead}
+        </Paragraph>
+      )
+    }
+  </div>
+  <ul class="service-preserve_list" role="list">
+    {
+      groups.map((group) => (
+        <li class="service-preserve_group">
+          <Heading tag="h3" variant="h5" class="service-preserve_title">
+            {group.title}
+          </Heading>
+          <ul class="service-preserve_items" role="list">
+            {group.items.map((item) => (
+              <li class="service-preserve_item">
+                <Icon src={check} class="service-preserve_check" />
+                <Paragraph
+                  tag="span"
+                  variant="main"
+                  class="service-preserve_text"
+                >
+                  {item}
+                </Paragraph>
+              </li>
+            ))}
+          </ul>
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+<style is:global>
+  @layer components {
+    .service-preserve_wrap {
+      .service-preserve_background {
+        object-fit: cover;
+      }
+
+      .service-preserve_fade {
+        background-image:
+          linear-gradient(
+            to top,
+            rgb(20 24 28 / 0.9) 0.45%,
+            rgb(20 23 27 / 0.63) 18.3%,
+            rgb(20 23 27 / 0) 71.87%
+          ),
+          linear-gradient(rgb(0 0 0 / 0.32), rgb(0 0 0 / 0.32));
+      }
+
+      /* Content sits at the foot of a tall frame, under the photo. */
+      .service-preserve_layout {
+        --_height: 75rem;
+        @media (width >= 48rem) {
+          --_height: 42.5rem;
+        }
+        @media (width >= 62rem) {
+          --_height: 45rem;
+        }
+        min-height: calc(var(--_height) + 2 * var(--space-4rem));
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        gap: var(--space-3-5rem);
+        padding-block: var(--space-4rem);
+      }
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .service-preserve_intro {
+        max-width: 46.875rem;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+      }
+
+      .service-preserve_muted {
+        color: var(--color-neutral-10);
+      }
+
+      .service-preserve_list {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--space-1-5rem);
+        margin: 0;
+        padding: 0;
+        @media (width >= 48rem) {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        @media (width >= 62rem) {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+      }
+
+      .service-preserve_group {
+        max-width: 30rem;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+        margin: 0;
+        padding: var(--space-1-5rem) var(--space-1-5rem) var(--space-1-5rem) 0;
+      }
+
+      .service-preserve_title {
+        padding-bottom: calc(var(--space-0-75rem) - var(--border-width));
+        border-bottom: var(--border-width) solid var(--color-neutral-60);
+      }
+
+      .service-preserve_items {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        padding: 0;
+      }
+
+      .service-preserve_item {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-0-75rem);
+        margin: 0;
+        padding-block: var(--space-0-25rem);
+      }
+
+      .service-preserve_check {
+        --_size: var(--icon-sm);
+        margin-top: calc((var(--text-main-line-height) - 1.25rem) / 2);
+      }
+
+      .service-preserve_text {
+        flex: 1 1 0;
+        min-width: 0;
+        color: var(--color-neutral-5);
+      }
+    }
+  }
+</style>

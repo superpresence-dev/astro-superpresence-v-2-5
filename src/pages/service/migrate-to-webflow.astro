@@ -1,0 +1,554 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import HomeHero from "@/components/section/HomeHero.astro";
+import IndustryProblem from "@/components/content/IndustryProblem.astro";
+import ServicePoints from "@/components/content/ServicePoints.astro";
+import ServicePromise from "@/components/section/ServicePromise.astro";
+import ServiceFeatures from "@/components/content/ServiceFeatures.astro";
+import MigrateFeatureGraphic from "@/components/content/MigrateFeatureGraphic.astro";
+import ServiceSteps from "@/components/content/ServiceSteps.astro";
+import ServicePreserve from "@/components/section/ServicePreserve.astro";
+import WhyOffers from "@/components/content/WhyOffers.astro";
+import WhyCompare from "@/components/content/WhyCompare.astro";
+import IndustryProcess from "@/components/content/IndustryProcess.astro";
+import MigrateProcessGraphic from "@/components/content/MigrateProcessGraphic.astro";
+import HomeQuote from "@/components/section/HomeQuote.astro";
+import HomeFaq from "@/components/content/HomeFaq.astro";
+import ServiceGrid from "@/components/content/ServiceGrid.astro";
+import HomeCta from "@/components/section/HomeCta.astro";
+import { serviceUrl } from "@/utils/services.ts";
+import heroImage from "@/assets/service/migrate/hero.jpg";
+import quoteAvatar from "@/assets/service/migrate/quote-avatar.jpg";
+import optionsMove from "@/assets/service/migrate/options-move.png";
+import optionsRebuild from "@/assets/service/migrate/options-rebuild.png";
+
+const related = [
+  {
+    title: "Website design",
+    text: "If you want a new look, that is a rebuild, and we scope it as a full website design.",
+  },
+  {
+    title: "Webflow development",
+    text: "Custom builds and integrations designed just for your site after it launches on Webflow.",
+  },
+  {
+    title: "Framer development",
+    text: "You’ll get the same great care and attention if your next platform is Framer.",
+  },
+  {
+    title: "Webflow maintenance",
+    text: "Continuous support and maintenance for the website after it launches on Webflow platform.",
+  },
+  {
+    title: "Branding",
+    text: "A sharper, more distinct identity to consistently carry across the entire new website.",
+  },
+  {
+    title: "Social & ad creative",
+    text: "Graphic design that perfectly matches the site your buyers see, enhancing their experience.",
+  },
+].map((item) => ({ ...item, href: serviceUrl(item.title) }));
+---
+
+<Layout
+  title="Migrate to Webflow"
+  description="Your pages and blog posts move across intact, and 301 redirects carry your old URLs and search rankings to their new pages. Every page is checked against the original before launch."
+  overlap
+>
+  {/* Hero */}
+  <HomeHero
+    eyebrow="Migrate website to Webflow"
+    heading="Move to Webflow without losing what you’ve built"
+    text="Your pages and blog posts move across intact, and 301 redirects carry your old URLs and search rankings to their new pages. Every page is checked against the original before launch."
+    image={heroImage}
+    buttonText="Start your project"
+    buttonHref="/contact"
+    variant="split"
+    fade="soft"
+  />
+  {/* Problem */}
+  <Section>
+    <IndustryProblem
+      heading="Your website is stuck on<br />a platform you’ve outgrown"
+      items={[
+        {
+          title: "Every edit goes through a developer",
+          text: "A text change becomes a request, a wait and an invoice, so most things never get changed.",
+        },
+        {
+          title: "One missed update away from a hack",
+          text: "Plugins keep the site running, and one outdated plugin is how sites like yours get hacked.",
+        },
+        {
+          title: "A renewal is coming up",
+          text: "The old hosting contract is due, and renewing means more of the same.",
+        },
+      ]}
+    />
+  </Section>
+  {/* Platforms */}
+  <Section>
+    <ServicePoints
+      variant="platform"
+      eyebrow="Moving from"
+      heading="Where most of our migrations start"
+      items={[
+        {
+          icon: "wordpress",
+          title: "WordPress",
+          text: "Plugins and updates to manage, and a site that slows as it grows.",
+        },
+        {
+          icon: "wix",
+          title: "Wix",
+          text: "Hard to grow past the template, and limited control over search basics.",
+        },
+        {
+          icon: "squarespace",
+          title: "Squarespace",
+          text: "Clean to start, but tight limits once the content grows.",
+        },
+        {
+          icon: "hubspot",
+          title: "HubSpot CMS",
+          text: "Tied to a platform plan, with design limited by its templates.",
+        },
+        {
+          icon: "framer",
+          title: "Framer",
+          text: "Outgrown when the content needs a deeper CMS or many editors.",
+        },
+        {
+          icon: "code",
+          title: "Custom-coded sites",
+          text: "Every change waits for a developer, so the site falls behind.",
+        },
+      ]}
+      aside={{
+        title: "On something else?",
+        text: "We can usually move it, and we will confirm after a review.",
+      }}
+    />
+  </Section>
+  {/* Features */}
+  <Section>
+    <ServiceFeatures
+      items={[
+        {
+          eyebrow: "Migration or rebuild?",
+          heading: "Same site, new platform.<br />We say which it is up front",
+          text: "A migration keeps your design and content and moves them onto Webflow. If you want it to look or read differently, that is a rebuild, and we will tell you before you commit.",
+          points: [
+            "A clear scope before the call ends",
+            "No surprise redesign hidden in a migration",
+            "Honest advice if a rebuild serves you better",
+          ],
+        },
+        {
+          eyebrow: "Redirects you can check",
+          heading: "Every old URL, mapped and checked",
+          text: "We do not just promise your rankings survive. You get the redirect ledger: every old URL, its new page and its status, before anything goes live.",
+          points: [
+            "A full redirect map you can review",
+            "No dead URLs at launch",
+            "Search Console checked after the switch",
+          ],
+        },
+        {
+          eyebrow: "Nothing lost in the move",
+          heading: "Checked page by page<br />against the original",
+          text: "Each page and post is compared field by field with the original, and you sign it off before switch-over.",
+          points: [
+            "Titles, slugs, meta and alt text compared",
+            "Post counts reconciled",
+            "Your sign-off before anything goes live",
+          ],
+        },
+      ]}
+    >
+      <MigrateFeatureGraphic slot="visual-1" variant="scope" />
+      <MigrateFeatureGraphic slot="visual-2" variant="redirects" />
+      <MigrateFeatureGraphic slot="visual-3" variant="parity" />
+    </ServiceFeatures>
+  </Section>
+  {/* Steps */}
+  <Section>
+    <ServiceSteps
+      heading="A migration, step by step"
+      lead="Technical work, not a redesign: the same site, moved properly."
+      steps={[
+        {
+          title: "Audit",
+          points: [
+            {
+              title: "Content inventory",
+              text: "Every page, post and asset on the current site.",
+            },
+            {
+              title: "Full URL list",
+              text: "The starting point for the redirect map.",
+            },
+          ],
+        },
+        {
+          title: "Move",
+          points: [
+            {
+              title: "Export and import",
+              text: "Pages and content rebuilt on Webflow.",
+            },
+            {
+              title: "Bulk blog import",
+              text: "Posts moved in bulk, then checked.",
+            },
+          ],
+        },
+        {
+          title: "Redirect",
+          points: [
+            {
+              title: "301 map for every old URL",
+              text: "Each old address sent to its new home.",
+            },
+            {
+              title: "Tested after launch",
+              text: "Redirects checked on the live site.",
+            },
+          ],
+        },
+        {
+          title: "Verify",
+          points: [
+            {
+              title: "Page-by-page parity check",
+              text: "The new site compared with the original.",
+            },
+            {
+              title: "Forms and integrations tested",
+              text: "Everything that sends data, checked end to end.",
+            },
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Preserve */}
+  <ServicePreserve
+    heading="Everything your current site has earned"
+    lead="Checked page by page against the original before the switch."
+    groups={[
+      {
+        title: "Search",
+        items: [
+          "Every old URL mapped to a new one",
+          "301 redirects tested on the live site",
+          "Page titles and descriptions carried over",
+          "Sitemap resubmitted to Google",
+        ],
+      },
+      {
+        title: "Content",
+        items: [
+          "Pages rebuilt to match the original",
+          "Blog posts moved in bulk, then checked",
+          "Images, files and alt text",
+          "Authors, dates and categories",
+        ],
+      },
+      {
+        title: "Function",
+        items: [
+          "Every form, sending to the same place",
+          "Analytics and tracking codes",
+          "Connected tools and embeds",
+          "Internal links pointing to new pages",
+        ],
+      },
+      {
+        title: "After launch",
+        items: [
+          "Rankings and traffic watched for 30 days",
+          "Broken links fixed as they appear",
+          "Search console errors cleared",
+          "A short report when the window closes",
+        ],
+      },
+    ]}
+  />
+  {/* Options */}
+  <Section>
+    <WhyOffers
+      variant="options"
+      eyebrow="Migrate or rebuild"
+      heading="Move it as it is, or make it better"
+      lead="Two different jobs. We will tell you which one you need."
+      options={[
+        {
+          tone: "blue",
+          image: optionsMove,
+          title: "Move the site as it is",
+          text: "The same pages, design and content, moved onto Webflow so your team can run it.",
+          points: [
+            "Content and URLs preserved",
+            "301 redirects for every page",
+            "Checked against the original",
+            "Usually the faster option",
+          ],
+        },
+        {
+          tone: "purple",
+          image: optionsRebuild,
+          title: "Make it better on the way",
+          text: "A new strategy, copy and design, built on Webflow. Scoped as a Webflow build.",
+          points: [
+            "Strategy, copy and custom design",
+            "Everything a migration covers",
+            "Essentials, Growth or Scale",
+            "8 to 12 weeks, depending on scope",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Process */}
+  <Section>
+    <IndustryProcess
+      eyebrow="How we work"
+      heading="Five steps, each<br />signed off before the next"
+      note={{
+        title: "3 feedback rounds included",
+        text: "Each phase is approved before the next one starts, so nothing gets reworked later.",
+      }}
+      steps={[
+        {
+          title: "Kick-off and audit",
+          text: "A strategy call, then a full audit of the current site: every page, URL and post.",
+          points: [
+            "Page and URL list",
+            "Blog post count",
+            "Issues flagged early",
+          ],
+        },
+        {
+          title: "Webflow rebuild",
+          label: "Webflow development",
+          text: "Your existing design is rebuilt in Webflow to match, with the CMS ready to hold your content.",
+          points: [
+            "Pixel-perfect rebuild of your design",
+            "Reusable components",
+            "CMS collections for your content",
+          ],
+        },
+        {
+          title: "Content import",
+          text: "Pages move across, and blog posts move in bulk with their images.",
+          points: ["Pages imported", "Posts in bulk", "Media in place"],
+        },
+        {
+          title: "Redirects",
+          text: "Every old URL gets a 301 to its new page, so links and rankings carry over.",
+          points: [
+            "Full redirect map",
+            "No dead URLs",
+            "Rankings carried over",
+          ],
+        },
+        {
+          title: "Check and launch",
+          text: "Content is checked against the original, tested, and launched on your schedule.",
+          points: [
+            "Page-by-page check",
+            "Device testing",
+            "Switch-over on your schedule",
+          ],
+        },
+      ]}
+    >
+      <MigrateProcessGraphic slot="step-1" variant="audit" />
+      <MigrateProcessGraphic slot="step-2" variant="rebuild" />
+      <MigrateProcessGraphic slot="step-3" variant="import" />
+      <MigrateProcessGraphic slot="step-4" variant="redirect" />
+      <MigrateProcessGraphic slot="step-5" variant="launch" />
+    </IndustryProcess>
+  </Section>
+  {/* Quote */}
+  <HomeQuote
+    quote="We went from a cookie-cutter template to a custom website that properly reflects the brand… Kevin is super easy to work with, always one message away."
+    name="Max Chernov"
+    jobTitle="YouTuber, 430k subscribers"
+    avatar={quoteAvatar}
+    logo={false}
+  />
+  {/* Why */}
+  <Section>
+    <ServicePoints
+      eyebrow="Why Superpresence"
+      heading="Why companies trust us with the move"
+      items={[
+        {
+          icon: "qa",
+          title: "QA on every build",
+          text: "Cross-browser, cross-device, forms, integrations, redirects and a performance pass before anything goes live, at every tier.",
+        },
+        {
+          icon: "search",
+          title: "Built to convert, engineered for search",
+          text: "Conversion structure on the surface; clean structure, schema and speed underneath, so search and AI tools read you correctly.",
+        },
+        {
+          icon: "team",
+          title: "The whole senior team, one roof",
+          text: "Strategy, design, copy, development, conversion and QA in one accountable team, with nobody for you to hire or manage.",
+        },
+        {
+          icon: "globe",
+          title: "Built in Asia, written for buyers abroad",
+          text: "We work in your timezone, understand Asian companies, and craft English content that appeals to your target buyers—nothing feels translated.",
+        },
+        {
+          icon: "depth",
+          title: "Depth over volume",
+          text: "Every project receives dedicated senior attention for the entire duration needed to solve the problem thoroughly, not limited to a fixed subscription slot.",
+        },
+        {
+          icon: "map",
+          title: "Strategy before pixels",
+          text: "We don’t start designing until what you do, who it is for and why you are clear. Design amplifies clarity; it can’t create it.",
+        },
+      ]}
+    />
+  </Section>
+  {/* Comparison */}
+  <Section>
+    <WhyCompare
+      variant="marks"
+      eyebrow="The comparison"
+      heading="What each option actually delivers"
+      lead="A quick comparison before you decide who does the work."
+      rows={[
+        "Webflow specialists",
+        "Bulk blog migration",
+        "301 redirect map you can review",
+        "Content verified against original",
+        "Device and browser testing",
+        "Migration or rebuild advice",
+      ]}
+      options={[
+        {
+          title: "Superpresence",
+          icon: "brand",
+          featured: true,
+          items: [true, true, true, true, true, true],
+        },
+        {
+          title: "Freelancer",
+          icon: "hire",
+          items: ["Sometimes", "Varies", "Sometimes", false, "Varies", false],
+        },
+        {
+          title: "Typical agency",
+          icon: "agency",
+          items: [
+            "Sometimes",
+            "Sometimes",
+            true,
+            "Sometimes",
+            true,
+            "Sometimes",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Promise */}
+  <ServicePromise
+    heading="A move that keeps<br />what you have earned"
+    items={[
+      {
+        value: "30 days",
+        title: "Checks after launch",
+        text: "We watch rankings, traffic and broken links for 30 days after the switch, and fix what comes up.",
+      },
+      {
+        value: "Every URL",
+        title: "Redirected and tested",
+        text: "Each old address is mapped to its new home and tested on the live site.",
+      },
+      {
+        value: "10 min",
+        title: "Free video teardown",
+        text: "What is working on your current site, what is losing buyers and what we would change first.",
+      },
+    ]}
+  />
+  {/* FAQ */}
+  <Section>
+    <HomeFaq
+      heading="Before you ask"
+      items={[
+        {
+          question: "Will we lose our Google rankings?",
+          answer: [
+            "Not if the redirects are done properly, and with Superpresence they are. Every old URL gets a 301 redirect to its new page, titles, descriptions and alt text carry over, and the sitemap is resubmitted to Google. The same redirects and carried-over structure help AI search tools such as ChatGPT and Google’s AI Overviews keep finding your pages.",
+            "Some movement for a few weeks is normal after any platform change while Google re-crawls the site. We watch rankings, traffic and Search Console after the switch and fix what comes up.",
+          ],
+        },
+        {
+          question:
+            "What’s the difference between a migration and a redesign?",
+          answer: [
+            "A migration moves your current site onto Webflow as it is: same design, same content, same URLs wherever possible. A redesign changes how the site looks or reads, with new strategy, copy and design, and we scope it as a full Webflow build.",
+            "We tell you which one you’re buying before you commit. If the old site is part of the problem, doing both in one project means you don’t pay to rebuild the same pages twice.",
+          ],
+        },
+        {
+          question: "Will all our blog posts and images come across?",
+          answer: [
+            "Yes. Posts are imported in bulk into the Webflow CMS with their images, authors, dates and categories, then the post count is reconciled against the original.",
+            "Leftover formatting from the old platform, such as WordPress shortcodes or page-builder blocks, is cleaned up in the import so posts render properly. Very large archives may need a higher Webflow plan, which we check in the audit.",
+          ],
+        },
+        {
+          question: "Is there any downtime?",
+          answer: [
+            "No planned downtime. The new site is built and checked on a staging address while your current site stays live, and the switch is a DNS change scheduled at a quiet hour for your market.",
+            "For a few hours afterwards, some visitors may still see the old site while the change spreads. Both versions work in that window.",
+          ],
+        },
+        {
+          question: "Why choose Superpresence to migrate our website to Webflow?",
+          answer: [
+            "Superpresence migrates sites to Webflow for companies in Hong Kong, Singapore, Thailand and Australia, with a redirect map you review before launch and a page-by-page content check you sign off. Our team has collectively launched 48+ websites, and every one is QA-tested across devices and browsers before it goes live.",
+            "The same senior team that migrates the site can also maintain it afterwards, so nobody has to relearn how it was built. And if your job is really a rebuild, we say so before you commit.",
+          ],
+        },
+        {
+          question: "How much does a Webflow migration cost?",
+          answer: [
+            "It depends on what the move involves, so we scope it before we price it. A straight content move is one job. Most migrations we see also need the site redesigned and rebuilt, because the old design is part of what isn’t working, and that takes more time.",
+            "Page count, blog volume, the number of URLs to redirect, integrations and how much of the site needs redesigning all shape the scope. Tell us what you’re on today, and after a call you’ll get a fixed price in a proposal within a week.",
+            "A migration isn’t worth it for every site. If yours is a few pages nobody updates, staying put or moving it yourself onto a Webflow template may be the smarter spend, and we’ll say so.",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Related services */}
+  <Section>
+    <ServiceGrid
+      eyebrow="Related services"
+      heading="Moving is a good time to fix the rest"
+      lead="If the site needs more than a move, these are the usual next steps."
+      items={related}
+    />
+  </Section>
+  {/* CTA */}
+  <HomeCta
+    eyebrow="You've reached the end, so now..."
+    heading="Ready to leave the old platform?"
+    text="Tell us what you're on today and how big the site is, and we will tell you if it's a migration or a rebuild."
+    buttonText="Start your project"
+    buttonHref="/contact"
+  />
+</Layout>

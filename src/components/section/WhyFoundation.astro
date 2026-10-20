@@ -1,0 +1,36 @@
+---
+import type { ComponentProps } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import Img from "@/components/media/Img.astro";
+import IndustryGrowth from "@/components/content/IndustryGrowth.astro";
+import background from "@/assets/home/globalwrapper.png";
+
+type Props = Pick<ComponentProps<typeof Section>, "render"> &
+  ComponentProps<typeof IndustryGrowth>;
+
+const { render = true, class: className, ...rest } = Astro.props;
+---
+
+<Section render={render} class:list={["why-foundation_wrap", className]}>
+  <Img src={background} slot="background" class="why-foundation_background" />
+  <div slot="background" class="why-foundation_fade"></div>
+  <IndustryGrowth {...rest} />
+</Section>
+
+<style is:global>
+  @layer components {
+    .why-foundation_wrap {
+      .why-foundation_background {
+        object-fit: cover;
+      }
+
+      .why-foundation_fade {
+        background-image: linear-gradient(
+          to bottom,
+          var(--color-neutral-0) 5.7%,
+          color-mix(in srgb, var(--color-neutral-0) 48%, transparent) 59.3%
+        );
+      }
+    }
+  }
+</style>

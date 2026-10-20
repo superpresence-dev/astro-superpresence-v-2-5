@@ -1,0 +1,411 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Button from "@/components/Button.astro";
+import Img from "@/components/media/Img.astro";
+import Icon from "@/components/media/Icon.astro";
+import teardown from "@/assets/why/gaps-teardown.png";
+import redesign from "@/assets/why/gaps-redesign.png";
+import check from "@/assets/home/difference-list-item.svg";
+
+type Tone = "blue" | "purple";
+type Choice = {
+  tone: Tone;
+  image: ImageMetadata;
+  title: string;
+  text: string;
+  points: string[];
+};
+
+type BaseProps = HTMLAttributes<"div"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading?: string;
+  /** Text under the heading. Omit to leave it out. */
+  lead?: string;
+};
+
+type OffersProps = BaseProps & {
+  /** `offers` shows the two free offers with a link each; `options` shows the cards passed in `options`, each with a list of points. */
+  variant?: "offers";
+  /** Destination of both offers' links. */
+  href?: string;
+  options?: never;
+};
+
+type OptionsProps = BaseProps & {
+  variant: "options";
+  href?: never;
+  /** Cards in order, each with its tone, icon, text and points. */
+  options: Choice[];
+};
+
+type Props = OffersProps | OptionsProps;
+type AllProps = BaseProps & {
+  variant?: "offers" | "options";
+  href?: string;
+  options?: Choice[];
+};
+
+const {
+  render = true,
+  eyebrow = "Identify the gaps",
+  heading = "Start by finding out<br />what your site is costing you",
+  lead = "Both are free, and both leave you with something useful whether or not you hire us.",
+  variant = "offers",
+  href = "/contact",
+  options,
+  class: className,
+  ...rest
+} = Astro.props as AllProps;
+
+const offers: {
+  tone: Tone;
+  image: ImageMetadata;
+  duration?: string;
+  title: string;
+  text: string;
+  link?: string;
+  points?: string[];
+}[] =
+  variant === "options"
+    ? (options ?? [])
+    : [
+        {
+          tone: "blue",
+          image: teardown,
+          duration: "10 minutes",
+          title: "A video teardown of your site",
+          text: "A senior pair of eyes walks your site the way a cautious buyer does, and shows you where enquiries are being lost.",
+          link: "Review my website",
+        },
+        {
+          tone: "purple",
+          image: redesign,
+          duration: "2 weeks",
+          title: "A redesign of your homepage hero",
+          text: "We redesign the first screen of your site and send it over. Yours to keep either way.",
+          link: "Claim your free redesign",
+        },
+      ];
+---
+
+{
+  render && offers.length > 0 && (
+    <div class:list={["why-offers_wrap", variant, className]} {...rest}>
+      <div class="why-offers_intro">
+        <Paragraph variant="overline-small" class="why-offers_eyebrow">
+          {eyebrow}
+        </Paragraph>
+        <Heading tag="h2" variant="h3">
+          <Fragment set:html={heading} />
+        </Heading>
+        {lead && (
+          <Paragraph variant="large" class="why-offers_lead">
+            {lead}
+          </Paragraph>
+        )}
+      </div>
+      <ul class="why-offers_list" role="list">
+        {offers.map((offer) => (
+          <li class:list={["why-offers_card", offer.tone]}>
+            <div class="why-offers_accent" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+              <span />
+            </div>
+            <div class="why-offers_header">
+              <Img src={offer.image} transparent class="why-offers_image" />
+              {offer.duration && (
+                <Paragraph
+                  tag="span"
+                  variant="overline-small"
+                  class="why-offers_duration tag-pill"
+                >
+                  {offer.duration}
+                </Paragraph>
+              )}
+            </div>
+            <div class="why-offers_content">
+              <div class="why-offers_text">
+                {variant === "offers" && (
+                  <Paragraph
+                    tag="span"
+                    variant="main"
+                    class="why-offers_label weight-medium"
+                  >
+                    Free
+                  </Paragraph>
+                )}
+                <Heading tag="h3" variant="h5">
+                  {offer.title}
+                </Heading>
+                <Paragraph variant="main" class="why-offers_description">
+                  {offer.text}
+                </Paragraph>
+              </div>
+              {offer.points && (
+                <ul class="why-offers_points" role="list">
+                  {offer.points.map((point) => (
+                    <li class="why-offers_point">
+                      <Icon src={check} class="why-offers_check" />
+                      <Paragraph
+                        tag="span"
+                        variant="main"
+                        class="why-offers_point-text weight-medium"
+                      >
+                        {point}
+                      </Paragraph>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {offer.link && (
+                <Button variant="link" element="link" href={href} arrow>
+                  {offer.link}
+                </Button>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .why-offers_wrap {
+      --_card-height: 22.5rem;
+      --_image: 3.75rem;
+      --_accent: 13.125rem;
+      @media (width >= 48rem) {
+        --_card-height: 25rem;
+        --_image: 4.25rem;
+        --_accent: 15rem;
+      }
+      @media (width >= 62rem) {
+        --_card-height: 27.5rem;
+        --_image: 5rem;
+        --_accent: 20rem;
+      }
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-3-5rem);
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .why-offers_intro {
+        width: 100%;
+        max-width: 55rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-0-75rem);
+        text-align: center;
+      }
+
+      .why-offers_eyebrow {
+        color: var(--color-neutral-30);
+      }
+
+      .why-offers_lead {
+        max-width: 25rem;
+      }
+
+      .why-offers_list {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: var(--space-1-25rem);
+        margin: 0;
+        padding: 0;
+        @media (width >= 48rem) {
+          flex-direction: row;
+        }
+      }
+
+      .why-offers_card {
+        --_tint: #bbdefb;
+        --_stripe: rgb(66 165 245);
+        --_stripe-low: 0.4;
+        position: relative;
+        isolation: isolate;
+        min-width: 0;
+        height: var(--_card-height);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin: 0;
+        /* Figma's stroke sits inside, so the padding gives it back. */
+        padding: calc(var(--space-2rem) - var(--border-width));
+        overflow: clip;
+        background-color: var(--color-neutral-0);
+        background-image: linear-gradient(
+          209.64deg,
+          var(--_tint) 8.42%,
+          var(--color-neutral-0) 48.74%
+        );
+        border: var(--border-width) solid var(--color-neutral-5);
+        border-radius: var(--radius-0-5rem);
+        @media (width >= 48rem) {
+          flex: 1 1 0;
+        }
+        @media (width >= 62rem) {
+          max-width: 30rem;
+        }
+
+        &.purple {
+          --_tint: #ccccff;
+          --_stripe: rgb(147 129 255);
+          --_stripe-low: 0.3;
+          background-image: linear-gradient(
+            198.33deg,
+            var(--_tint) 7.66%,
+            var(--color-neutral-0) 49.76%
+          );
+
+          .why-offers_accent {
+            opacity: 0.8;
+          }
+
+          .why-offers_label {
+            color: #9506ee;
+          }
+        }
+      }
+
+      /* Blurred stripes in the top corner, each a quarter shorter than the
+         one above it. */
+      .why-offers_accent {
+        position: absolute;
+        top: calc(var(--border-width) * -1);
+        right: calc(var(--border-width) * -1);
+        z-index: -1;
+        width: var(--_accent);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        opacity: 0.7;
+
+        span {
+          width: 100%;
+          height: calc(var(--_accent) * 0.15);
+          filter: blur(calc(var(--_accent) / 80));
+          background-image: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgb(from var(--_stripe) r g b / var(--_stripe-low)) 25%,
+            transparent 50%,
+            rgb(from var(--_stripe) r g b / 0.5) 75%,
+            transparent 100%
+          );
+          background-size: 100% 100%;
+        }
+
+        span:nth-child(2) {
+          width: 75%;
+          background-size: 133.3% 100%;
+        }
+        span:nth-child(3) {
+          width: 50%;
+          background-size: 200% 100%;
+        }
+        span:nth-child(4) {
+          width: 25%;
+          background-size: 400% 100%;
+        }
+      }
+
+      .why-offers_header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: var(--space-1rem);
+      }
+
+      .why-offers_image {
+        flex: none;
+        width: var(--_image);
+        height: var(--_image);
+      }
+
+      .why-offers_content {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-1-5rem);
+      }
+
+      .why-offers_text {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-5rem);
+      }
+
+      .why-offers_label {
+        color: var(--color-primary-60);
+      }
+
+      .why-offers_description {
+        color: var(--color-neutral-60);
+      }
+
+      .why-offers_points {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-5rem);
+        margin: 0;
+        padding: 0;
+      }
+
+      .why-offers_point {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-1rem);
+        margin: 0;
+      }
+
+      .why-offers_check {
+        --_size: var(--icon-m);
+        color: var(--color-primary-60);
+      }
+
+      .why-offers_point-text {
+        flex: 1 1 0;
+        min-width: 0;
+        padding-top: calc((1.5rem - var(--text-main-line-height)) / 2);
+        color: var(--color-neutral-90);
+      }
+
+      /* Cards hold a list, so they grow past the drawn height when the
+         copy runs long. */
+      &.options {
+        @media (width >= 62rem) {
+          --_card-height: 30rem;
+        }
+
+        .why-offers_lead {
+          max-width: none;
+        }
+
+        .why-offers_card {
+          height: auto;
+          min-height: var(--_card-height);
+          gap: var(--space-2rem);
+        }
+      }
+    }
+  }
+</style>

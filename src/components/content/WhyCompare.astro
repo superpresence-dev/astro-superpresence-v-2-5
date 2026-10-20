@@ -1,0 +1,492 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Icon from "@/components/media/Icon.astro";
+import Img from "@/components/media/Img.astro";
+import background from "@/assets/why/hero-background.jpg";
+import brand from "@/assets/home/difference-logo-wrapper.svg";
+import building from "@/assets/home/icon1.svg";
+import hire from "@/assets/why/compare-hire.svg";
+import check from "@/assets/home/difference-list-item.svg";
+import cross from "@/assets/why/compare-cross.svg";
+import checkSmall from "@/assets/icons/check-small.svg";
+
+type Option<Answer> = {
+  title: string;
+  icon: "brand" | "hire" | "agency";
+  featured?: boolean;
+  items: Answer[];
+};
+
+type BaseProps = HTMLAttributes<"div"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading: string;
+  /** Text under the heading. Omit to leave it out. */
+  lead?: string;
+  /** What is compared, one label per row. */
+  rows: string[];
+};
+
+type DescribedProps = BaseProps & {
+  /** Options in display order, each with one answer per row. */
+  options: Option<string>[];
+  /** `described` puts a mark before every answer; `marks` centres each answer, where `true` is a lone check and `false` a lone cross. */
+  variant?: "described";
+};
+
+type MarksProps = BaseProps & {
+  options: Option<string | boolean>[];
+  variant: "marks";
+};
+
+type Props = DescribedProps | MarksProps;
+type AllProps = BaseProps & {
+  options: Option<string | boolean>[];
+  variant?: "described" | "marks";
+};
+
+const {
+  render = true,
+  eyebrow = "The Superpresence difference",
+  heading,
+  lead,
+  rows,
+  options,
+  variant = "described",
+  class: className,
+  ...rest
+} = Astro.props as AllProps;
+
+const icons = { brand, hire, agency: building };
+const answer = (item: string | boolean) =>
+  item === true ? "Yes" : item === false ? "No" : item;
+---
+
+{
+  render && heading && rows?.length > 0 && options?.length > 0 && (
+    <div class:list={["why-compare_wrap", variant, className]} {...rest}>
+      <div class="why-compare_intro">
+        <Paragraph variant="overline-small" class="why-compare_eyebrow">
+          {eyebrow}
+        </Paragraph>
+        <Heading tag="h2" variant="h3">
+          <Fragment set:html={heading} />
+        </Heading>
+        {lead && (
+          <Paragraph variant="large" class="why-compare_lead">
+            {lead}
+          </Paragraph>
+        )}
+      </div>
+      {/* Below desktop the labels and the options scroll sideways together. */}
+      <div
+        class="why-compare_layout"
+        role="region"
+        tabindex="0"
+        aria-label={heading.replace(/<br\s*\/?>/g, " ")}
+      >
+        <ul class="why-compare_labels" aria-hidden="true">
+          {rows.map((row) => (
+            <li class="why-compare_row">
+              <Paragraph tag="span" variant="main" class="weight-medium">
+                {row}
+              </Paragraph>
+            </li>
+          ))}
+        </ul>
+        {options.map((option) => (
+          <article
+            class:list={[
+              "why-compare_option",
+              option.featured && "featured theme-dark",
+            ]}
+          >
+            {option.featured && (
+              <>
+                <Img src={background} class="why-compare_background" />
+                <div class="why-compare_highlight" />
+              </>
+            )}
+            <div class="why-compare_header">
+              <div class="why-compare_logo">
+                <Icon
+                  src={icons[option.icon]}
+                  class:list={["why-compare_logo-mark", option.icon]}
+                />
+              </div>
+              <Heading
+                tag="h3"
+                variant="large"
+                class="why-compare_name weight-medium"
+              >
+                {option.title}
+              </Heading>
+            </div>
+            <hr class="why-compare_divider" />
+            <ul class="why-compare_list">
+              {option.items.map((item, index) =>
+                variant === "marks" && typeof item === "boolean" ? (
+                  <li class="why-compare_row">
+                    <span class="why-compare_cell">
+                      <Icon
+                        src={item ? checkSmall : cross}
+                        class="why-compare_mark"
+                      />
+                      <span class="sr-only">
+                        {rows[index]}: {answer(item)}
+                      </span>
+                    </span>
+                  </li>
+                ) : (
+                  <li class="why-compare_row">
+                    {variant === "described" && (
+                      <Icon
+                        src={option.featured ? check : cross}
+                        class="why-compare_mark"
+                      />
+                    )}
+                    <Paragraph
+                      tag="span"
+                      variant="main"
+                      class="why-compare_text"
+                    >
+                      <span class="sr-only">{rows[index]}: </span>
+                      {item}
+                    </Paragraph>
+                  </li>
+                ),
+              )}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .why-compare_wrap {
+      --_label-width: 12.5rem;
+      --_option-width: 17.5rem;
+      --_pad: 1.625rem;
+      @media (width >= 48rem) {
+        --_label-width: 13.125rem;
+        --_option-width: 18.75rem;
+      }
+      @media (width >= 62rem) {
+        --_label-width: 15.625rem;
+        --_pad: 1.875rem;
+      }
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-3-5rem);
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .why-compare_intro {
+        width: 100%;
+        max-width: 55rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-0-75rem);
+        text-align: center;
+      }
+
+      .why-compare_eyebrow {
+        color: var(--color-neutral-30);
+      }
+
+      .why-compare_lead {
+        max-width: 40rem;
+      }
+
+      .why-compare_layout {
+        width: 100%;
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-0-75rem);
+        outline-offset: 0.25rem;
+        @media (width < 62rem) {
+          /* Runs to the screen edge, and starts and ends at the site margin. */
+          width: auto;
+          align-self: stretch;
+          margin-inline: calc(var(--site-margin) * -1);
+          padding-inline: var(--site-margin);
+          overflow-x: auto;
+          scroll-padding-inline: var(--site-margin);
+          scrollbar-width: none;
+
+          &::-webkit-scrollbar {
+            display: none;
+          }
+        }
+      }
+
+      .why-compare_labels {
+        flex: none;
+        width: var(--_label-width);
+        margin: 0;
+        /* Down to the first answer: the option's padding, logo and the two
+           gaps around the divider, less the row's own top padding. */
+        padding: calc(
+            var(--_pad) + var(--icon-2xl) + 2 * var(--space-1-25rem) -
+              var(--space-1rem)
+          )
+          0 0;
+        list-style: none;
+
+        .why-compare_row {
+          padding-top: var(--space-1rem);
+          color: var(--color-neutral-90);
+          border-bottom-color: var(--color-neutral-5);
+        }
+      }
+
+      .why-compare_row {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-1rem);
+        margin: 0;
+        /* Figma draws the rule inside the row's height. */
+        padding-bottom: calc(var(--space-1rem) - var(--border-width));
+        border-bottom: var(--border-width) solid var(--color-neutral-5);
+      }
+
+      /* =====================
+         Options
+         ===================== */
+
+      .why-compare_option {
+        position: relative;
+        isolation: isolate;
+        flex: 1 1 0;
+        min-width: 0;
+        max-width: 33.75rem;
+        align-self: stretch;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1-25rem);
+        padding-block: var(--_pad);
+        overflow: clip;
+        background-color: var(--color-neutral-2);
+        border-radius: var(--radius-0-25rem);
+        @media (width < 62rem) {
+          flex: none;
+          width: var(--_option-width);
+        }
+
+        &.featured {
+          padding-top: 0;
+          background-color: var(--color-primary-90);
+
+          &::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            background-image: linear-gradient(
+              51.98deg,
+              rgb(0 23 70 / 0.7) 39.35%,
+              rgb(51 136 231 / 0.7) 69.04%,
+              rgb(0 105 255 / 0.7) 85.14%,
+              rgb(4 94 241 / 0.7) 95.83%
+            );
+          }
+        }
+      }
+
+      .why-compare_background {
+        position: absolute;
+        inset: 0;
+        z-index: -2;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .why-compare_highlight {
+        height: 0.625rem;
+        flex: none;
+        background-color: var(--color-neutral-0);
+        background-image: linear-gradient(
+          -86.33deg,
+          rgb(6 66 238 / 0.4) 1.29%,
+          rgb(255 217 213 / 0.24) 10.69%,
+          rgb(31 54 250 / 0.386) 17.99%,
+          rgb(31 54 250 / 0.386) 31.02%,
+          rgb(91 192 255 / 0.24) 44.88%,
+          rgb(0 31 255 / 0.4) 70.34%,
+          rgb(119 117 235 / 0.344) 76.81%,
+          rgb(187 173 255 / 0.28) 84.54%,
+          rgb(6 66 238 / 0.4) 95.03%
+        );
+      }
+
+      .why-compare_header {
+        display: flex;
+        align-items: center;
+        gap: var(--space-0-75rem);
+        padding-inline: var(--space-1-5rem);
+      }
+
+      .featured .why-compare_header {
+        padding-inline: var(--space-1-25rem);
+      }
+
+      .why-compare_logo {
+        flex: none;
+        width: var(--icon-2xl);
+        aspect-ratio: 1 / 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-0-125rem);
+        background-color: #e5e5e5;
+        color: var(--color-neutral-40);
+      }
+
+      .featured .why-compare_logo {
+        background-image: radial-gradient(
+          ellipse 160% 100% at 45% 0%,
+          #f7f7f7 0%,
+          #bbcaf5 13.8%,
+          #7f9df3 27.6%,
+          #6086f1 34.5%,
+          #426ff0 41.4%,
+          #2459ef 48.3%,
+          #154def 51.8%,
+          #0642ee 55.2%,
+          #0839c6 66.4%,
+          #0b309e 77.6%,
+          #0d2675 88.8%,
+          #0f1d4d 100%
+        );
+        color: var(--color-neutral-0);
+      }
+
+      .why-compare_logo-mark {
+        --_size: 1.125rem;
+        path {
+          fill: currentcolor;
+        }
+
+        &.brand {
+          --_size: 0.875rem;
+          aspect-ratio: 15 / 18;
+        }
+      }
+
+      .why-compare_name {
+        flex: 1 1 0;
+        min-width: 0;
+        color: var(--color-neutral-60);
+      }
+
+      .featured .why-compare_name {
+        color: var(--color-neutral-0);
+      }
+
+      .why-compare_divider {
+        height: 0;
+        margin: 0;
+        border: 0;
+        border-top: var(--border-width) solid var(--color-neutral-10);
+      }
+
+      .featured .why-compare_divider {
+        border-top-color: rgb(245 245 245 / 0.1);
+      }
+
+      .why-compare_list {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        padding: 0 var(--space-1-25rem);
+        list-style: none;
+
+        .why-compare_row + .why-compare_row {
+          padding-top: var(--space-1rem);
+        }
+      }
+
+      .featured .why-compare_row {
+        border-bottom-color: rgb(245 245 245 / 0.1);
+      }
+
+      .why-compare_mark {
+        --_size: 1.25rem;
+        color: var(--color-neutral-30);
+        path {
+          fill: currentcolor;
+        }
+      }
+
+      .featured .why-compare_mark {
+        color: var(--color-neutral-0);
+      }
+
+      .why-compare_text {
+        flex: 1 1 0;
+        min-width: 0;
+        color: var(--color-neutral-40);
+      }
+
+      .featured .why-compare_text {
+        color: var(--color-neutral-0);
+        font-weight: 500;
+      }
+
+      /* Answers centred in their column, a lone mark as tall as a line. */
+      &.marks {
+        --_label-width: 11.25rem;
+        --_option-width: 15rem;
+        @media (width >= 48rem) {
+          --_label-width: 14.0625rem;
+        }
+        @media (width >= 62rem) {
+          --_label-width: 15.625rem;
+        }
+
+        /* Every row is one line tall, whatever the answer holds. */
+        .why-compare_row {
+          min-height: 3.375rem;
+          align-items: center;
+        }
+
+        .why-compare_list .why-compare_row:first-child {
+          min-height: calc(3.375rem - var(--space-1rem));
+        }
+
+        .why-compare_header {
+          justify-content: center;
+        }
+
+        .why-compare_name {
+          flex: none;
+        }
+
+        .why-compare_list .why-compare_row {
+          justify-content: center;
+          text-align: center;
+        }
+
+        .why-compare_cell {
+          min-height: var(--text-main-line-height);
+          display: flex;
+          align-items: center;
+        }
+      }
+    }
+  }
+</style>

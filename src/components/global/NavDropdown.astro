@@ -29,6 +29,7 @@ import pulse from "@/assets/nav/icons/pulse.svg";
 import blog from "@/assets/nav/icons/blog.svg";
 import roi from "@/assets/nav/icons/roi.svg";
 import { industryUrl } from "@/utils/industries.ts";
+import { serviceUrl } from "@/utils/services.ts";
 
 interface Props {
   /** Set to `false` to omit the component. */
@@ -73,7 +74,9 @@ const services = [
       text: "Ongoing performance & updates",
     },
   ],
-].map((column) => column.map((item) => ({ ...item, href: "#" })));
+].map((column) =>
+  column.map((item) => ({ ...item, href: serviceUrl(item.title) })),
+);
 
 const industryGroups = [
   {
@@ -166,7 +169,7 @@ const reasons = [
     image: whySuperpresence,
     title: "Why Superpresence",
     text: "Discover what makes us the right partner for your next growth-focused website.",
-    href: "#",
+    href: "/why-superpresence",
   },
   {
     image: team,
