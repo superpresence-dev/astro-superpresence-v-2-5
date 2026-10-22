@@ -1,0 +1,459 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import HomeHero from "@/components/section/HomeHero.astro";
+import IndustryProblem from "@/components/content/IndustryProblem.astro";
+import ServiceFeatures from "@/components/content/ServiceFeatures.astro";
+import MaintenanceFeatureGraphic from "@/components/content/MaintenanceFeatureGraphic.astro";
+import HomeDifference from "@/components/content/HomeDifference.astro";
+import WhyOffers from "@/components/content/WhyOffers.astro";
+import IndustryProcess from "@/components/content/IndustryProcess.astro";
+import MaintenanceProcessGraphic from "@/components/content/MaintenanceProcessGraphic.astro";
+import HomeQuote from "@/components/section/HomeQuote.astro";
+import ServicePoints from "@/components/content/ServicePoints.astro";
+import DesignWhyGraphic from "@/components/content/DesignWhyGraphic.astro";
+import WhyCompare from "@/components/content/WhyCompare.astro";
+import HomeFaq from "@/components/content/HomeFaq.astro";
+import ServiceGrid from "@/components/content/ServiceGrid.astro";
+import HomeCta from "@/components/section/HomeCta.astro";
+import { serviceUrl } from "@/utils/services.ts";
+import heroImage from "@/assets/service/maintenance/hero.jpg";
+import tierLight from "@/assets/service/maintenance/tier-1.png";
+import tierStandard from "@/assets/service/maintenance/tier-2.png";
+import tierGrowth from "@/assets/service/maintenance/tier-3.png";
+import quoteAvatar from "@/assets/service/migrate/quote-avatar.jpg";
+
+const related = [
+  {
+    title: "Webflow development",
+    text: "A site your team can run, connected to the tools you already use.",
+  },
+  {
+    title: "Website design",
+    text: "Strategy, copy and custom design, signed off before anything is built.",
+  },
+  {
+    title: "Framer development",
+    text: "Launch polished Framer websites with speed, flexibility, and lasting performance.",
+  },
+  {
+    title: "Migrate to Webflow",
+    text: "Move your website to Webflow without losing what already works.",
+  },
+  {
+    title: "Brand identity",
+    text: "Enhance your visual system with sharper clarity before starting the website redesign.",
+  },
+  {
+    title: "Social & ad creative",
+    text: "Creative assets designed to capture attention and turn audiences into customers.",
+  },
+].map((item) => ({
+  ...item,
+  href: serviceUrl(item.title === "Brand identity" ? "Branding" : item.title),
+}));
+---
+
+<Layout
+  title="Webflow maintenance"
+  description="Updates, new sections, fixes and improvements from the team that built the site, on a monthly plan sized to what you need."
+  overlap
+>
+  {/* Hero */}
+  <HomeHero
+    eyebrow="Webflow maintenance"
+    heading="Your website, kept sharp<br />after launch"
+    text="Updates, new sections, fixes and improvements from the team that built the site, on a monthly plan sized to what you need."
+    image={heroImage}
+    buttonText="Start your project"
+    buttonHref="/contact"
+    variant="split"
+    fade="soft"
+  />
+  {/* Problem */}
+  <Section>
+    <IndustryProblem
+      eyebrow="Sound familiar?"
+      heading="Websites slip when<br />nobody owns them"
+      items={[
+        {
+          title: "Small changes wait for weeks",
+          text: "Updates sit in an inbox because nobody owns the website after launch.",
+        },
+        {
+          title: "The site slowly gets worse",
+          text: "Speed drops, links break and new pages stop matching the design.",
+        },
+        {
+          title: "You never know what was done",
+          text: "Hours get billed, but nobody shows you what changed or what improved.",
+        },
+      ]}
+    />
+  </Section>
+  {/* A month, a request and the report */}
+  <Section>
+    <ServiceFeatures
+      items={[
+        {
+          eyebrow: "What a month looks like",
+          heading: "Three plans,<br />shown as real work",
+          text: "Each plan is a monthly block of hours. Here is what a typical month of each looks like, so you can pick by the work you need, not by guesswork.",
+          points: [
+            "Essentials for updates and fixes",
+            "Growth for new sections and content",
+            "Scale for new pages, tests and languages",
+          ],
+        },
+        {
+          eyebrow: "How a request moves",
+          heading: "From request to live,<br />in your working hours",
+          text: "Send a request, and we acknowledge it, scope it and ship it with a timestamp at every step, on Bangkok and Hong Kong time.",
+          points: [
+            "One place to send and track requests",
+            "Every request scoped before work starts",
+            "Turnaround in your time zone",
+          ],
+        },
+        {
+          eyebrow: "Your monthly report",
+          heading: "Proof the site is getting better",
+          text: "Every month you get a one-page report: what shipped, hours used, speed and search health, and what we recommend next.",
+          points: [
+            "Work shipped and hours used",
+            "Speed and search health tracked",
+            "One clear recommendation for next month",
+          ],
+        },
+      ]}
+    >
+      <MaintenanceFeatureGraphic slot="visual-1" variant="plans" />
+      <MaintenanceFeatureGraphic slot="visual-2" variant="request" />
+      <MaintenanceFeatureGraphic slot="visual-3" variant="report" />
+    </ServiceFeatures>
+  </Section>
+  {/* What's covered */}
+  <Section>
+    <HomeDifference
+      eyebrow="What’s covered"
+      heading="Clear about what is in, and what is not"
+      lead="So nothing turns into a surprise invoice."
+      leadWidth="full"
+      logos={false}
+      boxes={[
+        {
+          title: "Covered",
+          featured: true,
+          items: [
+            {
+              title: "Content and copy updates",
+              text: "Text, images, posts and team pages.",
+            },
+            {
+              title: "Fixes",
+              text: "Bugs, broken links and layout issues.",
+            },
+            {
+              title: "Performance checks",
+              text: "Speed and health reviewed every month.",
+            },
+            {
+              title: "New sections and pages",
+              text: "On Standard and Growth.",
+            },
+          ],
+        },
+        {
+          title: "Not covered",
+          featured: false,
+          items: [
+            {
+              title: "Full redesigns",
+              text: "Scoped separately as a build.",
+            },
+            {
+              title: "Hosting and domain",
+              text: "Paid directly to Webflow and your registrar.",
+            },
+            {
+              title: "Running ads",
+              text: "We design creative, but we do not manage media spend.",
+            },
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Plans */}
+  <Section>
+    <WhyOffers
+      variant="options"
+      eyebrow="Three plans"
+      heading="Pick the level of<br />attention your site needs"
+      lead="Every plan includes fixes within 24 hours and runs by the quarter, so you can move up or down as your needs change."
+      columnsFrom="desktop"
+      cardHeight={34.375}
+      contentHeight={17.125}
+      cardHeightMedium={25}
+      contentHeightMedium={1}
+      cardHeightSmall={25}
+      options={[
+        {
+          tone: "blue",
+          image: tierLight,
+          label: "2 to 4 hours a month",
+          title: "Light plan",
+          text: "For a site that is in good shape and needs keeping that way.",
+          points: [
+            "Minor copy and content updates",
+            "Small bug fixes",
+            "Monthly performance check",
+          ],
+        },
+        {
+          tone: "purple",
+          image: tierStandard,
+          label: "6 to 10 hours a month",
+          title: "Standard plan",
+          text: "For a site that keeps growing with new sections and pages.",
+          points: [
+            "Everything in Light",
+            "New sections and pages",
+            "Ongoing content publishing",
+            "Light conversion experiments",
+            "Quarterly strategy check-in",
+          ],
+        },
+        {
+          tone: "orange",
+          image: tierGrowth,
+          label: "15 to 25 hours a month",
+          title: "Growth plan",
+          text: "For teams that treat the site as their main growth channel.",
+          points: [
+            "Everything in Standard",
+            "Regular A/B testing",
+            "Monthly strategy work",
+            "Expanded CMS development",
+            "A conversion roadmap",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Process */}
+  <Section>
+    <IndustryProcess
+      eyebrow="How we work"
+      heading="Five steps, each<br />signed off before the next"
+      note={{
+        title: "3 feedback rounds included",
+        text: "Each phase is approved before the next one starts, so nothing gets reworked later.",
+      }}
+      steps={[
+        {
+          title: "Audit and onboarding",
+          text: "We start with a health check of the site and agree priorities with you.",
+          points: ["Site health check", "Priority list", "Access set up"],
+        },
+        {
+          title: "Plan the month",
+          text: "The backlog is ranked by impact and sized against your plan.",
+          points: ["Ranked backlog", "Hours budget", "Your sign-off"],
+        },
+        {
+          title: "Request and scope",
+          text: "New requests are scoped with an estimate before any time is used.",
+          points: [
+            "Estimate first",
+            "Approve or reprioritise",
+            "No surprise hours",
+          ],
+        },
+        {
+          title: "Build and QA",
+          text: "Changes are built, checked on every device and in every language, then published.",
+          points: [
+            "Device testing",
+            "Language check",
+            "Design kept consistent",
+          ],
+        },
+        {
+          title: "Report and recommend",
+          text: "Each month ends with a report and one recommendation for the next.",
+          points: ["Monthly report", "Hours used", "Next recommendation"],
+        },
+      ]}
+    >
+      <MaintenanceProcessGraphic slot="step-1" variant="audit" />
+      <MaintenanceProcessGraphic slot="step-2" variant="plan" />
+      <MaintenanceProcessGraphic slot="step-3" variant="request" />
+      <MaintenanceProcessGraphic slot="step-4" variant="build" />
+      <MaintenanceProcessGraphic slot="step-5" variant="report" />
+    </IndustryProcess>
+  </Section>
+  {/* Quote */}
+  <HomeQuote
+    quote="We went from a cookie-cutter template to a custom website that properly reflects the brand… Kevin is super easy to work with, always one message away."
+    name="Max Chernov"
+    jobTitle="YouTuber, 430k subscribers"
+    avatar={quoteAvatar}
+    logo={false}
+  />
+  {/* Why */}
+  <Section>
+    <ServicePoints
+      variant="visual"
+      eyebrow="Why Superpresence"
+      heading="Why companies keep us after launch"
+      items={[
+        {
+          title: "Built in Asia, written for buyers abroad",
+          text: "We work in your timezone, understand Asian companies, and craft English content that appeals to your buyers—never sounding translated.",
+        },
+        {
+          title: "QA on every build",
+          text: "Cross-browser, cross-device, forms, integrations, redirects and a performance pass before anything goes live, at every tier.",
+        },
+        {
+          title: "Copy written by people, in English",
+          text: "Expert copywriters write every page. Not translated, not generated, and built around how your buyers decide.",
+        },
+        {
+          title: "The whole senior team, one roof",
+          text: "Strategy, design, copy, development, conversion and QA in one accountable team, with nobody for you to hire or manage.",
+        },
+        {
+          title: "Built to convert, engineered for search",
+          text: "Conversion structure on the surface; clean structure, schema and speed underneath, so search and AI tools read you correctly.",
+        },
+        {
+          title: "Depth over volume",
+          text: "Every project gets senior attention for as long as the problem takes, not a slot sized to a subscription.",
+        },
+      ]}
+    >
+      <DesignWhyGraphic slot="visual-1" variant="asia" />
+      <DesignWhyGraphic slot="visual-2" variant="qa" />
+      <DesignWhyGraphic slot="visual-3" variant="copy" />
+      <DesignWhyGraphic slot="visual-4" variant="team" />
+      <DesignWhyGraphic slot="visual-5" variant="convert" />
+      <DesignWhyGraphic slot="visual-6" variant="depth" />
+    </ServicePoints>
+  </Section>
+  {/* Comparison */}
+  <Section>
+    <WhyCompare
+      variant="marks"
+      eyebrow="Your options"
+      heading="Who looks after your site"
+      lead="Every option can work. Each is set up for a different result."
+      rows={[
+        "Who does the work",
+        "When something breaks",
+        "When they are away",
+        "Commitment",
+        "Knows how the site was built",
+      ]}
+      options={[
+        {
+          title: "Superpresence",
+          icon: "brand",
+          featured: true,
+          items: [
+            "Senior team: design, development, copy",
+            "Fixed within 24 hours",
+            "The team covers it",
+            "By the quarter",
+            "Yes, when we built it",
+          ],
+        },
+        {
+          title: "In-house hire",
+          icon: "agency",
+          items: [
+            "One person, one set of skills",
+            "When they are free",
+            "Work waits",
+            "A permanent salary",
+            "Has to learn it",
+          ],
+        },
+        {
+          title: "Freelancer",
+          icon: "hire",
+          items: [
+            "One person, between other clients",
+            "When they are available",
+            "Work waits",
+            "Job by job",
+            "Has to learn it",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* FAQ */}
+  <Section>
+    <HomeFaq
+      eyebrow="Questions we hear"
+      heading="Before you ask"
+      items={[
+        {
+          question: "What counts toward our hours?",
+          answer:
+            "Any work on the site: updates, new sections, fixes, SEO and performance tasks. Every request is scoped before work starts, so you approve the hours first.",
+        },
+        {
+          question: "What happens to unused hours?",
+          answer:
+            "Plans are hours-capped by the month. How unused hours are handled is set out in your agreement before you start.",
+        },
+        {
+          question: "How fast do you respond?",
+          answer:
+            "Every plan includes fixes within 24 hours. Each request is acknowledged, scoped and shipped with a timestamp at every step, on Bangkok and Hong Kong time.",
+        },
+        {
+          question: "Can you maintain a site you didn’t build?",
+          answer: [
+            "Yes, if it’s on Webflow. Every new maintenance client starts with a health check: how the site was built, what’s broken and what to fix first.",
+            "If the build is fragile, with messy styles or a CMS that fights your content, you’ll see the cost of fixing it before it uses up your monthly hours. Sites on WordPress or another platform need moving first, which our Webflow migration service covers.",
+          ],
+        },
+        {
+          question: "Can our team still edit the site?",
+          answer: [
+            "Yes. Your team keeps full Editor access and can publish posts or update pages whenever it likes; the plan covers the work that needs a designer or developer.",
+            "The monthly report shows what we changed, so both sides know who touched what. If an in-house edit breaks a layout, fixing it is a normal request against your hours.",
+          ],
+        },
+        {
+          question: "Can we change plans or pause?",
+          answer: [
+            "Yes. You can move up or down a plan as the work changes, and the terms for plan changes, minimum term and pausing are set out in your agreement before you start.",
+            "Not sure which plan fits? Book a call, tell us what usually gets stuck, and we’ll recommend one.",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Related services */}
+  <Section>
+    <ServiceGrid
+      eyebrow="Related services"
+      heading="Where maintenance fits"
+      lead="Maintenance keeps a good site sharp. If it needs more than that, start here."
+      items={related}
+    />
+  </Section>
+  {/* CTA */}
+  <HomeCta
+    eyebrow="You've reached the end, so now..."
+    heading="Want someone to own the website?"
+    text="Tell us about the site and what usually gets stuck, and we will recommend the right plan."
+    buttonText="Start your project"
+    buttonHref="/contact"
+  />
+</Layout>

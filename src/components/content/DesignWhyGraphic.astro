@@ -19,8 +19,8 @@ import globeIcon from "@/assets/service/icons/globe.svg";
 interface Props extends HTMLAttributes<"div"> {
   /** Set to `false` to omit the component. */
   render?: boolean;
-  /** Which illustration: the globe of markets, the strategy questions, the written copy, the team, the conversion figures, the depth chart, or the screen with its colour and type tokens. */
-  variant?: "asia" | "strategy" | "copy" | "team" | "convert" | "depth" | "screen";
+  /** Which illustration: the globe of markets, the strategy questions, the QA checks, the written copy, the team, the conversion figures, the depth chart, the screen with its colour and type tokens, or an ad and the page it leads to. */
+  variant?: "asia" | "strategy" | "qa" | "copy" | "team" | "convert" | "depth" | "screen" | "ads";
 }
 
 const {
@@ -38,6 +38,7 @@ const places = [
 ];
 
 const questions = ["What you do?", "Who it is for?", "Why you?"];
+const checks = ["Browser", "Integrations", "Performances"];
 
 const roles = [
   { name: "Strategy", icon: strategy },
@@ -81,10 +82,10 @@ const bars = [
           ))}
         </>
       )}
-      {variant === "strategy" && (
+      {(variant === "strategy" || variant === "qa") && (
         <div class="design-why-graphic_steps">
           <span class="design-why-graphic_track" />
-          {questions.map((question) => (
+          {(variant === "qa" ? checks : questions).map((question) => (
             <div class="design-why-graphic_step">
               <span class="design-why-graphic_marker" />
               <div class="design-why-graphic_question">
@@ -98,7 +99,7 @@ const bars = [
               src={cursor}
               class="design-why-graphic_cursor"
             />
-            Strategy lead
+            {variant === "qa" ? "QA Engineer" : "Strategy lead"}
           </span>
         </div>
       )}
@@ -219,6 +220,30 @@ const bars = [
             Display medium
           </span>
         </>
+      )}
+      {variant === "ads" && (
+        <div class="design-why-graphic_ads">
+          <div class="design-why-graphic_ad">
+            <span class="design-why-graphic_ad-top">
+              <span class="design-why-graphic_ad-avatar" />
+              <span class="design-why-graphic_ad-lines">
+                <span class="design-why-graphic_line one" />
+                <span class="design-why-graphic_line two" />
+              </span>
+              <span class="design-why-graphic_ad-note">Sponsored</span>
+            </span>
+            <span class="design-why-graphic_ad-image" />
+            <span class="design-why-graphic_ad-bottom">
+              <span class="design-why-graphic_ad-note">shiftboard.com</span>
+              <span class="design-why-graphic_ad-button">Try it free</span>
+            </span>
+          </div>
+          <span class="design-why-graphic_ad-connector" />
+          <span class="design-why-graphic_ad-site">
+            <Icon src={globeIcon} class="design-why-graphic_screen-globe" />
+            yoursite.com
+          </span>
+        </div>
       )}
       {variant === "depth" && (
         <div class="design-why-graphic_chart">
@@ -1058,6 +1083,145 @@ const bars = [
         height: calc(20 * var(--_unit));
         border-radius: calc(3 * var(--_unit));
         background-color: var(--color-primary-60);
+      }
+
+      /* Ads: a sponsored post and the page it leads to */
+
+      .design-why-graphic_ads {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: calc(225 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        translate: -50% -50%;
+      }
+
+      .design-why-graphic_ad {
+        width: calc(210 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(7 * var(--_unit));
+        padding: calc(11 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        border-radius: calc(5 * var(--_unit));
+        box-shadow: var(--_shadow-ui);
+      }
+
+      .design-why-graphic_ad-top {
+        display: flex;
+        align-items: flex-start;
+        gap: calc(6 * var(--_unit));
+      }
+
+      .design-why-graphic_ad-avatar {
+        flex: none;
+        width: calc(16 * var(--_unit));
+        height: calc(16 * var(--_unit));
+        background-color: var(--color-primary-5);
+        border: var(--border-width) solid var(--color-primary-10);
+        border-radius: 50%;
+      }
+
+      .design-why-graphic_ad-lines {
+        flex: 1 1 0;
+        display: flex;
+        flex-direction: column;
+        gap: calc(3 * var(--_unit));
+        padding-top: calc(3 * var(--_unit));
+
+        .design-why-graphic_line {
+          position: static;
+          height: calc(4 * var(--_unit));
+          width: 100%;
+          &.two {
+            width: 60%;
+          }
+        }
+      }
+
+      .design-why-graphic_ad-note {
+        font-size: calc(8 * var(--_unit));
+        line-height: calc(12 * var(--_unit));
+        font-weight: var(--primary-medium);
+        white-space: nowrap;
+        color: var(--color-neutral-40);
+      }
+
+      .design-why-graphic_ad-image {
+        height: calc(54 * var(--_unit));
+        background-image: linear-gradient(
+          172.7deg,
+          #eef0fd 28.8%,
+          #f9f9fe 70.6%,
+          #fff 95.5%
+        );
+        border-radius: calc(3 * var(--_unit));
+      }
+
+      .design-why-graphic_ad-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .design-why-graphic_ad-button {
+        padding: calc(3 * var(--_unit)) calc(8 * var(--_unit));
+        font-size: calc(8 * var(--_unit));
+        line-height: calc(12 * var(--_unit));
+        font-weight: var(--primary-medium);
+        white-space: nowrap;
+        color: var(--color-neutral-0);
+        background-color: var(--_badge);
+        border-radius: calc(3 * var(--_unit));
+      }
+
+      .design-why-graphic_ad-connector {
+        position: relative;
+        width: calc(1 * var(--_unit));
+        height: calc(40 * var(--_unit));
+        background-color: var(--_badge);
+
+        &::before,
+        &::after {
+          content: "";
+          position: absolute;
+          left: 50%;
+          width: calc(5 * var(--_unit));
+          height: calc(5 * var(--_unit));
+          background-color: var(--_badge);
+          translate: -50% 0;
+          rotate: 45deg;
+        }
+        &::before {
+          top: calc(-2 * var(--_unit));
+        }
+        &::after {
+          bottom: calc(-2 * var(--_unit));
+        }
+      }
+
+      .design-why-graphic_ad-site {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: calc(8 * var(--_unit));
+        padding: calc(10 * var(--_unit));
+        font-size: calc(14 * var(--_unit));
+        line-height: calc(20 * var(--_unit));
+        font-weight: var(--primary-medium);
+        color: var(--color-neutral-80);
+        background-color: var(--color-neutral-0);
+        border: var(--border-width) solid var(--color-primary-20, #b6c7fb);
+        border-radius: calc(8 * var(--_unit));
+        box-shadow: var(--_shadow-ui);
+
+        .design-why-graphic_screen-globe {
+          --_size: calc(16 * var(--_unit));
+          color: var(--_badge);
+        }
       }
     }
   }

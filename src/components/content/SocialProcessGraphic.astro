@@ -1,0 +1,416 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Icon from "@/components/media/Icon.astro";
+import cursor from "@/assets/service/social/cursor.svg";
+import file from "@/assets/service/social/file.svg";
+import tick from "@/assets/service/migrate/process-check.svg";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Which stage of a creative project the picture shows. */
+  variant: "concept" | "produce" | "deliver";
+}
+
+const { render = true, variant, class: className, ...rest } = Astro.props;
+
+const angles = [
+  { mark: "A", selected: false },
+  { mark: "B", selected: true },
+  { mark: "B", selected: false },
+];
+const sizes = ["1:1", "4:5", "9:16", "16:9"];
+const hooks = ["Hook A", "Hook B", "Hook C"];
+const rows = [1, 2, 3, 4, 5];
+---
+
+{
+  render && variant && (
+    <div
+      class:list={["social-process_wrap", variant, className]}
+      aria-hidden="true"
+      {...rest}
+    >
+      <div class="social-process_stage">
+        {variant === "concept" && (
+          <div class="social-process_card concept">
+            <span class="social-process_title">Three angles</span>
+            <ul class="social-process_list" role="list">
+              {angles.map((angle) => (
+                <li class:list={["social-process_angle", angle.selected && "selected"]}>
+                  <span class="social-process_mark">{angle.mark}</span>
+                  <span class="social-process_body">
+                    <span class="social-process_bar" />
+                    <span class="social-process_text">
+                      <span class="social-process_line" />
+                      <span class="social-process_line short" />
+                    </span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {variant === "produce" && (
+          <div class="social-process_card produce">
+            <span class="social-process_head">
+              <span class="social-process_title">Production</span>
+              <span class="social-process_meta">12 files + motion</span>
+            </span>
+            <table class="social-process_table">
+              <thead>
+                <tr>
+                  <th />
+                  {sizes.map((size) => <th>{size}</th>)}
+                </tr>
+              </thead>
+              <tbody>
+                {hooks.map((hook) => (
+                  <tr>
+                    <th scope="row">{hook}</th>
+                    {sizes.map(() => (
+                      <td>
+                        <Icon src={tick} class="social-process_tick" />
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+        {variant === "deliver" && (
+          <>
+            <div class="social-process_card deliver">
+              <span class="social-process_title">Delivered to your team</span>
+              <ul class="social-process_list" role="list">
+                {rows.map(() => (
+                  <li class="social-process_file">
+                    <span class="social-process_dot" />
+                    <span class="social-process_line grow" />
+                    <span class="social-process_line w85" />
+                  </li>
+                ))}
+              </ul>
+              <span class="social-process_badge">
+                Yours to keep
+                <Icon src={cursor} class="social-process_cursor" />
+              </span>
+            </div>
+            <div class="social-process_folder">
+              <Icon src={file} class="social-process_file-icon" />
+              shiftboard-ads/
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    /* An artboard 517 units square that scales as one piece. The colours
+       repeat the website design process pictures, so the pages read as a set. */
+    .social-process_wrap {
+      --_unit: calc(100cqw / 517);
+      --_base: #d4f4f7;
+      --_tint: rgb(213 226 245 / 0.32);
+      --_deep: rgb(5 103 244 / 0.32);
+      --_shadow:
+        calc(-23 * var(--_unit)) calc(48 * var(--_unit)) calc(16 * var(--_unit))
+          rgb(209 209 209 / 0.05),
+        calc(-10 * var(--_unit)) calc(21 * var(--_unit)) calc(12 * var(--_unit))
+          rgb(209 209 209 / 0.09),
+        calc(-3 * var(--_unit)) calc(5 * var(--_unit)) calc(6.5 * var(--_unit))
+          rgb(209 209 209 / 0.1);
+      container-type: inline-size;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: clip;
+      color: var(--color-neutral-80);
+      font-family: var(--primary-family);
+      letter-spacing: -0.005em;
+      background:
+        linear-gradient(to bottom, var(--_tint) 55.368%, var(--_deep) 96.905%),
+        var(--_base);
+
+      &:is(.concept, .produce) {
+        --_base: #ccdcff;
+        --_tint: rgb(128 195 254 / 0.32);
+        --_deep: rgb(6 66 238 / 0.32);
+      }
+
+      &:is(.concept, .produce)::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.4 -0.45'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        opacity: 0.35;
+      }
+
+      /* The wrap's own cqw would read the page, so the base size starts on its children. */
+      > * {
+        font-size: calc(16 * var(--_unit));
+        line-height: calc(22 * var(--_unit));
+      }
+
+      :is(span, li) {
+        display: block;
+      }
+
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      li {
+        margin: 0;
+      }
+
+      .icon {
+        --_size: calc(24 * var(--_unit));
+      }
+
+      /* The 400 unit square the pictures sit in. */
+      .social-process_stage {
+        position: absolute;
+        top: calc(58.5 * var(--_unit));
+        left: calc(58.5 * var(--_unit));
+        width: calc(400 * var(--_unit));
+        aspect-ratio: 1 / 1;
+      }
+
+      .social-process_card {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        display: flex;
+        flex-direction: column;
+        gap: calc(24 * var(--_unit));
+        padding: calc(24 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        border-radius: calc(12 * var(--_unit));
+        filter: drop-shadow(var(--_shadow));
+        translate: -50% -50%;
+
+        &.concept {
+          width: calc(358 * var(--_unit));
+          height: calc(360 * var(--_unit));
+          padding: calc(20 * var(--_unit));
+        }
+        &.produce {
+          width: calc(378 * var(--_unit));
+        }
+        &.deliver {
+          width: calc(312 * var(--_unit));
+          gap: calc(24 * var(--_unit));
+        }
+      }
+
+      .social-process_title {
+        font-size: calc(20 * var(--_unit));
+        line-height: calc(26 * var(--_unit));
+        font-weight: var(--primary-medium);
+        letter-spacing: -0.01em;
+      }
+
+      .social-process_head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .social-process_meta {
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        font-weight: var(--primary-medium);
+        color: var(--color-neutral-30);
+      }
+
+      /* Concept: three angles, one picked */
+
+      .concept .social-process_list {
+        display: flex;
+        flex-direction: column;
+        gap: calc(16 * var(--_unit));
+      }
+
+      .social-process_angle {
+        display: flex;
+        flex-direction: column;
+        gap: calc(12 * var(--_unit));
+        width: calc(242 * var(--_unit));
+        align-self: center;
+        padding: calc(12 * var(--_unit));
+        border: var(--border-width) solid var(--color-neutral-5);
+        border-radius: calc(12 * var(--_unit));
+
+        &.selected {
+          width: 100%;
+          color: var(--color-neutral-0);
+          background-image:
+            radial-gradient(
+              70% 120% at 20% 0%,
+              rgb(60 110 255 / 0.5),
+              transparent
+            ),
+            linear-gradient(115deg, #0a2aa6 0%, #0b38c9 45%, #05187a 100%);
+          border-color: transparent;
+          box-shadow: var(--_shadow);
+        }
+      }
+
+      .social-process_mark {
+        font-size: calc(18 * var(--_unit));
+        line-height: calc(24 * var(--_unit));
+        font-weight: var(--primary-medium);
+        letter-spacing: -0.007em;
+      }
+
+      .social-process_body {
+        display: flex;
+        align-items: stretch;
+        gap: calc(16 * var(--_unit));
+      }
+
+      .social-process_bar {
+        flex: none;
+        width: calc(8 * var(--_unit));
+        min-height: calc(20 * var(--_unit));
+        background-color: var(--color-primary-60);
+        border-radius: calc(2 * var(--_unit));
+      }
+
+      .selected .social-process_bar {
+        background-color: var(--color-neutral-0);
+      }
+
+      .social-process_text {
+        flex: 1 1 0;
+        display: flex;
+        flex-direction: column;
+        gap: calc(4 * var(--_unit));
+      }
+
+      .social-process_line {
+        height: calc(8 * var(--_unit));
+        background-color: var(--color-neutral-2);
+        border-radius: calc(0.4 * var(--_unit));
+        box-shadow: 0 calc(0.3 * var(--_unit)) calc(1.2 * var(--_unit))
+          rgb(0 0 0 / 0.03);
+        &.short {
+          width: 60%;
+        }
+        &.grow {
+          flex: 1 1 0;
+        }
+        &.w85 {
+          flex: none;
+          width: calc(85 * var(--_unit));
+        }
+      }
+
+      .selected .social-process_line {
+        background-color: rgb(255 255 255 / 0.25);
+        box-shadow: none;
+      }
+
+      /* Produce: every hook in every size */
+
+      .social-process_table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+
+        th,
+        td {
+          padding: calc(16 * var(--_unit)) 0;
+          text-align: center;
+          border-bottom: var(--border-width) solid var(--color-neutral-5);
+        }
+        thead th {
+          padding-top: 0;
+          font-size: calc(12 * var(--_unit));
+          line-height: calc(18 * var(--_unit));
+          font-weight: 400;
+          color: var(--color-neutral-40);
+        }
+        tbody th {
+          text-align: left;
+          font-weight: var(--primary-medium);
+        }
+        tr:last-child :is(th, td) {
+          border-bottom: 0;
+        }
+        td .icon {
+          margin-inline: auto;
+          color: var(--color-primary-60);
+        }
+      }
+
+      /* Deliver: a folder handed to the team */
+
+      .social-process_file {
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+        padding-block: calc(16 * var(--_unit));
+        border-bottom: var(--border-width) solid var(--color-neutral-5);
+        &:last-child {
+          border-bottom: 0;
+        }
+      }
+
+      .social-process_dot {
+        flex: none;
+        width: calc(8 * var(--_unit));
+        height: calc(8 * var(--_unit));
+        background-color: var(--color-primary-60);
+        border-radius: calc(2 * var(--_unit));
+      }
+
+      .social-process_badge {
+        position: absolute;
+        top: calc(209 * var(--_unit));
+        left: calc(110 * var(--_unit));
+        padding: calc(3.6 * var(--_unit)) calc(7.2 * var(--_unit));
+        font-weight: var(--primary-medium);
+        white-space: nowrap;
+        color: var(--color-neutral-0);
+        background-color: var(--color-primary-60);
+        border-radius: calc(1.727 * var(--_unit));
+      }
+
+      .social-process_cursor {
+        position: absolute;
+        top: calc(-19 * var(--_unit));
+        left: calc(-16 * var(--_unit));
+        --_size: calc(27 * var(--_unit));
+      }
+
+      .social-process_folder {
+        position: absolute;
+        top: calc(50% + 30 * var(--_unit));
+        left: 50%;
+        width: calc(378 * var(--_unit));
+        display: flex;
+        align-items: center;
+        gap: calc(12 * var(--_unit));
+        padding: calc(20 * var(--_unit)) calc(16 * var(--_unit));
+        font-weight: var(--primary-medium);
+        background-color: var(--color-neutral-0);
+        border-radius: calc(6 * var(--_unit));
+        box-shadow: 0 calc(8 * var(--_unit)) calc(2.5 * var(--_unit))
+          rgb(171 171 171 / 0.08);
+        translate: -50% -50%;
+
+        .social-process_file-icon {
+          color: var(--color-primary-60);
+        }
+      }
+    }
+  }
+</style>

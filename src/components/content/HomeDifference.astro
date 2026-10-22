@@ -7,10 +7,13 @@ import logo from "@/assets/home/difference-logo-wrapper.svg";
 import building from "@/assets/home/icon1.svg";
 import check from "@/assets/home/difference-list-item.svg";
 
+type Item = string | { title: string; text: string };
+
 type Box = {
   title: string;
   featured: boolean;
-  items: string[];
+  /** A plain string, or a title with a line of description under it. */
+  items: Item[];
 };
 
 interface Props extends HTMLAttributes<"div"> {
@@ -24,8 +27,8 @@ interface Props extends HTMLAttributes<"div"> {
   lead?: string;
   /** The two boxes compared, in display order. */
   boxes?: Box[];
-  /** Lead width: `narrow` wraps it under the heading, `full` lets it run to 40rem. */
-  leadWidth?: "narrow" | "full";
+  /** Lead width: `narrow` wraps it under the heading, `full` lets it run to 40rem, `wide` to 55rem, the heading's own width. */
+  leadWidth?: "narrow" | "full" | "wide";
   /** Set to `false` to leave the logo tile out of each box header. */
   logos?: boolean;
   /** Screen width from which the boxes sit side by side instead of stacked. */
@@ -113,7 +116,12 @@ const {
               </Heading>
             </div>
             <hr class="home-difference_divider" />
-            <ul class="home-difference_list">
+            <ul
+              class:list={[
+                "home-difference_list",
+                box.items.some((item) => typeof item !== "string") && "detailed",
+              ]}
+            >
               {box.items.map((item) => (
                 <li class="home-difference_item">
                   {box.featured ? (
@@ -123,10 +131,23 @@ const {
                   )}
                   <Paragraph
                     tag="span"
-                    variant="main"
+                    variant={typeof item === "string" ? "main" : "large"}
                     class="home-difference_text"
                   >
-                    {item}
+                    {typeof item === "string" ? (
+                      item
+                    ) : (
+                      <>
+                        {item.title}
+                        <Paragraph
+                          tag="span"
+                          variant="main"
+                          class="home-difference_detail"
+                        >
+                          {item.text}
+                        </Paragraph>
+                      </>
+                    )}
                   </Paragraph>
                 </li>
               ))}
@@ -171,6 +192,9 @@ const {
         }
         &.full {
           max-width: 40rem;
+        }
+        &.wide {
+          max-width: 55rem;
         }
       }
       .home-difference_layout {
@@ -371,6 +395,15 @@ const {
       .featured .home-difference_text {
         color: var(--color-neutral-90);
         font-weight: 500;
+      }
+      .home-difference_list.detailed {
+        gap: var(--space-1rem);
+      }
+      .home-difference_text .home-difference_detail {
+        display: block;
+        margin: 0;
+        font-weight: 400;
+        color: var(--color-neutral-60);
       }
     }
   }

@@ -449,14 +449,7 @@ const answer = (item: string | boolean) =>
 
       /* Answers centred in their column, a lone mark as tall as a line. */
       &.marks {
-        --_label-width: 11.25rem;
         --_option-width: 15rem;
-        @media (width >= 48rem) {
-          --_label-width: 14.0625rem;
-        }
-        @media (width >= 62rem) {
-          --_label-width: 15.625rem;
-        }
 
         /* Every row is one line tall, whatever the answer holds. */
         .why-compare_row {

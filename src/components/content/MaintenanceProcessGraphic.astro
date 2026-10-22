@@ -1,0 +1,827 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Img from "@/components/media/Img.astro";
+import Icon from "@/components/media/Icon.astro";
+import avatar from "@/assets/service/maintenance/process-avatar.jpg";
+import cursor from "@/assets/service/maintenance/cursor-process.svg";
+import stepCheck from "@/assets/service/maintenance/step-check.svg";
+import check from "@/assets/service/migrate/process-check.svg";
+import globe from "@/assets/service/icons/globe.svg";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Which stage of a maintenance month the picture shows. */
+  variant: "audit" | "plan" | "request" | "build" | "report";
+}
+
+const { render = true, variant, class: className, ...rest } = Astro.props;
+
+const findings = [
+  { label: "Page speed", value: "72 / 100", key: "speed" },
+  { label: "Broken links", value: "9 found", key: "links" },
+  { label: "Out-of-date plugins", value: "3", key: "plugins" },
+];
+const backlog = [
+  { label: "Fix the nine broken links", tag: "High", tone: "primary" },
+  { label: "Rebuild the pricing page", tag: "High", tone: "primary" },
+  { label: "New case study template", tag: "Medium", tone: "warning" },
+];
+const answers = [
+  "We tell you the hours",
+  "You say yes or no",
+  "Only then do we start",
+];
+const devices = [
+  { label: "Desktop", key: "desktop" },
+  { label: "Tablet", key: "tablet" },
+  { label: "Tablet", key: "mobile" },
+];
+const checks = [
+  "Every screen size",
+  "English and Thai",
+  "Matches the design system",
+];
+const lines = [1, 2, 3];
+---
+
+{
+  render && variant && (
+    <div
+      class:list={["maintenance-process_wrap", variant, className]}
+      aria-hidden="true"
+      {...rest}
+    >
+      <div class="maintenance-process_stage">
+        {variant === "audit" && (
+          <>
+            <div class="maintenance-process_browser">
+              <span class="maintenance-process_bar">
+                <span class="maintenance-process_lights">
+                  <span />
+                  <span />
+                  <span />
+                </span>
+                <span class="maintenance-process_address">
+                  <Icon src={globe} class="maintenance-process_globe" />
+                  yoursite.com
+                </span>
+              </span>
+              {[0, 1].map(() => (
+                <span class="maintenance-process_text">
+                  {lines.map((line) => (
+                    <span class:list={["maintenance-process_line", `n${line}`]} />
+                  ))}
+                </span>
+              ))}
+              <span class="maintenance-process_cards">
+                <span class="maintenance-process_row">
+                  <span class="maintenance-process_block" />
+                  <span class="maintenance-process_block" />
+                </span>
+                <span class="maintenance-process_row">
+                  <span class="maintenance-process_block" />
+                  <span class="maintenance-process_block" />
+                  <span class="maintenance-process_block" />
+                </span>
+              </span>
+            </div>
+            <span class="maintenance-process_scan" />
+            {findings.map((item) => (
+              <span class:list={["maintenance-process_finding", item.key]}>
+                {item.label}
+                <span class="maintenance-process_tag warning">{item.value}</span>
+              </span>
+            ))}
+          </>
+        )}
+        {variant === "plan" && (
+          <>
+            <div class="maintenance-process_card plan">
+              <span class="maintenance-process_head">
+                <span class="maintenance-process_title">The backlog, ranked</span>
+                <span class="maintenance-process_meta">October</span>
+              </span>
+              <ul class="maintenance-process_list" role="list">
+                {backlog.map((item) => (
+                  <li class="maintenance-process_item">
+                    {item.label}
+                    <span class:list={["maintenance-process_tag", item.tone]}>
+                      {item.tag}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <span class="maintenance-process_badge developer">
+              Developer
+              <Icon src={cursor} class="maintenance-process_cursor" />
+            </span>
+          </>
+        )}
+        {variant === "request" && (
+          <div class="maintenance-process_chat">
+            <div class="maintenance-process_message">
+              <Img src={avatar} class="maintenance-process_avatar" />
+              <span class="maintenance-process_bubble">
+                <span class="maintenance-process_head">
+                  <span class="maintenance-process_name">Monica Angel</span>
+                  <span class="maintenance-process_time">Mon 09:12</span>
+                </span>
+                <span class="maintenance-process_text-line">
+                  Can we add a careers page?
+                </span>
+              </span>
+            </div>
+            <div class="maintenance-process_card answers">
+              <ul class="maintenance-process_list steps" role="list">
+                {answers.map((answer) => (
+                  <li class="maintenance-process_item step">
+                    <Icon src={stepCheck} class="maintenance-process_tick" />
+                    {answer}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
+        {variant === "build" && (
+          <div class="maintenance-process_card build">
+            <div class="maintenance-process_devices">
+              {devices.map((device) => (
+                <span class:list={["maintenance-process_device", device.key]}>
+                  <span class="maintenance-process_screen">
+                    <span class="maintenance-process_top" />
+                    <span class="maintenance-process_content">
+                      <span class="maintenance-process_skeleton">
+                        <span class="maintenance-process_line n1" />
+                        <span class="maintenance-process_line n2" />
+                      </span>
+                      <span class="maintenance-process_button" />
+                    </span>
+                  </span>
+                  {device.label}
+                </span>
+              ))}
+            </div>
+            <ul class="maintenance-process_list" role="list">
+              {checks.map((item) => (
+                <li class="maintenance-process_item small">
+                  <span class="maintenance-process_label">
+                    <Icon src={check} class="maintenance-process_tick plain" />
+                    {item}
+                  </span>
+                  <span class="maintenance-process_meta">Checked</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {variant === "report" && (
+          <div class="maintenance-process_report">
+            <div class="maintenance-process_card report">
+              <span class="maintenance-process_head">
+                <span class="maintenance-process_title">October report</span>
+                <span class="maintenance-process_meta muted">One page</span>
+              </span>
+              <ul class="maintenance-process_list" role="list">
+                <li class="maintenance-process_item">
+                  Work shipped
+                  <span class="maintenance-process_result">
+                    20
+                    <span class="maintenance-process_tag success">+4</span>
+                  </span>
+                </li>
+                <li class="maintenance-process_item">
+                  Page speed
+                  <span class="maintenance-process_result">
+                    96
+                    <span class="maintenance-process_tag success">+4</span>
+                  </span>
+                </li>
+              </ul>
+            </div>
+            <div class="maintenance-process_next">
+              <span class="maintenance-process_next-title">Do this next</span>
+              <span class="maintenance-process_next-body">
+                {[143, 0, 0, 143, 0].map((width) => (
+                  <span
+                    class="maintenance-process_line wide"
+                    style={width ? `--_width: ${width}` : undefined}
+                  />
+                ))}
+              </span>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    /* An artboard 517 units square that scales as one piece. The colours
+       repeat the website design process pictures, so the pages read as a set. */
+    .maintenance-process_wrap {
+      --_unit: calc(100cqw / 517);
+      --_base: #d4f4f7;
+      --_tint: rgb(213 226 245 / 0.32);
+      --_deep: rgb(5 103 244 / 0.32);
+      --_shadow:
+        calc(-23 * var(--_unit)) calc(48 * var(--_unit)) calc(16 * var(--_unit))
+          rgb(209 209 209 / 0.05),
+        calc(-10 * var(--_unit)) calc(21 * var(--_unit)) calc(12 * var(--_unit))
+          rgb(209 209 209 / 0.09),
+        calc(-3 * var(--_unit)) calc(5 * var(--_unit)) calc(6.5 * var(--_unit))
+          rgb(209 209 209 / 0.1);
+      container-type: inline-size;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: clip;
+      color: var(--color-neutral-80);
+      font-family: var(--primary-family);
+      letter-spacing: -0.005em;
+      background:
+        linear-gradient(to bottom, var(--_tint) 55.368%, var(--_deep) 96.905%),
+        var(--_base);
+
+      &:is(.plan, .request, .build) {
+        --_base: #ccdcff;
+        --_tint: rgb(128 195 254 / 0.32);
+        --_deep: rgb(6 66 238 / 0.32);
+      }
+
+      &:is(.plan, .request, .build)::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.4 -0.45'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        opacity: 0.35;
+      }
+
+      /* The wrap's own cqw would read the page, so the base size starts on its children. */
+      > * {
+        font-size: calc(16 * var(--_unit));
+        line-height: calc(22 * var(--_unit));
+      }
+
+      :is(span, li) {
+        display: block;
+      }
+
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      li {
+        margin: 0;
+      }
+
+      .icon {
+        --_size: calc(24 * var(--_unit));
+      }
+
+      /* The 400 unit square the pictures sit in. */
+      .maintenance-process_stage {
+        position: absolute;
+        top: calc(58.5 * var(--_unit));
+        left: calc(58.5 * var(--_unit));
+        width: calc(400 * var(--_unit));
+        aspect-ratio: 1 / 1;
+      }
+
+      .maintenance-process_card {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        display: flex;
+        flex-direction: column;
+        gap: calc(24 * var(--_unit));
+        padding: calc(24 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        border-radius: calc(12 * var(--_unit));
+        filter: drop-shadow(var(--_shadow));
+        translate: -50% -50%;
+
+        &.plan {
+          width: calc(390 * var(--_unit));
+        }
+        &.build {
+          width: calc(370 * var(--_unit));
+          gap: calc(24 * var(--_unit));
+        }
+      }
+
+      .maintenance-process_head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        white-space: nowrap;
+      }
+
+      .maintenance-process_title {
+        font-size: calc(20 * var(--_unit));
+        line-height: calc(26 * var(--_unit));
+        font-weight: var(--primary-medium);
+        letter-spacing: -0.01em;
+      }
+
+      .maintenance-process_meta {
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        font-weight: var(--primary-medium);
+        color: var(--color-neutral-30);
+
+        &.muted {
+          color: var(--color-neutral-40);
+        }
+      }
+
+      .maintenance-process_item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: calc(8 * var(--_unit));
+        padding-block: calc(16 * var(--_unit));
+        font-weight: var(--primary-medium);
+        white-space: nowrap;
+        border-bottom: var(--border-width) solid var(--color-neutral-5);
+
+        &:last-child {
+          border-bottom: 0;
+        }
+        &.small {
+          font-size: calc(14 * var(--_unit));
+          line-height: calc(20 * var(--_unit));
+        }
+        &.step {
+          justify-content: flex-start;
+          gap: calc(12 * var(--_unit));
+          padding-block: calc(12 * var(--_unit));
+          border-bottom: 0;
+        }
+      }
+
+      .maintenance-process_label {
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+      }
+
+      .maintenance-process_tick {
+        position: relative;
+        &.plain {
+          color: var(--color-primary-60);
+        }
+      }
+
+      .maintenance-process_tag {
+        padding: calc(2 * var(--_unit)) calc(8 * var(--_unit));
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        font-weight: var(--primary-medium);
+        border: var(--border-width) solid transparent;
+        border-radius: calc(4 * var(--_unit));
+
+        &.success {
+          color: var(--color-accent-success-90);
+          background-color: var(--color-accent-success-5);
+          border-color: var(--color-accent-success-10);
+        }
+        &.warning {
+          color: var(--color-accent-warning-80);
+          background-color: var(--color-accent-warning-5);
+          border-color: var(--color-accent-warning-10);
+        }
+        &.primary {
+          color: var(--color-primary-80);
+          background-color: var(--color-primary-5);
+          border-color: var(--color-primary-10);
+        }
+      }
+
+      .maintenance-process_result {
+        display: flex;
+        align-items: center;
+        gap: calc(4 * var(--_unit));
+      }
+
+      .maintenance-process_text,
+      .maintenance-process_skeleton {
+        display: flex;
+        flex-direction: column;
+        gap: calc(4 * var(--_unit));
+      }
+
+      .maintenance-process_line {
+        height: calc(4 * var(--_unit));
+        background-color: var(--color-neutral-2);
+        border-radius: calc(0.4 * var(--_unit));
+        box-shadow: 0 calc(0.3 * var(--_unit)) calc(1.2 * var(--_unit))
+          rgb(0 0 0 / 0.03);
+
+        &.wide {
+          width: 100%;
+          background-color: var(--color-neutral-2);
+          &[style] {
+            width: calc(var(--_width) * var(--_unit));
+          }
+        }
+      }
+
+      /* Audit: a site under review with three findings */
+
+      .maintenance-process_browser {
+        position: absolute;
+        top: 50%;
+        left: calc(50% + 0.5 * var(--_unit));
+        width: calc(338 * var(--_unit));
+        height: calc(284 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(20 * var(--_unit));
+        padding: calc(12 * var(--_unit)) calc(8 * var(--_unit));
+        overflow: clip;
+        background-color: var(--color-neutral-0);
+        border: var(--border-width) solid var(--color-neutral-2);
+        border-radius: calc(4 * var(--_unit));
+        box-shadow: var(--_shadow);
+        translate: -50% -50%;
+      }
+
+      .maintenance-process_bar {
+        display: flex;
+        align-items: center;
+        gap: calc(12 * var(--_unit));
+      }
+
+      .maintenance-process_lights {
+        flex: none;
+        display: flex;
+        gap: calc(4 * var(--_unit));
+
+        span {
+          width: calc(6 * var(--_unit));
+          height: calc(6 * var(--_unit));
+          border-radius: 50%;
+          background-color: var(--color-primary-5);
+        }
+      }
+
+      .maintenance-process_address {
+        flex: 1 1 0;
+        display: flex;
+        align-items: center;
+        gap: calc(4 * var(--_unit));
+        padding: calc(2 * var(--_unit)) calc(26 * var(--_unit))
+          calc(2 * var(--_unit)) calc(4 * var(--_unit));
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        background-color: var(--color-neutral-2);
+        border-radius: calc(4 * var(--_unit));
+
+        .maintenance-process_globe {
+          --_size: calc(11 * var(--_unit));
+          color: var(--color-neutral-40);
+        }
+      }
+
+      .maintenance-process_text .maintenance-process_line {
+        &.n1 {
+          width: calc(106 * var(--_unit));
+        }
+        &.n3 {
+          width: calc(85 * var(--_unit));
+        }
+      }
+
+      .maintenance-process_cards {
+        flex: 1 1 0;
+        display: flex;
+        flex-direction: column;
+        gap: calc(8 * var(--_unit));
+        min-height: 0;
+      }
+
+      .maintenance-process_row {
+        flex: 1 1 0;
+        display: flex;
+        gap: calc(8 * var(--_unit));
+      }
+
+      .maintenance-process_block {
+        flex: 1 1 0;
+        background-image: linear-gradient(
+          172.7deg,
+          #eee 28.8%,
+          #f9f9f9 70.6%,
+          #fff 95.5%
+        );
+        border-radius: calc(2 * var(--_unit));
+      }
+
+      /* A line sweeping the page, with the area it has covered tinted below it. */
+      .maintenance-process_scan {
+        position: absolute;
+        top: calc(130.5 * var(--_unit));
+        left: calc(12 * var(--_unit));
+        width: calc(376 * var(--_unit));
+        height: calc(226 * var(--_unit));
+        background-image: linear-gradient(
+          to bottom,
+          rgb(6 66 238 / 0.14),
+          transparent
+        );
+        border-top: calc(3 * var(--_unit)) solid var(--color-primary-60);
+        pointer-events: none;
+      }
+
+      .maintenance-process_finding {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+        width: calc(162 * var(--_unit));
+        padding: calc(8 * var(--_unit));
+        font-size: calc(14 * var(--_unit));
+        line-height: calc(20 * var(--_unit));
+        white-space: nowrap;
+        color: var(--color-neutral-60);
+        background-color: var(--color-neutral-0);
+        border-radius: calc(6 * var(--_unit));
+        box-shadow: var(--_shadow);
+
+        .maintenance-process_tag {
+          margin-left: auto;
+        }
+        &.speed {
+          top: calc(163.5 * var(--_unit));
+          right: calc(16 * var(--_unit));
+        }
+        &.links {
+          top: calc(225.5 * var(--_unit));
+          left: calc(50% - 103 * var(--_unit));
+          translate: -50% 0;
+        }
+        &.plugins {
+          top: calc(324.5 * var(--_unit));
+          left: calc(50% + 0.5 * var(--_unit));
+          translate: -50% 0;
+        }
+      }
+
+      /* Plan: the ranked backlog, with the developer's cursor */
+
+      .maintenance-process_badge {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        padding: calc(3.6 * var(--_unit)) calc(7.2 * var(--_unit));
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        font-weight: var(--primary-medium);
+        white-space: nowrap;
+        color: var(--color-neutral-0);
+        border-radius: calc(1.727 * var(--_unit));
+
+        &.developer {
+          right: calc(114.1 * var(--_unit) - 5 * var(--_unit));
+          bottom: calc(186.3 * var(--_unit) - 5 * var(--_unit));
+          background-color: var(--color-accent-success-90);
+        }
+      }
+
+      .maintenance-process_cursor {
+        position: absolute;
+        top: calc(-15.6 * var(--_unit));
+        left: calc(-14.4 * var(--_unit));
+        --_size: calc(19.2 * var(--_unit));
+      }
+
+      /* Request: a message and the three answers */
+
+      .maintenance-process_chat {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: calc(360 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(32 * var(--_unit));
+        translate: -50% -50%;
+      }
+
+      .maintenance-process_message {
+        display: flex;
+        align-items: flex-start;
+        gap: calc(12 * var(--_unit));
+      }
+
+      .maintenance-process_avatar {
+        flex: none;
+        width: calc(60 * var(--_unit));
+        height: calc(60 * var(--_unit));
+        object-fit: cover;
+        border-radius: 50%;
+      }
+
+      .maintenance-process_bubble {
+        flex: 1 1 0;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: calc(12 * var(--_unit));
+        padding: calc(12 * var(--_unit)) calc(16 * var(--_unit));
+        color: var(--color-neutral-0);
+        background-color: var(--color-primary-60);
+        filter: drop-shadow(var(--_shadow));
+      }
+
+      .maintenance-process_name {
+        font-weight: var(--primary-medium);
+      }
+
+      .maintenance-process_time {
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        font-weight: var(--primary-medium);
+        color: var(--color-neutral-20);
+      }
+
+      .maintenance-process_bubble .maintenance-process_head {
+        align-items: flex-start;
+      }
+
+      .maintenance-process_text-line {
+        font-size: calc(14 * var(--_unit));
+        line-height: calc(20 * var(--_unit));
+        color: var(--color-neutral-10);
+      }
+
+      .maintenance-process_card.answers {
+        position: relative;
+        top: auto;
+        left: auto;
+        translate: none;
+        width: 100%;
+        height: calc(192 * var(--_unit));
+        justify-content: center;
+        padding-block: calc(24 * var(--_unit));
+
+        .maintenance-process_list {
+          position: relative;
+
+          /* The blue line runs through the centres of the three ticks. */
+          &::before {
+            content: "";
+            position: absolute;
+            top: calc(24 * var(--_unit));
+            bottom: calc(24 * var(--_unit));
+            left: calc(11 * var(--_unit));
+            width: calc(2 * var(--_unit));
+            background-color: var(--color-primary-60);
+          }
+        }
+      }
+
+      /* Build: the same page on three screens */
+
+      .maintenance-process_devices {
+        display: flex;
+        align-items: flex-end;
+        gap: calc(12 * var(--_unit));
+      }
+
+      .maintenance-process_device {
+        display: flex;
+        flex-direction: column;
+        gap: calc(8 * var(--_unit));
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        font-weight: var(--primary-medium);
+
+        &.desktop {
+          width: calc(130 * var(--_unit));
+          --_pad: 12;
+        }
+        &.tablet {
+          width: calc(100 * var(--_unit));
+          --_pad: 20;
+        }
+        &.mobile {
+          width: calc(65 * var(--_unit));
+          --_pad: 8;
+        }
+      }
+
+      .maintenance-process_screen {
+        display: flex;
+        flex-direction: column;
+        gap: calc(18 * var(--_unit));
+        height: calc(100 * var(--_unit));
+        overflow: clip;
+        border: var(--border-width) solid var(--color-neutral-5);
+        border-radius: calc(8 * var(--_unit));
+      }
+
+      .maintenance-process_top {
+        height: calc(18 * var(--_unit));
+        background-color: var(--color-primary-10);
+      }
+
+      .maintenance-process_content {
+        display: flex;
+        flex-direction: column;
+        gap: calc(12 * var(--_unit));
+        padding-inline: calc(var(--_pad) * var(--_unit));
+      }
+
+      .maintenance-process_content .maintenance-process_line {
+        height: calc(5 * var(--_unit));
+        border-radius: calc(12 * var(--_unit));
+
+        &.n2 {
+          width: calc(38 * var(--_unit));
+        }
+      }
+
+      .maintenance-process_button {
+        width: calc(34 * var(--_unit));
+        height: calc(11 * var(--_unit));
+        background-color: var(--color-primary-60);
+        border-radius: calc(4 * var(--_unit));
+      }
+
+      .maintenance-process_card.build .maintenance-process_item.small {
+        padding-block: calc(16 * var(--_unit));
+
+        .maintenance-process_meta {
+          color: var(--color-neutral-30);
+        }
+      }
+
+      /* Report: figures and the next recommendation */
+
+      .maintenance-process_report {
+        position: absolute;
+        top: calc(36.5 * var(--_unit));
+        left: 50%;
+        width: calc(360 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(32 * var(--_unit));
+        translate: -50% 0;
+
+        .maintenance-process_card {
+          position: relative;
+          top: auto;
+          left: auto;
+          translate: none;
+          gap: calc(16 * var(--_unit));
+        }
+      }
+
+      .maintenance-process_next {
+        display: flex;
+        flex-direction: column;
+        gap: calc(8 * var(--_unit));
+        height: calc(108 * var(--_unit));
+        padding: calc(8 * var(--_unit)) calc(4 * var(--_unit)) calc(4 * var(--_unit));
+        overflow: clip;
+        background-image:
+          radial-gradient(
+            60% 90% at 50% 0%,
+            rgb(60 110 255 / 0.55),
+            transparent
+          ),
+          linear-gradient(115deg, #0a2aa6 0%, #0b38c9 45%, #05187a 100%);
+        border: var(--border-width) solid var(--color-neutral-0);
+        border-radius: calc(8 * var(--_unit));
+        box-shadow: var(--_shadow);
+      }
+
+      .maintenance-process_next-title {
+        font-size: calc(20 * var(--_unit));
+        line-height: calc(26 * var(--_unit));
+        font-weight: var(--primary-medium);
+        letter-spacing: -0.01em;
+        text-align: center;
+        color: var(--color-neutral-0);
+      }
+
+      .maintenance-process_next-body {
+        flex: 1 1 0;
+        display: flex;
+        flex-direction: column;
+        gap: calc(4 * var(--_unit));
+        padding: calc(12 * var(--_unit)) calc(10 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        border-radius: calc(4 * var(--_unit));
+      }
+    }
+  }
+</style>

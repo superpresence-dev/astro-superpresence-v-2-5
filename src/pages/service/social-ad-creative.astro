@@ -1,0 +1,493 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import HomeHero from "@/components/section/HomeHero.astro";
+import IndustryProblem from "@/components/content/IndustryProblem.astro";
+import ServiceFeatures from "@/components/content/ServiceFeatures.astro";
+import SocialFeatureGraphic from "@/components/content/SocialFeatureGraphic.astro";
+import ServiceSteps from "@/components/content/ServiceSteps.astro";
+import WhyOffers from "@/components/content/WhyOffers.astro";
+import HomeDifference from "@/components/content/HomeDifference.astro";
+import IndustryProcess from "@/components/content/IndustryProcess.astro";
+import DesignProcessGraphic from "@/components/content/DesignProcessGraphic.astro";
+import SocialProcessGraphic from "@/components/content/SocialProcessGraphic.astro";
+import HomeQuote from "@/components/section/HomeQuote.astro";
+import ServicePoints from "@/components/content/ServicePoints.astro";
+import DesignWhyGraphic from "@/components/content/DesignWhyGraphic.astro";
+import WhyCompare from "@/components/content/WhyCompare.astro";
+import HomeFaq from "@/components/content/HomeFaq.astro";
+import ServiceGrid from "@/components/content/ServiceGrid.astro";
+import HomeCta from "@/components/section/HomeCta.astro";
+import { serviceUrl } from "@/utils/services.ts";
+import heroImage from "@/assets/service/social/hero.jpg";
+import tierCampaign from "@/assets/service/social/tier-1.png";
+import tierLaunch from "@/assets/service/social/tier-2.png";
+import tierWebsite from "@/assets/service/social/tier-3.png";
+import quoteAvatar from "@/assets/service/migrate/quote-avatar.jpg";
+
+const related = [
+  {
+    title: "Website design",
+    text: "Strategy, copy and custom design, signed off before anything is built.",
+  },
+  {
+    title: "Brand identity",
+    text: "Enhance your visual system with sharper clarity before starting the website redesign.",
+  },
+  {
+    title: "Webflow development",
+    text: "From polished designs to responsive Webflow experiences built for growth.",
+  },
+  {
+    title: "Framer development",
+    text: "Launch polished Framer websites with speed, flexibility, and lasting performance.",
+  },
+  {
+    title: "Migrate to Webflow",
+    text: "Move your website to Webflow without losing what already works.",
+  },
+  {
+    title: "Webflow maintenance",
+    text: "Keep your Webflow site fast, reliable, updated, and ready for what’s next.",
+  },
+].map((item) => ({
+  ...item,
+  href: serviceUrl(item.title === "Brand identity" ? "Branding" : item.title),
+}));
+---
+
+<Layout
+  title="Social & ad creative"
+  description="Social posts and ad creative, designed by the team that builds your website, so the click lands on a page that keeps the promise."
+  overlap
+>
+  {/* Hero */}
+  <HomeHero
+    eyebrow="Social & ad creative"
+    heading="Ads and posts that match<br />the site they send people to"
+    text="Social posts and ad creative, designed by the team that builds your website, so the click lands on a page that keeps the promise."
+    image={heroImage}
+    buttonText="Start your project"
+    buttonHref="/contact"
+    variant="split"
+    fade="soft"
+  />
+  {/* Problem */}
+  <Section>
+    <IndustryProblem
+      heading="Your ads and your site<br />tell two different stories"
+      items={[
+        {
+          title: "The click lands somewhere else",
+          text: "The ad promises one thing, the landing page says another, and people leave.",
+        },
+        {
+          title: "Every post looks different",
+          text: "Creative is made in a rush by different people, so the brand never builds up.",
+        },
+        {
+          title: "Nothing gets tested properly",
+          text: "One version of each ad goes live, so you never learn what actually works.",
+        },
+      ]}
+    />
+  </Section>
+  {/* Features */}
+  <Section>
+    <ServiceFeatures
+      items={[
+        {
+          eyebrow: "From scroll to site",
+          heading: "The ad and the page,<br />designed as one",
+          text: "We design the creative and the page it sends people to together: same headline, same look, same offer, so the click does not leak.",
+          points: [
+            "Headline and offer carried through",
+            "Same type and colours as the site",
+            "Landing pages built by the same team",
+          ],
+        },
+        {
+          eyebrow: "One system, every size",
+          heading: "One idea, adapted<br />to every placement",
+          text: "Each concept is produced for every placement you run, with safe zones checked and the right file for each.",
+          points: [
+            "Square, portrait, story and landscape",
+            "Static, carousel and short motion",
+            "Safe zones checked for each platform",
+          ],
+        },
+        {
+          eyebrow: "Variants that teach you something",
+          heading: "Built to be tested, named to be read",
+          text: "You get organised sets of hooks and visuals, named so your media team or agency can test them properly. We make the creative; they run the media.",
+          points: [
+            "Hooks and visuals in testable sets",
+            "Clear file names for every variant",
+            "Ready for your media team or agency",
+          ],
+        },
+      ]}
+    >
+      <SocialFeatureGraphic slot="visual-1" variant="ad" />
+      <SocialFeatureGraphic slot="visual-2" variant="sizes" />
+      <SocialFeatureGraphic slot="visual-3" variant="handover" />
+    </ServiceFeatures>
+  </Section>
+  {/* What we do */}
+  <Section>
+    <ServiceSteps
+      heading="Creative, ready to run"
+      lead="Designed and produced by the team that builds your website."
+      note="We design and produce the creative. We do not buy media or run ad accounts. Pitch decks are part of Branding."
+      steps={[
+        {
+          title: "Formats",
+          points: [
+            {
+              title: "Feed posts and carousels",
+              text: "Square and portrait, static or multi-slide.",
+            },
+            {
+              title: "Stories and short motion",
+              text: "Vertical formats with safe zones checked.",
+            },
+            {
+              title: "Display and out-of-home",
+              text: "Landscape, banner and large-format sizes.",
+            },
+          ],
+        },
+        {
+          title: "Copy",
+          points: [
+            {
+              title: "Hooks in English",
+              text: "Written for the buyers you want to reach.",
+            },
+            {
+              title: "Offer carried through",
+              text: "Same headline from the ad to the page.",
+            },
+          ],
+        },
+        {
+          title: "System",
+          points: [
+            {
+              title: "Templates from your brand",
+              text: "Built from your website and identity.",
+            },
+            {
+              title: "Every size from one idea",
+              text: "Each concept adapted to every placement.",
+            },
+          ],
+        },
+        {
+          title: "Delivery",
+          points: [
+            {
+              title: "Named for testing",
+              text: "Variants labelled so results are easy to read.",
+            },
+            {
+              title: "Editable source files",
+              text: "Templates your team can reuse.",
+            },
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Ways to work */}
+  <Section>
+    <WhyOffers
+      variant="options"
+      eyebrow="Ways to work with us"
+      heading="Start with one campaign,<br />or a full launch"
+      lead="Every option is project-based. Pick the one that matches what you are running."
+      columnsFrom="desktop"
+      cardHeight={34.375}
+      contentHeight={15.25}
+      cardHeightMedium={27.5}
+      contentHeightMedium={1}
+      cardHeightSmall={27.5}
+      options={[
+        {
+          tone: "blue",
+          image: tierCampaign,
+          label: "One campaign",
+          title: "A single campaign",
+          text: "Creative for one offer or message, across the placements you are running.",
+          points: [
+            "One concept, every size",
+            "Hooks written in English",
+            "Testable variants",
+            "Editable source files",
+          ],
+        },
+        {
+          tone: "purple",
+          image: tierLaunch,
+          label: "Launch set",
+          title: "A product or site launch",
+          text: "Everything a launch needs, from teaser posts to the ads that drive to the new page.",
+          points: [
+            "Several concepts",
+            "Social posts and ads",
+            "Matched to the landing page",
+            "Templates for later",
+          ],
+        },
+        {
+          tone: "orange",
+          image: tierWebsite,
+          label: "With a website",
+          title: "Creative and the page together",
+          text: "Ads and the page they point to, designed together so the click lands where it should.",
+          points: [
+            "Landing page design",
+            "Ads that match it",
+            "One team, one timeline",
+            "Scoped with your build",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Scope */}
+  <Section>
+    <HomeDifference
+      eyebrow="Who does what"
+      heading="Who does what,<br />from design to launch"
+      lead="Clear ownership, so nothing gets lost between design and running the ads."
+      leadWidth="full"
+      logos={false}
+      boxes={[
+        {
+          title: "We handle",
+          featured: true,
+          items: [
+            "Concepts, design and English copy",
+            "Every size and placement",
+            "Variants named for testing",
+            "Matching landing pages, when needed",
+            "Editable source files at the end",
+          ],
+        },
+        {
+          title: "You keep",
+          featured: false,
+          items: [
+            "Your ad accounts and budgets",
+            "Buying media and running campaigns",
+            "Targeting and bidding",
+            "Final approval on every piece",
+            "Ownership of everything we make",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Process */}
+  <Section>
+    <IndustryProcess
+      eyebrow="How we work"
+      heading="Five steps, each<br />signed off before the next"
+      note={{
+        title: "3 feedback rounds included",
+        text: "Each phase is approved before the next one starts, so nothing gets reworked later.",
+      }}
+      steps={[
+        {
+          title: "Brief",
+          text: "We agree the audience, offer, landing page and placements before anything is designed.",
+          points: ["Audience", "Offer", "Placements"],
+        },
+        {
+          title: "Concept",
+          text: "Three angles, each with a hook, reviewed with you before production.",
+          points: ["Three angles", "Hooks in English", "Your pick"],
+        },
+        {
+          title: "Design system",
+          text: "Ad templates built from your website and brand, so every piece matches.",
+          points: ["Templates", "Brand tokens", "Type and colour"],
+        },
+        {
+          title: "Produce and adapt",
+          text: "Each concept produced and adapted to every size, with short motion where it helps.",
+          points: ["Every size", "Short motion", "Safe zones"],
+        },
+        {
+          title: "Hand off",
+          text: "Organised files, named for testing, delivered to your team or agency.",
+          points: [
+            "Organised folders",
+            "Testing names",
+            "Editable sources",
+          ],
+        },
+      ]}
+    >
+      <DesignProcessGraphic slot="step-1" variant="strategy" />
+      <SocialProcessGraphic slot="step-2" variant="concept" />
+      <DesignProcessGraphic slot="step-3" variant="visual" />
+      <SocialProcessGraphic slot="step-4" variant="produce" />
+      <SocialProcessGraphic slot="step-5" variant="deliver" />
+    </IndustryProcess>
+  </Section>
+  {/* Quote */}
+  <HomeQuote
+    quote="We went from a cookie-cutter template to a custom website that properly reflects the brand… Kevin is super easy to work with, always one message away."
+    name="Max Chernov"
+    jobTitle="YouTuber, 430k subscribers"
+    avatar={quoteAvatar}
+    logo={false}
+  />
+  {/* Why */}
+  <Section>
+    <ServicePoints
+      variant="visual"
+      eyebrow="Why Superpresence"
+      heading="Why companies choose us for creative"
+      items={[
+        {
+          title: "Built in Asia, written for buyers abroad",
+          text: "We work in your timezone, understand Asian companies, and craft English content that appeals directly to your target buyers.",
+        },
+        {
+          title: "Strategy before pixels",
+          text: "We don’t start designing until what you do, who it is for and why you are clear. Design amplifies clarity; it can’t create it.",
+        },
+        {
+          title: "Copy written by people, in English",
+          text: "Expert copywriters write every page. Not translated, not generated, and built around how your buyers decide.",
+        },
+        {
+          title: "The whole senior team, one roof",
+          text: "Strategy, design, copy, development, conversion and QA in one accountable team, with nobody for you to hire or manage.",
+        },
+        {
+          title: "Ads and pages, one team",
+          text: "The team that designs the creative also designs and builds the landing page, so the click lands on a page that keeps the promise.",
+        },
+        {
+          title: "Depth over volume",
+          text: "Every project gets senior attention for as long as the problem takes, not a slot sized to a subscription.",
+        },
+      ]}
+    >
+      <DesignWhyGraphic slot="visual-1" variant="asia" />
+      <DesignWhyGraphic slot="visual-2" variant="strategy" />
+      <DesignWhyGraphic slot="visual-3" variant="copy" />
+      <DesignWhyGraphic slot="visual-4" variant="team" />
+      <DesignWhyGraphic slot="visual-5" variant="ads" />
+      <DesignWhyGraphic slot="visual-6" variant="depth" />
+    </ServicePoints>
+  </Section>
+  {/* Comparison */}
+  <Section>
+    <WhyCompare
+      variant="marks"
+      eyebrow="The comparison"
+      heading="What each option actually delivers"
+      lead="A quick comparison before you decide who does the work."
+      rows={[
+        "Matches your website",
+        "Landing page by the same team",
+        "Every size and placement",
+        "Testable variants",
+        "English copy for buyers abroad",
+        "Editable source files",
+      ]}
+      options={[
+        {
+          title: "Superpresence",
+          icon: "brand",
+          featured: true,
+          items: [true, true, true, true, true, true],
+        },
+        {
+          title: "Freelancer",
+          icon: "hire",
+          items: ["Sometimes", false, "Varies", false, "Varies", "Sometimes"],
+        },
+        {
+          title: "Typical agency",
+          icon: "agency",
+          items: [
+            "Sometimes",
+            "Sometimes",
+            true,
+            "Sometimes",
+            "Varies",
+            "Sometimes",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* FAQ */}
+  <Section>
+    <HomeFaq
+      eyebrow="Questions we hear"
+      heading="Before you ask"
+      items={[
+        {
+          question: "Do you run or manage our ads?",
+          answer:
+            "No. We design and produce the creative and hand it to your media team or agency to run.",
+        },
+        {
+          question: "Which platforms and formats do you cover?",
+          answer: [
+            "The main paid and social placements: Meta (Facebook and Instagram), LinkedIn and Google display. Each concept is produced in square, portrait, story and landscape sizes, as static posts, carousels or short motion, with safe zones checked for each platform.",
+            "Short motion means animated graphics built from your brand assets. Filmed video isn’t something we produce.",
+          ],
+        },
+        {
+          question: "How many variants do we get?",
+          answer:
+            "Each concept is produced for every placement you run, in organised, testable sets of hooks and visuals. How many sets you get depends on the scope: a single campaign, a launch set, or creative scoped with a website build.",
+        },
+        {
+          question: "Do you write the ad copy?",
+          answer: [
+            "Yes. Hooks, headlines and body copy are written in English by our copywriters for the buyers you’re targeting, and the offer carries through to the landing page word for word.",
+            "We don’t translate. If you also run campaigns in Thai or Chinese, your translator or local team can adapt from our English master.",
+          ],
+        },
+        {
+          question: "Can you design the landing pages too?",
+          answer: [
+            "Yes, and it’s the main reason to use us for creative. The team that designs your ads also designs and builds the page they point to, with the same headline, offer and look.",
+            "A single campaign landing page is scoped as its own project. For a site launch, the ads and pages are scoped together with the build.",
+          ],
+        },
+        {
+          question: "Do we get the source files?",
+          answer:
+            "Yes. Editable source files and templates your team can reuse are part of the handover, and you own everything we make.",
+        },
+      ]}
+    />
+  </Section>
+  {/* Related services */}
+  <Section>
+    <ServiceGrid
+      eyebrow="Related services"
+      heading="Where creative fits"
+      lead="Creative works best when the page it points to is just as strong."
+      items={related}
+    />
+  </Section>
+  {/* CTA */}
+  <HomeCta
+    eyebrow="You've reached the end, so now..."
+    heading="Want ads that match the site?"
+    text="Tell us what you are running and where it sends people, and we will shape the right creative set."
+    buttonText="Start your project"
+    buttonHref="/contact"
+  />
+</Layout>

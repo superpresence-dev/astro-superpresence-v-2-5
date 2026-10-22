@@ -26,8 +26,8 @@ interface Props
   items: Item[];
   /** Text under the heading. Omit to leave it out. */
   lead?: string;
-  /** `pages` is a row of three top-ruled items; `steps` is numbered columns with a left rule, a chip each and a navy shade. */
-  variant?: "pages" | "steps";
+  /** `pages` is a row of three top-ruled items; `steps` is numbered columns with a left rule, a chip each and a navy shade; `handover` is the same numbered columns in three per row, with a blue shade and no chips. */
+  variant?: "pages" | "steps" | "handover";
 }
 
 const {
@@ -49,7 +49,7 @@ const {
   paddingTop="none"
   paddingBottom="none"
   containerClass="industry-build_layout"
-  class:list={["industry-build_wrap", variant, className]}
+  class:list={["industry-build_wrap", variant === "handover" ? "steps handover" : variant, className]}
   {...rest}
 >
   <Img src={image} slot="background" class="industry-build_background" />
@@ -71,7 +71,7 @@ const {
     {
       items.map((item, index) => (
         <li class="industry-build_item">
-          {variant === "steps" && (
+          {variant !== "pages" && (
             <Paragraph variant="overline-main" class="industry-build_number">
               {String(index + 1).padStart(2, "0")}
             </Paragraph>
@@ -191,7 +191,7 @@ const {
       }
 
       &.steps {
-        --_min-height: 0rem;
+        --_min-height: 71.5rem;
         @media (width >= 48rem) {
           --_min-height: 44rem;
         }
@@ -241,6 +241,37 @@ const {
           border-radius: var(--radius-0-125rem);
           background-color: var(--color-primary-95);
           color: var(--color-neutral-30);
+        }
+
+        &.handover {
+          --_min-height: 75rem;
+          @media (width >= 48rem) {
+            --_min-height: 50rem;
+          }
+          @media (width >= 62rem) {
+            --_min-height: 50rem;
+          }
+
+          .industry-build_shade {
+            background-image:
+              linear-gradient(
+                0.24deg,
+                rgb(8 21 50 / 0.9) 0.45%,
+                rgb(8 21 50 / 0.72) 41.27%,
+                rgb(14 36 82 / 0) 82.09%
+              ),
+              linear-gradient(rgb(14 36 82 / 0.12), rgb(14 36 82 / 0.12));
+          }
+
+          .industry-build_list {
+            @media (width >= 62rem) {
+              grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+          }
+
+          .industry-build_item {
+            border-left-color: rgb(245 245 245 / 0.1);
+          }
         }
       }
     }

@@ -1,0 +1,339 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Img from "@/components/media/Img.astro";
+
+type Integration = {
+  name: string;
+  /** What it does, shown under the name. */
+  text: string;
+  logo: ImageMetadata;
+  /** Filter tabs this card belongs to. It is always shown under the first tab. */
+  tabs?: string[];
+};
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading: string;
+  /** Text under the heading. Omit to leave it out. */
+  lead?: string;
+  /** Filter tabs in order. The first one shows every card. Omit for no filter. */
+  tabs?: string[];
+  /** Cards in order. */
+  items: Integration[];
+}
+
+const {
+  render = true,
+  eyebrow,
+  heading,
+  lead,
+  tabs = [],
+  items,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const uid = Math.random().toString(36).slice(2, 8);
+---
+
+{
+  render && heading && items?.length > 0 && (
+    <div class:list={["service-integrations_wrap", className]} {...rest}>
+      <div class="service-integrations_intro">
+        {eyebrow && (
+          <Paragraph variant="overline-small" class="service-integrations_eyebrow">
+            {eyebrow}
+          </Paragraph>
+        )}
+        <Heading tag="h2" variant="h3">
+          <Fragment set:html={heading} />
+        </Heading>
+        {lead && (
+          <Paragraph variant="large" class="service-integrations_lead">
+            {lead}
+          </Paragraph>
+        )}
+      </div>
+      <div class="service-integrations_body">
+        {tabs.length > 1 && (
+          <div
+            class="service-integrations_tablist"
+            role="tablist"
+            aria-label="Integration type"
+            hidden
+          >
+            {tabs.map((tab, index) => (
+              <button
+                type="button"
+                role="tab"
+                id={`integrations-${uid}-tab-${index}`}
+                class="service-integrations_tab"
+                aria-selected={index === 0 ? "true" : "false"}
+                aria-controls={`integrations-${uid}-panel`}
+                tabindex={index === 0 ? 0 : -1}
+                data-tab={tab}
+              >
+                <span class="service-integrations_tab-label">{tab}</span>
+                <span class="service-integrations_dot" aria-hidden="true" />
+              </button>
+            ))}
+          </div>
+        )}
+        <ul
+          class="service-integrations_list"
+          role="list"
+          id={`integrations-${uid}-panel`}
+        >
+          {items.map((item) => (
+            <li class="service-integrations_item" data-tabs={(item.tabs ?? []).join("|")}>
+              <span class="service-integrations_logo">
+                <Img src={item.logo} class="service-integrations_img" />
+              </span>
+              <div class="service-integrations_content">
+                <Heading tag="h3" variant="h6">
+                  {item.name}
+                </Heading>
+                <Paragraph variant="main" class="service-integrations_text">
+                  {item.text}
+                </Paragraph>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .service-integrations_wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-3-5rem);
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .service-integrations_intro {
+        width: 100%;
+        max-width: 40rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-0-75rem);
+        text-align: center;
+        @media (width >= 62rem) {
+          max-width: 55rem;
+        }
+      }
+
+      .service-integrations_eyebrow {
+        color: var(--color-neutral-30);
+      }
+
+      .service-integrations_lead {
+        max-width: 30rem;
+        color: var(--color-neutral-60);
+        @media (width >= 62rem) {
+          max-width: 40rem;
+        }
+      }
+
+      .service-integrations_body {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1-5rem);
+      }
+
+      .service-integrations_tablist {
+        display: flex;
+        width: 100%;
+        overflow-x: auto;
+        scrollbar-width: none;
+        border-bottom: var(--border-width) solid var(--color-neutral-5);
+
+        &[hidden] {
+          display: none;
+        }
+      }
+
+      .service-integrations_tab {
+        flex: none;
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-0-75rem);
+        padding: var(--space-1-25rem);
+        margin-bottom: calc(var(--border-width) * -1);
+        border: 0;
+        border-bottom: 2px solid transparent;
+        background: none;
+        color: var(--color-neutral-40);
+        font: inherit;
+        font-family: var(--h6-font-family);
+        font-size: var(--h6);
+        line-height: var(--h6-line-height);
+        font-weight: var(--h6-font-weight);
+        letter-spacing: var(--h6-letter-spacing);
+        cursor: pointer;
+        transition: color var(--hover-duration) var(--hover-ease);
+
+        @media (hover: hover) {
+          &:hover {
+            color: var(--color-neutral-90);
+          }
+        }
+
+        &[aria-selected="true"] {
+          color: var(--color-neutral-90);
+          border-bottom-color: var(--color-primary-60);
+        }
+
+        &:focus-visible {
+          outline: 2px solid var(--ui);
+          outline-offset: -2px;
+        }
+      }
+
+      .service-integrations_dot {
+        display: none;
+        width: 6px;
+        height: 6px;
+        background-color: var(--color-primary-60);
+      }
+
+      .service-integrations_tab[aria-selected="true"] .service-integrations_dot {
+        display: block;
+      }
+
+      .service-integrations_list {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: var(--space-1-5rem);
+        margin: 0;
+        padding: var(--space-0-5rem) 0 var(--space-1-5rem);
+      }
+
+      .service-integrations_item {
+        flex: 0 0 100%;
+        max-width: 100%;
+        display: flex;
+        align-items: center;
+        gap: var(--space-1rem);
+        margin: 0;
+        /* Figma's stroke sits inside the card, so it comes out of the padding. */
+        padding: calc(var(--space-1-5rem) - var(--border-width));
+        background-color: var(--color-neutral-0);
+        border: var(--border-width) dashed var(--color-neutral-10);
+        border-radius: var(--radius-0-25rem);
+
+        &[hidden] {
+          display: none;
+        }
+
+        @media (width >= 48rem) {
+          flex-basis: calc((100% - var(--space-1-5rem)) / 2);
+          max-width: calc((100% - var(--space-1-5rem)) / 2);
+        }
+
+        @media (width >= 62rem) {
+          flex-basis: calc((100% - 2 * var(--space-1-5rem)) / 3);
+          max-width: calc((100% - 2 * var(--space-1-5rem)) / 3);
+        }
+      }
+
+      .service-integrations_logo {
+        flex: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--space-1rem);
+        background-color: var(--color-neutral-2);
+        border: var(--border-width) solid var(--color-neutral-5);
+        border-radius: var(--radius-0-125rem);
+      }
+
+      .service-integrations_img {
+        width: 1rem;
+        height: 1rem;
+        object-fit: contain;
+        @media (width >= 48rem) {
+          width: 1.5rem;
+          height: 1.5rem;
+        }
+      }
+
+      .service-integrations_content {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-5rem);
+      }
+
+      .service-integrations_text {
+        color: var(--color-neutral-60);
+      }
+    }
+  }
+</style>
+
+<script>
+  for (const wrap of document.querySelectorAll<HTMLElement>(
+    ".service-integrations_wrap",
+  )) {
+    const list = wrap.querySelector<HTMLElement>(".service-integrations_tablist");
+    const tabs = [
+      ...wrap.querySelectorAll<HTMLButtonElement>(".service-integrations_tab"),
+    ];
+    const items = [
+      ...wrap.querySelectorAll<HTMLElement>(".service-integrations_item"),
+    ];
+    if (!list || tabs.length === 0) continue;
+    list.hidden = false;
+
+    const select = (index: number, focus = false) => {
+      const name = tabs[index].dataset.tab;
+      tabs.forEach((tab, i) => {
+        tab.setAttribute("aria-selected", String(i === index));
+        tab.tabIndex = i === index ? 0 : -1;
+      });
+      items.forEach((item) => {
+        item.hidden =
+          index !== 0 && !(item.dataset.tabs ?? "").split("|").includes(name ?? "");
+      });
+      if (focus) tabs[index].focus();
+    };
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => select(index));
+      tab.addEventListener("keydown", (event) => {
+        const last = tabs.length - 1;
+        const next =
+          event.key === "ArrowRight"
+            ? index === last ? 0 : index + 1
+            : event.key === "ArrowLeft"
+              ? index === 0 ? last : index - 1
+              : event.key === "Home"
+                ? 0
+                : event.key === "End"
+                  ? last
+                  : -1;
+        if (next < 0) return;
+        event.preventDefault();
+        select(next, true);
+      });
+    });
+  }
+</script>

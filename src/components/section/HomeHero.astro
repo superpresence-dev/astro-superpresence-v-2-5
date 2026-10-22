@@ -30,12 +30,16 @@ interface Props
   secondaryHref?: string;
   /** `logos` puts the paragraph under the heading and a logo strip below; `split` moves the paragraph to the right of the heading and leaves the logos out. */
   variant?: "logos" | "split";
+  /** Where the background image sits below tablet, as a CSS `object-position` such as `32% 50%`. Omit to centre it. */
+  focus?: string;
   /** Lets the `split` heading run to 46.875rem instead of 42.5rem, for a heading with a long line. */
   wide?: boolean;
   /** Bottom fade over the image: `deep` turns solid below desktop, `soft` stays at 70% on every screen. */
   fade?: "deep" | "soft";
   /** Colour the `soft` fade runs to, as a hex. Mixed at 70% like the default dark. */
   fadeColor?: string;
+  /** Washes the whole image in this colour (hex): a light even tint, then a heavy gradient from the middle down. Replaces the bottom fade. */
+  tint?: string;
 }
 
 const {
@@ -50,8 +54,10 @@ const {
   secondaryHref = "#",
   variant = "logos",
   wide = false,
+  focus,
   fade = "deep",
   fadeColor,
+  tint,
   class: className,
   ...rest
 } = Astro.props;
@@ -63,8 +69,14 @@ const {
   paddingTop="none"
   paddingBottom="none"
   containerClass="home-hero_layout"
-  class:list={["home-hero_wrap", variant, fade, wide && "wide", className]}
-  style={fadeColor && `--_fade-color: ${fadeColor};`}
+  class:list={["home-hero_wrap", variant, fade, wide && "wide", focus && "focused", tint && "tinted", className]}
+  style={[
+    fadeColor && `--_fade-color: ${fadeColor}`,
+    tint && `--_tint: ${tint}`,
+    focus && `--_focus: ${focus}`,
+  ]
+    .filter(Boolean)
+    .join(";") || undefined}
   {...rest}
 >
   <Img src={image} slot="background" loading="eager" fetchPriority="high" />
@@ -134,6 +146,11 @@ const {
         --_text-width: 33.75rem;
         --_logos-top: var(--space-0-5rem);
       }
+      &.focused img[fetchpriority="high"] {
+        @media (width < 48rem) {
+          object-position: var(--_focus);
+        }
+      }
       &.soft {
         --_fade: color-mix(in srgb, var(--_fade-color, rgb(23 23 23)) 70%, transparent);
         --_fade-tall: 12.5rem;
@@ -151,6 +168,21 @@ const {
         background-size:
           100% var(--_fade-tall),
           100% var(--_fade-short);
+      }
+
+      &.tinted .home-hero_fade {
+        background-image:
+          linear-gradient(
+            color-mix(in srgb, var(--_tint) 12%, transparent),
+            color-mix(in srgb, var(--_tint) 12%, transparent)
+          ),
+          linear-gradient(
+            to bottom,
+            transparent 35.868%,
+            color-mix(in srgb, var(--_tint) 90%, transparent) 70.305%
+          );
+        background-position: 0 0;
+        background-size: 100% 100%;
       }
 
       .home-hero_layout {

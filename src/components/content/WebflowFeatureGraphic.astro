@@ -1,0 +1,672 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Img from "@/components/media/Img.astro";
+import cmsPhoto from "@/assets/service/webflow/features-1.jpg";
+import editorPhoto from "@/assets/service/webflow/features-2.jpg";
+import languagesPhoto from "@/assets/service/webflow/features-3.jpg";
+import routingPhoto from "@/assets/service/webflow/features-4.jpg";
+import cursorGreen from "@/assets/service/webflow/cursor-green.svg";
+import layers from "@/assets/service/webflow/layers.svg";
+import linkArrow from "@/assets/service/webflow/link-arrow.svg";
+import selectChevron from "@/assets/service/webflow/select-chevron.svg";
+import dropdownChevron from "@/assets/service/webflow/dropdown-chevron.svg";
+import routingBracket from "@/assets/service/webflow/routing-bracket.svg";
+import iconTable from "@/assets/service/webflow/icon-table.svg";
+import iconList from "@/assets/service/webflow/icon-list.svg";
+import iconCalendar from "@/assets/service/webflow/icon-calendar.svg";
+import flagGb from "@/assets/service/webflow/flag-gb.svg";
+import flagCn from "@/assets/service/webflow/flag-cn.svg";
+import flagJp from "@/assets/service/webflow/flag-jp.svg";
+import flagTh from "@/assets/service/design/why/flag-th.svg";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Which picture: the CMS structure, the editor, one page in four languages, or where a form goes. */
+  variant: "cms" | "editor" | "languages" | "routing";
+}
+
+const { render = true, variant, class: className, ...rest } = Astro.props;
+
+const photos = {
+  cms: cmsPhoto,
+  editor: editorPhoto,
+  languages: languagesPhoto,
+  routing: routingPhoto,
+};
+const stats = [
+  { name: "Products", value: "24", unit: "items", dark: true },
+  { name: "Markets", value: "6", unit: "regions", dark: false },
+  { name: "Pages", value: "12", unit: "templates", dark: true },
+  { name: "Case studies", value: "6", unit: "regions", dark: false },
+];
+const languages = [
+  { name: "Eng", flag: flagGb, size: "wide" },
+  { name: "Thailand", flag: flagTh, size: "narrow" },
+  { name: "China", flag: flagCn, size: "narrow" },
+  { name: "Japanese", flag: flagJp, size: "wide" },
+];
+const sources = ["Enquiry form", "Newsletter", "Book a call"];
+const targets = [
+  { name: "Your CRM", icon: iconTable },
+  { name: "Your mailing list", icon: iconList },
+  { name: "Your calendar", icon: iconCalendar },
+];
+const Arrow = linkArrow;
+const Select = selectChevron;
+const Dropdown = dropdownChevron;
+const Bracket = routingBracket;
+const Layers = layers;
+const Cursor = cursorGreen;
+---
+
+{
+  render && variant && (
+    <div
+      class:list={["webflow-feature-graphic_wrap", variant, className]}
+      aria-hidden="true"
+      {...rest}
+    >
+      <Img src={photos[variant]} class="webflow-feature-graphic_photo" />
+      {variant === "cms" && (
+        <div class="webflow-feature-graphic_stack cms">
+          <div class="webflow-feature-graphic_card cms">
+            <span class="webflow-feature-graphic_title">CMS architecture</span>
+            <ul class="webflow-feature-graphic_stats" role="list">
+              {stats.map((stat) => (
+                <li class="webflow-feature-graphic_stat">
+                  <span
+                    class:list={["webflow-feature-graphic_name", stat.dark && "dark"]}
+                  >
+                    {stat.name}
+                  </span>
+                  <span class="webflow-feature-graphic_figure">
+                    <span class="webflow-feature-graphic_value">{stat.value}</span>
+                    <span class="webflow-feature-graphic_unit">{stat.unit}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <span class="webflow-feature-graphic_link">
+            <Arrow class="webflow-feature-graphic_arrow" />
+          </span>
+          <span class="webflow-feature-graphic_pill">
+            <Layers class="webflow-feature-graphic_layers" />
+            collections-architecture/
+          </span>
+        </div>
+      )}
+      {variant === "editor" && (
+        <>
+          <div class="webflow-feature-graphic_card editor">
+            <span class="webflow-feature-graphic_row">
+              <span class="webflow-feature-graphic_head">New product</span>
+              <span class="webflow-feature-graphic_small">draft</span>
+            </span>
+            <div class="webflow-feature-graphic_fields">
+              <span class="webflow-feature-graphic_field">
+                <span class="webflow-feature-graphic_label">Product name</span>
+                <span class="webflow-feature-graphic_input">
+                  Summer sale landing page
+                </span>
+              </span>
+              <span class="webflow-feature-graphic_field">
+                <span class="webflow-feature-graphic_label">Category</span>
+                <span class="webflow-feature-graphic_input select">
+                  Scheduling
+                  <Select class="webflow-feature-graphic_select" />
+                </span>
+              </span>
+              <span class="webflow-feature-graphic_field">
+                <span class="webflow-feature-graphic_label">Image</span>
+                <span class="webflow-feature-graphic_thumbs">
+                  <span class="webflow-feature-graphic_thumb" />
+                  <span class="webflow-feature-graphic_thumb" />
+                </span>
+              </span>
+            </div>
+            <span class="webflow-feature-graphic_publish">Publish</span>
+          </div>
+          <span class="webflow-feature-graphic_badge">
+            Marketing teams
+            <Cursor class="webflow-feature-graphic_cursor" />
+          </span>
+        </>
+      )}
+      {variant === "languages" && (
+        <div class="webflow-feature-graphic_menu">
+          <span class="webflow-feature-graphic_option head">
+            The same page, four languages
+            <Dropdown class="webflow-feature-graphic_dropdown" />
+          </span>
+          <ul class="webflow-feature-graphic_options" role="list">
+            {languages.map((language) => (
+              <li class="webflow-feature-graphic_option">
+                <span class:list={["webflow-feature-graphic_flag", language.size]}>
+                  <Img src={language.flag} transparent />
+                </span>
+                {language.name}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {variant === "routing" && (
+        <div class="webflow-feature-graphic_card routing">
+          <span class="webflow-feature-graphic_title">Where a form goes</span>
+          <div class="webflow-feature-graphic_flow">
+            <ul class="webflow-feature-graphic_sources" role="list">
+              {sources.map((source) => (
+                <li class="webflow-feature-graphic_source">{source}</li>
+              ))}
+            </ul>
+            <Bracket class="webflow-feature-graphic_bracket" />
+            <ul class="webflow-feature-graphic_targets" role="list">
+              {targets.map((target) => {
+                const Glyph = target.icon;
+                return (
+                  <li class="webflow-feature-graphic_target">
+                    <span class="webflow-feature-graphic_glyph">
+                      <Glyph />
+                    </span>
+                    <span class="webflow-feature-graphic_destination">
+                      <span class="webflow-feature-graphic_caption">
+                        {target.name}
+                      </span>
+                      <span class="webflow-feature-graphic_bar" />
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    /* An artboard 560 units square that scales as one piece. */
+    .webflow-feature-graphic_wrap {
+      --_unit: calc(100cqw / 560);
+      --_shadow:
+        calc(-23 * var(--_unit)) calc(48 * var(--_unit)) calc(16 * var(--_unit))
+          rgb(209 209 209 / 0.05),
+        calc(-10 * var(--_unit)) calc(21 * var(--_unit)) calc(12 * var(--_unit))
+          rgb(209 209 209 / 0.09),
+        calc(-3 * var(--_unit)) calc(5 * var(--_unit)) calc(6.5 * var(--_unit))
+          rgb(209 209 209 / 0.1);
+      container-type: inline-size;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      border-radius: var(--radius-0-5rem);
+      font-family: var(--primary-family);
+      letter-spacing: -0.005em;
+      color: var(--color-neutral-80);
+
+      /* The wrap's own cqw would read the page, so the base size starts on its children. */
+      > * {
+        font-size: calc(16 * var(--_unit));
+        line-height: calc(22 * var(--_unit));
+      }
+
+      :is(span, li) {
+        display: block;
+      }
+
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      li {
+        margin: 0;
+      }
+
+      svg {
+        display: block;
+        flex: none;
+        max-width: none;
+      }
+
+      .webflow-feature-graphic_photo {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .webflow-feature-graphic_title {
+        font-family: var(--secondary-family);
+        font-size: calc(20 * var(--_unit));
+        line-height: calc(26 * var(--_unit));
+        font-weight: var(--primary-medium);
+        letter-spacing: -0.01em;
+        color: var(--color-neutral-80);
+        white-space: nowrap;
+      }
+
+      /* Cards sit in the middle of the artboard. */
+      .webflow-feature-graphic_card {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        display: flex;
+        flex-direction: column;
+        background-color: var(--color-neutral-0);
+        border-radius: calc(12 * var(--_unit));
+        translate: -50% -50%;
+        filter: drop-shadow(var(--_shadow));
+      }
+
+      /* CMS: a card of collection counts, linked to a URL pill */
+
+      .webflow-feature-graphic_stack.cms {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: calc(360 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+        translate: -50% -50%;
+      }
+
+      .webflow-feature-graphic_card.cms {
+        position: relative;
+        top: auto;
+        left: auto;
+        translate: none;
+        width: 100%;
+        gap: calc(16 * var(--_unit));
+        padding: calc(24 * var(--_unit));
+      }
+
+      .webflow-feature-graphic_stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: calc(16 * var(--_unit));
+      }
+
+      .webflow-feature-graphic_stat {
+        display: flex;
+        flex-direction: column;
+        gap: calc(16 * var(--_unit));
+        padding: calc(12 * var(--_unit));
+        background-color: var(--color-neutral-2);
+        border-radius: calc(4 * var(--_unit));
+        filter: drop-shadow(0 calc(2.2 * var(--_unit)) calc(2 * var(--_unit)) rgb(0 0 0 / 0.04));
+      }
+
+      .webflow-feature-graphic_name {
+        font-weight: var(--primary-medium);
+        color: var(--color-neutral-80);
+        white-space: nowrap;
+        &.dark {
+          color: var(--color-neutral-90);
+        }
+      }
+
+      .webflow-feature-graphic_figure {
+        display: flex;
+        align-items: baseline;
+        gap: calc(4 * var(--_unit));
+        white-space: nowrap;
+      }
+
+      .webflow-feature-graphic_value {
+        font-family: var(--secondary-family);
+        font-size: calc(26 * var(--_unit));
+        line-height: calc(34 * var(--_unit));
+        letter-spacing: -0.01em;
+        color: var(--color-primary-60);
+      }
+
+      .webflow-feature-graphic_unit {
+        font-size: calc(14 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        color: var(--color-neutral-40);
+      }
+
+      /* A two-way arrow, drawn a little longer than its box. */
+      .webflow-feature-graphic_link {
+        position: relative;
+        width: 0;
+        height: calc(23 * var(--_unit));
+        color: var(--color-neutral-0);
+      }
+
+      .webflow-feature-graphic_arrow {
+        position: absolute;
+        top: calc(-4.33 * var(--_unit));
+        left: calc(-4.33 * var(--_unit));
+        width: calc(8.66 * var(--_unit));
+        height: calc(31.66 * var(--_unit));
+      }
+
+      .webflow-feature-graphic_pill {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: calc(12 * var(--_unit));
+        height: calc(50 * var(--_unit));
+        padding: calc(12 * var(--_unit)) calc(24 * var(--_unit));
+        font-size: calc(18 * var(--_unit));
+        line-height: calc(24 * var(--_unit));
+        letter-spacing: -0.007em;
+        font-weight: var(--primary-medium);
+        white-space: nowrap;
+        color: var(--color-neutral-0);
+        background-color: var(--color-primary-60);
+        border: var(--border-width) solid var(--color-primary-60);
+        border-radius: calc(12 * var(--_unit));
+        filter: drop-shadow(
+          calc(-7 * var(--_unit)) calc(8 * var(--_unit)) calc(5.5 * var(--_unit))
+            rgb(153 179 255 / 0.09)
+        );
+      }
+
+      .webflow-feature-graphic_layers {
+        width: calc(20 * var(--_unit));
+        height: calc(20 * var(--_unit));
+      }
+
+      /* Editor: a new-product form in the CMS */
+
+      .webflow-feature-graphic_card.editor {
+        width: calc(321 * var(--_unit));
+        gap: calc(24 * var(--_unit));
+        padding: calc(16 * var(--_unit));
+        filter: none;
+        box-shadow:
+          calc(11 * var(--_unit)) calc(7 * var(--_unit)) calc(13 * var(--_unit))
+            rgb(153 153 153 / 0.05),
+          calc(25 * var(--_unit)) calc(17 * var(--_unit)) calc(18 * var(--_unit))
+            rgb(153 153 153 / 0.05),
+          calc(45 * var(--_unit)) calc(30 * var(--_unit)) calc(22 * var(--_unit))
+            rgb(153 153 153 / 0.01);
+      }
+
+      .webflow-feature-graphic_row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        white-space: nowrap;
+      }
+
+      .webflow-feature-graphic_head {
+        font-weight: var(--primary-medium);
+        color: var(--color-neutral-90);
+      }
+
+      .webflow-feature-graphic_small {
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        letter-spacing: -0.005em;
+        color: var(--color-neutral-40);
+      }
+
+      .webflow-feature-graphic_fields {
+        display: flex;
+        flex-direction: column;
+        gap: calc(8 * var(--_unit));
+      }
+
+      .webflow-feature-graphic_field {
+        display: flex;
+        flex-direction: column;
+        gap: calc(8 * var(--_unit));
+      }
+
+      .webflow-feature-graphic_label {
+        font-size: calc(14 * var(--_unit));
+        line-height: calc(20 * var(--_unit));
+        font-weight: var(--primary-medium);
+        color: var(--color-neutral-90);
+        white-space: nowrap;
+      }
+
+      .webflow-feature-graphic_input {
+        display: flex;
+        align-items: center;
+        gap: calc(16 * var(--_unit));
+        padding: calc(8 * var(--_unit));
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        color: var(--color-neutral-60);
+        border: var(--border-width) solid var(--color-neutral-5);
+        border-radius: calc(4 * var(--_unit));
+        &.select {
+          justify-content: space-between;
+        }
+      }
+
+      .webflow-feature-graphic_select {
+        width: calc(11 * var(--_unit));
+        height: calc(6.44 * var(--_unit));
+      }
+
+      .webflow-feature-graphic_thumbs {
+        display: flex;
+        gap: calc(4 * var(--_unit));
+      }
+
+      .webflow-feature-graphic_thumb {
+        width: calc(70 * var(--_unit));
+        height: calc(50 * var(--_unit));
+        background-color: var(--color-primary-10);
+        border: var(--border-width) solid var(--color-neutral-5);
+        border-radius: calc(8 * var(--_unit));
+        background-clip: padding-box;
+      }
+
+      .webflow-feature-graphic_publish {
+        /* Sixteen below the fields, where the card's own gap is twenty-four. */
+        margin-top: calc(-8 * var(--_unit));
+        font-weight: var(--primary-medium);
+        padding: calc(6 * var(--_unit)) calc(12 * var(--_unit));
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        text-align: center;
+        color: var(--color-neutral-0);
+        background-color: var(--color-primary-60);
+        border-radius: calc(4 * var(--_unit));
+      }
+
+      .webflow-feature-graphic_badge {
+        position: absolute;
+        top: calc(444 * var(--_unit));
+        left: calc(363.7 * var(--_unit));
+        padding: calc(3.6 * var(--_unit)) calc(7.2 * var(--_unit));
+        font-weight: var(--primary-medium);
+        white-space: nowrap;
+        color: var(--color-neutral-0);
+        background-color: var(--color-accent-success-60);
+        border-radius: calc(1.727 * var(--_unit));
+        translate: -50% 0;
+      }
+
+      .webflow-feature-graphic_cursor {
+        position: absolute;
+        top: calc(-19 * var(--_unit));
+        left: calc(-16 * var(--_unit));
+        width: calc(27 * var(--_unit));
+        height: auto;
+      }
+
+      /* Languages: a dropdown of four versions of the same page */
+
+      .webflow-feature-graphic_menu {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: calc(360 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(2 * var(--_unit));
+        padding: calc(2 * var(--_unit));
+        background-color: var(--color-neutral-10);
+        border-radius: calc(12 * var(--_unit));
+        translate: -50% -50%;
+        filter: drop-shadow(
+          calc(-1 * var(--_unit)) calc(5 * var(--_unit)) calc(5 * var(--_unit))
+            rgb(0 0 0 / 0.1)
+        ) drop-shadow(
+          calc(-4 * var(--_unit)) calc(18 * var(--_unit)) calc(9.5 * var(--_unit))
+            rgb(0 0 0 / 0.09)
+        ) drop-shadow(
+          calc(-9 * var(--_unit)) calc(41 * var(--_unit)) calc(12.5 * var(--_unit))
+            rgb(0 0 0 / 0.05)
+        );
+      }
+
+      .webflow-feature-graphic_options {
+        display: flex;
+        flex-direction: column;
+        gap: calc(2 * var(--_unit));
+      }
+
+      .webflow-feature-graphic_option {
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+        padding: calc(16 * var(--_unit));
+        color: var(--color-neutral-60);
+        background-color: var(--color-neutral-2);
+        border-radius: calc(8 * var(--_unit));
+        white-space: nowrap;
+        &.head {
+          justify-content: space-between;
+          font-size: calc(18 * var(--_unit));
+          line-height: calc(24 * var(--_unit));
+          letter-spacing: -0.007em;
+          color: var(--color-neutral-90);
+        }
+      }
+
+      .webflow-feature-graphic_dropdown {
+        width: calc(11.5 * var(--_unit));
+        height: calc(6.5 * var(--_unit));
+        margin-right: calc(2.5 * var(--_unit));
+      }
+
+      .webflow-feature-graphic_flag {
+        position: relative;
+        flex: none;
+        overflow: hidden;
+        background-color: var(--color-neutral-0);
+        &.wide {
+          width: calc(20 * var(--_unit));
+          height: calc(15 * var(--_unit));
+        }
+        &.narrow {
+          width: calc(16 * var(--_unit));
+          height: calc(12 * var(--_unit));
+        }
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+
+      /* Routing: one form to three destinations */
+
+      .webflow-feature-graphic_card.routing {
+        width: calc(376 * var(--_unit));
+        gap: calc(24 * var(--_unit));
+        padding: calc(24 * var(--_unit)) calc(16 * var(--_unit));
+      }
+
+      .webflow-feature-graphic_flow {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(4 * var(--_unit));
+        width: 100%;
+      }
+
+      .webflow-feature-graphic_sources,
+      .webflow-feature-graphic_targets {
+        display: flex;
+        gap: calc(8 * var(--_unit));
+        width: 100%;
+      }
+
+      .webflow-feature-graphic_source {
+        flex: 1 1 0;
+        min-width: 0;
+        padding: calc(16 * var(--_unit)) calc(8 * var(--_unit));
+        font-size: calc(14 * var(--_unit));
+        line-height: calc(20 * var(--_unit));
+        text-align: center;
+        white-space: nowrap;
+        letter-spacing: -0.005em;
+        background-color: var(--color-neutral-0);
+        border: var(--border-width) dashed var(--color-neutral-10);
+        border-radius: calc(8 * var(--_unit));
+      }
+
+      .webflow-feature-graphic_bracket {
+        width: calc(251.77 * var(--_unit));
+        height: calc(51.67 * var(--_unit));
+        color: var(--color-primary-60);
+      }
+
+      .webflow-feature-graphic_target {
+        flex: 1 1 0;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: calc(16 * var(--_unit));
+        padding: calc(12 * var(--_unit)) calc(8 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        border: var(--border-width) solid var(--color-neutral-5);
+        border-radius: calc(4 * var(--_unit));
+      }
+
+      .webflow-feature-graphic_glyph {
+        width: calc(16 * var(--_unit));
+        height: calc(16 * var(--_unit));
+        display: flex;
+        align-items: center;
+        color: var(--color-primary-60);
+
+        svg {
+          width: calc(16 * var(--_unit));
+          height: auto;
+          max-height: calc(16 * var(--_unit));
+        }
+      }
+
+      .webflow-feature-graphic_destination {
+        display: flex;
+        flex-direction: column;
+        gap: calc(4 * var(--_unit));
+      }
+
+      .webflow-feature-graphic_caption {
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        white-space: nowrap;
+      }
+
+      .webflow-feature-graphic_bar {
+        height: calc(5 * var(--_unit));
+        background-color: var(--color-neutral-5);
+        border-radius: calc(12 * var(--_unit));
+        box-shadow: 0 calc(0.3 * var(--_unit)) calc(1.2 * var(--_unit))
+          rgb(0 0 0 / 0.03);
+      }
+    }
+  }
+</style>

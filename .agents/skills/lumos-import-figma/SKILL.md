@@ -588,6 +588,17 @@ Figma style and a template default is reported and asked about, never applied.
    a line that wraps differently, a block that is missing. These are exactly the
    faults the text measurements cannot see. `--no-figma` skips it.
 
+   Every raw Figma shot is cached as `figma/shots/figma-<node-id>.png`, and a
+   rerun reads the cache instead of calling Figma, so a section costs one MCP
+   call however many times verify runs. The Dev Mode MCP has a daily quota: when
+   it answers "rate limit", the script stops calling, diffs the sections it
+   already has and lists the rest as skipped, and the next run fetches only those.
+   Delete a section's cached file when the design changes after slicing. The web
+   shot is taken one viewport at a time and stitched (sticky boxes made relative,
+   fixed ones hidden after the first screen), because a single capture taller
+   than 16384px wraps back to the top and a beyond-viewport capture can catch the
+   page mid-relayout.
+
    Read the deltas as a list of causes, not as noise. A whole section shifted by
    the same amount usually has one cause: a heading or paragraph margin the type
    style adds (`.heading` and `.text` carry `margin-top`; reset it inside a

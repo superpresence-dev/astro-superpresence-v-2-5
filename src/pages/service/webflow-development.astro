@@ -1,0 +1,599 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import HomeHero from "@/components/section/HomeHero.astro";
+import IndustryProblem from "@/components/content/IndustryProblem.astro";
+import ServiceFeatures from "@/components/content/ServiceFeatures.astro";
+import WebflowFeatureGraphic from "@/components/content/WebflowFeatureGraphic.astro";
+import ServiceSteps from "@/components/content/ServiceSteps.astro";
+import WhyOffers from "@/components/content/WhyOffers.astro";
+import ServiceIntegrations from "@/components/content/ServiceIntegrations.astro";
+import HomeDifference from "@/components/content/HomeDifference.astro";
+import IndustryProcess from "@/components/content/IndustryProcess.astro";
+import DesignProcessGraphic from "@/components/content/DesignProcessGraphic.astro";
+import WebflowProcessGraphic from "@/components/content/WebflowProcessGraphic.astro";
+import IndustryBuild from "@/components/section/IndustryBuild.astro";
+import HomeQuote from "@/components/section/HomeQuote.astro";
+import ServicePoints from "@/components/content/ServicePoints.astro";
+import DesignWhyGraphic from "@/components/content/DesignWhyGraphic.astro";
+import WhyCompare from "@/components/content/WhyCompare.astro";
+import ServicePromise from "@/components/section/ServicePromise.astro";
+import HomeFaq from "@/components/content/HomeFaq.astro";
+import ServiceGrid from "@/components/content/ServiceGrid.astro";
+import HomeCta from "@/components/section/HomeCta.astro";
+import { serviceUrl } from "@/utils/services.ts";
+import { integrations, integrationTabs } from "@/utils/webflowIntegrations.ts";
+import heroImage from "@/assets/service/webflow/hero.jpg";
+import tierEssentials from "@/assets/service/webflow/tier-1.png";
+import tierGrowth from "@/assets/service/webflow/tier-2.png";
+import tierScale from "@/assets/service/webflow/tier-3.png";
+import handoverImage from "@/assets/service/webflow/preserve-background.jpg";
+
+const related = [
+  {
+    title: "Website design",
+    text: "The strategy and design that come before this build, from the same team.",
+  },
+  {
+    title: "Webflow maintenance",
+    text: "Updates and improvements after launch, from the team that built it.",
+  },
+  {
+    title: "Framer development",
+    text: "The same build craft, delivered on Framer when that platform fits better.",
+  },
+  {
+    title: "Website migration",
+    text: "Your existing site moved to Webflow, with content and rankings carried over.",
+  },
+  {
+    title: "Brand identity",
+    text: "Enhance your visual system with sharper clarity before starting the website redesign.",
+  },
+  {
+    title: "Social & ad creative",
+    text: "Graphics for campaigns and channels, designed to match the new site.",
+  },
+].map((item) => ({
+  ...item,
+  href: serviceUrl(
+    item.title === "Brand identity"
+      ? "Branding"
+      : item.title === "Website migration"
+        ? "Migrate to Webflow"
+        : item.title,
+  ),
+}));
+---
+
+<Layout
+  title="Webflow development"
+  description="One team designs and builds your whole site on Webflow. It is responsive, connected to your business tools, and easy for your team to run."
+  overlap
+>
+  {/* Hero */}
+  <HomeHero
+    eyebrow="Webflow development"
+    heading="High-performance Webflow websites built for growth"
+    text="One team designs and builds your whole site on Webflow. It is responsive, connected to your business tools, and easy for your team to run."
+    image={heroImage}
+    buttonText="Start your project"
+    buttonHref="/contact"
+    variant="split"
+    fade="soft"
+    tint="#024e9f"
+    wide
+  />
+  {/* Problem */}
+  <Section>
+    <IndustryProblem
+      heading="The build is where<br />good sites fall apart"
+      items={[
+        {
+          title: "The live site looks nothing like the design",
+          text: "What your designer drew and what the build shipped are two different websites.",
+        },
+        {
+          title: "Every change is a support ticket",
+          text: "Your team waits on a developer for a text change, and campaigns slip while they wait.",
+        },
+        {
+          title: "The site sits apart from your business",
+          text: "Forms and bookings never reach your CRM or calendar, because nothing was connected.",
+        },
+      ]}
+    />
+  </Section>
+  {/* CMS and editing */}
+  <Section>
+    <ServiceFeatures
+      items={[
+        {
+          eyebrow: "CMS architecture",
+          heading: "The CMS, drawn before it is built",
+          text: "We plan your collections and how they connect before the first page is built, so content grows without breaking the structure.",
+          points: [
+            "Collections planned around how your team publishes",
+            "References that power filters, related content and listings",
+            "Room for new products, markets and pages later",
+          ],
+        },
+        {
+          eyebrow: "Client editing",
+          heading: "Your team edits it on day one",
+          text: "Every field is labelled in plain English with a hint, so marketing can publish pages and posts without a developer.",
+          points: [
+            "Plain-English field names and helper text",
+            "Roles and permissions for your team",
+            "A handover guide and walkthrough videos",
+          ],
+        },
+      ]}
+    >
+      <WebflowFeatureGraphic slot="visual-1" variant="cms" />
+      <WebflowFeatureGraphic slot="visual-2" variant="editor" />
+    </ServiceFeatures>
+  </Section>
+  {/* What we do */}
+  <Section>
+    <ServiceSteps
+      heading="Everything in a Webflow build"
+      lead="The team that designed the site builds it, so nothing gets lost between design and launch."
+      steps={[
+        {
+          title: "Build",
+          points: [
+            {
+              title: "Built from the signed-off design",
+              text: "Page by page, matched to the Figma file.",
+            },
+            {
+              title: "Responsive on every screen",
+              text: "Phones, tablets and desktops, checked by hand.",
+            },
+            {
+              title: "Interactions with a purpose",
+              text: "Motion that guides attention and never slows the page.",
+            },
+            {
+              title: "Reusable components",
+              text: "Sections your team can recombine into new pages.",
+            },
+          ],
+        },
+        {
+          title: "CMS",
+          points: [
+            {
+              title: "CMS set up for your content",
+              text: "Collections for posts, case studies, products or team.",
+            },
+            {
+              title: "Blog migration",
+              text: "Existing posts moved across with formatting intact.",
+            },
+            {
+              title: "Editor training",
+              text: "Your team learns to publish and update with confidence.",
+            },
+            {
+              title: "Content that stays on-brand",
+              text: "Structured fields so new pages match the old ones.",
+            },
+          ],
+        },
+        {
+          title: "Search and measurement",
+          points: [
+            {
+              title: "SEO basics",
+              text: "Meta titles, descriptions, sitemap and schema.",
+            },
+            {
+              title: "GA4 and heatmaps",
+              text: "See where visitors come from and where they drop off.",
+            },
+            {
+              title: "301 redirects",
+              text: "Old URLs mapped, so rankings and links carry over.",
+            },
+            {
+              title: "Measurement plan",
+              text: "What to track and how, agreed before launch.",
+            },
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Builds */}
+  <Section>
+    <WhyOffers
+      variant="options"
+      eyebrow="Three builds, one standard"
+      heading="Pick the build that fits where you are"
+      lead="Same team, same process and QA on every build. Webflow, Framer or Next.js, same price."
+      note="Same team, same process and QA on every tier. Pricing is shared after a call."
+      columnsFrom="desktop"
+      cardHeight={34.375}
+      contentHeight={20.75}
+      cardHeightMedium={27.5}
+      contentHeightMedium={1}
+      cardHeightSmall={27.5}
+      options={[
+        {
+          tone: "blue",
+          image: tierEssentials,
+          label: "Essentials",
+          title: "One-page site",
+          text: "One page, engineered to turn your first serious traffic into conversations.",
+          points: [
+            "A single conversion-built page",
+            "Light positioning, copy, design and build",
+            "SEO basics, responsive",
+            "Fixed scope, 2 feedback rounds",
+          ],
+        },
+        {
+          tone: "purple",
+          image: tierGrowth,
+          label: "Growth",
+          title: "Full marketing site",
+          text: "The full marketing site that converts the traffic you already pay for.",
+          points: [
+            "Six core pages, plus pages as you need them",
+            "Buyer and competitor research, expert copy",
+            "CMS and blog, GA4 and heat maps",
+            "Custom graphics and an icon set",
+            "3 feedback rounds",
+          ],
+        },
+        {
+          tone: "orange",
+          image: tierScale,
+          label: "Scale",
+          title: "Tailored build",
+          text: "For companies moving into their next stage. A build sized to the ambition.",
+          points: [
+            "Large multi-page or SaaS sites",
+            "CRM and custom integrations",
+            "Multi-language builds",
+            "Scoped and priced directly",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Integrations */}
+  <Section>
+    <ServiceIntegrations
+      eyebrow="Integrations"
+      heading="Connected to the tools your team already uses"
+      lead="Enquiries land in your CRM, bookings in your calendar and payments in your account. Scoped by complexity with your build, from the full marketing site up."
+      tabs={integrationTabs}
+      items={integrations}
+    />
+  </Section>
+  {/* Scope */}
+  <Section>
+    <HomeDifference
+      eyebrow="Honest about the platform"
+      heading="When Webflow is the right call, and when it is not"
+      lead="We recommend the platform after the first call. Sometimes the answer is something else."
+      leadWidth="wide"
+      logos={false}
+      columnsFrom="desktop"
+      boxes={[
+        {
+          title: "Webflow fits when",
+          featured: true,
+          items: [
+            "Marketing pages your team edits every week",
+            "A blog, case studies or news published often",
+            "Several languages or regions on one site",
+            "Many people editing, with clear roles",
+            "Design and motion matter as much as content",
+          ],
+        },
+        {
+          title: "Look elsewhere when",
+          featured: false,
+          items: [
+            "Web app with user logins and complex custom logic",
+            "You run a large online shop with thousands of products",
+            "Your team depends on a specific WordPress plugin",
+            "You need data stored on your own servers",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Process */}
+  <Section>
+    <IndustryProcess
+      eyebrow="How we work"
+      heading="Five steps, each<br />signed off before the next"
+      note={{
+        title: "3 feedback rounds included",
+        text: "Each phase is approved before the next one starts, so nothing gets reworked later.",
+      }}
+      steps={[
+        {
+          title: "Kick-off and architecture",
+          text: "We start with a strategy call, then plan the sitemap, CMS collections and components before anything is built.",
+          points: ["Sitemap", "CMS plan", "Component list"],
+        },
+        {
+          title: "Design system to Webflow",
+          text: "Colours, type and spacing become Webflow variables, so every page stays consistent long after launch.",
+          points: ["Variables", "Type scale", "Reusable classes"],
+        },
+        {
+          title: "Build",
+          text: "Every page is built to match the design at every screen size, from components your team can reuse.",
+          points: [
+            "Pixel-perfect pages",
+            "Responsive layouts",
+            "Reusable components",
+          ],
+        },
+        {
+          title: "Integrations and tracking",
+          text: "Forms, CRM, newsletter, booking and analytics are connected and tested before launch.",
+          points: ["CRM", "Analytics and events", "Booking"],
+        },
+        {
+          title: "QA and launch",
+          text: "We test across devices and browsers, set up redirects and SEO, then launch on your schedule.",
+          points: ["Device testing", "301 redirects", "Technical SEO"],
+        },
+      ]}
+    >
+      <WebflowProcessGraphic slot="step-1" variant="sitemap" />
+      <DesignProcessGraphic slot="step-2" variant="visual" />
+      <WebflowProcessGraphic slot="step-3" variant="build" />
+      <WebflowProcessGraphic slot="step-4" variant="integrations" />
+      <WebflowProcessGraphic slot="step-5" variant="launch" />
+    </IndustryProcess>
+  </Section>
+  {/* Languages and integrations */}
+  <Section>
+    <ServiceFeatures
+      items={[
+        {
+          eyebrow: "Built for buyers abroad",
+          heading: "One site, every market,<br />run from Asia",
+          text: "English first, with your home language beside it, and the details most builds miss: language tags, local URLs and fonts that render properly.",
+          points: [
+            "English, Thai, Chinese and Japanese versions",
+            "hreflang and per-language URLs set up properly",
+            "Fonts that render Thai and Chinese cleanly",
+          ],
+        },
+        {
+          eyebrow: "Integrations",
+          heading: "Wired into the tools<br />you run on",
+          text: "We connect Webflow to the platforms your marketing and sales teams already use. Using something else? We connect it through Zapier, Make or an API.",
+          points: [
+            "Enquiries land in your CRM with the right owner",
+            "Signups reach your newsletter, tagged",
+            "Bookings go straight to your calendar",
+          ],
+        },
+      ]}
+    >
+      <WebflowFeatureGraphic slot="visual-1" variant="languages" />
+      <WebflowFeatureGraphic slot="visual-2" variant="routing" />
+    </ServiceFeatures>
+  </Section>
+  {/* Handover */}
+  <IndustryBuild
+    variant="handover"
+    eyebrow="Handover"
+    heading="Built for your team to run it"
+    image={handoverImage}
+    items={[
+      {
+        title: "Project access",
+        text: "Your platform account and every connected tool, transferred to you.",
+      },
+      {
+        title: "Brand assets",
+        text: "Final logo, colour and type files, ready to use anywhere.",
+      },
+      {
+        title: "Strategy document",
+        text: "Who the site is for and why each page is built the way it is.",
+      },
+      {
+        title: "Figma file",
+        text: "The full design source, so future pages start from the same system.",
+      },
+      {
+        title: "Recorded walkthrough",
+        text: "A video tour of how to update pages, posts and forms.",
+      },
+      {
+        title: "Measurement plan",
+        text: "What to track after launch, and where to find it.",
+      },
+    ]}
+  />
+  {/* Quote */}
+  <HomeQuote />
+  {/* Why */}
+  <Section>
+    <ServicePoints
+      variant="visual"
+      eyebrow="Why Superpresence"
+      heading="Why companies choose us to build on Webflow"
+      items={[
+        {
+          title: "The whole senior team, one roof",
+          text: "Strategy, design, copy, development, conversion and QA in one accountable team, with nobody for you to hire or manage.",
+        },
+        {
+          title: "Built to convert, engineered for search",
+          text: "Conversion structure on the surface; clean structure, schema and speed underneath, so search and AI tools read you correctly.",
+        },
+        {
+          title: "QA on every build",
+          text: "Cross-browser, cross-device, forms, integrations, redirects and a performance pass before anything goes live, at every tier.",
+        },
+        {
+          title: "Built in Asia, written for buyers abroad",
+          text: "We work in your timezone, understand Asian companies, and craft English content that appeals directly to your target buyers.",
+        },
+        {
+          title: "Copy written by people, in English",
+          text: "Expert copywriters write every page. Not translated, not generated, and built around how your buyers decide.",
+        },
+        {
+          title: "Depth over volume",
+          text: "Every project gets senior attention for as long as the problem takes, not a slot sized to a subscription.",
+        },
+      ]}
+    >
+      <DesignWhyGraphic slot="visual-1" variant="team" />
+      <DesignWhyGraphic slot="visual-2" variant="convert" />
+      <DesignWhyGraphic slot="visual-3" variant="qa" />
+      <DesignWhyGraphic slot="visual-4" variant="asia" />
+      <DesignWhyGraphic slot="visual-5" variant="copy" />
+      <DesignWhyGraphic slot="visual-6" variant="depth" />
+    </ServicePoints>
+  </Section>
+  {/* Comparison */}
+  <Section>
+    <WhyCompare
+      variant="marks"
+      eyebrow="The comparison"
+      heading="What each option actually delivers"
+      lead="A quick comparison before you decide who does the work."
+      rows={[
+        "Matches the design exactly",
+        "CMS planned before the build",
+        "Your team can edit it",
+        "Tools connected at launch",
+        "Multi-language set up properly",
+        "Design and build by one team",
+      ]}
+      options={[
+        {
+          title: "Superpresence",
+          icon: "brand",
+          featured: true,
+          items: [true, true, true, true, true, true],
+        },
+        {
+          title: "Freelancer",
+          icon: "hire",
+          items: ["Varies", false, "Sometimes", "Sometimes", false, false],
+        },
+        {
+          title: "Typical agency",
+          icon: "agency",
+          items: [
+            "Sometimes",
+            "Sometimes",
+            "Sometimes",
+            true,
+            "Varies",
+            "Varies",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Promise */}
+  <ServicePromise
+    heading="Launch with<br />nothing left to chance"
+    items={[
+      {
+        value: "14 days",
+        title: "Warranty after launch",
+        text: "If anything we built does not work as signed off, we fix it free for 14 days after launch.",
+      },
+      {
+        value: "Every build",
+        title: "Passes the same checks",
+        text: "Devices, browsers, forms, tools and redirects, tested before anything goes live.",
+      },
+      {
+        value: "10 min",
+        title: "Free video teardown",
+        text: "What is working on your current site, what is losing buyers and what we would change first.",
+      },
+    ]}
+  />
+  {/* FAQ */}
+  <Section>
+    <HomeFaq
+      eyebrow="Still got questions?"
+      heading="Before you ask"
+      items={[
+        {
+          question: "Why Webflow, and when is it the wrong choice?",
+          answer: [
+            "Webflow is the right platform when your marketing team will edit pages, publish posts and launch campaigns without a developer. Webflow manages hosting, security and updates, so there are no plugins to patch.",
+            "It is the wrong choice for web apps with logins and custom logic, shops with thousands of products, or data that must sit on your own servers. For booking or enrolment flows, or localisation across many countries, Superpresence usually recommends a custom build on Astro or Next.js, at the same price. We tell you which on the first call.",
+          ],
+        },
+        {
+          question: "Can our team update the site without a developer?",
+          answer: [
+            "Day to day, yes. Your team can publish posts, swap images, update team profiles and assemble new pages from the sections we design.",
+            "Where it stops: new page layouts, new CMS collections and new integrations are developer work. Those go through a maintenance plan or a one-off request.",
+          ],
+        },
+        {
+          question:
+            "What should we look for in a Webflow developer in Hong Kong, Singapore or Bangkok?",
+          answer: [
+            "Look for one team that designs, writes and builds the site, plans the CMS before building it, and tests everything before launch. That is how Superpresence works as a Webflow agency for companies across Asia: strategy, design, expert native-English copywriting, development and QA under one roof, in your timezone.",
+            "Our team has collectively launched 48+ websites. Every build is QA-tested across devices and browsers, with forms, integrations and redirects checked before it goes live.",
+            "Ask about AI search too. Buyers now ask ChatGPT, Perplexity or Google’s AI Overviews, then visit the site to check. Superpresence builds Webflow sites with a clear page hierarchy, schema, clean HTML and fast load times, so those tools can read your business and describe it accurately.",
+          ],
+        },
+        {
+          question: "How much does a Webflow build cost?",
+          answer: [
+            "It depends on how many pages and CMS collections the site needs, what it connects to (CRM, bookings, gated content, more than one language) and how much strategy and copy goes into it. Book a call and you’ll get a fixed price in a proposal within a week. That price stays the same if we recommend Framer or a custom build instead.",
+            "Projects start from US$4,800 for a smaller marketing site.",
+            "If you run ads, most clients see the build pay for itself within the first year, from higher conversion rates, more enquiries and a site that carries more authority with buyers. On average, clients running ads see a 28% lift in enquiries.",
+          ],
+        },
+        {
+          question: "We need something simple and fast. Are you the right fit?",
+          answer: [
+            "Probably not, and that’s fine. If you need a site live in a fortnight on a tight budget, a Webflow template with a freelancer, or an AI site builder, will serve you better.",
+            "Superpresence suits companies whose website has to win serious buyers. Strategy, copy, design and build take 6 to 12 weeks depending on scope, and we don’t skip the parts that make the site work.",
+          ],
+        },
+        {
+          question: "What happens after launch?",
+          answer: [
+            "Handover comes first: editor training, a recorded walkthrough and the account transferred to you. Anything that doesn’t work as signed off is fixed free.",
+            "After that, many clients keep us on a Webflow maintenance plan for new pages and improvements, with every request scoped and approved before work starts. If you’d rather run it fully in-house, the site is built for that too. Book a call and we’ll work out which suits your team.",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Related services */}
+  <Section>
+    <ServiceGrid
+      eyebrow="Related services"
+      heading="Before and after the build"
+      lead="Most Webflow builds start with a design, and many keep us on afterwards."
+      items={related}
+    />
+  </Section>
+  {/* CTA */}
+  <HomeCta
+    eyebrow="You've reached the end, so now..."
+    heading="Ready to build it properly?"
+    text="Tell us about the site you need and the tools it has to connect to, and we will shape the right scope around it."
+    buttonText="Start your project"
+    buttonHref="/contact"
+  />
+</Layout>

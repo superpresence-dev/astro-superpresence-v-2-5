@@ -1,0 +1,584 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Img from "@/components/media/Img.astro";
+import Icon from "@/components/media/Icon.astro";
+import adPhoto from "@/assets/service/social/features-1.jpg";
+import sizesPhoto from "@/assets/service/social/features-2.jpg";
+import handoverPhoto from "@/assets/service/social/features-3.jpg";
+import cursor from "@/assets/service/social/cursor.svg";
+import file from "@/assets/service/social/file.svg";
+import globe from "@/assets/service/icons/globe.svg";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Which picture: an ad and the page it sends people to, one idea in every size, or the handover folder. */
+  variant: "ad" | "sizes" | "handover";
+}
+
+const { render = true, variant, class: className, ...rest } = Astro.props;
+
+const photos = { ad: adPhoto, sizes: sizesPhoto, handover: handoverPhoto };
+const rows = [1, 2, 3, 4, 5];
+---
+
+{
+  render && variant && (
+    <div
+      class:list={["social-feature-graphic_wrap", variant, className]}
+      aria-hidden="true"
+      {...rest}
+    >
+      <Img src={photos[variant]} class="social-feature-graphic_photo" />
+      {variant === "ad" && (
+        <div class="social-feature-graphic_stack">
+          <div class="social-feature-graphic_ad">
+            <span class="social-feature-graphic_ad-top">
+              <span class="social-feature-graphic_avatar" />
+              <span class="social-feature-graphic_lines">
+                <span class="social-feature-graphic_line" />
+                <span class="social-feature-graphic_line short" />
+              </span>
+              <span class="social-feature-graphic_small">Sponsored</span>
+            </span>
+            <span class="social-feature-graphic_image" />
+            <span class="social-feature-graphic_ad-bottom">
+              <span class="social-feature-graphic_small">shiftboard.com</span>
+              <span class="social-feature-graphic_button">Try it free</span>
+            </span>
+          </div>
+          <span class="social-feature-graphic_connector" />
+          <div class="social-feature-graphic_browser">
+            <span class="social-feature-graphic_bar">
+              <span class="social-feature-graphic_lights">
+                <span />
+                <span />
+                <span />
+              </span>
+              <span class="social-feature-graphic_address">
+                <Icon src={globe} class="social-feature-graphic_globe" />
+                yoursite.com
+              </span>
+            </span>
+            <span class="social-feature-graphic_page">
+              <span class="social-feature-graphic_cards">
+                <span class="social-feature-graphic_block" />
+                <span class="social-feature-graphic_block" />
+              </span>
+              <span class="social-feature-graphic_text">
+                <span class="social-feature-graphic_line w198" />
+                <span class="social-feature-graphic_line w89" />
+                <span class="social-feature-graphic_line w156" />
+              </span>
+            </span>
+            <span class="social-feature-graphic_button">Try it free</span>
+          </div>
+        </div>
+      )}
+      {variant === "sizes" && (
+        <>
+          <div class="social-feature-graphic_sizes">
+            <div class="social-feature-graphic_group">
+              <span class="social-feature-graphic_format">
+                <span class="social-feature-graphic_frame square" />
+                1:1
+              </span>
+              <span class="social-feature-graphic_format">
+                <span class="social-feature-graphic_frame portrait" />
+                4:5
+              </span>
+            </div>
+            <div class="social-feature-graphic_group">
+              <span class="social-feature-graphic_format">
+                <span class="social-feature-graphic_frame story" />
+                9:16
+              </span>
+              <span class="social-feature-graphic_format">
+                <span class="social-feature-graphic_frame landscape" />
+                16:9
+              </span>
+            </div>
+            <span class="social-feature-graphic_badge sizes">
+              Graphic Designer
+              <Icon src={cursor} class="social-feature-graphic_cursor" />
+            </span>
+          </div>
+        </>
+      )}
+      {variant === "handover" && (
+        <>
+          <div class="social-feature-graphic_folder">
+            <span class="social-feature-graphic_head">
+              <span class="social-feature-graphic_title">Handover folder</span>
+              <span class="social-feature-graphic_small">24 files</span>
+            </span>
+            <ul class="social-feature-graphic_files" role="list">
+              {rows.map(() => (
+                <li class="social-feature-graphic_file">
+                  <span class="social-feature-graphic_dot" />
+                  <span class="social-feature-graphic_line grow" />
+                  <span class="social-feature-graphic_line w85" />
+                </li>
+              ))}
+            </ul>
+            <span class="social-feature-graphic_badge folder">
+              Yours to keep
+              <Icon src={cursor} class="social-feature-graphic_cursor" />
+            </span>
+          </div>
+          <div class="social-feature-graphic_name">
+            <Icon src={file} class="social-feature-graphic_file-icon" />
+            <span>
+              shiftboard_<span class="accent">hookA_</span>9x16.png
+            </span>
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    /* An artboard 560 units square that scales as one piece. */
+    .social-feature-graphic_wrap {
+      --_unit: calc(100cqw / 560);
+      --_shadow:
+        calc(-23 * var(--_unit)) calc(48 * var(--_unit)) calc(16 * var(--_unit))
+          rgb(209 209 209 / 0.05),
+        calc(-10 * var(--_unit)) calc(21 * var(--_unit)) calc(12 * var(--_unit))
+          rgb(209 209 209 / 0.09),
+        calc(-3 * var(--_unit)) calc(5 * var(--_unit)) calc(6.5 * var(--_unit))
+          rgb(209 209 209 / 0.1);
+      container-type: inline-size;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      border-radius: var(--radius-0-5rem);
+      font-family: var(--primary-family);
+      letter-spacing: -0.005em;
+      color: var(--color-neutral-80);
+
+      /* The wrap's own cqw would read the page, so the base size starts on its children. */
+      > * {
+        font-size: calc(16 * var(--_unit));
+        line-height: calc(22 * var(--_unit));
+      }
+
+      :is(span, li) {
+        display: block;
+      }
+
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      li {
+        margin: 0;
+      }
+
+      .icon {
+        --_size: calc(24 * var(--_unit));
+      }
+
+      .social-feature-graphic_photo {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .social-feature-graphic_small {
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        font-weight: var(--primary-medium);
+        color: var(--color-neutral-40);
+        white-space: nowrap;
+      }
+
+      .social-feature-graphic_line {
+        height: calc(8 * var(--_unit));
+        background-color: var(--color-neutral-2);
+        border-radius: calc(0.4 * var(--_unit));
+        box-shadow: 0 calc(0.3 * var(--_unit)) calc(1.2 * var(--_unit))
+          rgb(0 0 0 / 0.03);
+        &.short {
+          width: 89%;
+        }
+        &.grow {
+          flex: 1 1 0;
+        }
+        &.w85 {
+          flex: none;
+          width: calc(85 * var(--_unit));
+        }
+        &.w198 {
+          height: calc(5 * var(--_unit));
+          width: calc(198 * var(--_unit));
+        }
+        &.w89 {
+          height: calc(5 * var(--_unit));
+          width: calc(89 * var(--_unit));
+        }
+        &.w156 {
+          height: calc(5 * var(--_unit));
+          width: calc(156 * var(--_unit));
+        }
+      }
+
+      .social-feature-graphic_button {
+        padding: calc(4 * var(--_unit)) calc(12 * var(--_unit));
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        font-weight: var(--primary-medium);
+        white-space: nowrap;
+        color: var(--color-neutral-0);
+        background-color: var(--color-primary-60);
+        border-radius: calc(4 * var(--_unit));
+      }
+
+      .social-feature-graphic_badge {
+        position: absolute;
+        padding: calc(3.6 * var(--_unit)) calc(7.2 * var(--_unit));
+        font-weight: var(--primary-medium);
+        white-space: nowrap;
+        color: var(--color-neutral-0);
+        background-color: var(--color-primary-60);
+        border-radius: calc(1.727 * var(--_unit));
+        &.sizes {
+          left: calc(138 * var(--_unit));
+          top: calc(363 * var(--_unit));
+        }
+        &.folder {
+          left: calc(110 * var(--_unit));
+          top: calc(213 * var(--_unit));
+        }
+      }
+
+      .social-feature-graphic_cursor {
+        position: absolute;
+        top: calc(-19 * var(--_unit));
+        left: calc(-16 * var(--_unit));
+        --_size: calc(27 * var(--_unit));
+      }
+
+      /* Ad: a sponsored post and the page it leads to */
+
+      .social-feature-graphic_stack {
+        position: absolute;
+        top: calc(261 * var(--_unit));
+        left: 50%;
+        width: calc(338 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(4 * var(--_unit));
+        translate: -50% -50%;
+      }
+
+      .social-feature-graphic_ad {
+        width: calc(292 * var(--_unit));
+        height: calc(170 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(8 * var(--_unit));
+        padding: calc(20 * var(--_unit)) calc(12 * var(--_unit));
+        align-self: center;
+        background-color: var(--color-neutral-0);
+        border-radius: calc(8 * var(--_unit));
+        filter: drop-shadow(var(--_shadow));
+      }
+
+      .social-feature-graphic_ad-top {
+        display: flex;
+        align-items: flex-start;
+        gap: calc(16 * var(--_unit));
+
+        .social-feature-graphic_small {
+          margin-left: auto;
+        }
+      }
+
+      .social-feature-graphic_avatar {
+        flex: none;
+        width: calc(28 * var(--_unit));
+        height: calc(28 * var(--_unit));
+        background-color: var(--color-primary-5);
+        border: var(--border-width) solid var(--color-primary-10);
+        border-radius: 50%;
+        margin-right: calc(-8 * var(--_unit));
+      }
+
+      .social-feature-graphic_lines {
+        flex: 1 1 0;
+        display: flex;
+        flex-direction: column;
+        gap: calc(4 * var(--_unit));
+        padding-top: calc(4 * var(--_unit));
+      }
+
+      .social-feature-graphic_image {
+        flex: 1 1 0;
+        background-image: linear-gradient(
+          172.7deg,
+          #eef0fd 28.8%,
+          #f9f9fe 70.6%,
+          #fff 95.5%
+        );
+        border-radius: calc(4 * var(--_unit));
+      }
+
+      .social-feature-graphic_ad-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      /* Two diamonds on a thin line, from the ad to the page. */
+      .social-feature-graphic_connector {
+        position: relative;
+        align-self: center;
+        width: calc(1 * var(--_unit));
+        height: calc(32 * var(--_unit));
+        background-color: var(--color-primary-60);
+
+        &::before,
+        &::after {
+          content: "";
+          position: absolute;
+          left: 50%;
+          width: calc(6 * var(--_unit));
+          height: calc(6 * var(--_unit));
+          background-color: var(--color-primary-60);
+          translate: -50% 0;
+          rotate: 45deg;
+        }
+        &::before {
+          top: calc(-2 * var(--_unit));
+        }
+        &::after {
+          bottom: calc(-2 * var(--_unit));
+        }
+      }
+
+      .social-feature-graphic_browser {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: calc(16 * var(--_unit));
+        padding: calc(12 * var(--_unit)) calc(8 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        border: var(--border-width) solid var(--color-neutral-2);
+        border-radius: calc(8 * var(--_unit));
+        box-shadow: var(--_shadow);
+
+        .social-feature-graphic_button {
+          align-self: center;
+        }
+      }
+
+      .social-feature-graphic_bar {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: calc(12 * var(--_unit));
+      }
+
+      .social-feature-graphic_lights {
+        flex: none;
+        display: flex;
+        gap: calc(4 * var(--_unit));
+
+        span {
+          width: calc(6 * var(--_unit));
+          height: calc(6 * var(--_unit));
+          border-radius: 50%;
+          background-color: var(--color-primary-5);
+        }
+      }
+
+      .social-feature-graphic_address {
+        flex: 1 1 0;
+        display: flex;
+        align-items: center;
+        gap: calc(4 * var(--_unit));
+        padding: calc(2 * var(--_unit)) calc(26 * var(--_unit))
+          calc(2 * var(--_unit)) calc(4 * var(--_unit));
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        background-color: var(--color-neutral-2);
+        border-radius: calc(4 * var(--_unit));
+
+        .social-feature-graphic_globe {
+          --_size: calc(11 * var(--_unit));
+          color: var(--color-neutral-40);
+        }
+      }
+
+      .social-feature-graphic_page {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+      }
+
+      .social-feature-graphic_cards {
+        width: 100%;
+        height: calc(46 * var(--_unit));
+        display: flex;
+        gap: calc(5 * var(--_unit));
+      }
+
+      .social-feature-graphic_block {
+        flex: 1 1 0;
+        background-image: linear-gradient(
+          172.7deg,
+          #eef0fd 28.8%,
+          #f9f9fe 70.6%,
+          #fff 95.5%
+        );
+        border-radius: calc(2 * var(--_unit));
+      }
+
+      .social-feature-graphic_text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(4 * var(--_unit));
+      }
+
+      /* Sizes: one idea in four formats */
+
+      .social-feature-graphic_sizes {
+        position: absolute;
+        top: calc(261 * var(--_unit));
+        left: 50%;
+        display: flex;
+        flex-direction: column;
+        gap: calc(24 * var(--_unit));
+        padding: calc(32 * var(--_unit)) calc(56 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        border-radius: calc(12 * var(--_unit));
+        filter: drop-shadow(var(--_shadow));
+        translate: -50% -50%;
+      }
+
+      .social-feature-graphic_group {
+        display: flex;
+        align-items: flex-end;
+        gap: calc(12 * var(--_unit));
+      }
+
+      .social-feature-graphic_format {
+        display: flex;
+        flex-direction: column;
+        gap: calc(8 * var(--_unit));
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        font-weight: var(--primary-medium);
+        text-align: center;
+      }
+
+      .social-feature-graphic_frame {
+        background-color: var(--color-primary-10);
+        border: var(--border-width) solid var(--color-neutral-5);
+        border-radius: calc(8 * var(--_unit));
+        &.square {
+          width: calc(130 * var(--_unit));
+          height: calc(130 * var(--_unit));
+        }
+        &.portrait {
+          width: calc(80 * var(--_unit));
+          height: calc(100 * var(--_unit));
+        }
+        &.story {
+          width: calc(56 * var(--_unit));
+          height: calc(100 * var(--_unit));
+        }
+        &.landscape {
+          width: calc(144 * var(--_unit));
+          height: calc(81 * var(--_unit));
+        }
+      }
+
+      /* Handover: a folder of named files */
+
+      .social-feature-graphic_folder {
+        position: absolute;
+        top: calc(261 * var(--_unit));
+        left: 50%;
+        width: calc(314 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(24 * var(--_unit));
+        padding: calc(24 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        border-radius: calc(12 * var(--_unit));
+        filter: drop-shadow(var(--_shadow));
+        translate: -50% -50%;
+      }
+
+      .social-feature-graphic_head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .social-feature-graphic_title {
+        font-size: calc(20 * var(--_unit));
+        line-height: calc(26 * var(--_unit));
+        font-weight: var(--primary-medium);
+        letter-spacing: -0.01em;
+      }
+
+      .social-feature-graphic_file {
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+        padding-block: calc(16 * var(--_unit));
+        border-bottom: var(--border-width) solid var(--color-neutral-5);
+        &:last-child {
+          border-bottom: 0;
+        }
+      }
+
+      .social-feature-graphic_dot {
+        flex: none;
+        width: calc(8 * var(--_unit));
+        height: calc(8 * var(--_unit));
+        background-color: var(--color-primary-60);
+        border-radius: calc(2 * var(--_unit));
+      }
+
+      .social-feature-graphic_name {
+        position: absolute;
+        top: calc(291 * var(--_unit));
+        left: 50%;
+        width: calc(378 * var(--_unit));
+        display: flex;
+        align-items: center;
+        gap: calc(12 * var(--_unit));
+        padding: calc(20 * var(--_unit)) calc(16 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        border-radius: calc(6 * var(--_unit));
+        box-shadow: 0 calc(8 * var(--_unit)) calc(2.5 * var(--_unit))
+            rgb(171 171 171 / 0.04),
+          0 calc(15 * var(--_unit)) calc(3 * var(--_unit)) rgb(171 171 171 / 0.01);
+        translate: -50% -50%;
+        font-weight: var(--primary-medium);
+
+        .accent {
+          display: inline;
+          color: var(--color-primary-60);
+        }
+        .social-feature-graphic_file-icon {
+          color: var(--color-primary-60);
+        }
+      }
+    }
+  }
+</style>

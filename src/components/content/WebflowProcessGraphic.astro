@@ -1,0 +1,721 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Icon from "@/components/media/Icon.astro";
+import sitemap from "@/assets/service/webflow/process-sitemap.svg";
+import connectorSolid from "@/assets/service/webflow/process-connector-solid.svg";
+import connectorDashed from "@/assets/service/webflow/process-connector-dashed.svg";
+import cursor from "@/assets/service/webflow/process-cursor.svg";
+import ring from "@/assets/service/webflow/process-ring.svg";
+import calendly from "@/assets/service/webflow/process-calendly.svg";
+import hotjar from "@/assets/service/webflow/process-hotjar.svg";
+import intercom from "@/assets/service/webflow/process-intercom.svg";
+import analytics from "@/assets/service/webflow/process-analytics.svg";
+import hubspot from "@/assets/service/webflow/process-hubspot.svg";
+import live from "@/assets/service/webflow/process-live.svg";
+import check from "@/assets/service/migrate/process-check.svg";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Which step of a Webflow build the picture shows. The design-system step reuses `DesignProcessGraphic` `visual`. */
+  variant: "sitemap" | "build" | "integrations" | "launch";
+}
+
+const { render = true, variant, class: className, ...rest } = Astro.props;
+
+const pages = [
+  { name: "Desktop", width: 130, inset: 12 },
+  { name: "Tablet", width: 100, inset: 20 },
+  { name: "Tablet", width: 65, inset: 8 },
+];
+const checks = ["Devices and browsers", "301 redirects", "Technical SEO"];
+const tools = [
+  { name: "calendly", icon: calendly, size: 67, left: 34.5, top: 120.5 },
+  { name: "hotjar", icon: hotjar, size: 50, left: 68.5, top: 262.5 },
+  { name: "intercom", icon: intercom, size: 50, left: 282.5, top: 262.5 },
+  { name: "analytics", icon: analytics, size: 67, left: 301.5, top: 105.5 },
+];
+---
+
+{
+  render && variant && (
+    <div
+      class:list={["webflow-process_wrap", variant, className]}
+      aria-hidden="true"
+      {...rest}
+    >
+      {variant === "sitemap" && (
+        <div class="webflow-process_stage">
+          <span class="webflow-process_glow" />
+          <div class="webflow-process_tree">
+            <span class="webflow-process_home">
+              <Icon src={sitemap} class="webflow-process_home-icon" />
+              Home
+            </span>
+            <span class="webflow-process_connector solid">
+              <Icon src={connectorSolid} class="webflow-process_wires" />
+            </span>
+            <span class="webflow-process_row">
+              <span class="webflow-process_page">
+                <span class="webflow-process_bar" />
+              </span>
+              <span class="webflow-process_page">
+                <span class="webflow-process_bar" />
+              </span>
+              <span class="webflow-process_page">
+                <span class="webflow-process_bar" />
+              </span>
+            </span>
+            <span class="webflow-process_connector dashed">
+              <Icon src={connectorDashed} class="webflow-process_wires dashed" />
+            </span>
+            <span class="webflow-process_row">
+              <span class="webflow-process_page draft">
+                <span class="webflow-process_bar thin" />
+              </span>
+              <span class="webflow-process_page draft">
+                <span class="webflow-process_bar thin" />
+              </span>
+              <span class="webflow-process_page draft">
+                <span class="webflow-process_bar thin" />
+              </span>
+            </span>
+            <span class="webflow-process_badge">
+              <Icon src={cursor} class="webflow-process_cursor" />
+              Strategy lead
+            </span>
+          </div>
+        </div>
+      )}
+      {variant === "build" && (
+        <div class="webflow-process_sheet">
+          <span class="webflow-process_title">Services page</span>
+          <div class="webflow-process_devices">
+            {pages.map((page) => (
+              <span
+                class="webflow-process_device"
+                style={`--_width: ${page.width}; --_inset: ${page.inset};`}
+              >
+                <span class="webflow-process_screen">
+                  <span class="webflow-process_top" />
+                  <span class="webflow-process_content">
+                    <span class="webflow-process_lines">
+                      <span class="webflow-process_line" />
+                      <span class="webflow-process_line short" />
+                    </span>
+                    <span class="webflow-process_cta" />
+                  </span>
+                </span>
+                <span class="webflow-process_name">{page.name}</span>
+              </span>
+            ))}
+          </div>
+          <div class="webflow-process_styles">
+            <span class="webflow-process_style">
+              <span class="webflow-process_label">Colour</span>
+              <span class="webflow-process_well">
+                <span class="webflow-process_swatch" style="--_fill: var(--color-primary-60);" />
+                <span class="webflow-process_swatch" style="--_fill: var(--color-neutral-80);" />
+                <span class="webflow-process_swatch" style="--_fill: var(--color-neutral-10);" />
+              </span>
+            </span>
+            <span class="webflow-process_style">
+              <span class="webflow-process_label">Type</span>
+              <span class="webflow-process_well">
+                <span class="webflow-process_aa">Aa</span>
+              </span>
+            </span>
+          </div>
+        </div>
+      )}
+      {variant === "integrations" && (
+        <div class="webflow-process_orbit">
+          <Icon src={ring} class="webflow-process_ring" />
+          {tools.map((tool) => (
+            <span
+              class="webflow-process_bubble"
+              style={`--_size: ${tool.size}; --_left: ${tool.left}; --_top: ${tool.top};`}
+            >
+              <span class="webflow-process_disc">
+                <Icon src={tool.icon} class="webflow-process_logo" />
+              </span>
+            </span>
+          ))}
+          <div class="webflow-process_lead">
+            <span class="webflow-process_bubble main">
+              <span class="webflow-process_disc">
+                <Icon src={hubspot} class="webflow-process_logo large" />
+              </span>
+            </span>
+            <span class="webflow-process_status">
+              <Icon src={live} class="webflow-process_dot" />
+              Live
+            </span>
+          </div>
+        </div>
+      )}
+      {variant === "launch" && (
+        <div class="webflow-process_glass">
+          <div class="webflow-process_card">
+            <div class="webflow-process_checks">
+              <span class="webflow-process_heading">Pre-launch checks</span>
+              <ul class="webflow-process_list" role="list">
+                {checks.map((item) => (
+                  <li class="webflow-process_item">
+                    <Icon src={check} class="webflow-process_check" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <span class="webflow-process_button">Go live</span>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    /* An artboard 517 units square that scales as one piece. */
+    .webflow-process_wrap {
+      --_unit: calc(100cqw / 517);
+      --_base: #ebfff6;
+      --_tint: rgb(213 226 245 / 0.32);
+      --_deep: rgb(5 103 244 / 0.32);
+      --_float: drop-shadow(
+          calc(-4 * var(--_unit)) calc(12 * var(--_unit))
+            calc(7 * var(--_unit)) rgb(124 138 208 / 0.1)
+        )
+        drop-shadow(
+          calc(-16 * var(--_unit)) calc(48 * var(--_unit))
+            calc(12.5 * var(--_unit)) rgb(124 138 208 / 0.09)
+        )
+        drop-shadow(
+          calc(-36 * var(--_unit)) calc(107 * var(--_unit))
+            calc(17 * var(--_unit)) rgb(124 138 208 / 0.05)
+        );
+      container-type: inline-size;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: clip;
+      color: var(--color-neutral-80);
+      font-family: var(--primary-family);
+      background:
+        linear-gradient(
+          to bottom,
+          var(--_tint) 55.368%,
+          var(--_deep) 96.905%
+        ),
+        var(--_base);
+
+      /* The wrap's own cqw would read the page, so the base size starts on its children. */
+      > * {
+        font-size: calc(16 * var(--_unit));
+        line-height: calc(22 * var(--_unit));
+        letter-spacing: -0.005em;
+      }
+
+      &.sitemap {
+        --_base:
+          linear-gradient(
+            136.467deg,
+            rgb(0 123 255 / 0.12) 20.752%,
+            rgb(255 255 255 / 0.12) 51.501%,
+            rgb(0 123 255 / 0.12) 99.854%
+          ),
+          #d4f4f7;
+      }
+
+      &.build {
+        --_base: #f0f2f6;
+        --_tint: rgb(174 224 246 / 0.32);
+      }
+
+      &.integrations {
+        --_base: #ccdcff;
+        --_tint: rgb(128 195 254 / 0.32);
+        --_deep: rgb(6 66 238 / 0.32);
+        &::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.4 -0.45'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+          opacity: 0.35;
+        }
+      }
+
+      :is(span, li) {
+        display: block;
+      }
+
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      li {
+        margin: 0;
+      }
+
+      .icon {
+        --_size: calc(24 * var(--_unit));
+        max-width: none;
+      }
+
+      /* =====================
+         Sitemap
+         ===================== */
+
+      .webflow-process_stage {
+        position: absolute;
+        inset: 0;
+      }
+
+      .webflow-process_glow {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: calc(360 * var(--_unit));
+        aspect-ratio: 1 / 1;
+        border-radius: 50%;
+        background-image: radial-gradient(
+          closest-side,
+          rgb(255 255 255 / 0.5),
+          rgb(255 255 255 / 0)
+        );
+        translate: -50% -50%;
+      }
+
+      .webflow-process_tree {
+        position: absolute;
+        top: calc(116 * var(--_unit));
+        left: calc(73 * var(--_unit));
+        width: calc(372 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+      }
+
+      .webflow-process_home {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: calc(8 * var(--_unit));
+        padding: calc(12 * var(--_unit)) calc(48 * var(--_unit));
+        border-radius: calc(8 * var(--_unit));
+        background-color: var(--color-primary-60);
+        color: var(--color-neutral-0);
+        font-size: calc(18 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(24 * var(--_unit));
+        letter-spacing: -0.007em;
+      }
+
+      .webflow-process_connector {
+        position: relative;
+        width: calc(256 * var(--_unit));
+        height: calc(79 * var(--_unit));
+        &.dashed {
+          height: calc(58 * var(--_unit));
+        }
+      }
+
+      .webflow-process_wires {
+        --_size: calc(261.773 * var(--_unit));
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        height: auto;
+        aspect-ratio: 261.773 / 84.7735;
+        translate: -50% -50%;
+        &.dashed {
+          aspect-ratio: 261.773 / 63.7735;
+        }
+      }
+
+      .webflow-process_row {
+        display: flex;
+        align-items: center;
+        gap: calc(12 * var(--_unit));
+        width: 100%;
+      }
+
+      .webflow-process_page {
+        flex: 1 1 0;
+        min-width: 0;
+        padding: calc(12 * var(--_unit));
+        border-radius: calc(8 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        &.draft {
+          border: var(--border-width) dashed var(--color-neutral-0);
+          background-color: rgb(255 255 255 / 0.32);
+        }
+      }
+
+      .webflow-process_bar {
+        height: calc(12 * var(--_unit));
+        border-radius: calc(0.4 * var(--_unit));
+        background-image: linear-gradient(
+          90deg,
+          #eee 0%,
+          var(--color-neutral-2) 83.636%,
+          var(--color-neutral-0) 100%
+        );
+        box-shadow: 0 calc(0.3 * var(--_unit)) calc(1.2 * var(--_unit))
+          rgb(0 0 0 / 0.03);
+        &.thin {
+          height: calc(5 * var(--_unit));
+          background-image: none;
+          background-color: var(--color-neutral-0);
+        }
+      }
+
+      .webflow-process_badge {
+        position: absolute;
+        top: calc(56 * var(--_unit));
+        left: calc(219 * var(--_unit));
+        padding: calc(3.6 * var(--_unit)) calc(7.2 * var(--_unit));
+        border-radius: calc(1.727 * var(--_unit));
+        background-color: var(--color-accent-warning-60);
+        color: var(--color-neutral-0);
+        font-weight: var(--primary-medium);
+        white-space: nowrap;
+      }
+
+      .webflow-process_cursor {
+        --_size: calc(27.17 * var(--_unit));
+        position: absolute;
+        top: calc(-20 * var(--_unit));
+        left: calc(-19 * var(--_unit));
+        height: auto;
+        aspect-ratio: 27.1732 / 29.7734;
+        overflow: visible;
+      }
+
+      /* =====================
+         Build
+         ===================== */
+
+      .webflow-process_sheet {
+        position: absolute;
+        top: calc(50% - 0.5 * var(--_unit));
+        left: 50%;
+        display: flex;
+        flex-direction: column;
+        gap: calc(24 * var(--_unit));
+        padding: calc(16 * var(--_unit));
+        border: var(--border-width) solid var(--color-neutral-0);
+        border-radius: calc(8 * var(--_unit));
+        background-color: var(--color-neutral-2);
+        box-shadow:
+          calc(70 * var(--_unit)) calc(46 * var(--_unit)) calc(24 * var(--_unit))
+            rgb(153 153 153 / 0),
+          calc(45 * var(--_unit)) calc(30 * var(--_unit)) calc(22 * var(--_unit))
+            rgb(153 153 153 / 0.01),
+          calc(25 * var(--_unit)) calc(17 * var(--_unit)) calc(18 * var(--_unit))
+            rgb(153 153 153 / 0.05),
+          calc(11 * var(--_unit)) calc(7 * var(--_unit)) calc(13 * var(--_unit))
+            rgb(153 153 153 / 0.05);
+        translate: -50% -50%;
+        font-weight: var(--primary-medium);
+      }
+
+      .webflow-process_title {
+        color: var(--color-neutral-80);
+      }
+
+      .webflow-process_devices {
+        display: flex;
+        align-items: flex-start;
+        gap: calc(12 * var(--_unit));
+      }
+
+      .webflow-process_device {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+        width: calc(var(--_width) * var(--_unit));
+        filter: drop-shadow(0 calc(2.2 * var(--_unit)) calc(2 * var(--_unit)) rgb(0 0 0 / 0.04));
+      }
+
+      .webflow-process_screen {
+        display: flex;
+        flex-direction: column;
+        gap: calc(18 * var(--_unit));
+        width: 100%;
+        height: calc(100 * var(--_unit));
+        overflow: clip;
+        border: var(--border-width) solid var(--color-neutral-5);
+        border-radius: calc(8 * var(--_unit));
+        background-color: var(--color-neutral-0);
+      }
+
+      .webflow-process_top {
+        flex: none;
+        height: calc(18 * var(--_unit));
+        background-color: var(--color-primary-10);
+      }
+
+      .webflow-process_content {
+        display: flex;
+        flex-direction: column;
+        gap: calc(12 * var(--_unit));
+        padding-inline: calc(var(--_inset) * var(--_unit));
+      }
+
+      .webflow-process_lines {
+        display: flex;
+        flex-direction: column;
+        gap: calc(4 * var(--_unit));
+      }
+
+      .webflow-process_line {
+        height: calc(5 * var(--_unit));
+        border-radius: calc(12 * var(--_unit));
+        background-color: var(--color-neutral-5);
+        &.short {
+          width: calc(38 * var(--_unit));
+          background-color: var(--color-neutral-2);
+        }
+      }
+
+      .webflow-process_cta {
+        width: calc(34 * var(--_unit));
+        height: calc(11 * var(--_unit));
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-primary-60);
+      }
+
+      .webflow-process_name {
+        width: 100%;
+        color: var(--color-neutral-40);
+        font-size: calc(10 * var(--_unit));
+        line-height: calc(12 * var(--_unit));
+        letter-spacing: 0;
+        text-align: center;
+      }
+
+      .webflow-process_styles {
+        display: flex;
+        gap: calc(12 * var(--_unit));
+        height: calc(64 * var(--_unit));
+      }
+
+      .webflow-process_style {
+        flex: 1 1 0;
+        display: flex;
+        flex-direction: column;
+        gap: calc(4.027 * var(--_unit));
+        padding: calc(1.342 * var(--_unit));
+        border: calc(0.671 * var(--_unit)) solid var(--color-neutral-0);
+        border-radius: calc(4.027 * var(--_unit));
+        background-color: var(--color-neutral-2);
+        box-shadow:
+          0 0 calc(10.873 * var(--_unit)) rgb(0 0 0 / 0.04),
+          0 calc(1.477 * var(--_unit)) calc(2.819 * var(--_unit)) rgb(0 0 0 / 0.06);
+        overflow: clip;
+      }
+
+      .webflow-process_label {
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        letter-spacing: -0.005em;
+        text-align: center;
+      }
+
+      .webflow-process_well {
+        flex: 1 1 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: calc(2.703 * var(--_unit));
+        border-radius: calc(2.685 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        box-shadow:
+          0 calc(0.268 * var(--_unit)) calc(8.188 * var(--_unit)) rgb(0 0 0 / 0.01),
+          0 calc(0.805 * var(--_unit)) calc(2.819 * var(--_unit)) rgb(0 0 0 / 0.03);
+      }
+
+      .webflow-process_swatch {
+        width: calc(21.478 * var(--_unit));
+        aspect-ratio: 1 / 1;
+        border: calc(0.45 * var(--_unit)) solid var(--color-neutral-0);
+        border-radius: calc(1.802 * var(--_unit));
+        background-color: var(--_fill);
+        box-shadow:
+          0 calc(0.991 * var(--_unit)) calc(2.343 * var(--_unit)) rgb(0 0 0 / 0.12),
+          0 0 calc(0.541 * var(--_unit)) rgb(0 0 0 / 0.1);
+      }
+
+      /* =====================
+         Integrations
+         ===================== */
+
+      .webflow-process_orbit {
+        position: absolute;
+        top: calc(58.5 * var(--_unit));
+        left: calc(58.5 * var(--_unit));
+        width: calc(400 * var(--_unit));
+        height: calc(400 * var(--_unit));
+        font-size: calc(12.121 * var(--_unit));
+      }
+
+      .webflow-process_ring {
+        --_size: calc(300.48 * var(--_unit));
+        position: absolute;
+        top: calc(199.5 * var(--_unit));
+        left: calc(200.5 * var(--_unit));
+        translate: -50% -50%;
+      }
+
+      .webflow-process_bubble {
+        position: absolute;
+        top: calc(var(--_top) * var(--_unit));
+        left: calc(var(--_left) * var(--_unit));
+        display: flex;
+        width: calc(var(--_size) * var(--_unit));
+        aspect-ratio: 1 / 1;
+        padding: calc(12 * var(--_unit));
+        border: var(--border-width) solid var(--color-neutral-0);
+        border-radius: 999px;
+        background-color: rgb(255 255 255 / 0.32);
+        filter: drop-shadow(
+            calc(-1 * var(--_unit)) calc(2 * var(--_unit)) calc(2.5 * var(--_unit))
+              rgb(255 255 255 / 0.1)
+          )
+          drop-shadow(
+            calc(-6 * var(--_unit)) calc(7 * var(--_unit)) calc(4.5 * var(--_unit))
+              rgb(255 255 255 / 0.09)
+          );
+
+        &.main {
+          position: static;
+          width: calc(84 * var(--_unit));
+        }
+      }
+
+      .webflow-process_disc {
+        flex: 1 1 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        background-color: var(--color-neutral-0);
+      }
+
+      .webflow-process_logo {
+        --_size: calc(16 * var(--_unit));
+        &.large {
+          --_size: calc(24 * var(--_unit));
+        }
+      }
+
+      .webflow-process_lead {
+        position: absolute;
+        top: calc(11.5 * var(--_unit));
+        left: calc(200.5 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+        translate: -50% 0;
+      }
+
+      .webflow-process_status {
+        display: flex;
+        align-items: center;
+        gap: calc(4 * var(--_unit));
+        padding: calc(4 * var(--_unit)) calc(12 * var(--_unit))
+          calc(4 * var(--_unit)) calc(4 * var(--_unit));
+        border-radius: 999px;
+        background-color: var(--color-neutral-0);
+        line-height: calc(18.182 * var(--_unit));
+        letter-spacing: -0.005em;
+        box-shadow:
+          calc(1 * var(--_unit)) calc(1 * var(--_unit)) calc(2 * var(--_unit))
+            rgb(64 64 64 / 0.1),
+          calc(2 * var(--_unit)) calc(4 * var(--_unit)) calc(4 * var(--_unit))
+            rgb(64 64 64 / 0.09),
+          calc(5 * var(--_unit)) calc(8 * var(--_unit)) calc(6 * var(--_unit))
+            rgb(64 64 64 / 0.05);
+      }
+
+      .webflow-process_dot {
+        --_size: calc(18 * var(--_unit));
+        margin: calc(-2 * var(--_unit));
+      }
+
+      /* =====================
+         Launch
+         ===================== */
+
+      .webflow-process_glass {
+        position: absolute;
+        top: calc(50% - 0.5 * var(--_unit));
+        left: calc(50% + 0.5 * var(--_unit));
+        width: calc(344 * var(--_unit));
+        padding: calc(12 * var(--_unit));
+        border: var(--border-width) solid var(--color-neutral-0);
+        border-radius: calc(8 * var(--_unit));
+        background-color: rgb(255 255 255 / 0.32);
+        backdrop-filter: blur(calc(16 * var(--_unit)));
+        filter: var(--_float);
+        translate: -50% -50%;
+      }
+
+      .webflow-process_card {
+        display: flex;
+        flex-direction: column;
+        gap: calc(16 * var(--_unit));
+        padding: calc(24 * var(--_unit));
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        font-weight: var(--primary-medium);
+      }
+
+      .webflow-process_checks {
+        display: flex;
+        flex-direction: column;
+        gap: calc(16 * var(--_unit));
+      }
+
+      .webflow-process_heading {
+        font-family: var(--secondary-family);
+        font-size: calc(20 * var(--_unit));
+        line-height: calc(26 * var(--_unit));
+        letter-spacing: -0.01em;
+      }
+
+      .webflow-process_item {
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+        padding-block: calc(16 * var(--_unit));
+        border-bottom: var(--border-width) solid var(--color-neutral-5);
+        white-space: nowrap;
+        &:last-child {
+          padding-bottom: 0;
+          border-bottom: 0;
+        }
+      }
+
+      .webflow-process_check {
+        color: var(--color-primary-60);
+      }
+
+      .webflow-process_button {
+        padding: calc(8 * var(--_unit)) calc(40 * var(--_unit));
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-primary-60);
+        color: var(--color-neutral-0);
+        text-align: center;
+      }
+    }
+  }
+</style>

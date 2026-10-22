@@ -4,8 +4,11 @@ export const SERVICE_URL = "/service";
 /** Service pages built so far, by the name the nav and footer show. */
 const serviceSlugs: Record<string, string> = {
   "Website design": "website-design",
+  "Webflow development": "webflow-development",
   "Migrate to Webflow": "migrate-to-webflow",
   Branding: "branding",
+  "Webflow maintenance": "webflow-maintenance",
+  "Social & ad creative": "social-ad-creative",
 };
 
 /** URL of a service by its name, or `#` while its page is not built. */

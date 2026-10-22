@@ -20,6 +20,8 @@ interface Props extends HTMLAttributes<"div"> {
   lead?: string;
   /** Steps in order, numbered automatically. One opens at a time; the first starts open. */
   steps: Step[];
+  /** Line of small italic text under the list. Omit to leave it out. */
+  note?: string;
 }
 
 const {
@@ -28,6 +30,7 @@ const {
   heading,
   lead,
   steps,
+  note,
   class: className,
   ...rest
 } = Astro.props;
@@ -84,7 +87,13 @@ const number = (index: number) => String(index + 1).padStart(2, "0");
               inert={index !== 0}
             >
               <div class="service-steps_clip">
-                <ul class="service-steps_points" role="list">
+                <ul
+                  class:list={[
+                    "service-steps_points",
+                    step.points.length > 3 && "grid",
+                  ]}
+                  role="list"
+                >
                   {step.points.map((point) => (
                     <li class="service-steps_point">
                       <div class="service-steps_point-heading">
@@ -111,6 +120,11 @@ const number = (index: number) => String(index + 1).padStart(2, "0");
           </div>
         ))}
       </div>
+      {note && (
+        <Paragraph variant="small" class="service-steps_note">
+          {note}
+        </Paragraph>
+      )}
     </div>
   )
 }
@@ -153,6 +167,12 @@ const number = (index: number) => String(index + 1).padStart(2, "0");
 
       :is(.heading, .text) {
         margin: 0;
+      }
+
+      .service-steps_note {
+        max-width: 30rem;
+        font-style: italic;
+        color: var(--color-neutral-60);
       }
 
       .service-steps_intro {
@@ -223,6 +243,13 @@ const number = (index: number) => String(index + 1).padStart(2, "0");
         transition: color var(--open-duration) var(--open-ease);
       }
 
+      /* A closed row's collapsed panel still takes its width, so its title stays on one line. */
+      @media (width >= 62rem) {
+        .service-steps_item:not([data-open]) .service-steps_toggle {
+          white-space: nowrap;
+        }
+      }
+
       [data-open] .service-steps_toggle {
         color: var(--color-neutral-90);
         cursor: default;
@@ -268,6 +295,27 @@ const number = (index: number) => String(index + 1).padStart(2, "0");
         }
         @media (width >= 48rem) {
           flex-direction: row;
+        }
+      }
+
+      /* Four points or more wrap two to a row instead of squeezing into one. */
+      .service-steps_points.grid {
+        @media (width >= 48rem) {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          column-gap: 1.5rem;
+          row-gap: var(--space-1-5rem);
+        }
+        @media (width >= 62rem) {
+          width: 56.5rem;
+          max-width: 100%;
+        }
+
+        /* In two columns Figma gives a point no right padding, so its line runs to the column edge. */
+        .service-steps_point {
+          @media (width >= 48rem) {
+            padding-inline-end: 0;
+          }
         }
       }
 

@@ -1,0 +1,463 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Img from "@/components/media/Img.astro";
+import Icon from "@/components/media/Icon.astro";
+import plansPhoto from "@/assets/service/maintenance/features-plans.jpg";
+import requestPhoto from "@/assets/service/maintenance/features-request.jpg";
+import reportPhoto from "@/assets/service/maintenance/features-report.jpg";
+import avatar from "@/assets/service/maintenance/feature-avatar.png";
+import cursor from "@/assets/service/maintenance/cursor.svg";
+import stepCheck from "@/assets/service/maintenance/step-check.svg";
+import check from "@/assets/service/migrate/process-check.svg";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Which picture: the plans in one month, a request moving to live, or the monthly report. */
+  variant: "plans" | "request" | "report";
+}
+
+const { render = true, variant, class: className, ...rest } = Astro.props;
+
+const photos = { plans: plansPhoto, request: requestPhoto, report: reportPhoto };
+
+const work = [
+  { label: "Fixed three broken links", tag: "Essentials", tone: "success" },
+  { label: "Built a case study section", tag: "Growth", tone: "warning" },
+  { label: "Launched two landing pages", tag: "Growth", tone: "primary" },
+];
+const steps = [
+  { label: "Acknowledged", time: "09:20" },
+  { label: "Scoped, 1 hour", time: "09:40" },
+  { label: "On staging to check", time: "14:05" },
+  { label: "Published", time: "16:30" },
+];
+const figures = [
+  { label: "Page speed", value: "96", change: "+4" },
+  { label: "Broken links", value: "0", change: "-3" },
+  { label: "Pages indexed", value: "184", change: "+6" },
+];
+---
+
+{
+  render && variant && (
+    <div
+      class:list={["maintenance-feature-graphic_wrap", variant, className]}
+      aria-hidden="true"
+      {...rest}
+    >
+      <Img src={photos[variant]} class="maintenance-feature-graphic_photo" />
+      {variant === "plans" && (
+        <div class="maintenance-feature-graphic_card plans">
+          <div class="maintenance-feature-graphic_head">
+            <span class="maintenance-feature-graphic_title">
+              A month on each plan
+            </span>
+            <span class="maintenance-feature-graphic_meta">October</span>
+          </div>
+          <ul class="maintenance-feature-graphic_list" role="list">
+            {work.map((item) => (
+              <li class="maintenance-feature-graphic_row">
+                <span class="maintenance-feature-graphic_label">
+                  <Icon src={check} class="maintenance-feature-graphic_check" />
+                  {item.label}
+                </span>
+                <span class:list={["maintenance-feature-graphic_tag", item.tone]}>
+                  {item.tag}
+                </span>
+              </li>
+            ))}
+          </ul>
+          <span class="maintenance-feature-graphic_badge">
+            Strategy lead
+            <Icon src={cursor} class="maintenance-feature-graphic_cursor" />
+          </span>
+        </div>
+      )}
+      {variant === "request" && (
+        <div class="maintenance-feature-graphic_stack">
+          <div class="maintenance-feature-graphic_message">
+            <Img src={avatar} class="maintenance-feature-graphic_avatar" />
+            <span class="maintenance-feature-graphic_bubble">
+              <span class="maintenance-feature-graphic_head">
+                <span class="maintenance-feature-graphic_name">Jay Chen</span>
+                <span class="maintenance-feature-graphic_time">Tue 09:12</span>
+              </span>
+              <span class="maintenance-feature-graphic_text">
+                Can we swap the hero image before the campaign goes out on
+                Thursday?
+              </span>
+            </span>
+          </div>
+          <div class="maintenance-feature-graphic_card steps">
+            <ul class="maintenance-feature-graphic_list" role="list">
+              {steps.map((step) => (
+                <li class="maintenance-feature-graphic_step">
+                  <span class="maintenance-feature-graphic_label">
+                    <Icon
+                      src={stepCheck}
+                      class="maintenance-feature-graphic_check done"
+                    />
+                    {step.label}
+                  </span>
+                  <span class="maintenance-feature-graphic_tag muted">
+                    {step.time}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+      {variant === "report" && (
+        <div class="maintenance-feature-graphic_card report">
+          <div class="maintenance-feature-graphic_head">
+            <span class="maintenance-feature-graphic_title">October report</span>
+            <span class="maintenance-feature-graphic_meta">One page</span>
+          </div>
+          <div class="maintenance-feature-graphic_stats">
+            <span class="maintenance-feature-graphic_stat">
+              <span class="maintenance-feature-graphic_label">Shipped</span>
+              <span class="maintenance-feature-graphic_figure">
+                <span class="maintenance-feature-graphic_value">14</span>
+                <span class="maintenance-feature-graphic_unit">requests</span>
+              </span>
+            </span>
+            <span class="maintenance-feature-graphic_stat">
+              <span class="maintenance-feature-graphic_label">Hours used</span>
+              <span class="maintenance-feature-graphic_figure">
+                <span class="maintenance-feature-graphic_value">9</span>
+                <span class="maintenance-feature-graphic_unit">/12</span>
+              </span>
+            </span>
+          </div>
+          <ul class="maintenance-feature-graphic_list" role="list">
+            {figures.map((item) => (
+              <li class="maintenance-feature-graphic_row">
+                <span class="maintenance-feature-graphic_label">{item.label}</span>
+                <span class="maintenance-feature-graphic_result">
+                  {item.value}
+                  <span class="maintenance-feature-graphic_tag success">
+                    {item.change}
+                  </span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    /* An artboard 560 units square that scales as one piece. */
+    .maintenance-feature-graphic_wrap {
+      --_unit: calc(100cqw / 560);
+      --_shadow:
+        calc(-23 * var(--_unit)) calc(48 * var(--_unit)) calc(16 * var(--_unit))
+          rgb(209 209 209 / 0.05),
+        calc(-10 * var(--_unit)) calc(21 * var(--_unit)) calc(12 * var(--_unit))
+          rgb(209 209 209 / 0.09),
+        calc(-3 * var(--_unit)) calc(5 * var(--_unit)) calc(6.5 * var(--_unit))
+          rgb(209 209 209 / 0.1);
+      container-type: inline-size;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      border-radius: var(--radius-0-5rem);
+      font-family: var(--primary-family);
+      letter-spacing: -0.005em;
+      color: var(--color-neutral-80);
+
+      /* The wrap's own cqw would read the page, so the base size starts on its children. */
+      > * {
+        font-size: calc(16 * var(--_unit));
+        line-height: calc(22 * var(--_unit));
+      }
+
+      :is(span, li) {
+        display: block;
+      }
+
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      li {
+        margin: 0;
+      }
+
+      .icon {
+        --_size: calc(24 * var(--_unit));
+      }
+
+      .maintenance-feature-graphic_photo {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      /* Cards and stacks sit on the same centre, 261 units down the artboard. */
+
+      .maintenance-feature-graphic_card,
+      .maintenance-feature-graphic_stack {
+        position: absolute;
+        top: calc(261 * var(--_unit));
+        left: 50%;
+        translate: -50% -50%;
+      }
+
+      .maintenance-feature-graphic_card {
+        display: flex;
+        flex-direction: column;
+        gap: calc(16 * var(--_unit));
+        padding: calc(24 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        border-radius: calc(12 * var(--_unit));
+        filter: drop-shadow(var(--_shadow));
+
+        &.plans {
+          width: calc(390 * var(--_unit));
+        }
+        &:is(.report, .steps) {
+          width: calc(360 * var(--_unit));
+        }
+        &.steps {
+          width: 100%;
+        }
+      }
+
+      .maintenance-feature-graphic_head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        white-space: nowrap;
+      }
+
+      .maintenance-feature-graphic_title {
+        font-size: calc(20 * var(--_unit));
+        line-height: calc(26 * var(--_unit));
+        font-weight: var(--primary-medium);
+        letter-spacing: -0.01em;
+      }
+
+      .maintenance-feature-graphic_meta {
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        font-weight: var(--primary-medium);
+        color: var(--color-neutral-30);
+      }
+
+      .report .maintenance-feature-graphic_meta {
+        color: var(--color-neutral-40);
+      }
+
+      .maintenance-feature-graphic_row,
+      .maintenance-feature-graphic_step {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: calc(8 * var(--_unit));
+        padding-block: calc(16 * var(--_unit));
+        border-bottom: var(--border-width) solid var(--color-neutral-5);
+        white-space: nowrap;
+
+        &:last-child {
+          border-bottom: 0;
+        }
+      }
+
+      .maintenance-feature-graphic_label {
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+        font-weight: var(--primary-medium);
+      }
+
+      .maintenance-feature-graphic_check {
+        color: var(--color-primary-60);
+      }
+
+      .maintenance-feature-graphic_tag {
+        padding: calc(2 * var(--_unit)) calc(8 * var(--_unit));
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        font-weight: var(--primary-medium);
+        border: var(--border-width) solid transparent;
+        border-radius: calc(4 * var(--_unit));
+
+        &.success {
+          color: var(--color-accent-success-90);
+          background-color: var(--color-accent-success-5);
+          border-color: var(--color-accent-success-10);
+        }
+        &.warning {
+          color: var(--color-accent-warning-80);
+          background-color: var(--color-accent-warning-5);
+          border-color: var(--color-accent-warning-10);
+        }
+        &.primary {
+          color: var(--color-primary-60);
+          background-color: var(--color-primary-5);
+          border-color: var(--color-primary-10);
+        }
+        &.muted {
+          color: var(--color-neutral-30);
+          background-color: var(--color-neutral-2);
+          border-color: var(--color-neutral-5);
+        }
+      }
+
+      .maintenance-feature-graphic_badge {
+        position: absolute;
+        top: calc(245 * var(--_unit));
+        left: calc(110 * var(--_unit));
+        padding: calc(3.6 * var(--_unit)) calc(7.2 * var(--_unit));
+        font-weight: var(--primary-medium);
+        white-space: nowrap;
+        color: var(--color-neutral-0);
+        background-color: var(--color-primary-60);
+        border-radius: calc(1.727 * var(--_unit));
+      }
+
+      .maintenance-feature-graphic_cursor {
+        position: absolute;
+        top: calc(-19 * var(--_unit));
+        left: calc(-16 * var(--_unit));
+        --_size: calc(27 * var(--_unit));
+      }
+
+      /* Request */
+
+      .maintenance-feature-graphic_stack {
+        display: flex;
+        flex-direction: column;
+        gap: calc(16 * var(--_unit));
+        width: calc(360 * var(--_unit));
+      }
+
+      .maintenance-feature-graphic_message {
+        display: flex;
+        align-items: flex-start;
+        gap: calc(12 * var(--_unit));
+      }
+
+      .maintenance-feature-graphic_avatar {
+        flex: none;
+        width: calc(60 * var(--_unit));
+        height: calc(60 * var(--_unit));
+        object-fit: cover;
+        border-radius: 50%;
+      }
+
+      .maintenance-feature-graphic_bubble {
+        flex: 1 1 0;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: calc(12 * var(--_unit));
+        padding: calc(12 * var(--_unit)) calc(16 * var(--_unit));
+        color: var(--color-neutral-0);
+        background-color: var(--color-primary-60);
+        filter: drop-shadow(var(--_shadow));
+      }
+
+      .maintenance-feature-graphic_name {
+        font-weight: var(--primary-medium);
+      }
+
+      .maintenance-feature-graphic_time {
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        font-weight: var(--primary-medium);
+        color: var(--color-neutral-20);
+      }
+
+      .maintenance-feature-graphic_bubble .maintenance-feature-graphic_head {
+        align-items: flex-start;
+      }
+
+      .maintenance-feature-graphic_text {
+        font-size: calc(14 * var(--_unit));
+        line-height: calc(20 * var(--_unit));
+        color: var(--color-neutral-10);
+      }
+
+      .maintenance-feature-graphic_card.steps .maintenance-feature-graphic_list {
+        position: relative;
+
+        /* The blue line runs through the centres of the four ticks. */
+        &::before {
+          content: "";
+          position: absolute;
+          top: calc(24 * var(--_unit));
+          bottom: calc(24 * var(--_unit));
+          left: calc(11 * var(--_unit));
+          width: calc(2 * var(--_unit));
+          background-color: var(--color-primary-60);
+        }
+      }
+
+      .maintenance-feature-graphic_step {
+        position: relative;
+        padding-block: calc(12 * var(--_unit));
+        border-bottom: 0;
+      }
+
+      .maintenance-feature-graphic_label .done {
+        position: relative;
+        margin-right: calc(4 * var(--_unit));
+      }
+
+      /* Report */
+
+      .maintenance-feature-graphic_stats {
+        display: flex;
+        gap: calc(16 * var(--_unit));
+      }
+
+      .maintenance-feature-graphic_stat {
+        flex: 1 1 0;
+        display: flex;
+        flex-direction: column;
+        gap: calc(16 * var(--_unit));
+        padding: calc(12 * var(--_unit));
+        background-color: var(--color-neutral-2);
+        border-radius: calc(4 * var(--_unit));
+      }
+
+      .maintenance-feature-graphic_figure {
+        display: flex;
+        align-items: baseline;
+        gap: calc(4 * var(--_unit));
+      }
+
+      .maintenance-feature-graphic_value {
+        font-size: calc(26 * var(--_unit));
+        line-height: calc(34 * var(--_unit));
+        letter-spacing: -0.01em;
+        color: var(--color-primary-60);
+      }
+
+      .maintenance-feature-graphic_unit {
+        font-size: calc(14 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        color: var(--color-neutral-40);
+      }
+
+      .maintenance-feature-graphic_result {
+        display: flex;
+        align-items: center;
+        gap: calc(4 * var(--_unit));
+        font-weight: var(--primary-medium);
+      }
+    }
+  }
+</style>

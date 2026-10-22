@@ -763,6 +763,7 @@ async function main() {
   }
 
   const figma = useFigma && sharp ? await figmaClient() : null;
+  let figmaLimited = false;
   if (useFigma && sharp && !figma) console.log(`note: Figma desktop is not answering on ${FIGMA_MCP}; section screenshots from Figma are skipped (open the file in Figma desktop with Dev Mode MCP enabled)`);
   const chrome = await launchChrome();
   process.once("SIGINT", () => {
@@ -813,8 +814,36 @@ async function main() {
       mkdirSync(shots, { recursive: true });
       const webPng = join(shots, `${page}-${bp}-web.png`);
       const height = Math.ceil(probe.docHeight);
-      const shot = await tab("Page.captureScreenshot", { format: "png", captureBeyondViewport: true, clip: { x: 0, y: 0, width, height, scale: 1 } });
-      writeFileSync(webPng, Buffer.from(shot.data, "base64"));
+      // A beyond-viewport capture resizes the viewport, which races the relayout and wraps past Chrome's 16384px
+      // texture. So the page is scrolled one viewport at a time and stitched; sticky boxes become relative (same
+      // spot when not stuck) and fixed ones are hidden after the first screen, so neither repeats in every tile.
+      if (sharp) {
+        const view = 900;
+        const tiles = [];
+        for (let y = 0; y < height; y += view) {
+          const top = await evaluate(`(async (y, first) => {
+            if (!first) for (const el of document.querySelectorAll("body *")) {
+              const p = getComputedStyle(el).position;
+              if (p === "sticky") Object.assign(el.style, { position: "relative", top: "auto", bottom: "auto" });
+              else if (p === "fixed") el.style.opacity = "0";
+            }
+            scrollTo(0, y);
+            await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+            return scrollY;
+          })(${y}, ${y === 0})`);
+          const t = await tab("Page.captureScreenshot", { format: "png", clip: { x: 0, y: top, width, height: view, scale: 1 } });
+          tiles.push({ input: Buffer.from(t.data, "base64"), left: 0, top });
+        }
+        await evaluate("scrollTo(0, 0)");
+        await sharp({ create: { width, height: Math.max(height, tiles.at(-1).top + view), channels: 4, background: "#ffffff" }, limitInputPixels: false })
+          .composite(tiles)
+          .png()
+          .toBuffer()
+          .then((png) => sharp(png, { limitInputPixels: false }).extract({ left: 0, top: 0, width, height }).toFile(webPng));
+      } else {
+        const shot = await tab("Page.captureScreenshot", { format: "png", captureBeyondViewport: true, clip: { x: 0, y: 0, width, height, scale: 1 } });
+        writeFileSync(webPng, Buffer.from(shot.data, "base64"));
+      }
       console.log(`\nSHOT  wrote ${webPng} (${width}×${height})`);
 
       const figmaPng = join(shots, `${page}-${bp}.png`);
@@ -822,7 +851,9 @@ async function main() {
         if (sharp) await diffShots(sharp, figmaPng, webPng, join(shots, `${page}-${bp}-diff.png`), fSections, width, bp);
       } else if (!figma) console.log(`  no Figma export at ${figmaPng}; to diff, export the frame there (Figma: select frame → Export → PNG, 1x)`);
 
-      if (figma) {
+      // Raw Figma section shots are cached by node id, so a rerun costs no MCP calls.
+      const cached = (f) => join(shots, `figma-${f.id.replace(/[^0-9a-z]+/gi, "-")}.png`);
+      if (sharp && (figma || fSections.some((f) => existsSync(cached(f))))) {
         const rows = [];
         for (const f of fSections) {
           const d = probe.sections[pairs[f.index]];
@@ -830,7 +861,14 @@ async function main() {
             rows.push([f.index + 1, cut(f.name, 24), "—", "no DOM section", ""]);
             continue;
           }
-          const shot = await figma.screenshot(f.id);
+          let shot = existsSync(cached(f)) ? { png: readFileSync(cached(f)) } : null;
+          if (!shot && figmaLimited) shot = { error: "skipped: Figma rate limit" };
+          if (!shot && !figma) shot = { error: "no cached shot, Figma not answering" };
+          if (!shot) {
+            shot = await figma.screenshot(f.id);
+            if (shot.png) writeFileSync(cached(f), shot.png);
+            else if (/rate limit/i.test(shot.error)) figmaLimited = true;
+          }
           if (!shot.png) {
             rows.push([f.index + 1, cut(f.name, 24), "—", cut(shot.error, 40), ""]);
             continue;
