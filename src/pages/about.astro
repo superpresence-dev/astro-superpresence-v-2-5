@@ -1,0 +1,122 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import AboutHero from "@/components/section/AboutHero.astro";
+import AboutStory from "@/components/content/AboutStory.astro";
+import IndustryGrowth from "@/components/content/IndustryGrowth.astro";
+import WhyCompare from "@/components/content/WhyCompare.astro";
+import AboutLocations from "@/components/content/AboutLocations.astro";
+import AboutCta from "@/components/section/AboutCta.astro";
+---
+
+<Layout
+  title="About us"
+  description="We help ambitious businesses build, improve, and grow their digital presence with senior design, development, and marketing expertise."
+  overlap
+>
+  {/* Hero */}
+  <AboutHero />
+  {/* Story */}
+  <Section paddingBottom="none">
+    <AboutStory />
+  </Section>
+  {/* Values */}
+  <Section>
+    <IndustryGrowth
+      variant="tiles"
+      eyebrow="Our values"
+      heading="Good work comes from how we work"
+      icons={["target", "people", "flag", "trend", "badge", "chat"]}
+      items={[
+        {
+          title: "Strategy first",
+          text: "Every choice we make must support clear business goals, not just enhance page looks, ensuring our work drives real results aligned with company aims.",
+        },
+        {
+          title: "Senior from start",
+          text: "Idea proposers also develop the product, avoiding handoffs to juniors mid-project, ensuring consistent expertise and seamless continuity throughout.",
+        },
+        {
+          title: "No nonsense",
+          text: "We speak up to tackle important issues, question vague ideas, and resolve problems early, avoiding expensive setbacks later in the process.",
+        },
+        {
+          title: "Never settle",
+          text: "We constantly explore ways to enhance functionality, improve aesthetics, and deliver greater value through innovative solutions and thoughtful design.",
+        },
+        {
+          title: "Own the outcome",
+          text: "We take full responsibility for our work from start to finish, embracing accountability and ensuring every deliverable reflects our highest standard of quality.",
+        },
+        {
+          title: "Radical transparency",
+          text: "We share context openly, communicate honestly about progress and challenges, and trust our team with the full picture to make better decisions together.",
+        },
+      ]}
+    />
+  </Section>
+  {/* Difference */}
+  <Section>
+    <WhyCompare
+      heading="The three options in front of you"
+      lead="Each option suits a different need. Here's how they compare for a firm like yours."
+      rows={[
+        "Strategy and planning",
+        "Who writes the English copy",
+        "Design",
+        "What it's built for",
+        "Partners' time needed",
+        "Team",
+        "Expert direction",
+      ]}
+      options={[
+        {
+          title: "Superpresence",
+          icon: "brand",
+          featured: true,
+          items: [
+            "Done before design starts",
+            "Professional writers",
+            "Fully custom",
+            "Enquiries and growth",
+            "Reviews and sign-off",
+            "Strategy, design, copy, dev",
+            "Experts direct every stage",
+          ],
+        },
+        {
+          title: "Hiring in-house",
+          icon: "hire",
+          items: [
+            "Fitted around other work",
+            "Whoever on the team can write",
+            "Depends on one hire",
+            "Keeping the site running",
+            "Managing the hire",
+            "One or two people",
+            "Depends on the hire",
+          ],
+        },
+        {
+          title: "Traditional agency",
+          icon: "agency",
+          items: [
+            "Often skipped for speed",
+            "Sometimes translated",
+            "Often a template",
+            "Traffic and channels",
+            "Briefing and chasing",
+            "Split across teams",
+            "Depends on the account team",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Where we work */}
+  <Section>
+    <AboutLocations />
+  </Section>
+  {/* CTA */}
+  <AboutCta />
+</Layout>

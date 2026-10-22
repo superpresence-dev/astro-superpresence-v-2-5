@@ -1,0 +1,849 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Icon from "@/components/media/Icon.astro";
+import people from "@/assets/industries/icons/people.svg";
+import trend from "@/assets/industries/icons/trend.svg";
+import cursor from "@/assets/service/webflow/cursor-green.svg";
+import check from "@/assets/redesign/process-check.svg";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Which step of the free redesign the picture shows. */
+  variant: "brief" | "diagnosis" | "concept" | "decision";
+}
+
+const { render = true, variant, class: className, ...rest } = Astro.props;
+
+const fields = [
+  { label: "Homepage URL", value: "yourfirm.com" },
+  { label: "Who you sell to", value: "Ops leads at mid-size firms" },
+  { label: "The one action", value: "Book a demo" },
+];
+const areas = ["Message", "Hierarchy", "Visual", "CTA"];
+const suggestions = [128, 110, 128, 90];
+const options = [
+  {
+    icon: people,
+    title: "Build it with your team",
+    text: "Keep the concept, it’s yours",
+  },
+  { icon: trend, title: "Take it further with us", text: "Only if you ask" },
+];
+---
+
+{
+  render && variant && (
+    <div
+      class:list={["redesign-process_wrap", variant, className]}
+      aria-hidden="true"
+      {...rest}
+    >
+      <div class="redesign-process_stage">
+        {variant === "brief" && (
+          <div class="redesign-process_brief">
+            <span class="redesign-process_title">Your brief</span>
+            <div class="redesign-process_form">
+              <ul class="redesign-process_fields" role="list">
+                {fields.map((field) => (
+                  <li class="redesign-process_field">
+                    <span class="redesign-process_label">{field.label}</span>
+                    <span class="redesign-process_input">{field.value}</span>
+                  </li>
+                ))}
+              </ul>
+              <span class="redesign-process_send">Send brief</span>
+            </div>
+          </div>
+        )}
+        {variant === "diagnosis" && (
+          <div class="redesign-process_group">
+            <div class="redesign-process_page">
+              <span class="redesign-process_bar" />
+              <div class="redesign-process_hero">
+                <span class="redesign-process_crumbs">
+                  <span class="redesign-process_pill" />
+                  <span class="redesign-process_pill wide" />
+                </span>
+                <span class="redesign-process_lines">
+                  <span class="redesign-process_line" />
+                  <span class="redesign-process_line short" />
+                  <span class="redesign-process_line muted" />
+                </span>
+                <span class="redesign-process_cta" />
+                <span class="redesign-process_focus" />
+              </div>
+              <span class="redesign-process_tiles">
+                <span class="redesign-process_tile" />
+                <span class="redesign-process_tile" />
+                <span class="redesign-process_tile" />
+              </span>
+            </div>
+            <div class="redesign-process_summary">
+              <span class="redesign-process_count">4 areas reviewed</span>
+              <ul class="redesign-process_areas" role="list">
+                {areas.map((area) => (
+                  <li class="redesign-process_area">{area}</li>
+                ))}
+              </ul>
+            </div>
+            <div class="redesign-process_comment">
+              <span class="redesign-process_author">
+                <span class="redesign-process_marker" />
+                Message
+              </span>
+              <span class="redesign-process_note">
+                Says what you are, not what you fix.
+              </span>
+            </div>
+          </div>
+        )}
+        {variant === "concept" && (
+          <div class="redesign-process_group">
+            <div class="redesign-process_list">
+              <span class="redesign-process_tag">Not a list of suggestions</span>
+              <span class="redesign-process_caption">Suggestions</span>
+              <ul class="redesign-process_items" role="list">
+                {suggestions.map((width) => (
+                  <li class="redesign-process_item">
+                    <span class="redesign-process_bullet" />
+                    <span
+                      class="redesign-process_rule"
+                      style={`--_width: ${width};`}
+                    />
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div class="redesign-process_mock">
+              <span class="redesign-process_chrome">
+                <span class="redesign-process_dots">
+                  <span class="redesign-process_dot" />
+                  <span class="redesign-process_dot" />
+                  <span class="redesign-process_dot" />
+                </span>
+                <span class="redesign-process_address" />
+              </span>
+              <span class="redesign-process_copy">
+                <span class="redesign-process_headline">
+                  The firm buyers
+                  <br />
+                  trust at first glance
+                </span>
+                <span class="redesign-process_button">Book a call</span>
+              </span>
+            </div>
+          </div>
+        )}
+        {variant === "decision" && (
+          <div class="redesign-process_group">
+            <div class="redesign-process_choice">
+              <ul class="redesign-process_options" role="list">
+                {options.map((option) => (
+                  <li class="redesign-process_option">
+                    <span class="redesign-process_tile-icon">
+                      <Icon src={option.icon} class="redesign-process_icon" />
+                    </span>
+                    <span class="redesign-process_option-text">
+                      <span class="redesign-process_option-title">
+                        {option.title}
+                      </span>
+                      <span class="redesign-process_option-note">
+                        {option.text}
+                      </span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <span class="redesign-process_badge">
+                <Icon src={cursor} class="redesign-process_cursor" />
+                Your call
+              </span>
+            </div>
+            <span class="redesign-process_promise">
+              <Icon src={check} class="redesign-process_check" />
+              <span class="redesign-process_promise-title">No follow-up call</span>
+              <span class="redesign-process_separator" />
+              <span class="redesign-process_promise-note">No obligation</span>
+            </span>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    /* A square artboard that scales as one piece. Its 400-unit stage fills
+       the share of the box each Figma frame gives it. */
+    .redesign-process_wrap {
+      --_scale: 400 / 517;
+      --_wash: 100%;
+      --_group-gap: 24;
+      --_card-pad: 16;
+      --_card-gap: 24;
+      --_card-radius: 12;
+      --_inset: 8;
+      --_space: 8;
+      --_note-pad: 12;
+      --_note-gap: 8;
+      --_note-top: 116;
+      --_summary-pad: 8;
+      --_list-pad: 12;
+      --_list-gap: 12;
+      --_mock-pad: 12;
+      --_mock-end: 16;
+      --_mock-radius: 8;
+      --_copy-gap: 12;
+      --_option-pad: 16;
+      --_option-gap: 28;
+      --_options-gap: 12;
+      --_tile: 44;
+      --_tile-pad: 8;
+      --_badge-left: 169.8;
+      --_promise-pad: 8;
+      --_promise-inline: 12;
+      @media (width < 62rem) {
+        --_scale: 300 / 347;
+        --_wash: calc(517 / 347 * 100%);
+        --_group-gap: 20;
+        --_card-pad: 12;
+        --_card-gap: 20;
+        --_card-radius: 8;
+        --_inset: 6;
+        --_space: 6;
+        --_note-pad: 8;
+        --_note-gap: 6;
+        --_note-top: 112.7;
+        --_summary-pad: 6;
+        --_list-pad: 8;
+        --_list-gap: 8;
+        --_mock-pad: 8;
+        --_mock-end: 12;
+        --_mock-radius: 6;
+        --_copy-gap: 8;
+        --_option-pad: 13;
+        --_option-gap: 24;
+        --_options-gap: 8;
+        --_tile: 36;
+        --_tile-pad: 6;
+        --_badge-left: 159;
+        --_promise-pad: 6;
+        --_promise-inline: 9;
+      }
+      @media (width < 48rem) {
+        --_scale: 300 / 361;
+        --_wash: calc(517 / 361 * 100%);
+      }
+      --_unit: calc(100cqw * var(--_scale) / 400);
+      --_base: #d4f4f7;
+      --_tint: rgb(213 226 245 / 0.32);
+      --_deep: rgb(5 103 244 / 0.32);
+      --_lift: calc(11 * var(--_unit)) calc(7 * var(--_unit))
+          calc(13 * var(--_unit)) rgb(153 153 153 / 0.05),
+        calc(25 * var(--_unit)) calc(17 * var(--_unit))
+          calc(18 * var(--_unit)) rgb(153 153 153 / 0.05),
+        calc(45 * var(--_unit)) calc(30 * var(--_unit))
+          calc(22 * var(--_unit)) rgb(153 153 153 / 0.01);
+      container-type: inline-size;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: clip;
+      color: var(--color-neutral-90);
+      font-family: var(--primary-family);
+      background:
+        linear-gradient(to bottom, var(--_tint) 55.368%, var(--_deep) 96.905%)
+          top / 100% var(--_wash) no-repeat,
+        var(--_base);
+
+      &.brief {
+        --_base:
+          linear-gradient(
+            136.467deg,
+            transparent 20.752%,
+            rgb(255 255 255 / 0.5) 51.501%,
+            transparent 99.854%
+          ),
+          #d4f4f7;
+      }
+
+      &.decision {
+        --_group-gap: 32;
+        @media (width < 62rem) {
+          --_scale: 290.5 / 347;
+          --_group-gap: 28;
+        }
+        @media (width < 48rem) {
+          --_scale: 290.5 / 361;
+        }
+      }
+
+      &:is(.diagnosis, .decision) {
+        --_base: #c5d6ff;
+        --_tint: rgb(128 195 254 / 0.32);
+        --_deep: rgb(6 66 238 / 0.32);
+      }
+
+      &.concept {
+        --_base: #e8ebf2;
+        --_tint: rgb(174 224 246 / 0.32);
+      }
+
+      &:not(.brief)::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.4 -0.45'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        opacity: 0.35;
+      }
+
+      :is(span, li) {
+        display: block;
+      }
+
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      li {
+        margin: 0;
+      }
+
+      .icon {
+        max-width: none;
+      }
+
+      .redesign-process_stage {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: calc(400 * var(--_unit));
+        aspect-ratio: 1 / 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        translate: -50% -50%;
+      }
+
+      .redesign-process_group {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(var(--_group-gap) * var(--_unit));
+      }
+
+      /* =====================
+         Brief
+         ===================== */
+
+      .redesign-process_brief {
+        width: calc(321 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--_card-gap) * var(--_unit));
+        padding: calc(var(--_card-pad) * var(--_unit));
+        border-radius: calc(var(--_card-radius) * var(--_unit));
+        background-color: var(--color-neutral-0);
+        box-shadow: var(--_lift);
+      }
+
+      .redesign-process_title {
+        font-size: calc(16 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(22 * var(--_unit));
+        letter-spacing: -0.005em;
+      }
+
+      .redesign-process_form {
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--_space) * 2 * var(--_unit));
+      }
+
+      .redesign-process_fields,
+      .redesign-process_field {
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--_space) * var(--_unit));
+      }
+
+      .redesign-process_label {
+        font-size: calc(14 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(20 * var(--_unit));
+        letter-spacing: -0.005em;
+      }
+
+      .redesign-process_input {
+        padding: calc(var(--_inset) * var(--_unit));
+        border: var(--border-width) solid var(--color-neutral-5);
+        border-radius: calc(4 * var(--_unit));
+        color: var(--color-neutral-60);
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        letter-spacing: -0.005em;
+      }
+
+      .redesign-process_send {
+        padding: calc(6 * var(--_unit)) calc(12 * var(--_unit));
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-primary-60);
+        color: var(--color-neutral-0);
+        font-size: calc(12 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(18 * var(--_unit));
+        letter-spacing: -0.005em;
+        text-align: center;
+      }
+
+      /* =====================
+         Diagnosis
+         ===================== */
+
+      .redesign-process_page {
+        width: calc(330.5 * var(--_unit));
+        height: calc(269 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(18 * var(--_unit));
+        overflow: clip;
+        border: var(--border-width) solid var(--color-neutral-5);
+        border-radius: calc(8 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        box-shadow: var(--_lift);
+      }
+
+      .redesign-process_bar {
+        flex: none;
+        height: calc(18 * var(--_unit));
+        background-color: #d6d9ff;
+      }
+
+      .redesign-process_hero {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: calc(12 * var(--_unit));
+        padding-inline: calc(12 * var(--_unit));
+      }
+
+      .redesign-process_crumbs,
+      .redesign-process_tiles {
+        display: flex;
+        gap: calc(2 * var(--_unit));
+      }
+
+      .redesign-process_pill,
+      .redesign-process_line {
+        height: calc(8 * var(--_unit));
+        border-radius: calc(12 * var(--_unit));
+        background-color: var(--color-neutral-5);
+      }
+
+      .redesign-process_pill {
+        width: calc(34 * var(--_unit));
+        &.wide {
+          width: calc(60 * var(--_unit));
+        }
+      }
+
+      .redesign-process_lines {
+        display: flex;
+        flex-direction: column;
+        gap: calc(4 * var(--_unit));
+      }
+
+      .redesign-process_line {
+        background-color: var(--color-neutral-80);
+        &.short {
+          width: calc(38 * var(--_unit));
+        }
+        &.muted {
+          width: calc(91 * var(--_unit));
+          background-color: var(--color-neutral-40);
+        }
+      }
+
+      .redesign-process_cta {
+        width: calc(34 * var(--_unit));
+        height: calc(11 * var(--_unit));
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-primary-60);
+      }
+
+      .redesign-process_focus {
+        position: absolute;
+        top: calc(13 * var(--_unit));
+        left: calc(8 * var(--_unit));
+        width: calc(312 * var(--_unit));
+        height: calc(47 * var(--_unit));
+        border: var(--border-width) dashed var(--color-accent-warning-60);
+      }
+
+      .redesign-process_tiles {
+        gap: calc(4 * var(--_unit));
+        padding-inline: calc(12 * var(--_unit));
+      }
+
+      .redesign-process_tile {
+        flex: 1 1 0;
+        height: calc(60 * var(--_unit));
+        background-color: var(--color-neutral-2);
+      }
+
+      .redesign-process_summary {
+        width: calc(330 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(4 * var(--_unit));
+        padding: calc(var(--_summary-pad) * var(--_unit)) calc(16 * var(--_unit));
+        border: var(--border-width) solid var(--color-neutral-5);
+        border-radius: calc(8 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        box-shadow: 0 calc(4 * var(--_unit)) calc(12 * var(--_unit))
+          calc(-4 * var(--_unit)) rgb(16 24 40 / 0.05);
+      }
+
+      .redesign-process_count {
+        font-size: calc(16 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(22 * var(--_unit));
+        letter-spacing: -0.005em;
+      }
+
+      .redesign-process_areas {
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+      }
+
+      .redesign-process_area {
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+        color: var(--color-neutral-50);
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        letter-spacing: -0.005em;
+        & + &::before {
+          content: "";
+          width: calc(4 * var(--_unit));
+          height: calc(4 * var(--_unit));
+          border-radius: 50%;
+          background-color: var(--color-neutral-5);
+        }
+      }
+
+      .redesign-process_comment {
+        position: absolute;
+        top: calc(var(--_note-top) * var(--_unit));
+        left: calc(105 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--_note-gap) * var(--_unit));
+        padding: calc(var(--_note-pad) * var(--_unit));
+        border-radius: calc(4 * var(--_unit));
+        background-color: #fffbeb;
+        white-space: nowrap;
+        box-shadow: 0 calc(12 * var(--_unit)) calc(32 * var(--_unit))
+          calc(-12 * var(--_unit)) rgb(6 13 51 / 0.28);
+      }
+
+      .redesign-process_author {
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+        color: var(--color-neutral-50);
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        letter-spacing: -0.005em;
+      }
+
+      .redesign-process_marker {
+        width: calc(16 * var(--_unit));
+        height: calc(16 * var(--_unit));
+        padding: calc(5 * var(--_unit));
+        border-radius: 50%;
+        background-color: #fef3c7;
+        &::before {
+          content: "";
+          display: block;
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          background-color: var(--color-accent-warning-60);
+        }
+      }
+
+      .redesign-process_note {
+        color: var(--color-neutral-80);
+        font-size: calc(14 * var(--_unit));
+        line-height: calc(20 * var(--_unit));
+        letter-spacing: -0.005em;
+      }
+
+      /* =====================
+         Concept
+         ===================== */
+
+      .redesign-process_list {
+        position: relative;
+        width: calc(174 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--_list-gap) * var(--_unit));
+        padding: calc(var(--_list-pad) * var(--_unit)) calc(16 * var(--_unit));
+        border: var(--border-width) solid var(--color-neutral-5);
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        opacity: 0.5;
+      }
+
+      .redesign-process_tag {
+        position: absolute;
+        top: calc(-11 * var(--_unit));
+        left: calc(25 * var(--_unit));
+        padding: calc(2 * var(--_unit)) calc(8 * var(--_unit));
+        border-radius: calc(2 * var(--_unit));
+        background-color: var(--color-neutral-5);
+        color: var(--color-neutral-50);
+        font-size: calc(10 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        white-space: nowrap;
+      }
+
+      .redesign-process_caption {
+        color: var(--color-neutral-50);
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        letter-spacing: -0.005em;
+      }
+
+      .redesign-process_items {
+        display: flex;
+        flex-direction: column;
+        gap: calc(16 * var(--_unit));
+      }
+
+      .redesign-process_item {
+        display: flex;
+        gap: calc(7 * var(--_unit));
+      }
+
+      .redesign-process_bullet {
+        width: calc(5 * var(--_unit));
+        height: calc(5 * var(--_unit));
+        border-radius: calc(3 * var(--_unit));
+        background-color: var(--color-neutral-20);
+      }
+
+      .redesign-process_rule {
+        width: calc(var(--_width) * var(--_unit));
+        height: calc(5 * var(--_unit));
+        border-radius: calc(1 * var(--_unit));
+        background-color: var(--color-neutral-10);
+      }
+
+      .redesign-process_mock {
+        width: calc(338 * var(--_unit));
+        height: calc(211 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: calc(var(--_mock-pad) * var(--_unit))
+          calc(var(--_mock-pad) * var(--_unit))
+          calc(var(--_mock-end) * var(--_unit));
+        border-radius: calc(var(--_mock-radius) * var(--_unit));
+        background-image: linear-gradient(
+          164.5deg,
+          #060d33 0%,
+          #0b1a5c 53.8%,
+          #002e8b 76.9%
+        );
+        box-shadow: var(--_lift);
+      }
+
+      .redesign-process_chrome {
+        display: flex;
+        align-items: center;
+        gap: calc(12 * var(--_unit));
+      }
+
+      .redesign-process_dots {
+        display: flex;
+        gap: calc(4 * var(--_unit));
+      }
+
+      .redesign-process_dot {
+        width: calc(6 * var(--_unit));
+        height: calc(6 * var(--_unit));
+        border-radius: 50%;
+        background-color: rgb(255 255 255 / 0.12);
+      }
+
+      .redesign-process_address {
+        flex: 1 1 0;
+        height: calc(4 * var(--_unit));
+        border-radius: calc(0.4 * var(--_unit));
+        background-image: linear-gradient(
+          to right,
+          var(--color-neutral-0),
+          transparent
+        );
+        opacity: 0.08;
+      }
+
+      .redesign-process_copy {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: calc(var(--_copy-gap) * var(--_unit));
+      }
+
+      .redesign-process_headline {
+        color: var(--color-neutral-0);
+        font-family: var(--secondary-family);
+        font-size: calc(20 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(26 * var(--_unit));
+        letter-spacing: -0.01em;
+      }
+
+      .redesign-process_button {
+        padding: calc(6 * var(--_unit)) calc(12 * var(--_unit));
+        border-radius: calc(2 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        color: var(--color-neutral-90);
+        font-size: calc(11 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(16 * var(--_unit));
+        letter-spacing: -0.005em;
+      }
+
+      /* =====================
+         Decision
+         ===================== */
+
+      .redesign-process_choice {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .redesign-process_options {
+        display: flex;
+        gap: calc(var(--_options-gap) * var(--_unit));
+      }
+
+      .redesign-process_option {
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--_option-gap) * var(--_unit));
+        padding: calc(var(--_option-pad) * var(--_unit));
+        border: var(--border-width) solid var(--color-neutral-5);
+        border-radius: calc(8 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        box-shadow: var(--_lift);
+      }
+
+      .redesign-process_tile-icon {
+        width: calc(var(--_tile) * var(--_unit));
+        padding: calc(var(--_tile-pad) * var(--_unit));
+        border-radius: calc(4 * var(--_unit));
+        background-image: linear-gradient(
+          to right,
+          var(--color-neutral-2),
+          #d6d9ff
+        );
+      }
+
+      .redesign-process_icon {
+        --_size: calc((var(--_tile) - 2 * var(--_tile-pad)) * var(--_unit));
+        color: var(--color-primary-60);
+      }
+
+      .redesign-process_option-text {
+        display: flex;
+        flex-direction: column;
+        gap: calc(4 * var(--_unit));
+        white-space: nowrap;
+      }
+
+      .redesign-process_option-title {
+        font-size: calc(16 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(22 * var(--_unit));
+        letter-spacing: -0.005em;
+      }
+
+      .redesign-process_option-note,
+      .redesign-process_promise-note {
+        color: var(--color-neutral-50);
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        letter-spacing: -0.005em;
+      }
+
+      .redesign-process_badge {
+        position: relative;
+        margin-left: calc(var(--_badge-left) * var(--_unit));
+        padding: calc(3.6 * var(--_unit)) calc(7.2 * var(--_unit));
+        border-radius: calc(1.727 * var(--_unit));
+        background-color: var(--color-accent-success-60);
+        color: var(--color-neutral-0);
+        font-size: calc(12 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(18 * var(--_unit));
+        letter-spacing: -0.005em;
+        white-space: nowrap;
+      }
+
+      .redesign-process_cursor {
+        --_size: calc(27.17 * var(--_unit));
+        position: absolute;
+        top: calc(-19 * var(--_unit));
+        left: calc(-17.8 * var(--_unit));
+        height: auto;
+        aspect-ratio: 27.1732 / 29.7734;
+        overflow: visible;
+      }
+
+      .redesign-process_promise {
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+        padding: calc(var(--_promise-pad) * var(--_unit))
+          calc(var(--_promise-inline) * var(--_unit));
+        border: var(--border-width) solid var(--color-neutral-5);
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        box-shadow: var(--_lift);
+        white-space: nowrap;
+      }
+
+      .redesign-process_check {
+        --_size: calc(16 * var(--_unit));
+      }
+
+      .redesign-process_promise-title {
+        font-size: calc(14 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(20 * var(--_unit));
+        letter-spacing: -0.005em;
+      }
+
+      .redesign-process_separator {
+        width: calc(4 * var(--_unit));
+        height: calc(4 * var(--_unit));
+        border-radius: 50%;
+        background-color: var(--color-neutral-5);
+      }
+    }
+  }
+</style>

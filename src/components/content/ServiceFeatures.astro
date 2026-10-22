@@ -18,9 +18,11 @@ interface Props extends HTMLAttributes<"div"> {
   render?: boolean;
   /** Rows in order, alternating sides. Each row's visual goes in the slot `visual-1`, `visual-2`, and so on. */
   items: Feature[];
+  /** Starts the alternation with the visual on the left from desktop. */
+  reverse?: boolean;
 }
 
-const { render = true, items, class: className, ...rest } = Astro.props;
+const { render = true, items, reverse = false, class: className, ...rest } = Astro.props;
 
 const visuals = await Promise.all(
   (items ?? []).map((_, index) =>
@@ -31,7 +33,7 @@ const visuals = await Promise.all(
 
 {
   render && items?.length > 0 && (
-    <div class:list={["service-features_wrap", className]} {...rest}>
+    <div class:list={["service-features_wrap", reverse && "reverse", className]} {...rest}>
       {items.map((item, index) => (
         <div class="service-features_row">
           <div class="service-features_content">
@@ -103,6 +105,17 @@ const visuals = await Promise.all(
           &:nth-child(even) {
             flex-direction: row-reverse;
             align-items: stretch;
+          }
+        }
+      }
+
+      &.reverse .service-features_row {
+        @media (width >= 62rem) {
+          &:nth-child(odd) {
+            flex-direction: row-reverse;
+          }
+          &:nth-child(even) {
+            flex-direction: row;
           }
         }
       }

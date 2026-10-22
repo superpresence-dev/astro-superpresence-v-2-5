@@ -1,0 +1,670 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Img from "@/components/media/Img.astro";
+import Icon from "@/components/media/Icon.astro";
+import pdf from "@/assets/redesign/pdf.png";
+import presenter from "@/assets/redesign/deliverable-presenter.png";
+import cursor from "@/assets/redesign/deliverable-cursor.svg";
+import play from "@/assets/redesign/deliverable-play.svg";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Which deliverable the picture shows: the PDF design, the video walkthrough, or the written breakdown. */
+  variant: "design" | "video" | "breakdown";
+}
+
+const { render = true, variant, class: className, ...rest } = Astro.props;
+
+const variantClass = variant === "video" ? "walkthrough" : variant;
+
+const chapters = [
+  { time: "0:00", label: "Layout" },
+  { time: "1:24", label: "Copy shifts" },
+  { time: "2:50", label: "Live tests" },
+];
+---
+
+{
+  render && variant && (
+    <div
+      class:list={["redesign-deliverable-graphic_wrap", variantClass, className]}
+      aria-hidden="true"
+      {...rest}
+    >
+      {variant === "design" && (
+        <div class="redesign-deliverable-graphic_board">
+          <div class="redesign-deliverable-graphic_devices">
+            <span class="redesign-deliverable-graphic_device desktop">
+              <span class="redesign-deliverable-graphic_page">
+                <span class="redesign-deliverable-graphic_top" />
+                <span class="redesign-deliverable-graphic_hero">
+                  <span class="redesign-deliverable-graphic_lines">
+                    <span class="redesign-deliverable-graphic_line" />
+                    <span class="redesign-deliverable-graphic_line short" />
+                    <span class="redesign-deliverable-graphic_line medium" />
+                  </span>
+                  <span class="redesign-deliverable-graphic_cta" />
+                </span>
+                <span class="redesign-deliverable-graphic_tiles">
+                  <span class="redesign-deliverable-graphic_tile" />
+                  <span class="redesign-deliverable-graphic_tile" />
+                  <span class="redesign-deliverable-graphic_tile" />
+                </span>
+              </span>
+              <span class="redesign-deliverable-graphic_label">Desktop</span>
+            </span>
+            <span class="redesign-deliverable-graphic_device tablet">
+              <span class="redesign-deliverable-graphic_page">
+                <span class="redesign-deliverable-graphic_top" />
+                <span class="redesign-deliverable-graphic_hero">
+                  <span class="redesign-deliverable-graphic_lines">
+                    <span class="redesign-deliverable-graphic_line" />
+                    <span class="redesign-deliverable-graphic_line short" />
+                    <span class="redesign-deliverable-graphic_line medium" />
+                  </span>
+                  <span class="redesign-deliverable-graphic_cta" />
+                  <span class="redesign-deliverable-graphic_tiles">
+                    <span class="redesign-deliverable-graphic_tile" />
+                    <span class="redesign-deliverable-graphic_tile" />
+                    <span class="redesign-deliverable-graphic_tile" />
+                  </span>
+                </span>
+              </span>
+              <span class="redesign-deliverable-graphic_label">Tablet</span>
+            </span>
+          </div>
+          <div class="redesign-deliverable-graphic_share">
+            <span class="redesign-deliverable-graphic_file">
+              <Img src={pdf} transparent class="redesign-deliverable-graphic_file-icon" />
+              Hero-redesign.pdf
+            </span>
+            <span class="redesign-deliverable-graphic_badge">
+              <Icon src={cursor} class="redesign-deliverable-graphic_cursor" />
+              Ready to share
+            </span>
+          </div>
+        </div>
+      )}
+      {variant === "video" && (
+        <div class="redesign-deliverable-graphic_board">
+          <div class="redesign-deliverable-graphic_player">
+            <span class="redesign-deliverable-graphic_recording">
+              <span class="redesign-deliverable-graphic_frame">
+                <span class="redesign-deliverable-graphic_top" />
+                <span class="redesign-deliverable-graphic_hero">
+                  <span class="redesign-deliverable-graphic_lines">
+                    <span class="redesign-deliverable-graphic_line" />
+                    <span class="redesign-deliverable-graphic_line short" />
+                    <span class="redesign-deliverable-graphic_line medium" />
+                  </span>
+                  <span class="redesign-deliverable-graphic_cta" />
+                </span>
+                <span class="redesign-deliverable-graphic_tiles">
+                  <span class="redesign-deliverable-graphic_tile" />
+                  <span class="redesign-deliverable-graphic_tile" />
+                  <span class="redesign-deliverable-graphic_tile" />
+                </span>
+              </span>
+            </span>
+            <span class="redesign-deliverable-graphic_controls">
+              <Img src={presenter} transparent class="redesign-deliverable-graphic_avatar" />
+              <Icon src={play} class="redesign-deliverable-graphic_play" />
+              <span class="redesign-deliverable-graphic_track">
+                <span class="redesign-deliverable-graphic_progress" />
+                <span class="redesign-deliverable-graphic_mark one" />
+                <span class="redesign-deliverable-graphic_mark two" />
+              </span>
+              <span class="redesign-deliverable-graphic_duration">4:12</span>
+            </span>
+          </div>
+          <div class="redesign-deliverable-graphic_chapters">
+            {chapters.map((chapter) => (
+              <span class="redesign-deliverable-graphic_chapter">
+                <span class="redesign-deliverable-graphic_time">
+                  {chapter.time}
+                </span>
+                {chapter.label}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+      {variant === "breakdown" && (
+        <div class="redesign-deliverable-graphic_board">
+          <span class="redesign-deliverable-graphic_page">
+            <span class="redesign-deliverable-graphic_top" />
+            <span class="redesign-deliverable-graphic_hero">
+              <span class="redesign-deliverable-graphic_crumbs">
+                <span class="redesign-deliverable-graphic_line" />
+                <span class="redesign-deliverable-graphic_line" />
+              </span>
+              <span class="redesign-deliverable-graphic_lines">
+                <span class="redesign-deliverable-graphic_line" />
+                <span class="redesign-deliverable-graphic_line short" />
+                <span class="redesign-deliverable-graphic_line medium" />
+              </span>
+              <span class="redesign-deliverable-graphic_cta" />
+            </span>
+            <span class="redesign-deliverable-graphic_tiles">
+              <span class="redesign-deliverable-graphic_tile" />
+              <span class="redesign-deliverable-graphic_tile" />
+              <span class="redesign-deliverable-graphic_tile" />
+            </span>
+            <span class="redesign-deliverable-graphic_pin one">1</span>
+            <span class="redesign-deliverable-graphic_pin two">2</span>
+            <span class="redesign-deliverable-graphic_pin three">3</span>
+          </span>
+          <span class="redesign-deliverable-graphic_file">
+            <Img src={pdf} transparent class="redesign-deliverable-graphic_file-icon" />
+            Hero breakdown
+          </span>
+          <span class="redesign-deliverable-graphic_comment">
+            <span class="redesign-deliverable-graphic_author">
+              <Img src={presenter} transparent class="redesign-deliverable-graphic_avatar" />
+              Strategy lead
+            </span>
+            <span class="redesign-deliverable-graphic_note">
+              Lead with the outcome, not the service.
+            </span>
+          </span>
+        </div>
+      )}
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    /* An artboard that holds one composition at the size the Figma card
+       draws it, centred in a box whose ratio follows each frame. */
+    .redesign-deliverable-graphic_wrap {
+      --_unit: calc(100cqw / 369.4);
+      container-type: inline-size;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 313 / 290;
+      overflow: hidden;
+      font-family: var(--primary-family);
+      color: var(--color-neutral-90);
+      &.walkthrough {
+        --_unit: calc(100cqw / 361.3);
+      }
+      &.breakdown {
+        --_unit: calc(100cqw / 379.8);
+      }
+      @media (width >= 48rem) {
+        &,
+        &.walkthrough,
+        &.breakdown {
+          --_unit: calc(100cqw / 384);
+        }
+        aspect-ratio: 384 / 365;
+      }
+      @media (width >= 62rem) {
+        &,
+        &.walkthrough,
+        &.breakdown {
+          --_unit: calc(100cqw / 360);
+        }
+        aspect-ratio: 360 / 388;
+      }
+
+      span {
+        display: block;
+      }
+
+      svg,
+      img {
+        display: block;
+        flex: none;
+        max-width: none;
+      }
+
+      .redesign-deliverable-graphic_board {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: calc(330.5 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(28 * var(--_unit));
+        translate: -50% -50%;
+      }
+
+      /* Page wireframes */
+
+      .redesign-deliverable-graphic_page,
+      .redesign-deliverable-graphic_frame {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: calc(18 * var(--_unit));
+        overflow: clip;
+        background-color: var(--color-neutral-0);
+      }
+
+      .redesign-deliverable-graphic_page {
+        border: calc(1 * var(--_unit)) solid var(--color-neutral-5);
+        border-radius: calc(8 * var(--_unit));
+        box-shadow: 0 calc(2.2 * var(--_unit)) calc(4 * var(--_unit))
+          rgb(0 0 0 / 0.042);
+      }
+
+      .redesign-deliverable-graphic_top {
+        flex: none;
+        height: calc(18 * var(--_unit));
+        background-color: #d6d9ff;
+      }
+
+      .redesign-deliverable-graphic_hero {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: calc(12 * var(--_unit));
+        padding-inline: calc(12 * var(--_unit));
+      }
+
+      .redesign-deliverable-graphic_lines {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: calc(4 * var(--_unit));
+      }
+
+      .redesign-deliverable-graphic_line {
+        width: 100%;
+        height: calc(5 * var(--_unit));
+        background-color: var(--color-neutral-5);
+        border-radius: calc(12 * var(--_unit));
+        &.short {
+          width: calc(38 * var(--_unit));
+        }
+        &.medium {
+          width: calc(91 * var(--_unit));
+        }
+      }
+
+      .redesign-deliverable-graphic_cta {
+        width: calc(34 * var(--_unit));
+        height: calc(11 * var(--_unit));
+        background-color: var(--color-primary-60);
+        border-radius: calc(4 * var(--_unit));
+      }
+
+      .redesign-deliverable-graphic_tiles {
+        display: flex;
+        gap: calc(4 * var(--_unit));
+        padding-inline: calc(12 * var(--_unit));
+      }
+
+      .redesign-deliverable-graphic_tile {
+        flex: 1 1 0;
+        height: calc(41 * var(--_unit));
+        background-color: var(--color-neutral-2);
+      }
+
+      /* Design: desktop and tablet pages, the PDF and its share tag */
+
+      .redesign-deliverable-graphic_devices {
+        width: 100%;
+        display: flex;
+        align-items: flex-start;
+        gap: calc(12 * var(--_unit));
+      }
+
+      .redesign-deliverable-graphic_device {
+        display: flex;
+        flex-direction: column;
+        gap: calc(8 * var(--_unit));
+        &.desktop {
+          width: calc(218 * var(--_unit));
+          .redesign-deliverable-graphic_page {
+            height: calc(172 * var(--_unit));
+          }
+          .redesign-deliverable-graphic_line:first-child {
+            width: calc(192 * var(--_unit));
+          }
+        }
+        &.tablet {
+          width: calc(100 * var(--_unit));
+          .redesign-deliverable-graphic_page {
+            height: calc(131 * var(--_unit));
+          }
+          .redesign-deliverable-graphic_hero {
+            padding-inline: calc(16 * var(--_unit));
+          }
+          .redesign-deliverable-graphic_line:first-child {
+            background-color: #eff0ff;
+          }
+          .redesign-deliverable-graphic_line.medium {
+            width: calc(48 * var(--_unit));
+          }
+          .redesign-deliverable-graphic_tiles {
+            width: 100%;
+            flex-direction: column;
+            padding: 0;
+          }
+          .redesign-deliverable-graphic_tile {
+            flex: none;
+            height: calc(24 * var(--_unit));
+          }
+        }
+      }
+
+      .redesign-deliverable-graphic_label {
+        color: var(--color-neutral-40);
+        font-size: calc(12 * var(--_unit));
+        font-weight: 500;
+        line-height: calc(18 * var(--_unit));
+        letter-spacing: -0.005em;
+        text-align: center;
+      }
+
+      .redesign-deliverable-graphic_share {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+      }
+
+      .redesign-deliverable-graphic_file {
+        width: calc(330 * var(--_unit));
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+        padding: calc(8 * var(--_unit)) calc(16 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        border: calc(1 * var(--_unit)) solid var(--color-neutral-5);
+        border-radius: calc(8 * var(--_unit));
+        box-shadow: 0 calc(4 * var(--_unit)) calc(12 * var(--_unit))
+          calc(-4 * var(--_unit)) rgb(16 24 40 / 0.052);
+        font-size: calc(16 * var(--_unit));
+        font-weight: 500;
+        line-height: calc(22 * var(--_unit));
+        letter-spacing: -0.005em;
+        white-space: nowrap;
+      }
+
+      .redesign-deliverable-graphic_file-icon {
+        width: calc(24 * var(--_unit));
+        height: calc(24 * var(--_unit));
+      }
+
+      .redesign-deliverable-graphic_badge {
+        position: relative;
+        padding: calc(3.6 * var(--_unit)) calc(7.2 * var(--_unit));
+        color: var(--color-neutral-0);
+        background-color: var(--color-accent-success-60);
+        border-radius: calc(1.73 * var(--_unit));
+        font-size: calc(12 * var(--_unit));
+        font-weight: 500;
+        line-height: calc(18 * var(--_unit));
+        letter-spacing: -0.005em;
+        white-space: nowrap;
+      }
+
+      .redesign-deliverable-graphic_cursor {
+        position: absolute;
+        top: calc(-19 * var(--_unit));
+        left: calc(-16 * var(--_unit));
+        --_size: calc(28 * var(--_unit));
+        aspect-ratio: 28 / 30;
+      }
+
+      /* Video: a recorded page, the presenter and the player controls */
+
+      &.walkthrough .redesign-deliverable-graphic_board {
+        width: calc(312 * var(--_unit));
+        gap: calc(24 * var(--_unit));
+      }
+
+      .redesign-deliverable-graphic_player {
+        position: relative;
+        width: 100%;
+        height: calc(232 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        border: calc(1 * var(--_unit)) solid #ebebeb;
+        border-radius: calc(6 * var(--_unit));
+        box-shadow: 0 calc(16 * var(--_unit)) calc(40 * var(--_unit))
+          calc(-14 * var(--_unit)) rgb(6 13 51 / 0.22);
+      }
+
+      .redesign-deliverable-graphic_recording {
+        display: flex;
+        justify-content: center;
+        padding: calc(15 * var(--_unit)) calc(47 * var(--_unit));
+      }
+
+      .redesign-deliverable-graphic_frame {
+        width: calc(216 * var(--_unit));
+        height: calc(145 * var(--_unit));
+        padding: calc(20 * var(--_unit)) calc(4 * var(--_unit));
+        border-radius: calc(6 * var(--_unit));
+        box-shadow: 0 calc(2.2 * var(--_unit)) calc(4 * var(--_unit))
+          rgb(0 0 0 / 0.042);
+
+        .redesign-deliverable-graphic_top {
+          position: absolute;
+          inset: 0 0 auto;
+          height: calc(11 * var(--_unit));
+        }
+
+        .redesign-deliverable-graphic_tile {
+          height: calc(41 * var(--_unit));
+        }
+      }
+
+      .redesign-deliverable-graphic_controls {
+        position: absolute;
+        inset: auto 0 0;
+        height: calc(46 * var(--_unit));
+        border-radius: 0 0 calc(5 * var(--_unit)) calc(5 * var(--_unit));
+        background-color: var(--color-neutral-2);
+      }
+
+      .redesign-deliverable-graphic_avatar {
+        width: calc(24 * var(--_unit));
+        height: calc(24 * var(--_unit));
+        object-fit: cover;
+        background-image: linear-gradient(135deg, #d6dbff, #6a86ff);
+        border: calc(0.6 * var(--_unit)) solid var(--color-neutral-0);
+        border-radius: 50%;
+        box-shadow: 0 calc(6 * var(--_unit)) calc(16 * var(--_unit))
+          calc(-6 * var(--_unit)) rgb(6 13 51 / 0.4);
+      }
+
+      .redesign-deliverable-graphic_controls .redesign-deliverable-graphic_avatar {
+        position: absolute;
+        top: calc(-25 * var(--_unit));
+        left: calc(15 * var(--_unit));
+        width: calc(48 * var(--_unit));
+        height: calc(48 * var(--_unit));
+        border-width: calc(2 * var(--_unit));
+      }
+
+      .redesign-deliverable-graphic_play {
+        position: absolute;
+        top: calc(16 * var(--_unit));
+        left: calc(75 * var(--_unit));
+        --_size: calc(12 * var(--_unit));
+        color: var(--color-neutral-90);
+      }
+
+      .redesign-deliverable-graphic_track {
+        position: absolute;
+        top: calc(20 * var(--_unit));
+        left: calc(97 * var(--_unit));
+        width: calc(170 * var(--_unit));
+        height: calc(4 * var(--_unit));
+        background-color: var(--color-neutral-5);
+        border-radius: calc(2 * var(--_unit));
+      }
+
+      .redesign-deliverable-graphic_progress {
+        width: calc(61 * var(--_unit));
+        height: 100%;
+        background-color: var(--color-primary-60);
+        border-radius: inherit;
+      }
+
+      .redesign-deliverable-graphic_mark {
+        position: absolute;
+        top: calc(-2 * var(--_unit));
+        width: calc(2 * var(--_unit));
+        height: calc(8 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        border-radius: calc(4 * var(--_unit));
+        box-shadow:
+          0 calc(1 * var(--_unit)) calc(2 * var(--_unit)) rgb(16 24 40 / 0.06),
+          0 calc(1 * var(--_unit)) calc(3 * var(--_unit)) rgb(16 24 40 / 0.1);
+        &.one {
+          left: calc(56 * var(--_unit));
+        }
+        &.two {
+          left: calc(112 * var(--_unit));
+        }
+      }
+
+      .redesign-deliverable-graphic_duration {
+        position: absolute;
+        top: calc(16 * var(--_unit));
+        left: calc(277 * var(--_unit));
+        color: var(--color-neutral-30);
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        letter-spacing: -0.005em;
+      }
+
+      .redesign-deliverable-graphic_chapters {
+        display: flex;
+        gap: calc(8 * var(--_unit));
+      }
+
+      .redesign-deliverable-graphic_chapter {
+        display: flex;
+        gap: calc(4 * var(--_unit));
+        padding: calc(4 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        border: calc(1 * var(--_unit)) solid var(--color-neutral-5);
+        border-radius: calc(4 * var(--_unit));
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        letter-spacing: -0.005em;
+        white-space: nowrap;
+      }
+
+      .redesign-deliverable-graphic_time {
+        color: var(--color-neutral-30);
+      }
+
+      /* Breakdown: a page with numbered notes, a comment and the PDF */
+
+      &.breakdown {
+        .redesign-deliverable-graphic_board {
+          gap: calc(24 * var(--_unit));
+        }
+
+        .redesign-deliverable-graphic_page {
+          width: 100%;
+          height: calc(221 * var(--_unit));
+        }
+
+        .redesign-deliverable-graphic_hero {
+          gap: calc(12 * var(--_unit));
+        }
+
+        .redesign-deliverable-graphic_crumbs {
+          display: flex;
+          gap: calc(2 * var(--_unit));
+          .redesign-deliverable-graphic_line {
+            width: calc(34 * var(--_unit));
+            &:last-child {
+              width: calc(60 * var(--_unit));
+            }
+          }
+        }
+
+        .redesign-deliverable-graphic_lines .redesign-deliverable-graphic_line {
+          background-color: var(--color-neutral-80);
+          &.medium {
+            background-color: var(--color-neutral-40);
+          }
+        }
+
+        .redesign-deliverable-graphic_tile {
+          height: calc(60 * var(--_unit));
+        }
+      }
+
+      .redesign-deliverable-graphic_pin {
+        position: absolute;
+        width: calc(22 * var(--_unit));
+        height: calc(22 * var(--_unit));
+        display: grid;
+        place-items: center;
+        color: var(--color-neutral-60);
+        border: calc(1 * var(--_unit)) solid var(--color-neutral-5);
+        border-radius: calc(12 * var(--_unit)) calc(12 * var(--_unit))
+          calc(12 * var(--_unit)) 0;
+        font-size: calc(10 * var(--_unit));
+        font-weight: 500;
+        line-height: calc(12 * var(--_unit));
+        &.one {
+          top: calc(53.9 * var(--_unit));
+          left: calc(108.25 * var(--_unit));
+          color: var(--color-neutral-0);
+          background-color: var(--color-primary-60);
+          border: none;
+        }
+        &.two {
+          top: calc(153.9 * var(--_unit));
+          left: calc(14.25 * var(--_unit));
+          background-color: var(--color-neutral-0);
+          border-color: var(--color-neutral-10);
+        }
+        &.three {
+          top: calc(18.9 * var(--_unit));
+          left: calc(111.25 * var(--_unit));
+          background-color: var(--color-neutral-2);
+        }
+      }
+
+      .redesign-deliverable-graphic_comment {
+        position: absolute;
+        top: calc(89 * var(--_unit));
+        left: calc(109 * var(--_unit));
+        width: calc(176 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(6 * var(--_unit));
+        padding: calc(8 * var(--_unit)) calc(12 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        border: calc(1 * var(--_unit)) solid #ebebeb;
+        border-radius: calc(4 * var(--_unit));
+        box-shadow: 0 calc(12 * var(--_unit)) calc(32 * var(--_unit))
+          calc(-12 * var(--_unit)) rgb(6 13 51 / 0.28);
+      }
+
+      .redesign-deliverable-graphic_author {
+        display: flex;
+        align-items: center;
+        gap: calc(6 * var(--_unit));
+        color: var(--color-neutral-50);
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        letter-spacing: -0.005em;
+      }
+
+      .redesign-deliverable-graphic_note {
+        color: var(--color-neutral-80);
+        font-size: calc(14 * var(--_unit));
+        line-height: calc(20 * var(--_unit));
+        letter-spacing: -0.005em;
+      }
+    }
+  }
+</style>

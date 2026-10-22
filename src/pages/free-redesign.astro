@@ -1,0 +1,166 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import ReviewHero from "@/components/section/ReviewHero.astro";
+import RedesignHeroGraphic from "@/components/content/RedesignHeroGraphic.astro";
+import ReviewDeliverables from "@/components/content/ReviewDeliverables.astro";
+import RedesignDeliverableGraphic from "@/components/content/RedesignDeliverableGraphic.astro";
+import HomeDifference from "@/components/content/HomeDifference.astro";
+import IndustryProcess from "@/components/content/IndustryProcess.astro";
+import RedesignProcessGraphic from "@/components/content/RedesignProcessGraphic.astro";
+import HomeQuote from "@/components/section/HomeQuote.astro";
+import ReviewRequest from "@/components/content/ReviewRequest.astro";
+import pointOne from "@/assets/redesign/hero-point-1.svg";
+import pointTwo from "@/assets/redesign/hero-point-2.svg";
+import pointThree from "@/assets/redesign/hero-point-3.svg";
+---
+
+<Layout
+  title="Free homepage redesign"
+  description="Your website could be losing leads before sales begin. We'll quickly identify issues and show you the top fixes to improve it."
+  navTheme="light"
+  overlap
+>
+  {/* Hero */}
+  <ReviewHero
+    eyebrow="A free homepage redesign"
+    heading="Boost revenue from<br />your existing web traffic now"
+    text="Your website could be losing leads before sales begin. We'll quickly identify issues and show you the top fixes to improve it."
+    buttonText="Get a free redesign"
+    buttonHref="#redesign"
+    points={[
+      { title: "Expert web designers", text: "Senior web designers" },
+      { title: "No commitment", text: "Zero long-term commitment" },
+      { title: "Delivered in 2 weeks", text: "Delivered in two weeks" },
+    ]}
+    icons={[pointOne, pointTwo, pointThree]}
+  >
+    <RedesignHeroGraphic slot="visual" />
+  </ReviewHero>
+  {/* What you get */}
+  <Section>
+    <ReviewDeliverables
+      eyebrow="What you actually get"
+      heading="Full hero strategy,<br />built for implementation"
+      lead="Receive three complete formats engineered to help you execute, pitch, or test your new hero section immediately."
+      items={[
+        {
+          title: "High-fidelity design (PDF)",
+          text: "Desktop and mobile layouts crafted to production quality. Instantly shareable with dev teams or key decision-makers.",
+        },
+        {
+          title: "Video walkthrough",
+          text: "A concise Loom breakdown covering strategic layout adjustments, copy shifts, and proposed live tests.",
+        },
+        {
+          title: "Strategic breakdown",
+          text: "Written documentation detailing conversion triggers, copy rationale, and hierarchy logic for future reference.",
+        },
+      ]}
+    >
+      <RedesignDeliverableGraphic slot="visual-1" variant="design" />
+      <RedesignDeliverableGraphic slot="visual-2" variant="video" />
+      <RedesignDeliverableGraphic slot="visual-3" variant="breakdown" />
+    </ReviewDeliverables>
+  </Section>
+  {/* Who it's for */}
+  <Section>
+    <HomeDifference
+      eyebrow="Who it's for"
+      heading="Who this free redesign is for"
+      lead="Ideal for early-stage and scaling startups, B2B firms, or companies with active marketing. If this fits you, keep reading"
+      leadWidth="full"
+      logos={false}
+      columnsFrom="desktop"
+      boxes={[
+        {
+          title: "This is for you if...",
+          featured: true,
+          items: [
+            "Your homepage gets traffic but few enquiries",
+            "You already pay for ads, SEO or outbound",
+            "You think the top of the page is the weak part",
+            "You are planning a redesign and need a starting point",
+            "You want to see senior work before spending budget",
+          ],
+        },
+        {
+          title: "This isn't for you if...",
+          featured: false,
+          items: [
+            "Your site is not live yet",
+            "You want the full site redesigned, not the top",
+            "You need something live this week",
+            "You sell B2C ecommerce, which is not our focus",
+            "You are collecting free files to brief someone cheaper",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Approach */}
+  <Section>
+    <IndustryProcess
+      eyebrow="Our approach"
+      heading="Four steps, and only one needs you"
+      spaced
+      steps={[
+        {
+          title: "Your brief",
+          text: "Share your homepage URL, who you sell to and the one action you want visitors to take. That is all we need from you for two weeks.",
+          points: [
+            "Your current homepage URL",
+            "Audience and offer context",
+            "Primary conversion goal",
+          ],
+        },
+        {
+          title: "Hero Diagnosis",
+          label: "Hero diagnosis",
+          text: "We review the message, hierarchy, visual direction and conversion path of your current hero, so the redesign fixes what is actually holding it back.",
+          points: [
+            "Current hero assessment",
+            "Messaging and hierarchy rethink",
+            "New visual direction",
+          ],
+        },
+        {
+          title: "Finished Concept",
+          label: "The package",
+          text: "You get a polished hero redesign, not a list of suggestions, with the reasoning behind each decision and clear notes for building it.",
+          points: [
+            "Polished hero redesign",
+            "Explanation of key decisions",
+            "Practical implementation guidance",
+          ],
+        },
+        {
+          title: "Your Decision",
+          label: "The decision",
+          text: "Keep the concept and build it with your team, or ask us to take it further. There is no follow-up call and no obligation.",
+          points: [
+            "No required follow-up call",
+            "Freedom to use the direction",
+            "Optional support for the next phase",
+          ],
+        },
+      ]}
+    >
+      <RedesignProcessGraphic slot="step-1" variant="brief" />
+      <RedesignProcessGraphic slot="step-2" variant="diagnosis" />
+      <RedesignProcessGraphic slot="step-3" variant="concept" />
+      <RedesignProcessGraphic slot="step-4" variant="decision" />
+    </IndustryProcess>
+  </Section>
+  {/* Quote */}
+  <HomeQuote />
+  {/* Request */}
+  <Section id="redesign">
+    <ReviewRequest
+      heading="Drop your URL to see<br />if your site qualifies"
+      text="Our senior design team evaluates every site manually. If your site is a good fit, we will send your concept in two days."
+      buttonText="Get my free redesign"
+      privacyHref="/privacy-policy"
+    />
+  </Section>
+</Layout>

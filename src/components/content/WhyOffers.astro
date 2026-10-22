@@ -8,6 +8,7 @@ import Icon from "@/components/media/Icon.astro";
 import teardown from "@/assets/why/gaps-teardown.png";
 import redesign from "@/assets/why/gaps-redesign.png";
 import check from "@/assets/home/difference-list-item.svg";
+import { REVIEW_URL } from "@/utils/review.ts";
 
 type Tone = "blue" | "purple" | "orange" | "green" | "pink";
 type Choice = {
@@ -52,7 +53,7 @@ type BaseProps = HTMLAttributes<"div"> & {
 type OffersProps = BaseProps & {
   /** `offers` shows the two free offers with a link each; `options` shows the cards passed in `options`, each with a list of points. */
   variant?: "offers";
-  /** Destination of both offers' links. */
+  /** Destination of an offer's link when the offer sets none of its own. */
   href?: string;
   options?: never;
 };
@@ -100,6 +101,7 @@ const offers: {
   title: string;
   text: string;
   link?: string;
+  href?: string;
   points?: string[];
 }[] =
   variant === "options"
@@ -112,6 +114,7 @@ const offers: {
           title: "A video teardown of your site",
           text: "A senior pair of eyes walks your site the way a cautious buyer does, and shows you where enquiries are being lost.",
           link: "Review my website",
+          href: REVIEW_URL,
         },
         {
           tone: "purple",
@@ -217,7 +220,12 @@ const offers: {
                 </ul>
               )}
               {offer.link && (
-                <Button variant="link" element="link" href={href} arrow>
+                <Button
+                  variant="link"
+                  element="link"
+                  href={offer.href ?? href}
+                  arrow
+                >
                   {offer.link}
                 </Button>
               )}

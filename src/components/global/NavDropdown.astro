@@ -30,6 +30,9 @@ import blog from "@/assets/nav/icons/blog.svg";
 import roi from "@/assets/nav/icons/roi.svg";
 import { industryUrl } from "@/utils/industries.ts";
 import { serviceUrl } from "@/utils/services.ts";
+import { REVIEW_URL } from "@/utils/review.ts";
+import { REDESIGN_URL } from "@/utils/redesign.ts";
+import { EXPLORATION_URL } from "@/utils/explorations.ts";
 
 interface Props {
   /** Set to `false` to omit the component. */
@@ -158,9 +161,9 @@ const resources = [
   },
   {
     icon: sparkles,
-    title: "Concept work",
+    title: "Exploration works",
     text: "Steal ideas from our design explorations",
-    href: "/resources",
+    href: EXPLORATION_URL,
   },
 ];
 
@@ -175,7 +178,7 @@ const reasons = [
     image: team,
     title: "Meet Superpresence team",
     text: "Get to know the team, experience, and people shaping the work behind Superpresence.",
-    href: "#",
+    href: "/about",
   },
 ];
 
@@ -255,7 +258,7 @@ const panels = [
                         visitors see on your site. Two weeks, start to finish.
                       </Paragraph>
                     </div>
-                    <Button element="link" href="/contact" variant="link" arrow>
+                    <Button element="link" href={REDESIGN_URL} variant="link" arrow>
                       Claim your free website
                     </Button>
                   </div>
@@ -278,7 +281,7 @@ const panels = [
                 </div>
                 <Button
                   element="link"
-                  href="/contact"
+                  href={REVIEW_URL}
                   class="nav-dropdown_cta-button"
                 >
                   Review my website

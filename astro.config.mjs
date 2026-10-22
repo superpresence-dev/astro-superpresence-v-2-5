@@ -8,6 +8,9 @@ import legalSections from "./src/utils/legal-sections.ts";
 
 export default defineConfig({
   site: SITE_URL,
+  redirects: {
+    "/resources": "/exploration",
+  },
   integrations: [
     sitemap({
       filter: (page) => !isNoindexRoute(new URL(page).pathname),

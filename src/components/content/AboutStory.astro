@@ -1,0 +1,236 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Img from "@/components/media/Img.astro";
+import Marquee from "@/components/interactive/Marquee.astro";
+import storyOne from "@/assets/about/story-1.jpg";
+import storyTwo from "@/assets/about/story-2.jpg";
+import storyThree from "@/assets/about/story-3.jpg";
+import storyFour from "@/assets/about/story-4.jpg";
+import storyFive from "@/assets/about/story-5.jpg";
+
+type Photo = { image: ImageMetadata; alt: string };
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Small label above the text. */
+  eyebrow?: string;
+  /** Paragraphs of the story, in order. Each word brightens as the text scrolls through the screen. */
+  paragraphs?: string[];
+  /** Pictures that run under the text in a loop; each takes the frame size at its position. */
+  photos?: Photo[];
+}
+
+const {
+  render = true,
+  eyebrow = "Your website shouldn't be an afterthought",
+  paragraphs = [
+    "We started Superpresence after seeing too many good businesses treat their website as something to launch, forget, and eventually replace, while customers moved their research online and competitors kept investing. So we built the digital team we wished more businesses had.",
+    "That was the starting point, not the finish line. The web never stays still, so neither do we. We stay close to new ideas, test them on real work, and share what we learn. What we learn now shapes what we build next with Superpresence.",
+  ],
+  photos = [
+    { image: storyOne, alt: "A strategy session in the Superpresence office" },
+    { image: storyTwo, alt: "The team talking through a project" },
+    { image: storyThree, alt: "A talk by the Superpresence founder" },
+    { image: storyFour, alt: "Designers reviewing work on a laptop" },
+    { image: storyFive, alt: "Presenting growth results to a client" },
+  ],
+  class: className,
+  ...rest
+} = Astro.props;
+
+const frames = [
+  [400, 300],
+  [400, 225],
+  [400, 400],
+  [320, 240],
+  [320, 320],
+];
+---
+
+{
+  render && paragraphs.length > 0 && (
+    <div class:list={["about-story_wrap", className]} {...rest}>
+      <div class="about-story_content">
+        <Paragraph variant="overline-small" class="about-story_eyebrow">
+          {eyebrow}
+        </Paragraph>
+        <div class="about-story_text" data-about-story-scrub>
+          {paragraphs.map((paragraph) => (
+            <Paragraph variant="h4" class="about-story_paragraph">
+              {paragraph.split(" ").map((word, index) => (
+                <>
+                  {index > 0 && " "}
+                  <span class="about-story_word">{word}</span>
+                </>
+              ))}
+            </Paragraph>
+          ))}
+        </div>
+      </div>
+      {photos.length > 0 && (
+        <Marquee
+          label="The Superpresence team at work"
+          controls={false}
+          class="about-story_photos"
+        >
+          {photos.map((photo, index) => {
+            const [width, height] = frames[index % frames.length];
+            return (
+              <div
+                class="about-story_photo"
+                style={`--_w: ${width / 16}rem; --_h: ${height / 16}rem`}
+              >
+                <Img
+                  src={photo.image}
+                  alt={photo.alt}
+                  sizes="25rem"
+                  class="about-story_image"
+                />
+              </div>
+            );
+          })}
+        </Marquee>
+      )}
+    </div>
+  )
+}
+
+<script>
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  for (const text of document.querySelectorAll<HTMLElement>(
+    "[data-about-story-scrub]",
+  )) {
+    const words = [
+      ...text.querySelectorAll<HTMLElement>(".about-story_word"),
+    ];
+    let frame = 0;
+
+    // Words light up in order between the text's top reaching 85% of the
+    // screen and its bottom reaching the middle.
+    const update = () => {
+      frame = 0;
+      const box = text.getBoundingClientRect();
+      const start = window.innerHeight * 0.85;
+      const end = window.innerHeight * 0.5;
+      const progress = (start - box.top) / (box.height + start - end);
+      const lit = Math.min(Math.max(progress, 0), 1) * words.length;
+      words.forEach((word, index) => {
+        const value = Math.min(Math.max(lit - index, 0), 1);
+        word.style.setProperty("--_lit", value.toFixed(3));
+      });
+    };
+
+    const request = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+
+    const toggle = () => {
+      const scrub = !reduced.matches;
+      text.classList.toggle("scrub", scrub);
+      if (scrub) {
+        window.addEventListener("scroll", request, { passive: true });
+        window.addEventListener("resize", request);
+        update();
+      } else {
+        window.removeEventListener("scroll", request);
+        window.removeEventListener("resize", request);
+      }
+    };
+
+    reduced.addEventListener("change", toggle);
+    toggle();
+  }
+</script>
+
+<style is:global>
+  @layer components {
+    .about-story_wrap {
+      --_scale: 0.675;
+      @media (width >= 48rem) {
+        --_scale: 0.8;
+      }
+      @media (width >= 62rem) {
+        --_scale: 1;
+      }
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-3-5rem);
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .about-story_content {
+        width: 100%;
+        max-width: 55rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-2rem);
+        padding-top: var(--space-2rem);
+        padding-bottom: var(--space-4rem);
+        text-align: center;
+        @media (width >= 48rem) {
+          max-width: 40rem;
+        }
+        @media (width >= 62rem) {
+          max-width: 55rem;
+        }
+      }
+
+      .about-story_eyebrow {
+        color: var(--color-neutral-30);
+      }
+
+      .about-story_text {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1-25rem);
+      }
+
+      /* Figma breaks the paragraphs greedily, not balanced. */
+      .about-story_paragraph {
+        color: var(--heading);
+        text-wrap: wrap;
+      }
+
+      .about-story_text.scrub .about-story_word {
+        opacity: calc(0.5 + 0.5 * var(--_lit, 0));
+      }
+
+      /* A loop that runs the full width of the screen, past the content
+         margins, at the photo sizes of the Figma frames. */
+      .about-story_photos {
+        --_gap-size: calc(var(--_scale) * 1.5rem);
+        --_speed: 8s;
+        width: 100vw;
+        margin-inline: calc(50% - 50vw);
+
+        .marquee_viewport {
+          mask-image: none;
+        }
+      }
+
+      .about-story_photo {
+        width: calc(var(--_scale) * var(--_w));
+        height: calc(var(--_scale) * var(--_h));
+        min-height: 0;
+        overflow: hidden;
+        border: var(--border-width) solid var(--color-neutral-5);
+        border-radius: var(--radius-0-25rem);
+        background-color: var(--color-neutral-5);
+      }
+
+      .about-story_image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+</style>

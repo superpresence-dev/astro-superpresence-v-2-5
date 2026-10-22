@@ -1,0 +1,175 @@
+---
+import type { ComponentProps, HTMLAttributes } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Img from "@/components/media/Img.astro";
+import Video from "@/components/media/Video.astro";
+import background from "@/assets/about/hero.jpg";
+import footage from "@/assets/about/superpresence_glass_loop_light_day.mp4";
+
+interface Props
+  extends
+    HTMLAttributes<"section">,
+    Pick<ComponentProps<typeof Section>, "render"> {
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading?: string;
+  /** Paragraph below the heading. */
+  text?: string;
+  /** Background image, and the video's poster when there is one. */
+  image?: ImageMetadata;
+  /** Looping background video, as a URL. Set to `false` to show the image only. */
+  video?: string | false;
+}
+
+const {
+  render = true,
+  eyebrow = "Meet Superpresence",
+  heading = "Your digital team,<br />without the overhead.",
+  text = "We help ambitious businesses build, improve, and grow their digital presence with senior design, development, and marketing expertise.",
+  image = background,
+  video = footage,
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<Section
+  render={render}
+  theme="dark"
+  paddingTop="none"
+  paddingBottom="none"
+  containerClass="about-hero_layout"
+  class:list={["about-hero_wrap", className]}
+  {...rest}
+>
+  <Img
+    src={image}
+    slot="background"
+    loading="eager"
+    fetchPriority="high"
+    class="about-hero_media"
+  />
+  <Video
+    src={video || undefined}
+    poster={image.src}
+    variant="auto"
+    slot="background"
+    class="about-hero_media"
+    aria-hidden="true"
+  />
+  <div slot="background" class="about-hero_fade"></div>
+  <div class="about-hero_heading">
+    <Paragraph variant="overline-small" class="about-hero_eyebrow">
+      {eyebrow}
+    </Paragraph>
+    <Heading tag="h1" class="about-hero_title">
+      <Fragment set:html={heading} />
+    </Heading>
+    <Paragraph variant="large" class="about-hero_text">
+      {text}
+    </Paragraph>
+  </div>
+</Section>
+
+<style is:global>
+  @layer components {
+    .about-hero_wrap {
+      min-height: 100svh;
+      overflow: clip;
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      /* The Figma frames place the footage larger than the hero, centred,
+         at a fixed size per breakpoint; it widens further on a screen tall
+         enough to show its bottom edge. */
+      .about-hero_media {
+        --_media-width: 86.6875rem;
+        --_media-top: -1.0625rem;
+        @media (width >= 48rem) {
+          --_media-width: 97.75rem;
+          --_media-top: -6.125rem;
+        }
+        @media (width >= 62rem) {
+          --_media-width: 103.3125rem;
+          --_media-top: -2.125rem;
+        }
+        inset: var(--_media-top) auto auto 50%;
+        width: max(
+          var(--_media-width),
+          100%,
+          (100svh - var(--_media-top)) * 16 / 9
+        );
+        max-width: none;
+        height: auto;
+        aspect-ratio: 16 / 9;
+        translate: -50% 0;
+        object-fit: cover;
+      }
+
+      /* A light dim over the picture, darker under the navigation, then a
+         white fade into the next section. */
+      .about-hero_fade {
+        --_fade-start: 84%;
+        background-image:
+          linear-gradient(
+            to bottom,
+            transparent var(--_fade-start),
+            rgb(255 255 255 / 0.6) calc(var(--_fade-start) + 10%),
+            var(--color-neutral-0) 98%
+          ),
+          linear-gradient(to bottom, rgb(25 25 25 / 0.7), transparent 45%),
+          linear-gradient(rgb(0 0 0 / 0.12), rgb(0 0 0 / 0.12));
+      }
+
+      .about-hero_layout {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        padding-top: calc(var(--nav-height) + var(--section-space-medium));
+      }
+
+      .about-hero_heading {
+        width: 100%;
+        max-width: 48.75rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        @media (width >= 48rem) {
+          max-width: 40rem;
+        }
+        @media (width >= 62rem) {
+          max-width: 48.75rem;
+        }
+        text-align: center;
+      }
+
+      /* Figma breaks the heading greedily, not balanced. */
+      .about-hero_title {
+        text-wrap: wrap;
+      }
+
+      .about-hero_eyebrow,
+      .about-hero_text {
+        color: var(--color-neutral-10);
+      }
+
+      .about-hero_text {
+        max-width: 40rem;
+        @media (width >= 48rem) {
+          max-width: 33.75rem;
+        }
+        @media (width >= 62rem) {
+          max-width: 40rem;
+        }
+      }
+    }
+  }
+</style>

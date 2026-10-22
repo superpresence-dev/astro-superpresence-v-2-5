@@ -1,0 +1,172 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Img from "@/components/media/Img.astro";
+import map from "@/assets/about/globe-map.png";
+
+type Stat = { value: string; label: string };
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading?: string;
+  /** Text under the heading. Omit to leave it out. */
+  lead?: string;
+  /** Figures listed under the heading, in order. */
+  stats?: Stat[];
+}
+
+const {
+  render = true,
+  eyebrow = "Where we work",
+  heading = "Based in APAC.<br />Working everywhere",
+  lead = "Instead of jumping straight into visual design, we build a shared understanding of your audience, your positioning, and the actions you want visitors to take.",
+  stats = [
+    { value: "APAC", label: "Our origin and home" },
+    { value: "Worldwide", label: "Range of clients we serve" },
+    { value: "100%", label: "Remote team, operating globally" },
+  ],
+  class: className,
+  ...rest
+} = Astro.props;
+
+---
+
+{
+  render && (
+    <div class:list={["about-locations_wrap", className]} {...rest}>
+      <div class="about-locations_content">
+        <div class="about-locations_intro">
+          <Paragraph variant="overline-small" class="about-locations_eyebrow">
+            {eyebrow}
+          </Paragraph>
+          <Heading tag="h2" variant="h3">
+            <Fragment set:html={heading} />
+          </Heading>
+          {lead && (
+            <Paragraph variant="large" class="about-locations_lead">
+              {lead}
+            </Paragraph>
+          )}
+        </div>
+        <ul class="about-locations_stats" role="list">
+          {stats.map((stat) => (
+            <li class="about-locations_stat">
+              <Paragraph tag="span" variant="h4">
+                {stat.value}
+              </Paragraph>
+              <Paragraph tag="span" variant="small" class="about-locations_label">
+                {stat.label}
+              </Paragraph>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="about-locations_visual">
+        <Img
+          src={map}
+          alt="Globe centred on Asia-Pacific, with Hong Kong, Thailand, Singapore and Australia marked"
+          transparent
+          sizes="(width >= 62rem) 43.25rem, (width >= 48rem) 48rem, 100vw"
+          class="about-locations_map"
+        />
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .about-locations_wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5rem);
+      @media (width >= 62rem) {
+        flex-direction: row;
+        align-items: stretch;
+      }
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .about-locations_content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-5rem);
+        @media (width >= 62rem) {
+          flex: none;
+          width: 33.75rem;
+          justify-content: space-between;
+          gap: var(--space-3-5rem);
+        }
+      }
+
+      .about-locations_intro {
+        max-width: 33.75rem;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+      }
+
+      .about-locations_eyebrow {
+        color: var(--color-neutral-30);
+      }
+
+      .about-locations_lead {
+        max-width: 30rem;
+      }
+
+      .about-locations_stats {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-25rem);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .about-locations_stat {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-25rem);
+        margin: 0;
+        padding-block: var(--space-1-25rem);
+        border-bottom: var(--border-width) solid var(--color-neutral-5);
+        color: var(--heading);
+      }
+
+      .about-locations_label {
+        color: var(--color-neutral-60);
+      }
+
+      .about-locations_visual {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        @media (width >= 62rem) {
+          flex: 1 1 0;
+          min-width: 0;
+        }
+      }
+
+      .about-locations_map {
+        width: 100%;
+        max-width: 43.25rem;
+        height: auto;
+        aspect-ratio: 1;
+        padding: 5.5%;
+        object-fit: contain;
+        @media (width >= 48rem) {
+          aspect-ratio: 692 / 628;
+          padding: 0;
+        }
+      }
+    }
+  }
+</style>

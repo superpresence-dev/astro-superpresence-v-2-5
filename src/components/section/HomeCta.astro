@@ -7,6 +7,7 @@ import Heading from "@/components/typography/Heading.astro";
 import Paragraph from "@/components/typography/Paragraph.astro";
 import Img from "@/components/media/Img.astro";
 import background from "@/assets/home/cta.png";
+import { REVIEW_URL } from "@/utils/review.ts";
 
 type Props = Omit<
   ComponentProps<typeof Section>,
@@ -40,7 +41,7 @@ const {
   heading = "Get a free teardown of your website",
   text = "Send us your link and we'll review your website: what's working, what's losing buyers, and what we'd change first.",
   buttonText = "Review my website",
-  buttonHref = "#",
+  buttonHref = REVIEW_URL,
   class: className,
   ...rest
 } = Astro.props;

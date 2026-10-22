@@ -5,6 +5,7 @@ export const SERVICE_URL = "/service";
 const serviceSlugs: Record<string, string> = {
   "Website design": "website-design",
   "Webflow development": "webflow-development",
+  "Framer development": "framer-development",
   "Migrate to Webflow": "migrate-to-webflow",
   Branding: "branding",
   "Webflow maintenance": "webflow-maintenance",

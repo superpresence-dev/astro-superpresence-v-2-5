@@ -24,9 +24,11 @@ interface Props extends HTMLAttributes<"div"> {
   render?: boolean;
   /** Which picture: the CMS structure, the editor, one page in four languages, or where a form goes. */
   variant: "cms" | "editor" | "languages" | "routing";
+  /** Swaps the background photo for another one, keeping the picture on top. */
+  image?: ImageMetadata;
 }
 
-const { render = true, variant, class: className, ...rest } = Astro.props;
+const { render = true, variant, image, class: className, ...rest } = Astro.props;
 
 const photos = {
   cms: cmsPhoto,
@@ -67,7 +69,7 @@ const Cursor = cursorGreen;
       aria-hidden="true"
       {...rest}
     >
-      <Img src={photos[variant]} class="webflow-feature-graphic_photo" />
+      <Img src={image ?? photos[variant]} class="webflow-feature-graphic_photo" />
       {variant === "cms" && (
         <div class="webflow-feature-graphic_stack cms">
           <div class="webflow-feature-graphic_card cms">

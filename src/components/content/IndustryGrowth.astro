@@ -24,8 +24,8 @@ type Base = HTMLAttributes<"div"> & {
   items: Item[];
   /** Icon names from `src/assets/industries/icons`, one per item in order. */
   icons?: string[];
-  /** Layout: `highlight` adds the figure card beside the list, `list` centres the heading over taller items. */
-  variant?: "highlight" | "list";
+  /** Layout: `highlight` adds the figure card beside the list, `list` centres the heading over taller items, `tiles` keeps the heading left over taller items in two, then three columns. */
+  variant?: "highlight" | "list" | "tiles";
 };
 
 type Props = Base &
@@ -40,7 +40,7 @@ type Props = Base &
         buttonHref?: string;
       }
     | {
-        variant: "list";
+        variant: "list" | "tiles";
         stat?: never;
         buttonText?: never;
         buttonHref?: never;
@@ -184,6 +184,29 @@ const icons = iconNames.map((name) => industryIcons[name]);
 
         .industry-growth_layout {
           width: 100%;
+        }
+      }
+
+      &.tiles {
+        --_item-height: 13.125rem;
+        @media (width >= 48rem) {
+          --_item-height: 14.0625rem;
+        }
+        @media (width >= 62rem) {
+          --_item-height: 15.625rem;
+        }
+
+        .industry-growth_intro {
+          max-width: 46.875rem;
+        }
+
+        .industry-growth_list {
+          @media (width >= 48rem) {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+          @media (width >= 62rem) {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+          }
         }
       }
 

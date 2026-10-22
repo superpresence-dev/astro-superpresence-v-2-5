@@ -11,6 +11,9 @@ import flagTh from "@/assets/footer/flag-th.svg";
 import flagHk from "@/assets/footer/flag-hk.svg";
 import flagSg from "@/assets/footer/flag-sg.svg";
 import { serviceUrl } from "@/utils/services.ts";
+import { EXPLORATION_URL } from "@/utils/explorations.ts";
+import { REVIEW_URL } from "@/utils/review.ts";
+import { REDESIGN_URL } from "@/utils/redesign.ts";
 
 interface Props {
   /** Set to `false` to omit the component. */
@@ -80,8 +83,12 @@ const menus = [
 
 /* Pages built so far; every other label still points nowhere. */
 const hrefs: Record<string, string> = {
+  "About us": "/about",
   "Why Superpresence": "/why-superpresence",
+  "Free website teardown": REVIEW_URL,
+  "Free homepage redesign": REDESIGN_URL,
   "Migrate to Webflow": serviceUrl("Migrate to Webflow"),
+  Explorations: EXPLORATION_URL,
 };
 
 const clocks = [

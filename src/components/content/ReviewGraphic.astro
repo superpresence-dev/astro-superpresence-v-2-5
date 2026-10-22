@@ -1,0 +1,378 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Img from "@/components/media/Img.astro";
+import siteOne from "@/assets/preview/recording-site-1.jpg";
+import siteTwo from "@/assets/preview/recording-site-2.jpg";
+import avatar from "@/assets/preview/recording-avatar.jpg";
+import author from "@/assets/preview/findings-author.png";
+import stopIcon from "@/assets/preview/graphic-stop.svg";
+import pauseIcon from "@/assets/preview/graphic-pause.svg";
+import refreshIcon from "@/assets/preview/graphic-refresh.svg";
+import trashIcon from "@/assets/preview/graphic-trash.svg";
+import homeIcon from "@/assets/preview/graphic-home.svg";
+import slashIcon from "@/assets/preview/graphic-slash.svg";
+import docIcon from "@/assets/preview/graphic-doc.svg";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Which picture: a screen recording of two pages, or the written findings. */
+  variant: "recording" | "findings";
+}
+
+const { render = true, variant, class: className, ...rest } = Astro.props;
+
+const Stop = stopIcon;
+const Pause = pauseIcon;
+const Refresh = refreshIcon;
+const Trash = trashIcon;
+const Home = homeIcon;
+const Slash = slashIcon;
+const Doc = docIcon;
+const title = "Your website looks like every other B2B site — and that's the problem.";
+---
+
+{
+  render && variant && (
+    <div
+      class:list={["review-graphic_wrap", variant, className]}
+      aria-hidden="true"
+      {...rest}
+    >
+      {variant === "recording" && (
+        <div class="review-graphic_board">
+          <div class="review-graphic_site one">
+            <Img src={siteOne} sizes="20rem" class="review-graphic_site-image" />
+          </div>
+          <div class="review-graphic_site two">
+            <Img src={siteTwo} sizes="20rem" class="review-graphic_site-image" />
+          </div>
+          <Img src={avatar} sizes="4rem" class="review-graphic_avatar" />
+          <div class="review-graphic_recorder">
+            <span class="review-graphic_control">
+              <Stop />
+            </span>
+            <span class="review-graphic_control">
+              <Pause />
+            </span>
+            <span class="review-graphic_time">04:31</span>
+            <span class="review-graphic_control">
+              <Refresh />
+            </span>
+            <span class="review-graphic_control">
+              <Trash />
+            </span>
+          </div>
+        </div>
+      )}
+      {variant === "findings" && (
+        <div class="review-graphic_doc">
+          <div class="review-graphic_crumbs">
+            <Home />
+            <Slash />
+            <Doc />
+            <span>{title}</span>
+          </div>
+          <span class="review-graphic_title">{title}</span>
+          <div class="review-graphic_meta">
+            <Img src={author} transparent class="review-graphic_author" />
+            <span class="review-graphic_name">Kevin D. Chen</span>
+            <span class="review-graphic_dot" />
+            <span>Published 08 July 2026</span>
+            <span class="review-graphic_dot" />
+            <span>Confidential</span>
+          </div>
+          <span class="review-graphic_summary">Summary</span>
+          <span class="review-graphic_tag">Brand perception</span>
+          <span class="review-graphic_highlight">
+            Your site doesn't match the quality of your product
+          </span>
+          <span class="review-graphic_caret" />
+          <span class="review-graphic_body">
+            A B2B buyer evaluating Tyrell Corp will visit your site before they
+            ever speak to your team. In under 10 seconds, they form a judgment —
+            and right now, the visual language of the site is working against
+            you. The homepage feels generic, not premium. There's no immediate
+            signal that tells a visitor you're a serious, credible company worth
+            engaging with. When the product is as sophisticated as yours, the
+            site should feel like a proof point, not an afterthought.
+          </span>
+        </div>
+      )}
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    /* An artboard 476 by 410 units that scales as one piece. */
+    .review-graphic_wrap {
+      --_unit: calc(100cqw / 476);
+      container-type: inline-size;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 476 / 410;
+      overflow: hidden;
+      font-family: var(--primary-family);
+      color: var(--color-neutral-90);
+
+      span {
+        display: block;
+      }
+
+      svg {
+        display: block;
+        flex: none;
+        max-width: none;
+      }
+
+      img {
+        display: block;
+        max-width: none;
+      }
+
+      /* Recording: two pages on a dotted board, the reviewer and the recorder bar */
+
+      .review-graphic_board {
+        position: absolute;
+        top: calc(40 * var(--_unit));
+        left: calc(36.4 * var(--_unit));
+        width: calc(417.5 * var(--_unit));
+        height: calc(306 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        background-image: radial-gradient(
+          circle,
+          var(--color-neutral-5) calc(1 * var(--_unit)),
+          transparent calc(1.2 * var(--_unit))
+        );
+        background-size: calc(9.87 * var(--_unit)) calc(9.87 * var(--_unit));
+        border-radius: calc(7.4 * var(--_unit));
+        box-shadow:
+          0 calc(4.94 * var(--_unit)) calc(7.4 * var(--_unit))
+            calc(-2.47 * var(--_unit)) rgb(16 24 40 / 0.03),
+          0 calc(14.81 * var(--_unit)) calc(19.74 * var(--_unit))
+            calc(-4.94 * var(--_unit)) rgb(16 24 40 / 0.08);
+      }
+
+      .review-graphic_site {
+        position: absolute;
+        width: calc(264.7 * var(--_unit));
+        padding: calc(2.29 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        border-radius: calc(3.43 * var(--_unit));
+        box-shadow:
+          0 calc(4.57 * var(--_unit)) calc(6.86 * var(--_unit))
+            calc(-2.29 * var(--_unit)) rgb(16 24 40 / 0.03),
+          0 calc(13.71 * var(--_unit)) calc(18.28 * var(--_unit))
+            calc(-4.57 * var(--_unit)) rgb(16 24 40 / 0.08);
+
+        &.one {
+          top: calc(26.6 * var(--_unit));
+          left: calc(38.9 * var(--_unit));
+          .review-graphic_site-image {
+            aspect-ratio: 260.1 / 130;
+          }
+        }
+        &.two {
+          top: calc(127.5 * var(--_unit));
+          left: calc(114.8 * var(--_unit));
+          .review-graphic_site-image {
+            aspect-ratio: 260.1 / 141.3;
+          }
+        }
+      }
+
+      .review-graphic_site-image {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        object-position: left top;
+        border: calc(0.5 * var(--_unit)) solid var(--color-neutral-5);
+        border-radius: calc(2.29 * var(--_unit));
+      }
+
+      .review-graphic_avatar {
+        position: absolute;
+        top: calc(235.1 * var(--_unit));
+        left: calc(11.7 * var(--_unit));
+        width: calc(59.2 * var(--_unit));
+        height: calc(59.2 * var(--_unit));
+        object-fit: cover;
+        object-position: 50% 15%;
+        border: calc(2.47 * var(--_unit)) solid var(--color-neutral-0);
+        border-radius: 50%;
+        box-shadow:
+          0 calc(2.47 * var(--_unit)) calc(4.94 * var(--_unit))
+            calc(-2.47 * var(--_unit)) rgb(16 24 40 / 0.06),
+          0 calc(4.94 * var(--_unit)) calc(9.87 * var(--_unit))
+            calc(-2.47 * var(--_unit)) rgb(16 24 40 / 0.1);
+      }
+
+      .review-graphic_recorder {
+        position: absolute;
+        top: calc(250.4 * var(--_unit));
+        left: calc(80.8 * var(--_unit));
+        display: flex;
+        align-items: center;
+        gap: calc(2.47 * var(--_unit));
+        padding: calc(2.47 * var(--_unit));
+        background-color: var(--color-neutral-90);
+        border-radius: calc(3.3 * var(--_unit));
+      }
+
+      .review-graphic_control {
+        display: flex;
+        padding: calc(5.38 * var(--_unit));
+        svg {
+          width: calc(11.1 * var(--_unit));
+          height: calc(11.1 * var(--_unit));
+        }
+      }
+
+      .review-graphic_time {
+        padding: calc(5.38 * var(--_unit)) calc(8.08 * var(--_unit));
+        color: var(--color-neutral-5);
+        font-size: calc(9.42 * var(--_unit));
+        line-height: calc(13.19 * var(--_unit));
+      }
+
+      /* Findings: the top of a written report, fading out right and below */
+
+      .review-graphic_doc {
+        position: absolute;
+        top: calc(56 * var(--_unit));
+        left: calc(22 * var(--_unit));
+        width: calc(508 * var(--_unit));
+        height: calc(381 * var(--_unit));
+        overflow: hidden;
+        font-weight: var(--primary-medium);
+        background-color: var(--color-neutral-0);
+        border-radius: calc(8 * var(--_unit)) calc(8 * var(--_unit)) 0 0;
+        box-shadow:
+          0 0 0 calc(1 * var(--_unit)) var(--color-neutral-5),
+          0 calc(-4 * var(--_unit)) calc(40 * var(--_unit)) rgb(0 0 0 / 0.05),
+          calc(2.2 * var(--_unit)) calc(3.2 * var(--_unit))
+            calc(32 * var(--_unit)) rgb(0 0 0 / 0.02);
+        mask-image:
+          linear-gradient(to right, black 82%, transparent 98%),
+          linear-gradient(to bottom, black 64%, transparent 92%);
+        mask-composite: intersect;
+
+        > * {
+          position: absolute;
+          left: calc(46 * var(--_unit));
+          white-space: nowrap;
+        }
+      }
+
+      .review-graphic_crumbs {
+        top: calc(14 * var(--_unit));
+        left: calc(14 * var(--_unit));
+        display: flex;
+        align-items: center;
+        gap: calc(4 * var(--_unit));
+        color: var(--color-neutral-60);
+        font-size: calc(11 * var(--_unit));
+        line-height: calc(12 * var(--_unit));
+        svg {
+          width: calc(12 * var(--_unit));
+          height: calc(12 * var(--_unit));
+          &:nth-of-type(3) {
+            width: calc(14 * var(--_unit));
+            height: calc(14 * var(--_unit));
+          }
+        }
+      }
+
+      .review-graphic_title {
+        top: calc(60 * var(--_unit));
+        font-size: calc(18 * var(--_unit));
+        line-height: calc(24 * var(--_unit));
+        letter-spacing: -0.007em;
+      }
+
+      .review-graphic_meta {
+        top: calc(92 * var(--_unit));
+        display: flex;
+        align-items: center;
+        gap: calc(6 * var(--_unit));
+        color: var(--color-neutral-40);
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+      }
+
+      .review-graphic_author {
+        width: calc(20 * var(--_unit));
+        height: calc(20 * var(--_unit));
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .review-graphic_name {
+        color: var(--color-neutral-90);
+        font-weight: var(--primary-semibold);
+      }
+
+      .review-graphic_dot {
+        width: calc(3 * var(--_unit));
+        height: calc(3 * var(--_unit));
+        background-color: #d9d9d9;
+        border-radius: 50%;
+      }
+
+      .review-graphic_summary {
+        top: calc(145 * var(--_unit));
+        font-size: calc(18 * var(--_unit));
+        line-height: calc(27 * var(--_unit));
+        font-weight: var(--primary-semibold);
+      }
+
+      .review-graphic_tag {
+        top: calc(154.7 * var(--_unit));
+        left: calc(264 * var(--_unit));
+        padding: calc(4 * var(--_unit)) calc(6 * var(--_unit));
+        color: var(--color-neutral-2);
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(12 * var(--_unit));
+        background-color: var(--brand);
+        border-radius: calc(2.3 * var(--_unit));
+        box-shadow:
+          inset 0 calc(1 * var(--_unit)) calc(0.4 * var(--_unit))
+            rgb(255 255 255 / 0.28),
+          0 calc(0.5 * var(--_unit)) calc(3.2 * var(--_unit)) rgb(0 0 0 / 0.16);
+      }
+
+      .review-graphic_highlight {
+        top: calc(184 * var(--_unit));
+        width: calc(321 * var(--_unit));
+        padding: calc(4 * var(--_unit));
+        font-size: calc(14 * var(--_unit));
+        line-height: calc(20 * var(--_unit));
+        background-color: rgb(62 108 255 / 0.12);
+        box-shadow: 0 0 0 calc(1 * var(--_unit)) rgb(62 108 255 / 0.24);
+      }
+
+      .review-graphic_caret {
+        top: calc(171 * var(--_unit));
+        left: calc(367.35 * var(--_unit));
+        width: calc(1.3 * var(--_unit));
+        height: calc(42 * var(--_unit));
+        background-image: linear-gradient(
+          to top,
+          #3e6cff,
+          rgb(62 108 255 / 0.82) 28%,
+          rgb(62 108 255 / 0.36)
+        );
+      }
+
+      .review-graphic_body {
+        top: calc(224 * var(--_unit));
+        width: calc(509 * var(--_unit));
+        color: var(--color-neutral-40);
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        white-space: normal;
+      }
+    }
+  }
+</style>

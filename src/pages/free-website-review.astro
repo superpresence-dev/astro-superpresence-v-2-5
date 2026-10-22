@@ -1,0 +1,88 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import ReviewHero from "@/components/section/ReviewHero.astro";
+import ReviewDeliverables from "@/components/content/ReviewDeliverables.astro";
+import ReviewGraphic from "@/components/content/ReviewGraphic.astro";
+import HomeDifference from "@/components/content/HomeDifference.astro";
+import HomeQuote from "@/components/section/HomeQuote.astro";
+import ReviewRequest from "@/components/content/ReviewRequest.astro";
+import { sortExplorations } from "@/utils/explorations.ts";
+
+const works = sortExplorations(await getCollection("explorations")).map(
+  ({ data }) => ({ title: data.title, image: data.image }),
+);
+---
+
+<Layout
+  title="Free website review"
+  description="Your website could be losing leads before sales begin. We'll quickly identify issues and highlight the top fixes to boost your results."
+  navTheme="light"
+  overlap
+>
+  {/* Hero */}
+  <ReviewHero works={works} />
+  {/* What you get */}
+  <Section>
+    <ReviewDeliverables
+      eyebrow="Not another website score"
+      heading="A second opinion worth acting on"
+      lead="We review your website from a buyer's view, highlighting key strengths, obstacles, and top improvement priorities."
+      items={[
+        {
+          title: "A 5-10 minute screen recording",
+          text: "We review your live site, highlight successes, losses, and top changes we'd make first.",
+        },
+        {
+          title: "The findings, in writing",
+          text: "A brief summary for your team, listing issues by business impact and the precise fixes.",
+        },
+      ]}
+    >
+      <ReviewGraphic slot="visual-1" variant="recording" />
+      <ReviewGraphic slot="visual-2" variant="findings" />
+    </ReviewDeliverables>
+  </Section>
+  {/* Who it's for */}
+  <Section>
+    <HomeDifference
+      eyebrow="Who it's for"
+      heading="Who this review is built for"
+      lead="Ideal for early-stage and scaling startups, B2B firms, or companies with active marketing. If this fits you, keep reading."
+      leadWidth="full"
+      logos={false}
+      columnsFrom="desktop"
+      boxes={[
+        {
+          title: "This is for you if...",
+          featured: true,
+          items: [
+            "Your B2B site gets traffic but isn't converting well.",
+            "You think your site hurts credibility but can't find why.",
+            "Need a fresh, clear second opinion on site growth",
+            "Competitors win with sharper websites.",
+            "Planning a redesign? Know what to prioritise first.",
+          ],
+        },
+        {
+          title: "This isn't for you if...",
+          featured: false,
+          items: [
+            "You haven't launched a site; nothing to see yet.",
+            "You lack revenue, funding, and marketing budget.",
+            "You run B2C ecommerce, not our specialty.",
+            "You need a generated SEO scorecard instead.",
+            "You gather reviews to negotiate with agency",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Quote */}
+  <HomeQuote />
+  {/* Request */}
+  <Section id="review">
+    <ReviewRequest privacyHref="/privacy-policy" />
+  </Section>
+</Layout>

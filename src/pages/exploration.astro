@@ -7,10 +7,9 @@ import ExplorationGallery from "@/components/content/ExplorationGallery.astro";
 import SideCta from "@/components/content/SideCta.astro";
 import HomeCta from "@/components/section/HomeCta.astro";
 import { EXPLORATION_CATEGORIES } from "@/content.config.ts";
+import { sortExplorations } from "@/utils/explorations.ts";
 
-const items = (await getCollection("explorations"))
-  .sort((a, b) => a.data.order - b.data.order)
-  .map(({ data }) => ({
+const items = sortExplorations(await getCollection("explorations")).map(({ data }) => ({
     title: data.title,
     category: data.category,
     image: data.image,

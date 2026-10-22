@@ -25,7 +25,9 @@
  *   node convert.mjs --variables Responsive.json Static.json [--css path/to/base.css] [--astro-config path]
  *   node convert.mjs --design-context about-desktop.txt about-tablet.txt
  *   node convert.mjs --summary about-desktop.txt
- *   node convert.mjs --folder [figma] [--page home]
+ *   node convert.mjs --summary service-node.json [--node 6825:40102]
+ *   node convert.mjs --clean-svg src/assets/about/*.svg
+ *   node convert.mjs --folder [figma] [--page home]   # also reads a figma-bridge get_node dump
  *   node convert.mjs --json design.json [--css path/to/base.css]
  *   node convert.mjs --px 30 [--bp tablet|mobile]
  *   node convert.mjs --lh 36/32 [--bp tablet|mobile]
@@ -33,12 +35,13 @@
  *   node convert.mjs --metadata fixtures/sample-page.xml [--wrapper nodeId,...]
  */
 
-import { readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
+import { dumpToMetadataXml, isNodeDump, solidPaint } from "./figma-bridge.mjs";
 
 /* Moves independently of the framework: a skill fix does not need a release,
    and a release does not invalidate the skill. */
-const SKILL_VERSION = "2.6.0";
+const SKILL_VERSION = "2.11.0";
 /* A pin, not a mirror: the release this skill was last checked against.
    Deriving it from package.json would make it always equal to the running
    version, and the mismatch note would never fire. */
@@ -442,6 +445,8 @@ function compareLayout(token, have) {
 const LETTER_EPS = 0.002; // ±0.002em counts as the same letter spacing
 /** What the variable export said about each token, for the checks that come after it. */
 const varStatus = new Map();
+/* The px per breakpoint each token has in Figma's variables, for telling a node's style by its values. */
+const figmaScale = new Map();
 const INVENTORY_KEYS = ["space", "type", "color", "letter", "radius", "icon", "layout", "weight"];
 
 /* ---------- Figma variable export ---------- */
@@ -544,6 +549,7 @@ function runVariables(variableFiles) {
       else if (fonts) counts.missing++;
     } else if (e.kind === "scale") {
       const have = Object.fromEntries(BPS.filter((b) => e.values[b] !== undefined).map((b) => [b, e.values[b]]));
+      if (!e.conflict) figmaScale.set(e.token, have);
       const token = tokens.scale[e.token];
       if (e.conflict) {
         varStatus.set(e.token, "differs");
@@ -726,7 +732,9 @@ function readCapture(file) {
   const base = file.split("/").pop().replace(/\.[^.]+$/, "").replace(/[-_]context$/i, "");
   return {
     file, text, styles: parseStyles(text), ...parseCapture(text),
-    page: base.replace(/[-_](desktop|tablet|mobile)$/i, ""),
+    /* `home-desktop` and a per-section `home-desktop-02-hero` are both page "home". */
+    page: base.replace(/[-_](desktop|tablet|mobile)([-_].*)?$/i, ""),
+    bp: base.match(/[-_](desktop|tablet|mobile)([-_]|$)/i)?.[1].toLowerCase() ?? null,
     label: base,
   };
 }
@@ -952,6 +960,9 @@ function buttonConfigs() {
   return configs;
 }
 
+/** A button text's type token: given by a node dump, or from a capture's size variable. */
+const styleToken = (style) => style.token ?? tokenFor(style.sizeVar)?.token ?? null;
+
 /** Where a Figma text button differs from one Button configuration; an empty list is a match. */
 function buttonDiff(s, c) {
   const diffs = [];
@@ -962,7 +973,7 @@ function buttonDiff(s, c) {
   num("radius", s.radius?.px, c.radius);
   num("padding-y", s.padY?.px, c.padY);
   num("padding-x", s.padX?.px, c.padX);
-  const font = s.style ? tokenFor(s.style.sizeVar)?.token : null;
+  const font = s.style ? styleToken(s.style) : null;
   if (font && font !== c.font) diffs.push(`font ${font} vs ${c.font ?? "?"}`);
   if (s.style && c.weight && s.style.weight !== c.weight) diffs.push(`weight ${s.style.weight} vs ${c.weight}`);
   const colour = (what, figma, project) => {
@@ -994,121 +1005,20 @@ function projectPx(value, fontPx) {
   return null;
 }
 
-/** Weight, tracking, colour, effects, buttons, assets and clipped nodes for every text style and node a get_design_context capture uses. */
-function runDesignContext(files) {
-  const caps = files.map(readCapture);
-  const fonts = caps.flatMap((c) => c.styles.fonts);
-  const rows = new Map();
-  const ensure = (sizeVar, weight, name) => {
-    const key = `${sizeVar.toLowerCase()}|${weight}`;
-    if (!rows.has(key)) {
-      rows.set(key, { sizeVar, weight, weightName: name, styles: new Set(), lhVars: new Set(), letters: new Set(), transforms: new Set(), nodes: 0, buttonNodes: 0, pages: new Map() });
-    }
-    return rows.get(key);
-  };
-  for (const f of fonts) {
-    /* letterSpacing in the styles line is percent. */
-    const row = ensure(f.size, f.weight, f.weightName);
-    row.styles.add(f.name);
-    if (f.lineHeight) row.lhVars.add(f.lineHeight);
-    if (f.letter !== undefined) row.letters.add(f.letter);
-  }
+/* Text layers are named after their style; that is how a page's type styles are found from metadata or a node dump. */
+const TYPE_STYLES = {
+  h1: "h1", h2: "h2", h3: "h3", h4: "h4", h5: "h5", h6: "h6", display: "display",
+  p__lg: "text-large", p__md: "text-main", p__sm: "text-small", p__xs: "text-xsmall",
+  overline__md: "overline-main", overline__sm: "overline-small",
+};
 
-  /* The code carries the variable names and is the only place text-transform and colours show up. Its px fallbacks are desktop-mode values and are ignored. */
-  const colors = { heading: new Map(), text: new Map(), label: new Map() };
-  const textNodes = caps.flatMap((c) => c.nodes.map((n) => ({ n, c, t: n.text ? textOf(n) : null })).filter((x) => x.t));
-  for (const { n, c, t } of textNodes) {
-    const row = ensure(t.sizeVar, t.weight, t.weightName);
-    const inButton = Boolean(buttonOf(n));
-    if (inButton) row.buttonNodes++;
-    else {
-      row.nodes++;
-      row.pages.set(c.page, (row.pages.get(c.page) ?? 0) + 1);
-    }
-    row.transforms.add(t.transform);
-    if (t.lh) row.lhVars.add(t.lh);
-    if (inButton || !t.color) continue;
-    /* Overline and tag styles are labels: a muted or accent label colour must not outvote the body colour for --text. */
-    const role = /^font-size\/heading\//i.test(t.sizeVar) ? "heading" : /^font-size\/overline\//i.test(t.sizeVar) ? "label" : "text";
-    const key = colorLabel(t.color);
-    const entry = colors[role].get(key) ?? { color: t.color, count: 0, styles: new Map() };
-    entry.count++;
-    const style = tokenFor(t.sizeVar)?.token ?? t.sizeVar;
-    entry.styles.set(style, (entry.styles.get(style) ?? 0) + 1);
-    colors[role].set(key, entry);
-  }
-  if (!rows.size) console.log("No text styles found in the design-context capture(s) — expected the 'These styles are contained in the design' line.");
+const em = (pct) => +(pct / 100).toFixed(4);
+const cut = (s, n) => (s.length > n ? `${s.slice(0, n - 1)}…` : s);
+const distinctEm = (list) => [...new Set(list.map(em))].sort((a, b) => a - b);
+const spreadEm = (list) => list.length > 0 && Math.max(...list.map(em)) - Math.min(...list.map(em)) > LETTER_EPS;
 
-  const isButtonRow = (r) => (r.styles.size ? [...r.styles].every((s) => /^button\b/i.test(s)) : !r.nodes && r.buttonNodes > 0);
-  for (const r of rows.values()) {
-    const hit = /^font-size\//i.test(r.sizeVar) ? tokenFor(r.sizeVar) : null;
-    r.token = hit && hit.kind === "scale" && !isLineHeight(hit.token) ? hit.token : null;
-    r.button = isButtonRow(r);
-  }
-  const textRows = [...rows.values()].filter((r) => !r.button);
-  const byToken = new Map();
-  for (const r of textRows) if (r.token) byToken.set(r.token, [...(byToken.get(r.token) ?? []), r]);
-  const em = (pct) => +(pct / 100).toFixed(4);
-  const distinctEm = (list) => [...new Set(list.map(em))].sort((a, b) => a - b);
-  const spreadEm = (list) => list.length > 0 && Math.max(...list.map(em)) - Math.min(...list.map(em)) > LETTER_EPS;
-  const namesOf = (r) => [...r.styles].join(", ") || "(from code, no style name)";
-
-  const table = [];
-  const weightLines = [];
-  for (const r of [...textRows].sort((a, b) => (a.token ?? "~").localeCompare(b.token ?? "~") || a.weight - b.weight)) {
-    const names = namesOf(r);
-    const letters = [...r.letters];
-    const transform = r.nodes ? ([...r.transforms].length === 1 ? [...r.transforms][0] : "mixed") : null;
-    const figma = [
-      `w${r.weight}${r.weightName ? ` ${r.weightName}` : ""}`,
-      letters.length ? letters.map((l) => `${em(l)}em`).join("/") : "tracking n/a",
-      [...r.lhVars].join("/") || "line height n/a",
-      transform && transform !== "none" ? transform : null,
-    ].filter(Boolean).join(" · ");
-    const T = r.token;
-    if (!T || !tokens.scale[T]) {
-      table.push([names, figma, "—", "UNMAPPED", "—"]);
-      out.asks.push(`${names}: ${T ? `--${T} is not in base.css` : `size ${r.sizeVar} maps to no text token`}. Which token is this style, or is it new?`);
-      continue;
-    }
-    const group = byToken.get(T);
-    const curW = tokens.styleWeight[T];
-    const curL = tokens.styleLetter[T];
-    const curT = tokens.styleTransform[T];
-    const base = [
-      curW ? `w${curW.value}${curW.token ? ` (${curW.token})` : ""}` : "weight n/a",
-      curL ? `${curL.em}em${curL.token ? ` (${curL.token})` : ""}` : "tracking n/a",
-      `--${T}-line-height`,
-      curT && curT !== "none" ? curT : null,
-    ].filter(Boolean).join(" · ");
-    const weightsSeen = [...new Set(group.map((x) => x.weight))];
-    const lettersSeen = group.flatMap((x) => [...x.letters]);
-    const conflicts = [];
-    if (weightsSeen.length > 1 && !weightsCovered(curW?.value, weightsSeen)) conflicts.push("weight");
-    if (spreadEm(lettersSeen)) conflicts.push("letter-spacing");
-    if (transform === "mixed") conflicts.push("text-transform");
-
-    const kinds = [];
-    if (curW?.value !== r.weight && !(weightsSeen.length > 1 && weightsCovered(curW?.value, weightsSeen))) kinds.push("weight");
-    if (letters.length === 1 && Math.abs((curL?.em ?? 0) - em(letters[0])) > LETTER_EPS) kinds.push("letter-spacing");
-    if (transform && transform !== "mixed" && (curT ?? "none") !== transform) kinds.push("text-transform");
-
-    const lhTokens = [...r.lhVars].map((v) => tokenFor(v)?.token);
-    const lhNote = !r.lhVars.size ? "n/a"
-      : lhTokens.every((t) => t === `${T}-line-height`)
-        ? { match: "triples match", differs: "triples DIFFER", missing: "token missing" }[varStatus.get(`${T}-line-height`)] ?? "own token; add --variables to compare"
-        : `uses ${lhTokens.map((t) => `--${t}`).join("/")}`;
-    if (r.lhVars.size && lhTokens.some((t) => t !== `${T}-line-height`)) {
-      out.asks.push(`${names}: its line height variable (${[...r.lhVars].join("/")}) is not --${T}-line-height. Is that deliberate?`);
-      kinds.push("line-height");
-    }
-    const viaUtility = curW?.value !== r.weight && hasWeightUtility(r.weight) && weightsCovered(curW?.value, weightsSeen);
-    const status = conflicts.length ? `CONFLICT (${conflicts.join(", ")})` : kinds.length ? `DIFFERS (${[...new Set(kinds)].join(", ")})` : viaUtility ? `MATCH via .weight-${WEIGHT_UTILITY[r.weight]}` : "MATCH";
-    table.push([names, figma, base, status, `--${T}-line-height: ${lhNote}`]);
-    weightLines.push(`--${T}  ${names}: Figma ${r.weight}${r.weightName ? ` ${r.weightName}` : ""}, project ${curW?.value ?? "n/a"}${curW?.token ? ` (${curW.token})` : ""} — ${conflicts.includes("weight") ? "CONFLICT" : curW?.value === r.weight ? "match" : viaUtility ? `match via .weight-${WEIGHT_UTILITY[r.weight]}` : "DIFFERS"}`);
-  }
-
-  /* One question and one set of update lines per text token, however many styles share it. */
+/** One question and one set of update lines per text token, however many styles share it. Returns the minority weights already covered. */
+function askTypeTokens(byToken) {
   const covered = [];
   for (const [T, group] of byToken) {
     if (!tokens.scale[T]) continue;
@@ -1176,19 +1086,11 @@ function runDesignContext(files) {
       out.asks.push(`${names} (--${T}): ${issues.join("; ")}. ${conflict ? "Which is the default, and are the others variants handled by another class?" : "Apply to this project, or keep the template default?"}`);
     }
   }
+  return covered;
+}
 
-  if (table.length) {
-    console.log("FIGMA is weight · letter spacing (em) · line-height variable · text-transform; letter spacing comes from the styles line, never from the px fallbacks in the code.\n");
-    printTable(["STYLE", "FIGMA", "BASE.CSS", "STATUS", "LINE HEIGHT"], table);
-    console.log("\nWEIGHT (every text style, Figma vs project):");
-    for (const l of weightLines) console.log(`  ${l}`);
-    if (covered.length) {
-      console.log("\nMINORITY WEIGHTS ALREADY COVERED (default in base.css, the rest by existing utilities):");
-      for (const l of covered) console.log(`  ${l}`);
-    }
-  }
-
-  /* ---- text colours ---- */
+/** The most used colour of heading and body text against --heading and --text, and every other text colour as a question. */
+function reportTextColours(colors) {
   const dominant = (m) => [...m.values()].sort((a, b) => b.count - a.count)[0];
   if (colors.heading.size || colors.text.size || colors.label.size) {
     console.log("\nTEXT COLOURS (heading styles set --heading, body styles set --text, overline and tag styles are labels and set neither; light theme resolved):");
@@ -1222,6 +1124,281 @@ function runDesignContext(files) {
       out.asks.push(`Text colours besides --heading/--text: ${others.map((o) => `${o[1]} ×${o[3]}`).join(", ")}. Which are roles that deserve a token (muted label, caption, accent eyebrow…), and which are one-offs?`);
     }
   }
+}
+
+/** The capture's text styles against base.css: a table row per style, then one question per token. */
+function reportCaptureTextStyles(textRows, byToken, colors) {
+  const namesOf = (r) => [...r.styles].join(", ") || "(from code, no style name)";
+
+  const table = [];
+  const weightLines = [];
+  for (const r of [...textRows].sort((a, b) => (a.token ?? "~").localeCompare(b.token ?? "~") || a.weight - b.weight)) {
+    const names = namesOf(r);
+    const letters = [...r.letters];
+    const transform = r.nodes ? ([...r.transforms].length === 1 ? [...r.transforms][0] : "mixed") : null;
+    const figma = [
+      `w${r.weight}${r.weightName ? ` ${r.weightName}` : ""}`,
+      letters.length ? letters.map((l) => `${em(l)}em`).join("/") : "tracking n/a",
+      [...r.lhVars].join("/") || "line height n/a",
+      transform && transform !== "none" ? transform : null,
+    ].filter(Boolean).join(" · ");
+    const T = r.token;
+    if (!T || !tokens.scale[T]) {
+      table.push([names, figma, "—", "UNMAPPED", "—"]);
+      out.asks.push(`${names}: ${T ? `--${T} is not in base.css` : `size ${r.sizeVar} maps to no text token`}. Which token is this style, or is it new?`);
+      continue;
+    }
+    const group = byToken.get(T);
+    const curW = tokens.styleWeight[T];
+    const curL = tokens.styleLetter[T];
+    const curT = tokens.styleTransform[T];
+    const base = [
+      curW ? `w${curW.value}${curW.token ? ` (${curW.token})` : ""}` : "weight n/a",
+      curL ? `${curL.em}em${curL.token ? ` (${curL.token})` : ""}` : "tracking n/a",
+      `--${T}-line-height`,
+      curT && curT !== "none" ? curT : null,
+    ].filter(Boolean).join(" · ");
+    const weightsSeen = [...new Set(group.map((x) => x.weight))];
+    const lettersSeen = group.flatMap((x) => [...x.letters]);
+    const conflicts = [];
+    if (weightsSeen.length > 1 && !weightsCovered(curW?.value, weightsSeen)) conflicts.push("weight");
+    if (spreadEm(lettersSeen)) conflicts.push("letter-spacing");
+    if (transform === "mixed") conflicts.push("text-transform");
+
+    const kinds = [];
+    if (curW?.value !== r.weight && !(weightsSeen.length > 1 && weightsCovered(curW?.value, weightsSeen))) kinds.push("weight");
+    if (letters.length === 1 && Math.abs((curL?.em ?? 0) - em(letters[0])) > LETTER_EPS) kinds.push("letter-spacing");
+    if (transform && transform !== "mixed" && (curT ?? "none") !== transform) kinds.push("text-transform");
+
+    const lhTokens = [...r.lhVars].map((v) => tokenFor(v)?.token);
+    const lhNote = !r.lhVars.size ? "n/a"
+      : lhTokens.every((t) => t === `${T}-line-height`)
+        ? { match: "triples match", differs: "triples DIFFER", missing: "token missing" }[varStatus.get(`${T}-line-height`)] ?? "own token; add --variables to compare"
+        : `uses ${lhTokens.map((t) => `--${t}`).join("/")}`;
+    if (r.lhVars.size && lhTokens.some((t) => t !== `${T}-line-height`)) {
+      out.asks.push(`${names}: its line height variable (${[...r.lhVars].join("/")}) is not --${T}-line-height. Is that deliberate?`);
+      kinds.push("line-height");
+    }
+    const viaUtility = curW?.value !== r.weight && hasWeightUtility(r.weight) && weightsCovered(curW?.value, weightsSeen);
+    const status = conflicts.length ? `CONFLICT (${conflicts.join(", ")})` : kinds.length ? `DIFFERS (${[...new Set(kinds)].join(", ")})` : viaUtility ? `MATCH via .weight-${WEIGHT_UTILITY[r.weight]}` : "MATCH";
+    table.push([names, figma, base, status, `--${T}-line-height: ${lhNote}`]);
+    weightLines.push(`--${T}  ${names}: Figma ${r.weight}${r.weightName ? ` ${r.weightName}` : ""}, project ${curW?.value ?? "n/a"}${curW?.token ? ` (${curW.token})` : ""} — ${conflicts.includes("weight") ? "CONFLICT" : curW?.value === r.weight ? "match" : viaUtility ? `match via .weight-${WEIGHT_UTILITY[r.weight]}` : "DIFFERS"}`);
+  }
+
+  const covered = askTypeTokens(byToken);
+
+  if (table.length) {
+    console.log("FIGMA is weight · letter spacing (em) · line-height variable · text-transform; letter spacing comes from the styles line, never from the px fallbacks in the code.\n");
+    printTable(["STYLE", "FIGMA", "BASE.CSS", "STATUS", "LINE HEIGHT"], table);
+    console.log("\nWEIGHT (every text style, Figma vs project):");
+    for (const l of weightLines) console.log(`  ${l}`);
+    if (covered.length) {
+      console.log("\nMINORITY WEIGHTS ALREADY COVERED (default in base.css, the rest by existing utilities):");
+      for (const l of covered) console.log(`  ${l}`);
+    }
+  }
+
+  reportTextColours(colors);
+}
+
+/** Distinct shadows as suggested --shadow-* tokens, named after an equal Figma effect style when there is one. */
+function reportShadows(shadows, effectStyles, source = "the node classes and the styles line") {
+  if (shadows.size || effectStyles.size) {
+    console.log(`\nSHADOWS (Figma effect styles are not in a variable export; these come from ${source}):`);
+    const blur = (s) => Math.max(...s.layers.map((l) => l.blur));
+    const reach = (s) => Math.max(...s.layers.map((l) => Math.abs(l.y)));
+    const ranked = [...shadows.values()].sort((a, b) => blur(a) - blur(b) || reach(a) - reach(b));
+    const SCALE = ranked.length === 1 ? ["medium"] : ranked.length === 2 ? ["small", "large"] : ["small", "medium", "large", "xlarge", "2xlarge"];
+    /* A shadow equal to a Figma effect style takes that style's name (Shadow/Small -> shadow-small); only the rest are named by rank. */
+    const styleToken = (s) => (s.effect ? `shadow-${s.effect.replace(/^.*\//, "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}` : null);
+    const taken = new Set(ranked.map(styleToken).filter(Boolean));
+    const rankFree = SCALE.map((n) => `shadow-${n}`).filter((n) => !taken.has(n));
+    const shadowRows = [];
+    let rankAt = 0;
+    ranked.forEach((s, i) => {
+      s.token = styleToken(s) ?? rankFree[rankAt++] ?? `shadow-${i + 1}`;
+      const existing = css.match(new RegExp(`--${s.token}:\\s*([^;]+);`))?.[1];
+      shadowRows.push([s.token, `${s.nodes}`, [...s.names].slice(0, 3).join(", "), s.effect ? `= Figma ${s.effect}${s.drop ? " (code uses drop-shadow)" : ""}` : `no equal Figma effect style${s.drop ? " (drop-shadow, spread unknown)" : ""}`, existing ? "already in base.css — compare by hand" : "NEW"]);
+      out.places.push({ name: s.token, value: shadowCss(s.layers) });
+    });
+    if (shadowRows.length) printTable(["SUGGESTED", "NODES", "USED BY", "FIGMA EFFECT STYLE", "BASE.CSS"], shadowRows);
+    if (effectStyles.size) {
+      console.log(`  Figma effect styles${source.includes("styles line") ? " in the styles line" : ""}:`);
+      for (const e of effectStyles.values()) console.log(`    ${e.name}: ${shadowCss(e.layers.map((l) => ({ ...l, color: l.color })))}`);
+    }
+    const unmatched = ranked.filter((s) => effectStyles.size && !s.effect);
+    out.asks.push(`Shadows: ${ranked.length} distinct in the nodes (${ranked.map((s) => `${s.token} ×${s.nodes}`).join(", ")}). Add them as --shadow-* tokens?${unmatched.length ? ` ${unmatched.map((s) => s.token).join(", ")} differ from every Figma effect style in blur, offset or spread — which is right?` : ""}`);
+  }
+}
+
+/** Button variants: one row each, compared with --button-* and with every configuration Button.astro has. */
+function reportButtons(specs) {
+  const variants = new Map();
+  for (const spec of specs) {
+    const state = spec.name.match(/\bis-[a-z]+/i)?.[0];
+    const sig = JSON.stringify([spec.name.replace(/\s*\bis-[a-z]+/i, ""), colorLabel(spec.fill), spec.border && [spec.border.width, colorLabel(spec.border.color)], colorLabel(spec.text), spec.radius?.name, spec.padX?.name, spec.padY?.name, spec.gap?.name, spec.style && [styleToken(spec.style) ?? spec.style.sizeVar, spec.style.weight]]);
+    const v = variants.get(sig) ?? { spec, count: 0, states: new Set() };
+    v.count++;
+    if (state) v.states.add(state);
+    variants.set(sig, v);
+  }
+  console.log("\nBUTTONS (nodes whose data-name contains \"button\"; each variant one row):");
+  const baseName = (v) => v.spec.name.replace(/\s*\bis-[a-z]+/i, "");
+  const seen = {};
+  for (const v of [...variants.values()].sort((x, y) => y.count - x.count)) {
+    seen[baseName(v)] = (seen[baseName(v)] ?? 0) + 1;
+    v.label = baseName(v);
+    v.index = seen[baseName(v)];
+  }
+  for (const v of variants.values()) v.label = `${baseName(v)}${seen[baseName(v)] > 1 ? ` #${v.index}` : ""}${v.states.size ? ` (${[...v.states].join(", ")})` : ""}`;
+  const buttonRows = [...variants.values()].map(({ spec: s, count, label }) => [
+    `${label} ×${count}`,
+    s.iconOnly ? "icon only" : "text",
+    colorLabel(s.fill), colorLabel(s.text),
+    s.border ? `${s.border.width}px ${colorLabel(s.border.color)}` : "none",
+    s.radius?.name ?? "—",
+    `${s.padX?.name ?? "—"} × ${s.padY?.name ?? "—"}`,
+    s.gap?.name ?? "—",
+    s.style ? `${styleToken(s.style) ?? s.style.sizeVar} w${s.style.weight}${s.style.row?.styles.size ? ` (${[...s.style.row.styles].filter((x) => /^button/i.test(x)).join(", ") || [...s.style.row.styles][0]})` : ""}` : "—",
+  ]);
+  printTable(["VARIANT", "KIND", "FILL", "TEXT", "BORDER", "RADIUS", "PADDING X × Y", "GAP", "TEXT STYLE"], buttonRows);
+
+  const role = tokens.rootVars;
+  const lines = [];
+  const textVariants = [...variants.values()].filter((v) => !v.spec.iconOnly).sort((a, b) => b.count - a.count);
+  for (const { spec: s, count, label } of textVariants) {
+    const fontPx = s.style ? s.style.px ?? tokens.scale[styleToken(s.style)]?.desktop : null;
+    const cmp = (token, figmaPx, ref, what, projectValue = role[token], triple = null) => {
+      if (figmaPx === undefined || figmaPx === null || Number.isNaN(figmaPx)) return;
+      const proj = projectPx(projectValue, fontPx);
+      const ok = proj !== null && Math.abs(proj - figmaPx) <= 0.5;
+      lines.push([`${label} ×${count}`, token, `${what} = ${figmaPx}px${triple && new Set([triple.desktop, triple.tablet, triple.mobile]).size > 1 ? ` (${fmt(triple)})` : ""}`, `${projectValue ?? "—"}${proj !== null ? ` ≈ ${proj}px` : ""}`, ok ? "MATCH" : "DIFFERS", ok ? "" : `${token}: ${ref};`]);
+    };
+    cmp("--button-radius", s.radius?.px, s.radius?.token ? `var(--${s.radius.token})` : `${s.radius?.px}px`, s.radius?.name ?? "radius", undefined, s.radius?.triple);
+    cmp("--button-padding-block", s.padY?.px, s.padY?.token ? `var(--${s.padY.token})` : `${s.padY?.px}px`, s.padY?.name ?? "padding", undefined, s.padY?.triple);
+    cmp("--button-padding-inline", s.padX?.px, s.padX?.token ? `var(--${s.padX.token})` : `${s.padX?.px}px`, s.padX?.name ?? "padding", undefined, s.padX?.triple);
+    cmp("--button-gap", s.gap?.px, s.gap?.token ? `var(--${s.gap.token})` : `${s.gap?.px}px`, s.gap?.name ?? "gap", undefined, s.gap?.triple);
+    cmp("--button-border-inset", s.border?.width ?? 0, `${+((s.border?.width ?? 0) / ROOT_PX).toFixed(4)}rem`, "border");
+    if (s.style) {
+      const t = styleToken(s.style);
+      const lhToken = s.style.lh && tokenFor(s.style.lh)?.token;
+      const lhPx = s.style.lhPx ?? (lhToken && tokens.scale[lhToken]?.desktop);
+      const ratio = lhPx && fontPx ? +(lhPx / fontPx).toFixed(4) : null;
+      const w = Object.entries(tokens.weights).find(([, v]) => v === s.style.weight)?.[0];
+      const letter = s.style.letter ?? (s.style.row && [...s.style.row.letters][0]);
+      lines.push([`${label} ×${count}`, "--button-font-size", s.style.sizeVar ?? `${s.style.px}px${t ? ` (--${t})` : ""}`, role["--button-font-size"] ?? "—", role["--button-font-size"] === "initial" ? "DIFFERS (project inherits)" : "check", t ? `--button-font-size: var(--${t});` : ""]);
+      lines.push([`${label} ×${count}`, "--button-font-weight", `w${s.style.weight}`, role["--button-font-weight"] ?? "—", `${role["--button-font-weight"] === "initial" ? "DIFFERS (project inherits)" : "check"}`, w ? `--button-font-weight: var(${w});` : ""]);
+      if (ratio !== null) lines.push([`${label} ×${count}`, "--button-line-height", `${s.style.lh ? `${s.style.lh} = ` : ""}${lhPx}px/${fontPx}px at desktop`, role["--button-line-height"] ?? "—", Math.abs(Number(role["--button-line-height"]) - ratio) < 0.01 ? "MATCH" : "DIFFERS", `--button-line-height: ${ratio};`]);
+      if (letter !== undefined && letter !== null) lines.push([`${label} ×${count}`, "--button-letter-spacing", `${em(letter)}em`, role["--button-letter-spacing"] ?? "—", Math.abs(parseFloat(role["--button-letter-spacing"]) - em(letter)) <= LETTER_EPS ? "MATCH" : "DIFFERS", `--button-letter-spacing: ${em(letter)}em;`]);
+    }
+    const theme = (token, color, what) => {
+      if (!color?.token) return;
+      const cur = resolveVar(token);
+      lines.push([`${label} ×${count}`, token, `${what} ${colorLabel(color)}`, cur.name, cur.name === color.token ? "MATCH" : "DIFFERS", cur.name === color.token ? "" : `${token}: var(${color.token});  (every theme block)`]);
+    };
+    theme("--button-background", s.fill, "fill");
+    theme("--button-text", s.text, "text");
+    if (s.border) theme("--button-border", s.border.color, "border");
+  }
+  /* Against the project's Button: a Figma variant that equals an existing configuration in some theme needs no question. */
+  const configs = buttonConfigs() ?? [];
+  const verdicts = textVariants.map((v) => {
+    const best = configs.map((c) => ({ c, d: buttonDiff(v.spec, c) })).sort((a, b) => a.d.length - b.d.length)[0];
+    return { v, best };
+  });
+  const primaryCovered = configs.length > 0 && verdicts.some(({ best }) => !best.d.length);
+  if (verdicts.length && configs.length) {
+    console.log("\nBUTTON VARIANTS vs Button.astro (each Figma text variant against every size class × emphasis × theme the project has):");
+    printTable(["VARIANT", "STATUS", "CLOSEST <Button>", "DIFFERS"], verdicts.map(({ v, best }) => [
+      `${v.label} ×${v.count}`,
+      best.d.length ? "NEW" : "COVERED",
+      `${best.c.props} in ${best.c.theme} theme`,
+      best.d.join("; ") || "—",
+    ]));
+  }
+  if (lines.length && !primaryCovered) {
+    console.log("\nBUTTON TOKENS vs base.css (px: Figma desktop values; em in base.css taken at the button's own font size; button tokens are single values, so tablet and mobile are not compared):");
+    printTable(["VARIANT", "TOKEN", "FIGMA", "BASE.CSS", "STATUS", "READY LINE"], lines);
+  }
+  console.log("  Strokes sit INSIDE the box in Figma and Lumos is border-box: the padding above already includes the border. Set --button-border-inset to the border width instead of adding size.");
+  if (primaryCovered) {
+    const fresh = verdicts.filter(({ best }) => best.d.length);
+    if (fresh.length) out.asks.push(`Buttons: ${fresh.map(({ v, best }) => `${v.label} ×${v.count} (closest ${best.c.props} in ${best.c.theme} theme; ${best.d.join(", ")})`).join("; ")} match no existing Button configuration. For each: a new size/variant in Button.astro, a theme override, or a one-off?`);
+  } else {
+    const names = [...new Set(buttonRows.map((r) => r[0]))].join("; ");
+    out.asks.push(`Buttons: ${buttonRows.length} variant(s) — ${names}. Which is the primary one that --button-* should describe? Nothing was applied.`);
+  }
+}
+
+/** Weight, tracking, colour, effects, buttons, assets and clipped nodes for every text style and node a get_design_context capture uses. */
+function runDesignContext(files, fromDump = false) {
+  const caps = files.map(readCapture);
+  const fonts = caps.flatMap((c) => c.styles.fonts);
+  const rows = new Map();
+  const ensure = (sizeVar, weight, name) => {
+    const key = `${sizeVar.toLowerCase()}|${weight}`;
+    if (!rows.has(key)) {
+      rows.set(key, { sizeVar, weight, weightName: name, styles: new Set(), lhVars: new Set(), letters: new Set(), transforms: new Set(), nodes: 0, buttonNodes: 0, pages: new Map() });
+    }
+    return rows.get(key);
+  };
+  for (const f of fonts) {
+    /* letterSpacing in the styles line is percent. */
+    const row = ensure(f.size, f.weight, f.weightName);
+    row.styles.add(f.name);
+    if (f.lineHeight) row.lhVars.add(f.lineHeight);
+    if (f.letter !== undefined) row.letters.add(f.letter);
+  }
+
+  /* The code carries the variable names and is the only place text-transform and colours show up. Its px fallbacks are desktop-mode values and are ignored. */
+  const colors = { heading: new Map(), text: new Map(), label: new Map() };
+  const textNodes = caps.flatMap((c) => c.nodes.map((n) => ({ n, c, t: n.text ? textOf(n) : null })).filter((x) => x.t));
+  for (const { n, c, t } of textNodes) {
+    const row = ensure(t.sizeVar, t.weight, t.weightName);
+    const inButton = Boolean(buttonOf(n));
+    if (inButton) row.buttonNodes++;
+    else {
+      row.nodes++;
+      row.pages.set(c.page, (row.pages.get(c.page) ?? 0) + 1);
+    }
+    row.transforms.add(t.transform);
+    if (t.lh) row.lhVars.add(t.lh);
+    if (inButton || !t.color) continue;
+    /* Overline and tag styles are labels: a muted or accent label colour must not outvote the body colour for --text. */
+    const role = /^font-size\/heading\//i.test(t.sizeVar) ? "heading" : /^font-size\/overline\//i.test(t.sizeVar) ? "label" : "text";
+    const key = colorLabel(t.color);
+    const entry = colors[role].get(key) ?? { color: t.color, count: 0, styles: new Map() };
+    entry.count++;
+    const style = tokenFor(t.sizeVar)?.token ?? t.sizeVar;
+    entry.styles.set(style, (entry.styles.get(style) ?? 0) + 1);
+    colors[role].set(key, entry);
+  }
+  if (!rows.size) console.log("No text styles found in the design-context capture(s) — expected the 'These styles are contained in the design' line.");
+
+  const isButtonRow = (r) => (r.styles.size ? [...r.styles].every((s) => /^button\b/i.test(s)) : !r.nodes && r.buttonNodes > 0);
+  for (const r of rows.values()) {
+    const hit = /^font-size\//i.test(r.sizeVar) ? tokenFor(r.sizeVar) : null;
+    r.token = hit && hit.kind === "scale" && !isLineHeight(hit.token) ? hit.token : null;
+    r.button = isButtonRow(r);
+  }
+  const textRows = [...rows.values()].filter((r) => !r.button);
+  const byToken = new Map();
+  for (const r of textRows) if (r.token) byToken.set(r.token, [...(byToken.get(r.token) ?? []), r]);
+  if (!fromDump) reportCaptureTextStyles(textRows, byToken, colors);
+  else {
+    /* The one text attribute a node dump lacks. */
+    const cased = [...byToken].filter(([T]) => tokens.scale[T]).map(([T, group]) => [T, new Set(group.filter((r) => r.nodes).flatMap((r) => [...r.transforms]))]).filter(([, t]) => t.size);
+    console.log("TEXT-TRANSFORM (from the capture; the node dump does not hold it):");
+    for (const [T, t] of cased) {
+      const cur = tokens.styleTransform[T] ?? "none";
+      const status = t.size > 1 ? "CONFLICT" : cur === [...t][0] ? "MATCH" : "DIFFERS";
+      console.log(`  --${T}: ${[...t].join("/")}, base.css ${cur} — ${status}`);
+      if (status === "DIFFERS") {
+        out.updates.push(`--${T}-text-transform: ${[...t][0]};`);
+        out.asks.push(`--${T}: text-transform ${[...t][0]} in the capture vs ${cur} in base.css. Apply, or keep the template default?`);
+      } else if (status === "CONFLICT") out.asks.push(`--${T}: both transformed and plain text in the capture. Which is the default?`);
+    }
+  }
 
   /* ---- effects ---- */
   const shadows = new Map();
@@ -1242,134 +1419,12 @@ function runDesignContext(files) {
     }
   }
   const effectStyles = new Map(caps.flatMap((c) => c.styles.effects.map((e) => [e.name, e])));
-  if (shadows.size || effectStyles.size) {
-    console.log("\nSHADOWS (Figma effect styles are not in a variable export; these come from the node classes and the styles line):");
-    const blur = (s) => Math.max(...s.layers.map((l) => l.blur));
-    const reach = (s) => Math.max(...s.layers.map((l) => Math.abs(l.y)));
-    const ranked = [...shadows.values()].sort((a, b) => blur(a) - blur(b) || reach(a) - reach(b));
-    const SCALE = ranked.length === 1 ? ["medium"] : ranked.length === 2 ? ["small", "large"] : ["small", "medium", "large", "xlarge", "2xlarge"];
-    /* A shadow equal to a Figma effect style takes that style's name (Shadow/Small -> shadow-small); only the rest are named by rank. */
-    const styleToken = (s) => (s.effect ? `shadow-${s.effect.replace(/^.*\//, "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}` : null);
-    const taken = new Set(ranked.map(styleToken).filter(Boolean));
-    const rankFree = SCALE.map((n) => `shadow-${n}`).filter((n) => !taken.has(n));
-    const shadowRows = [];
-    let rankAt = 0;
-    ranked.forEach((s, i) => {
-      s.token = styleToken(s) ?? rankFree[rankAt++] ?? `shadow-${i + 1}`;
-      const existing = css.match(new RegExp(`--${s.token}:\\s*([^;]+);`))?.[1];
-      shadowRows.push([s.token, `${s.nodes}`, [...s.names].slice(0, 3).join(", "), s.effect ? `= Figma ${s.effect}${s.drop ? " (code uses drop-shadow)" : ""}` : `no equal Figma effect style${s.drop ? " (drop-shadow, spread unknown)" : ""}`, existing ? "already in base.css — compare by hand" : "NEW"]);
-      out.places.push({ name: s.token, value: shadowCss(s.layers) });
-    });
-    if (shadowRows.length) printTable(["SUGGESTED", "NODES", "USED BY", "FIGMA EFFECT STYLE", "BASE.CSS"], shadowRows);
-    if (effectStyles.size) {
-      console.log("  Figma effect styles in the styles line:");
-      for (const e of effectStyles.values()) console.log(`    ${e.name}: ${shadowCss(e.layers.map((l) => ({ ...l, color: l.color })))}`);
-    }
-    const unmatched = ranked.filter((s) => effectStyles.size && !s.effect);
-    out.asks.push(`Shadows: ${ranked.length} distinct in the nodes (${ranked.map((s) => `${s.token} ×${s.nodes}`).join(", ")}). Add them as --shadow-* tokens?${unmatched.length ? ` ${unmatched.map((s) => s.token).join(", ")} differ from every Figma effect style in blur, offset or spread — which is right?` : ""}`);
-  }
+  if (!fromDump) reportShadows(shadows, effectStyles);
 
   /* ---- buttons ---- */
   const rowFor = (t) => rows.get(`${t.sizeVar.toLowerCase()}|${t.weight}`);
   const buttonNodes = caps.flatMap((c) => c.nodes.filter((n) => /button/i.test(n.name ?? "") && !ancestors(n).some((a) => /button/i.test(a.name ?? ""))).map((n) => ({ n, c })));
-  if (buttonNodes.length) {
-    const variants = new Map();
-    for (const { n } of buttonNodes) {
-      const spec = buttonSpec(n, rowFor);
-      const state = n.name.match(/\bis-[a-z]+/i)?.[0];
-      const sig = JSON.stringify([n.name.replace(/\s*\bis-[a-z]+/i, ""), colorLabel(spec.fill), spec.border && [spec.border.width, colorLabel(spec.border.color)], colorLabel(spec.text), spec.radius?.name, spec.padX?.name, spec.padY?.name, spec.gap?.name, spec.style && [spec.style.sizeVar, spec.style.weight]]);
-      const v = variants.get(sig) ?? { spec, count: 0, states: new Set() };
-      v.count++;
-      if (state) v.states.add(state);
-      variants.set(sig, v);
-    }
-    console.log("\nBUTTONS (nodes whose data-name contains \"button\"; each variant one row):");
-    const baseName = (v) => v.spec.name.replace(/\s*\bis-[a-z]+/i, "");
-    const seen = {};
-    for (const v of [...variants.values()].sort((x, y) => y.count - x.count)) {
-      seen[baseName(v)] = (seen[baseName(v)] ?? 0) + 1;
-      v.label = baseName(v);
-      v.index = seen[baseName(v)];
-    }
-    for (const v of variants.values()) v.label = `${baseName(v)}${seen[baseName(v)] > 1 ? ` #${v.index}` : ""}${v.states.size ? ` (${[...v.states].join(", ")})` : ""}`;
-    const buttonRows = [...variants.values()].map(({ spec: s, count, label }) => [
-      `${label} ×${count}`,
-      s.iconOnly ? "icon only" : "text",
-      colorLabel(s.fill), colorLabel(s.text),
-      s.border ? `${s.border.width}px ${colorLabel(s.border.color)}` : "none",
-      s.radius?.name ?? "—",
-      `${s.padX?.name ?? "—"} × ${s.padY?.name ?? "—"}`,
-      s.gap?.name ?? "—",
-      s.style ? `${tokenFor(s.style.sizeVar)?.token ?? s.style.sizeVar} w${s.style.weight}${s.style.row?.styles.size ? ` (${[...s.style.row.styles].filter((x) => /^button/i.test(x)).join(", ") || [...s.style.row.styles][0]})` : ""}` : "—",
-    ]);
-    printTable(["VARIANT", "KIND", "FILL", "TEXT", "BORDER", "RADIUS", "PADDING X × Y", "GAP", "TEXT STYLE"], buttonRows);
-
-    const role = tokens.rootVars;
-    const lines = [];
-    const textVariants = [...variants.values()].filter((v) => !v.spec.iconOnly).sort((a, b) => b.count - a.count);
-    for (const { spec: s, count, label } of textVariants) {
-      const fontPx = s.style ? tokens.scale[tokenFor(s.style.sizeVar)?.token]?.desktop : null;
-      const cmp = (token, figmaPx, ref, what, projectValue = role[token], triple = null) => {
-        if (figmaPx === undefined || figmaPx === null || Number.isNaN(figmaPx)) return;
-        const proj = projectPx(projectValue, fontPx);
-        const ok = proj !== null && Math.abs(proj - figmaPx) <= 0.5;
-        lines.push([`${label} ×${count}`, token, `${what} = ${figmaPx}px${triple && new Set([triple.desktop, triple.tablet, triple.mobile]).size > 1 ? ` (${fmt(triple)})` : ""}`, `${projectValue ?? "—"}${proj !== null ? ` ≈ ${proj}px` : ""}`, ok ? "MATCH" : "DIFFERS", ok ? "" : `${token}: ${ref};`]);
-      };
-      cmp("--button-radius", s.radius?.px, s.radius?.token ? `var(--${s.radius.token})` : `${s.radius?.px}px`, s.radius?.name ?? "radius", undefined, s.radius?.triple);
-      cmp("--button-padding-block", s.padY?.px, s.padY?.token ? `var(--${s.padY.token})` : `${s.padY?.px}px`, s.padY?.name ?? "padding", undefined, s.padY?.triple);
-      cmp("--button-padding-inline", s.padX?.px, s.padX?.token ? `var(--${s.padX.token})` : `${s.padX?.px}px`, s.padX?.name ?? "padding", undefined, s.padX?.triple);
-      cmp("--button-gap", s.gap?.px, s.gap?.token ? `var(--${s.gap.token})` : `${s.gap?.px}px`, s.gap?.name ?? "gap", undefined, s.gap?.triple);
-      cmp("--button-border-inset", s.border?.width ?? 0, `${+((s.border?.width ?? 0) / ROOT_PX).toFixed(4)}rem`, "border");
-      if (s.style) {
-        const t = tokenFor(s.style.sizeVar)?.token;
-        const lhToken = s.style.lh && tokenFor(s.style.lh)?.token;
-        const lhPx = lhToken && tokens.scale[lhToken]?.desktop;
-        const ratio = lhPx && fontPx ? +(lhPx / fontPx).toFixed(4) : null;
-        const w = Object.entries(tokens.weights).find(([, v]) => v === s.style.weight)?.[0];
-        const letter = s.style.row && [...s.style.row.letters][0];
-        lines.push([`${label} ×${count}`, "--button-font-size", s.style.sizeVar, role["--button-font-size"] ?? "—", role["--button-font-size"] === "initial" ? "DIFFERS (project inherits)" : "check", t ? `--button-font-size: var(--${t});` : ""]);
-        lines.push([`${label} ×${count}`, "--button-font-weight", `w${s.style.weight}`, role["--button-font-weight"] ?? "—", `${role["--button-font-weight"] === "initial" ? "DIFFERS (project inherits)" : "check"}`, w ? `--button-font-weight: var(${w});` : ""]);
-        if (ratio !== null) lines.push([`${label} ×${count}`, "--button-line-height", `${s.style.lh} = ${lhPx}px/${fontPx}px at desktop`, role["--button-line-height"] ?? "—", Math.abs(Number(role["--button-line-height"]) - ratio) < 0.01 ? "MATCH" : "DIFFERS", `--button-line-height: ${ratio};`]);
-        if (letter !== undefined) lines.push([`${label} ×${count}`, "--button-letter-spacing", `${em(letter)}em`, role["--button-letter-spacing"] ?? "—", Math.abs(parseFloat(role["--button-letter-spacing"]) - em(letter)) <= LETTER_EPS ? "MATCH" : "DIFFERS", `--button-letter-spacing: ${em(letter)}em;`]);
-      }
-      const theme = (token, color, what) => {
-        if (!color?.token) return;
-        const cur = resolveVar(token);
-        lines.push([`${label} ×${count}`, token, `${what} ${colorLabel(color)}`, cur.name, cur.name === color.token ? "MATCH" : "DIFFERS", cur.name === color.token ? "" : `${token}: var(${color.token});  (every theme block)`]);
-      };
-      theme("--button-background", s.fill, "fill");
-      theme("--button-text", s.text, "text");
-      if (s.border) theme("--button-border", s.border.color, "border");
-    }
-    /* Against the project's Button: a Figma variant that equals an existing configuration in some theme needs no question. */
-    const configs = buttonConfigs() ?? [];
-    const verdicts = textVariants.map((v) => {
-      const best = configs.map((c) => ({ c, d: buttonDiff(v.spec, c) })).sort((a, b) => a.d.length - b.d.length)[0];
-      return { v, best };
-    });
-    const primaryCovered = configs.length > 0 && verdicts.some(({ best }) => !best.d.length);
-    if (verdicts.length && configs.length) {
-      console.log("\nBUTTON VARIANTS vs Button.astro (each Figma text variant against every size class × emphasis × theme the project has):");
-      printTable(["VARIANT", "STATUS", "CLOSEST <Button>", "DIFFERS"], verdicts.map(({ v, best }) => [
-        `${v.label} ×${v.count}`,
-        best.d.length ? "NEW" : "COVERED",
-        `${best.c.props} in ${best.c.theme} theme`,
-        best.d.join("; ") || "—",
-      ]));
-    }
-    if (lines.length && !primaryCovered) {
-      console.log("\nBUTTON TOKENS vs base.css (px: Figma desktop values; em in base.css taken at the button's own font size; button tokens are single values, so tablet and mobile are not compared):");
-      printTable(["VARIANT", "TOKEN", "FIGMA", "BASE.CSS", "STATUS", "READY LINE"], lines);
-    }
-    console.log("  Strokes sit INSIDE the box in Figma and Lumos is border-box: the padding above already includes the border. Set --button-border-inset to the border width instead of adding size.");
-    if (primaryCovered) {
-      const fresh = verdicts.filter(({ best }) => best.d.length);
-      if (fresh.length) out.asks.push(`Buttons: ${fresh.map(({ v, best }) => `${v.label} ×${v.count} (closest ${best.c.props} in ${best.c.theme} theme; ${best.d.join(", ")})`).join("; ")} match no existing Button configuration. For each: a new size/variant in Button.astro, a theme override, or a one-off?`);
-    } else {
-      const names = [...new Set(buttonRows.map((r) => r[0]))].join("; ");
-      out.asks.push(`Buttons: ${buttonRows.length} variant(s) — ${names}. Which is the primary one that --button-* should describe? Nothing was applied.`);
-    }
-  }
+  if (buttonNodes.length && !fromDump) reportButtons(buttonNodes.map(({ n }) => buttonSpec(n, rowFor)));
 
   /* ---- assets ---- */
   const assets = new Map();
@@ -1385,10 +1440,20 @@ function runDesignContext(files) {
     const roleSlug = role ? slug(role) : "";
     return slug([section, section && roleSlug.startsWith(slug(section)) ? roleSlug.slice(slug(section).length) : roleSlug].filter(Boolean).join("-")) || (section ? slug(`${section}-background`) : "");
   };
+  /* An image fill placed with offsets past its box (h-[296%], left-[-47%]) is a crop of a padded file. */
+  const cropped = (n) => n.cls.some((x) => /^(?:w|h)-\[(\d+(?:\.\d+)?)%\]$/.test(x) && parseFloat(x.match(/\[([\d.]+)/)[1]) > 101) || n.cls.some((x) => /^-?(?:left|top)-\[-\d+(?:\.\d+)?%\]$/.test(x) && Math.abs(parseFloat(x.match(/\[(-[\d.]+)/)[1])) > 1);
+  const unlisted = [];
   for (const c of caps) {
-    const consts = new Map([...c.text.matchAll(/const\s+(\w+)\s*=\s*"(http:\/\/localhost:3845\/assets\/([0-9a-f]+)\.(\w+))";/g)].map((m) => [m[1], { url: m[2], hash: m[3], ext: m[4] }]));
+    /* The local Dev Mode server writes "http://localhost:3845/assets/<hash>.<ext>"; the remote server writes
+       `${assetPathPrefix}/<hash>.<ext>` with a prefix that changes on every call, so the file name is the key. */
+    const prefix = c.text.match(/const\s+assetPathPrefix\s*=\s*"([^"]+)"/)?.[1];
+    const consts = new Map();
+    for (const m of c.text.matchAll(/const\s+(\w+)\s*=\s*"(http:\/\/localhost:3845\/assets\/([0-9a-f]+)\.(\w+))";/g)) consts.set(m[1], { url: m[2], hash: m[3], ext: m[4], remote: false });
+    if (prefix) {
+      for (const m of c.text.matchAll(/const\s+(\w+)\s*=\s*`\$\{assetPathPrefix\}\/([\w-]+)\.(\w+)`;/g)) consts.set(m[1], { url: `${prefix}/${m[2]}.${m[3]}`, hash: m[2], ext: m[3], remote: true });
+    }
     for (const [constName, a] of consts) {
-      const entry = assets.get(a.hash) ?? { ...a, consts: new Set(), users: new Set(), usage: new Set(), files: new Set() };
+      const entry = assets.get(a.hash) ?? { ...a, consts: new Set(), users: new Set(), usage: new Set(), files: new Set(), cropped: false };
       entry.consts.add(constName);
       entry.files.add(c.label);
       for (const n of c.nodes) {
@@ -1396,29 +1461,50 @@ function runDesignContext(files) {
         entry.users.add(nameOf(n));
         const u = usageName(n);
         if (u) entry.usage.add(u);
+        if (cropped(n)) entry.cropped = true;
       }
       assets.set(a.hash, entry);
     }
+    const srcs = c.nodes.filter((n) => n.tag === "img" && /^[A-Za-z_]\w*$/.test(n.attrs.src ?? "")).map((n) => n.attrs.src);
+    /* Only constants the capture declares: a src that is a helper component's prop is not an asset. */
+    const missed = [...new Set(srcs.filter((s) => !consts.has(s) && new RegExp(`^\\s*const\\s+${s}\\s*=`, "m").test(c.text)))];
+    if (missed.length) unlisted.push(`${c.label}: ${missed.slice(0, 5).join(", ")}${missed.length > 5 ? ` and ${missed.length - 5} more` : ""}`);
+  }
+  if (unlisted.length) {
+    console.log("\nWARNING: <img src={…}> constants whose URL this script cannot read, so their assets are NOT listed below:");
+    for (const l of unlisted) console.log(`  - ${l}`);
+    out.asks.push(`${unlisted.length} capture(s) use image constants in a URL format the script does not know. Download those assets by hand (or report the format in .feedback/).`);
   }
   if (assets.size) {
     const page = caps[0].page;
-    console.log(`\nASSETS (${assets.size} distinct; the script makes no network request — run these while Figma desktop is open):`);
+    const remote = [...assets.values()].some((a) => a.remote);
+    const local = [...assets.values()].some((a) => !a.remote);
+    console.log(`\nASSETS (${assets.size} distinct; the script makes no network request — ${[local && "localhost URLs work only while Figma desktop is open", remote && "remote mcp/asset URLs expire 7 days after the capture, so download them now"].filter(Boolean).join("; ")}):`);
     const lines = [];
     for (const a of assets.values()) {
       const base = [...a.usage][0] || slug([...a.consts][0].replace(/^img/, "")) || "asset";
       /* The same use at another breakpoint gets -tablet / -mobile; a second asset in the same use gets -2, -3. */
-      const bp = [...a.files].every((f) => /tablet$/i.test(f)) ? "tablet" : [...a.files].every((f) => /mobile$/i.test(f)) ? "mobile" : null;
+      const bp = [...a.files].every((f) => /[-_]tablet([-_]|$)/i.test(f)) ? "tablet" : [...a.files].every((f) => /[-_]mobile([-_]|$)/i.test(f)) ? "mobile" : null;
       let name = base;
       if (taken.has(name) && bp) name = `${base}-${bp}`;
       for (let i = 2; taken.has(name); i++) name = `${base}-${i}`;
       taken.add(name);
       lines.push(`curl -o src/assets/${page}/${name}.${a.ext} ${a.url}`);
-      console.log(`  ${`${name}.${a.ext}`.padEnd(30)} ${[...a.users].slice(0, 3).join(", ") || "(unused)"}  [${[...a.files].join(", ")}]`);
+      a.file = `${name}.${a.ext}`;
+      console.log(`  ${a.file.padEnd(30)} ${[...a.users].slice(0, 3).join(", ") || "(unused)"}  [${[...a.files].join(", ")}]${a.cropped ? "  CROPPED FILL" : ""}`);
     }
     console.log(`\n  mkdir -p src/assets/${page}`);
     for (const l of lines) console.log(`  ${l}`);
     console.log("  Photos: downscale to about twice the displayed size before committing. SVG icons: rebuild them with fill=\"currentColor\" so they follow the text colour and the theme.");
+    console.log("  SVG exports can carry their parent frames (page-wide rects, the dashed component-set outline) and reuse clip ids across files: run `node .agents/skills/lumos-import-figma/convert.mjs --clean-svg src/assets/<page>/*.svg` after downloading.");
+    const crops = [...assets.values()].filter((a) => a.cropped);
+    if (crops.length) {
+      console.log(`  CROPPED FILL (${crops.map((a) => a.file).join(", ")}): the capture places the file with offsets past its box, so the drawing shows only part of it. A logo with transparent margins renders smaller than in Figma: trim it (\`node -e "require('sharp')('in.png').trim().toFile('out.png')"\`) and use object-fit: contain. A photo crop is fine, but the capture never says when Figma flipped or rotated the fill: compare with a screenshot, or read fills[].imageTransform with a read-only use_figma (a negative x scale is a mirror).`);
+    }
   }
+
+  /* A node dump beside the capture reported the rest from the file's own values. */
+  if (fromDump) return;
 
   /* ---- fixed or clipped nodes ---- */
   const clipped = [];
@@ -1430,6 +1516,8 @@ function runDesignContext(files) {
       const imageCrop = descendants(n).length > 0 && descendants(n).every((d) => d.tag === "img" || d.tag === "div") && !hasText;
       if (clip && hasText) flags.push(clip);
       if (clip && !hasText && !imageCrop) flags.push(clip);
+      const maxH = clsMatch(n, /^max-h-\[(\d+(?:\.\d+)?)px\]$/)?.[1];
+      if (clip && maxH && hasText) flags.push(`max-h-[${+(+maxH).toFixed(1)}px] (content past ${+(+maxH).toFixed(1)}px is cut off in the drawing; compare the children's extent in metadata)`);
       if (n.cls.includes("text-ellipsis")) flags.push("text-ellipsis");
       const clamp = n.cls.find((x) => x.startsWith("line-clamp-"));
       if (clamp) flags.push(clamp);
@@ -1442,6 +1530,98 @@ function runDesignContext(files) {
     console.log("\nFIXED HEIGHT / CLIPPED IN FIGMA (these cause false mismatches when the content is longer or shorter than the drawing):");
     for (const x of clipped) console.log(`  - ${x.where}: ${x.flags}`);
     out.asks.push(`${clipped.length} node(s) have a fixed height or are clipped in Figma (${[...new Set(clipped.map((x) => x.flags.split(",")[0].replace(/\s*\(.*$/, "")))].join(", ")}). Is that intentional, or should the page let them grow?`);
+  }
+
+  /* ---- strokes ---- */
+  const BORDER_WIDTH = /^border(-[tblrxy])?(-\d+|-\[\d+(?:\.\d+)?px\])?$/;
+  const RAW_BORDER = /^border-(white|black|\[#[0-9a-f]{3,8}\])$/i;
+  const fillOf = (n) => {
+    for (const a of [n, ...ancestors(n)]) {
+      const bg = a.cls.find((x) => /^bg-(white|black|\[.+\])$/.test(x));
+      if (!bg) continue;
+      const inner = bg.match(/^bg-\[(.+)\]$/)?.[1] ?? bg.slice(3);
+      return colorFrom(inner)?.hex ?? null;
+    }
+    return null;
+  };
+  const sameFill = [];
+  const unbound = new Map();
+  const bordered = new Map();
+  for (const c of caps) {
+    for (const n of c.nodes) {
+      if (!n.cls.some((x) => BORDER_WIDTH.test(x))) continue;
+      const raw = n.cls.find((x) => RAW_BORDER.test(x));
+      const where = `${c.label}: ${nameOf(n)} (${n.id ?? "no id"})`;
+      if (raw) {
+        const hex = hexOf(raw.replace(/^border-\[?|\]$/g, ""));
+        if (hex && hex === fillOf(n)) sameFill.push(`${where}: ${raw} on a ${hex} fill`);
+        else if (/\[#/.test(raw)) unbound.set(raw, [...(unbound.get(raw) ?? []), where]);
+      }
+      if (!buttonOf(n) && n.cls.some((x) => /^p[xytblr]?-\[/.test(x))) {
+        const key = nameOf(n);
+        bordered.set(key, (bordered.get(key) ?? 0) + 1);
+      }
+    }
+  }
+  if (sameFill.length || unbound.size || bordered.size) console.log("\nSTROKES:");
+  if (sameFill.length) {
+    console.log("  Stroke the same colour as its own fill (invisible as written; almost always a gradient or multi-paint stroke the capture flattened to one colour):");
+    for (const l of sameFill) console.log(`    - ${l}`);
+    out.asks.push(`${sameFill.length} stroke(s) are the same colour as their fill, which usually means a gradient stroke was flattened. Read node.strokes with a read-only use_figma (or compare a screenshot) before building them as solid borders.`);
+  }
+  if (unbound.size) {
+    console.log("  Stroke colour written as a raw hex, not a variable (a hint of a gradient or image stroke; check a screenshot):");
+    for (const [raw, where] of unbound) console.log(`    - ${raw} ×${where.length}: ${where.slice(0, 3).join("; ")}${where.length > 3 ? "; …" : ""}`);
+  }
+  if (bordered.size) {
+    console.log(`  Bordered boxes with padding (Figma strokes sit inside the box: subtract the border from the padding, e.g. calc(var(--space-…) - var(--border-width))): ${[...bordered].slice(0, 10).map(([k, v]) => `${k}${v > 1 ? ` ×${v}` : ""}`).join(", ")}${bordered.size > 10 ? `, and ${bordered.size - 10} more` : ""}`);
+  }
+
+  /* ---- values not bound to a variable ---- */
+  const isIconNode = (n) => /icon/i.test(n.name ?? "") || (n.children.length === 1 && n.children[0].tag === "img" && !descendants(n).some((d) => d.text));
+  const literal = new Map();
+  for (const c of caps) {
+    for (const n of c.nodes) {
+      if (buttonOf(n)) continue;
+      for (const x of n.cls) {
+        const m = x.match(/^(gap(?:-[xy])?|p[xytblr]?)-\[(\d+(?:\.\d+)?)px\]$/) ?? (isIconNode(n) ? x.match(/^(size)-\[(\d+(?:\.\d+)?)px\]$/) : null);
+        if (!m || !+m[2]) continue;
+        const key = `${m[1] === "size" ? "icon size" : m[1]} ${+m[2]}px`;
+        literal.set(key, [...(literal.get(key) ?? []), `${nameOf(n)} [${c.label}]`]);
+      }
+    }
+  }
+  if (literal.size) {
+    console.log("\nLITERAL PX (gaps, paddings and icon sizes with no variable: Figma keeps them the same at every breakpoint, so do not map them to a responsive token unless that is the intent; use a fixed rem):");
+    for (const [key, where] of [...literal].sort((a, b) => b[1].length - a[1].length)) console.log(`  - ${key} ×${where.length}: ${[...new Set(where)].slice(0, 3).join("; ")}${new Set(where).size > 3 ? "; …" : ""}`);
+  }
+
+  /* ---- icon sizes across breakpoints ---- */
+  const iconWidths = new Map();
+  for (const c of caps) {
+    if (!c.bp) continue;
+    for (const n of c.nodes) {
+      if (!isIconNode(n)) continue;
+      const w = clsMatch(n, /^(?:w|size)-\[(\d+(?:\.\d+)?)px\]$/)?.[1];
+      if (!w) continue;
+      const key = usageName(n) || nameOf(n);
+      const entry = iconWidths.get(key) ?? { desktop: [], tablet: [], mobile: [] };
+      entry[c.bp].push(+w);
+      iconWidths.set(key, entry);
+    }
+  }
+  const modal = (list) => [...list].sort((a, b) => list.filter((v) => v === b).length - list.filter((v) => v === a).length)[0];
+  const iconRows = [];
+  for (const [key, e] of iconWidths) {
+    if (!e.desktop.length || !e.tablet.length || !e.mobile.length) continue;
+    const t = { desktop: modal(e.desktop), tablet: modal(e.tablet), mobile: modal(e.mobile) };
+    if (t.desktop === t.tablet && t.tablet === t.mobile) continue;
+    const token = Object.entries(tokens.scale).find(([name, v]) => isIcon(name) && v.desktop === t.desktop && v.tablet === t.tablet && v.mobile === t.mobile)?.[0];
+    iconRows.push([key, fmt(t), token ? `--${token}` : "no --icon-* token has this triple"]);
+  }
+  if (iconRows.length) {
+    console.log("\nICON SIZES BY BREAKPOINT (the width tracks the icon-size variable; a non-square box such as h-[20px] w-[16px] is the variable at work, not export noise):");
+    printTable(["ICON", "WIDTH D / T / M", "TOKEN"], iconRows);
   }
 }
 
@@ -1466,6 +1646,8 @@ function describeNode(n, styles) {
     else if (/^border(-[tblr])?$/.test(c)) bits.push(c);
     else if (/^border-(dashed|dotted)$/.test(c)) bits.push(c);
     else if (c.startsWith("shadow-[")) bits.push("shadow");
+    else if (c === "absolute") bits.push("abs");
+    else if ((m = c.match(/^(-?)(left|right|top|bottom|inset(?:-[xy])?|m[xytblr]?|translate-[xy])-\[(.+)\]$/))) bits.push(`${m[2]}=${m[1]}${shortValue(m[3])}`);
     else if (/^overflow-(hidden|clip)$/.test(c)) bits.push("clip");
     else if (c === "text-ellipsis" || c.startsWith("line-clamp-")) bits.push(c);
   }
@@ -1487,6 +1669,14 @@ function describeNode(n, styles) {
 /** `--summary`: the capture as an indented outline, one line per node, no code. */
 function runSummary(files) {
   for (const file of files) {
+    const text = readFileSync(file, "utf8").trimStart();
+    if (text[0] === "{") {
+      const data = JSON.parse(text);
+      if (isNodeDump(data)) {
+        summarizeDump(file, data, flag("node"));
+        continue;
+      }
+    }
     const cap = readCapture(file);
     console.log(`# ${file}  (${cap.nodes.length} nodes)`);
     for (const root of cap.roots) {
@@ -1501,6 +1691,57 @@ function runSummary(files) {
   }
 }
 
+/**
+ * `--clean-svg`: an SVG exported from a small instance can hold its ancestors' paint (a page-wide
+ * background rect, the dashed #8A38F5 component-set outline) outside the viewBox, and clip/mask ids
+ * like clip0_1_8 that every export shares. Rewrites each file in place: drops those elements and
+ * suffixes every id with the file name, so two inlined SVGs cannot collide.
+ */
+function runCleanSvg(files) {
+  for (const file of files) {
+    let svg;
+    try {
+      svg = readFileSync(file, "utf8");
+    } catch {
+      console.log(`${file}: cannot read, skipped`);
+      continue;
+    }
+    const vb = svg.match(/<svg\b[^>]*\bviewBox="([^"]+)"/)?.[1].split(/[\s,]+/).map(Number);
+    const [vbW, vbH] = vb?.length === 4 ? [vb[2], vb[3]] : [NaN, NaN];
+    const removed = [];
+    const drop = (re, why) => {
+      svg = svg.replace(re, (el) => {
+        removed.push(why);
+        return "";
+      });
+    };
+    drop(/<(rect|path|line|circle)\b[^>]*stroke="#8a38f5"[^>]*?(\/>|>\s*<\/\1>)/gi, "component-set outline");
+    if (Number.isFinite(vbW)) {
+      svg = svg.replace(/<rect\b([^>]*?)(\/>|>\s*<\/rect>)/g, (el, attrs) => {
+        const w = Number(attrs.match(/\bwidth="([\d.]+)"/)?.[1]);
+        const h = Number(attrs.match(/\bheight="([\d.]+)"/)?.[1]);
+        if (w > vbW * 1.5 || h > vbH * 1.5) {
+          removed.push(`rect ${w}×${h} in a ${vbW}×${vbH} viewBox`);
+          return "";
+        }
+        return el;
+      });
+    }
+    const suffix = slug(basename(file).replace(/\.svg$/i, ""));
+    const ids = [...new Set([...svg.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]))].filter((id) => !id.endsWith(`-${suffix}`));
+    for (const id of ids) {
+      const esc = id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      svg = svg
+        .replace(new RegExp(`\\bid="${esc}"`, "g"), `id="${id}-${suffix}"`)
+        .replace(new RegExp(`url\\(#${esc}\\)`, "g"), `url(#${id}-${suffix})`)
+        .replace(new RegExp(`((?:xlink:)?href)="#${esc}"`, "g"), `$1="#${id}-${suffix}"`);
+    }
+    writeFileSync(file, svg);
+    console.log(`${file}: ${removed.length ? `removed ${removed.join(", ")}` : "nothing outside the artwork"}; ${ids.length} id(s) suffixed with -${suffix}`);
+  }
+  console.log("A path drawn outside the viewBox (a neighbouring divider) is not detected; open the file if it still looks heavy.");
+}
+
 /* ---------- Figma metadata: layout slicing ---------- */
 
 function runMetadata(metadataFiles) {
@@ -1511,13 +1752,6 @@ function runMetadata(metadataFiles) {
   const bpHint = (name) => name.match(/\[(desktop|tablet|mobile)\]/i)?.[1].toLowerCase();
   const cell = (v) => (v === undefined ? "—" : String(v));
   const decode = (s) => s.replace(/&quot;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&(?:#39|apos);/g, "'").replace(/&amp;/g, "&");
-
-  /* The text layers here are named after their style; that is how a page's type styles are found. */
-  const TYPE_STYLES = {
-    h1: "h1", h2: "h2", h3: "h3", h4: "h4", h5: "h5", h6: "h6", display: "display",
-    p__lg: "text-large", p__md: "text-main", p__sm: "text-small", p__xs: "text-xsmall",
-    overline__md: "overline-main", overline__sm: "overline-small",
-  };
 
   /** A tolerant reader for get_metadata's flat tag format. Positions are relative to the parent. */
   function parseMetadata(xml, file) {
@@ -1684,7 +1918,13 @@ function runMetadata(metadataFiles) {
       pageGroups.push({ file, name: root.name, measured, via });
     }
   }
-  if (!pageGroups.length) fail(problems.join("\n") || "nothing to measure");
+  if (!pageGroups.length) {
+    /* In a folder run the other files still have something to say; a lone --metadata run has not. */
+    if (!folderMode) fail(problems.join("\n") || "nothing to measure");
+    for (const p of problems) console.log(`  ! ${p}`);
+    out.asks.push(`Layout was not measured: ${problems.length} metadata file(s) lack one frame per breakpoint. Save get_metadata of the section that holds all three frames, or say the page is desktop-only.`);
+    return;
+  }
 
   const obs = { margin: {}, top: {}, bottom: {}, gutter: {} };
   const stackedAt = new Set();
@@ -1908,6 +2148,623 @@ function runMetadata(metadataFiles) {
 
   out.asks.push(...asks);
   out.updates.push(...toUpdate);
+}
+
+/* ---------- figma-bridge node dump: text styles and colours ---------- */
+
+/* The type scale to tell a dump's text style by: Figma's own variables when they were read, else base.css. */
+const scaleOf = (t) => figmaScale.get(t) ?? tokens.scale[t];
+const TYPE_TOKENS = [...new Set(Object.values(TYPE_STYLES))];
+const familyOf = (t) => (/^(h[1-6]|display)$/.test(t) ? "heading" : t.startsWith("overline") ? "overline" : "text");
+/**
+ * A text node's style: the type token whose size (and line height) at this breakpoint it has. The layer
+ * name, then the letter spacing, decide between equal candidates (text-small and overline-main share
+ * 14/20), and the name stands when nothing fits, so a layer named h5 that is set in Body/Small counts as
+ * text-small, as a capture's variables would say.
+ */
+const classify = (named, bp, size, lh, letter) => {
+  const fits = TYPE_TOKENS.filter((t) => scaleOf(t)?.[bp] === size);
+  const both = fits.filter((t) => typeof lh !== "number" || scaleOf(`${t}-line-height`)?.[bp] === lh);
+  const pool = both.length ? both : fits;
+  if (named && (pool.includes(named) || !pool.length)) return { T: named };
+  if (pool.length === 1) return { T: pool[0] };
+  const sameFamily = named ? pool.filter((t) => familyOf(t) === familyOf(named)) : [];
+  if (sameFamily.length === 1) return { T: sameFamily[0] };
+  if (letter !== undefined) {
+    const byLetter = (sameFamily.length ? sameFamily : pool).filter((t) => tokens.styleLetter[t] && Math.abs(tokens.styleLetter[t].em - em(letter)) <= LETTER_EPS);
+    if (byLetter.length === 1) return { T: byLetter[0] };
+  }
+  return { T: named ?? null, candidates: pool };
+};
+
+/** A dump paint as the colour object the reports use: a swatch when the hex is one, a color-mix() when it is see-through. */
+function dumpColor(paint, opacity = 1) {
+  if (!paint) return null;
+  const pct = Math.round(paint.alpha * opacity * 100);
+  if (pct < 100) return { token: null, raw: toColorMix(paint.hex, pct, tokens.swatches).css, hex: null };
+  const swatch = Object.entries(tokens.swatches).find(([, hex]) => hex === paint.hex)?.[0] ?? null;
+  return { token: swatch, raw: paint.hex, hex: paint.hex };
+}
+
+/** A dump's line height as px: PIXELS as given, PERCENT of the font size, AUTO as "auto". */
+function dumpLineHeight(lh, size) {
+  if (!lh || lh === "mixed") return null;
+  if (lh.unit === "PIXELS") return +lh.value.toFixed(2);
+  if (lh.unit === "PERCENT") return +((lh.value * size) / 100).toFixed(2);
+  return "auto";
+}
+/** A dump's letter spacing as percent of the font size, the unit the styles line uses. */
+function dumpLetter(ls, size) {
+  if (!ls || ls === "mixed") return undefined;
+  return ls.unit === "PIXELS" ? +((ls.value / size) * 100).toFixed(3) : ls.value;
+}
+/** The value seen most often, with every distinct one and its count. */
+function modalOf(counts) {
+  const sorted = [...counts].sort((a, b) => b[1] - a[1]);
+  return sorted.length ? { value: sorted[0][0], distinct: sorted } : null;
+}
+
+/**
+ * `--folder` with a figma-bridge `<page>-node.json`: every visible TEXT node of each breakpoint
+ * frame, grouped by the type style its layer is named after (h1…h6, display, p__*, overline__*),
+ * against base.css. The dump has the real px per breakpoint, so size and line height are compared
+ * as measured, beside the variable export; weight and letter spacing go through the same per-token
+ * questions as a capture. Text inside buttons is left to the button rows of a capture. What a dump
+ * does not hold: which variable a value is bound to, and text-transform.
+ */
+function runNodeDump(files) {
+  const bpOfWidth = (w) => (w >= 992 ? "desktop" : w >= 768 ? "tablet" : "mobile");
+  const styles = new Map();
+  const unnamed = new Map();
+  const families = new Map();
+  const colors = { heading: new Map(), text: new Map(), label: new Map() };
+  let mixed = 0;
+  let inButtons = 0;
+  let scaled = 0;
+  const renamed = new Map();
+
+  const visit = (n, bp, page, inButton) => {
+    const s = n.styles ?? {};
+    if (typeof s.fontSize !== "number" || typeof s.fontWeight !== "number") {
+      mixed++;
+      return;
+    }
+    const size = s.fontSize;
+    /* A fractional size is text inside a graphic scaled as one piece (a mockup, a diagram), not a type style. */
+    if (Math.abs(size - Math.round(size)) > 0.001) {
+      scaled++;
+      return;
+    }
+    if (s.fontFamily && s.fontFamily !== "mixed") (families.get(s.fontFamily) ?? families.set(s.fontFamily, new Set()).get(s.fontFamily)).add(s.fontWeight);
+    if (inButton) {
+      inButtons++;
+      return;
+    }
+    const named = TYPE_STYLES[n.name.toLowerCase()];
+    const { T } = classify(named, bp, size, dumpLineHeight(s.lineHeight, size), dumpLetter(s.letterSpacing, size));
+    if (named && T !== named) {
+      const r = renamed.get(`${named}|${T}`) ?? { named, T, layer: n.name, count: 0, id: n.id };
+      r.count++;
+      renamed.set(`${named}|${T}`, r);
+    }
+    if (!T) {
+      const key = `${size}|${s.fontWeight}`;
+      const u = unnamed.get(key) ?? { size, weight: s.fontWeight, bps: new Map(), names: new Set() };
+      u.bps.set(bp, (u.bps.get(bp) ?? 0) + 1);
+      u.names.add(n.name);
+      unnamed.set(key, u);
+      return;
+    }
+    const e = styles.get(T) ?? { layers: new Set(), size: {}, lh: {}, rows: new Map(), nodes: 0, example: new Map() };
+    styles.set(T, e);
+    e.nodes++;
+    e.layers.add(n.name);
+    const bump = (m, v) => m.set(v, (m.get(v) ?? 0) + 1);
+    bump((e.size[bp] ??= new Map()), size);
+    if (!e.example.has(`${bp}|${size}`)) e.example.set(`${bp}|${size}`, n.id);
+    const lh = dumpLineHeight(s.lineHeight, size);
+    if (lh !== null) bump((e.lh[bp] ??= new Map()), lh);
+    const row = e.rows.get(s.fontWeight) ?? { weight: s.fontWeight, weightName: weightSlug(s.fontStyle), styles: new Set(), letters: new Set(), transforms: new Set(), nodes: 0, pages: new Map() };
+    e.rows.set(s.fontWeight, row);
+    row.styles.add(n.name);
+    const letter = dumpLetter(s.letterSpacing, size);
+    if (letter !== undefined) row.letters.add(letter);
+    row.nodes++;
+    row.pages.set(page, (row.pages.get(page) ?? 0) + 1);
+
+    const color = dumpColor(solidPaint(s.fills), s.opacity ?? 1);
+    if (!color) return;
+    const role = /^(h[1-6]|display)$/.test(T) ? "heading" : T.startsWith("overline") ? "label" : "text";
+    const key = colorLabel(color);
+    const entry = colors[role].get(key) ?? { color, count: 0, styles: new Map() };
+    entry.count++;
+    entry.styles.set(T, (entry.styles.get(T) ?? 0) + 1);
+    colors[role].set(key, entry);
+  };
+
+  for (const file of files) {
+    const dump = JSON.parse(readFileSync(file, "utf8"));
+    const page = basename(file).replace(/(-node)?\.json$/i, "");
+    const frames = dump.type === "FRAME" ? [dump] : (dump.children ?? []).filter((c) => c.type === "FRAME");
+    for (const frame of frames) {
+      const bp = bpOfWidth(frame.bounds.width);
+      const walk = (n, inButton) => {
+        /* b__* is the button text style, also where the button frame has another name. */
+      const button = inButton || /button/i.test(n.name ?? "") || /^b__/i.test(n.name ?? "");
+        if (n.type === "TEXT") visit(n, bp, page, button);
+        for (const c of n.children ?? []) walk(c, button);
+      };
+      walk(frame, false);
+    }
+  }
+  if (!styles.size && !unnamed.size) {
+    console.log("No text nodes in the node dump(s).");
+    return;
+  }
+
+  /* ---- size and line height per breakpoint: the variable export compares the variables, this compares what the nodes use ---- */
+  const measured = (perBp, example) => {
+    const m = Object.fromEntries(BPS.map((b) => [b, perBp[b] ? modalOf(perBp[b]) : null]));
+    return { value: Object.fromEntries(BPS.filter((b) => m[b]).map((b) => [b, m[b].value])), spread: BPS.filter((b) => m[b]?.distinct.length > 1).map((b) => `${b} ${m[b].distinct.map(([v, c]) => `${v}×${c}${example?.get(`${b}|${v}`) && v !== m[b].value ? ` (${example.get(`${b}|${v}`)})` : ""}`).join(", ")}`) };
+  };
+  const cmp = (token, value) => {
+    const base = tokens.scale[token];
+    if (!base) return { status: "MISSING", base: null };
+    const off = BPS.filter((b) => typeof value[b] === "number" && Math.abs(value[b] - base[b]) > 0.5);
+    return { status: off.length ? "DIFFERS" : BPS.every((b) => value[b] !== undefined) ? "MATCH" : "MATCH (partial)", base, off };
+  };
+  const table = [];
+  const byToken = new Map();
+  for (const T of [...styles.keys()].sort((a, b) => Object.values(TYPE_STYLES).indexOf(a) - Object.values(TYPE_STYLES).indexOf(b))) {
+    const e = styles.get(T);
+    byToken.set(T, [...e.rows.values()]);
+    const size = measured(e.size, e.example);
+    const lh = measured(e.lh);
+    const sizeCmp = cmp(T, size.value);
+    const lhCmp = cmp(`${T}-line-height`, lh.value);
+    const weights = [...e.rows.keys()].sort();
+    const letters = distinctEm([...e.rows.values()].flatMap((r) => [...r.letters]));
+    table.push([
+      T, cut([...e.layers].join(", "), 40), `${e.nodes}`,
+      fmt(size.value), sizeCmp.base ? fmt(sizeCmp.base) : "—", sizeCmp.status,
+      fmt(lh.value), lhCmp.base ? fmt(lhCmp.base) : "—", lhCmp.status,
+      weights.join("/"), letters.map((l) => `${l}em`).join("/") || "—",
+    ]);
+    if (size.spread.length) out.asks.push(`--${T}: its text nodes use more than one size (${size.spread.join("; ")})${lh.spread.length ? ", and line height with it" : ""}. One style drawn two ways, or a variant?`);
+    for (const [token, m, c] of [[T, size, sizeCmp], [`${T}-line-height`, lh, lhCmp]]) {
+      /* The variable export already asked about a token it compared; ask here only when the nodes disagree with base.css on their own. */
+      if (c.status === "DIFFERS" && !varStatus.has(token)) {
+        out.asks.push(`--${token}: the text nodes measure ${fmt(m.value)}, base.css has ${fmt(c.base)}. Apply, or keep the template default?`);
+        out.updates.push(...triple(token, { ...c.base, ...m.value }));
+      }
+      if (c.status === "MISSING") out.asks.push(`--${token} is not in base.css, but ${e.nodes} text node(s) use ${T} at ${fmt(m.value)}. Add it?`);
+    }
+  }
+  console.log("TEXT STYLES (node dump: the px the text nodes use, D = desktop, T = tablet, M = mobile; weight and letter spacing per style):\n");
+  printTable(["STYLE", "LAYERS", "NODES", "SIZE", "BASE.CSS", "SIZE STATUS", "LINE HEIGHT", "BASE.CSS", "LH STATUS", "WEIGHT", "LETTER"], table);
+  console.log("  text-transform is not in the dump: check uppercase styles in a screenshot, or a capture.");
+
+  const covered = askTypeTokens(byToken);
+  if (covered.length) {
+    console.log("\nMINORITY WEIGHTS ALREADY COVERED (default in base.css, the rest by existing utilities):");
+    for (const l of covered) console.log(`  ${l}`);
+  }
+  if (renamed.size) {
+    console.log("\nLAYER NAME IS NOT THE STYLE (counted under the style its size and line height belong to, as a capture's variables would):");
+    for (const r of renamed.values()) console.log(`  ${r.layer} → --${r.T}  ×${r.count}  (e.g. ${r.id})`);
+  }
+  if (unnamed.size) {
+    const list = [...unnamed.values()].sort((a, b) => b.size - a.size);
+    const total = list.reduce((n, u) => n + [...u.bps.values()].reduce((a, c) => a + c, 0), 0);
+    console.log(`\nTEXT WITH NO STYLE (${total} node(s): no type-style layer name, and its size fits no type token or several; size · weight · nodes per breakpoint · type tokens of that size there):`);
+    for (const u of list.slice(0, 15)) {
+      const at = [...u.bps].map(([b, c]) => `${b[0].toUpperCase()}×${c}`).join(" ");
+      const fits = [...u.bps.keys()].flatMap((b) => Object.keys(tokens.scale).filter((t) => isType(t) && tokens.scale[t][b] === u.size)).filter((t, i, a) => a.indexOf(t) === i);
+      console.log(`  ${u.size}px w${u.weight}  ${at}  ${fits.length ? fits.map((t) => `--${t}`).join("/") : "no type token"}  (${cut([...u.names].join(", "), 60)})`);
+    }
+    if (list.length > 15) console.log(`  … ${list.length - 15} more`);
+    out.asks.push(`${total} text node(s) have no type style: their layer is not named after one (h1–h6, p__*, overline__*) and their size fits no type token or several. Which style is each, or are they one-offs?`);
+  }
+  if (scaled) console.log(`\n${scaled} text node(s) at a fractional size (inside a graphic scaled as one piece) are left out.`);
+  if (mixed) console.log(`${mixed} text node(s) mix sizes or weights inside one layer: read those runs from a screenshot.`);
+  if (inButtons) console.log(`${inButtons} text node(s) inside buttons are left to the button rows.`);
+
+  /* ---- fonts actually used ---- */
+  const astroPath = flag("astro-config") ?? "astro.config.mjs";
+  let fonts = null;
+  try {
+    fonts = readFonts(readFileSync(astroPath, "utf8"));
+  } catch {}
+  console.log("\nFONTS USED BY THE TEXT NODES:");
+  for (const [family, weights] of families) {
+    const { font: hit, note } = fonts ? fontFor(fonts, family) : {};
+    const missing = hit ? [...weights].filter((w) => !hit.ranges.some(([lo, hi]) => w >= lo && w <= hi)) : [];
+    console.log(`  ${family} ${[...weights].sort().join("/")}: ${!fonts ? `not checked (${astroPath} has no fonts: entry)` : hit ? `configured as ${hit.name}${missing.length ? `, weight ${missing.join("/")} MISSING` : ""}` : "NOT CONFIGURED"}${note ? ` — ${note}` : ""}`);
+    /* The variable export already asked about fonts; the dump adds a question only when it ran alone. */
+    if (fonts && (!hit || missing.length) && !variableList.length) out.asks.push(`Font ${family}${hit ? ` weight ${missing.join("/")}` : ""} is used in the design but not configured in ${astroPath}. Add it?`);
+  }
+
+  reportTextColours(colors);
+}
+
+/** `--summary` of a node dump: the frames and their sections, or with `--node <id>` that node's subtree, one line per node. */
+function summarizeDump(file, dump, nodeId) {
+  const num = (v) => +v.toFixed(1);
+  const describe = (n) => {
+    const s = n.styles ?? {};
+    const bits = [n.type.toLowerCase(), `${num(n.bounds.width)}×${num(n.bounds.height)}`];
+    const al = s.autoLayout;
+    if (al) bits.push(`${al.direction === "VERTICAL" ? "col" : "row"} gap=${al.gap}${al.wrap === "WRAP" ? " wrap" : ""}`);
+    if (s.padding) bits.push(`pad=${[s.padding.top, s.padding.right, s.padding.bottom, s.padding.left].join("/")}`);
+    const fill = n.type === "TEXT" ? null : solidPaint(s.fills);
+    if (fill) bits.push(`bg=${fill.hex}${fill.alpha < 1 ? `@${Math.round(fill.alpha * 100)}` : ""}`);
+    for (const p of Array.isArray(s.fills) ? s.fills : []) {
+      if (p.type === "IMAGE") bits.push(`img(${p.scaleMode})`);
+      else if (p.type.startsWith("GRADIENT")) bits.push(p.type.toLowerCase().replace("_", "-"));
+    }
+    if (s.cornerRadius) bits.push(`r=${s.cornerRadius}`);
+    const stroke = solidPaint(s.strokes);
+    if (Array.isArray(s.strokes) && s.strokes.length) bits.push(`stroke=${s.strokeWeight}px ${stroke ? stroke.hex : s.strokes[0].type.toLowerCase()} ${String(s.strokeAlign ?? "").toLowerCase()}`.trim());
+    if (s.effects?.length) bits.push(s.effects.map((e) => e.type.toLowerCase()).join("+"));
+    if (s.clipsContent) bits.push("clip");
+    if (s.opacity !== undefined && s.opacity < 1) bits.push(`opacity=${num(s.opacity)}`);
+    if (n.type === "TEXT") {
+      const lh = typeof s.fontSize === "number" ? dumpLineHeight(s.lineHeight, s.fontSize) : null;
+      const ls = typeof s.fontSize === "number" ? dumpLetter(s.letterSpacing, s.fontSize) : undefined;
+      const color = solidPaint(s.fills);
+      bits.push(`${s.fontFamily} ${s.fontSize}/${lh ?? "?"} w${s.fontWeight}${ls ? ` ls=${em(ls)}em` : ""}${color ? ` ${color.hex}` : ""}`);
+      const t = (n.characters ?? "").replace(/\s+/g, " ");
+      bits.push(`"${cut(t, 40)}"`);
+    }
+    return bits.join(" ");
+  };
+  const find = (n) => {
+    if (n.id === nodeId) return n;
+    for (const c of n.children ?? []) {
+      const hit = find(c);
+      if (hit) return hit;
+    }
+    return null;
+  };
+  console.log(`# ${file}`);
+  if (!nodeId) {
+    const frames = dump.type === "FRAME" ? [dump] : (dump.children ?? []).filter((c) => c.type === "FRAME");
+    for (const f of frames) {
+      console.log(`## ${f.name}  ${f.id}  ${num(f.bounds.width)}×${num(f.bounds.height)}`);
+      for (const s of f.children ?? []) console.log(`  ${s.name}  ${s.id}  ${num(s.bounds.width)}×${num(s.bounds.height)}  y=${num(s.bounds.y)}`);
+    }
+    console.log("\nOne section's subtree: add --node <id>.");
+    return;
+  }
+  const root = find(dump);
+  if (!root) fail(`${file}: no node ${nodeId}`);
+  const walk = (n, depth) => {
+    console.log(`${"  ".repeat(depth)}${n.name}  ${describe(n)}`);
+    for (const c of n.children ?? []) walk(c, depth + 1);
+  };
+  walk(root, 0);
+}
+
+/* ---------- figma-bridge node dump: everything else a capture reports ---------- */
+
+/** A dump colour with its alpha as #rrggbbaa, the form shadowKey and cssColor read. */
+const hex8 = (hex, alpha) => `${hex}${Math.round(alpha * 255).toString(16).padStart(2, "0")}`;
+/** get_styles writes colours as 0–1 channels. */
+const channelsHex = ({ r, g, b }) => `#${[r, g, b].map((c) => Math.round(c * 255).toString(16).padStart(2, "0")).join("")}`;
+
+/** A gradient paint as CSS: the angle from its transform (Figma maps the box onto the 0–1 gradient line), and its stops. */
+function gradientCss(paint) {
+  const stops = paint.gradientStops.map((s) => `${s.opacity < 1 ? `${hex8(s.color, s.opacity)}` : s.color} ${+(s.position * 100).toFixed(1)}%`).join(", ");
+  if (paint.type !== "GRADIENT_LINEAR") return `${paint.type.toLowerCase().replace("gradient_", "")}-gradient(${stops})`;
+  const [[a, b, c], [d, e, f]] = paint.gradientTransform;
+  const det = a * e - b * d;
+  if (!det) return `linear-gradient(${stops})`;
+  /* The inverse transform takes the gradient line's ends (0, 0.5) and (1, 0.5) back into the box. */
+  const inv = (x, y) => [(e * (x - c) - b * (y - f)) / det, (-d * (x - c) + a * (y - f)) / det];
+  const [x0, y0] = inv(0, 0.5);
+  const [x1, y1] = inv(1, 0.5);
+  const angle = Math.round(((Math.atan2(y1 - y0, x1 - x0) * 180) / Math.PI + 90 + 360) % 360);
+  return `linear-gradient(${angle}deg, ${stops})`;
+}
+
+/** The dump's frames and every node in them, linked to its parent, with its breakpoint and a path that names the same node in every frame. */
+function linkDump(file) {
+  const dump = JSON.parse(readFileSync(file, "utf8"));
+  const page = basename(file).replace(/(-node)?\.json$/i, "");
+  const frames = dump.type === "FRAME" ? [dump] : (dump.children ?? []).filter((c) => c.type === "FRAME");
+  const nodes = [];
+  for (const frame of frames) {
+    const w = frame.bounds.width;
+    const bp = w >= 992 ? "desktop" : w >= 768 ? "tablet" : "mobile";
+    const link = (raw, parent, path, depth) => {
+      const n = { raw, id: raw.id, name: raw.name ?? "", type: raw.type, s: raw.styles ?? {}, w: raw.bounds?.width, h: raw.bounds?.height, parent, depth, bp, page, path, children: [] };
+      nodes.push(n);
+      const seen = {};
+      for (const c of raw.children ?? []) {
+        seen[c.name] = (seen[c.name] ?? 0) + 1;
+        n.children.push(link(c, n, `${path}/${c.name}[${seen[c.name] - 1}]`, depth + 1));
+      }
+      return n;
+    };
+    link(frame, null, "", 0);
+  }
+  return { page, nodes };
+}
+
+/**
+ * `--folder` with a node dump: shadows, buttons, photos and icons, fixed or clipped nodes, strokes,
+ * literal px and icon sizes, the parts of a capture the dump can replace. The values are the file's
+ * own: true shadow blur and spread, gradient and multi-paint strokes, the image crop and mirror.
+ * Buttons are read at desktop, as their tokens are single values; literal px and icon sizes compare
+ * the same node (by its path of layer names) across the three frames.
+ */
+function runNodeDumpParts(files, stylesFiles) {
+  const all = files.map(linkDump);
+  const nodes = all.flatMap((d) => d.nodes);
+  const page = all[0]?.page ?? "page";
+  const isText = (n) => n.type === "TEXT";
+  const hasText = (n) => descendants(n).some(isText);
+  const inButton = (n) => [n, ...ancestors(n)].some((a) => /button/i.test(a.name));
+
+  /* ---- shadows and blurs ---- */
+  const effectStyles = new Map();
+  for (const f of stylesFiles) {
+    for (const e of JSON.parse(readFileSync(f, "utf8")).effects ?? []) {
+      const layers = e.effects.filter((x) => x.visible !== false && /SHADOW/.test(x.type)).map((x) => ({ type: x.type, inset: x.type === "INNER_SHADOW", x: x.offset.x, y: x.offset.y, blur: x.radius, spread: x.spread ?? 0, color: hex8(channelsHex(x.color), x.color.a) }));
+      if (layers.length) effectStyles.set(e.name, { name: e.name, layers });
+    }
+  }
+  /* Effects are not responsive: read the desktop frame, and leave out fractional values, which belong to a graphic scaled as one piece. */
+  const desk = nodes.some((n) => n.bp === "desktop") ? nodes.filter((n) => n.bp === "desktop") : nodes;
+  const whole = (v) => Math.abs(v - Math.round(v)) < 0.01;
+  const shadows = new Map();
+  const blurs = new Map();
+  let scaledEffects = 0;
+  for (const n of desk) {
+    const effects = n.s.effects ?? [];
+    if (effects.some((x) => !whole(x.radius) || (x.offset && (!whole(x.offset.x) || !whole(x.offset.y))) || (x.spread && !whole(x.spread)))) {
+      scaledEffects++;
+      continue;
+    }
+    const layers = effects.filter((x) => /SHADOW/.test(x.type)).map((x) => ({ inset: x.type === "INNER_SHADOW", x: x.offset.x, y: x.offset.y, blur: x.radius, spread: x.spread ?? 0, color: hex8(x.color, x.opacity) }));
+    for (const b of effects.filter((x) => /BLUR/.test(x.type) && x.radius > 0)) {
+      const key = `${b.type === "BACKGROUND_BLUR" ? "backdrop-filter: blur" : "filter: blur"}(${b.radius}px)`;
+      blurs.set(key, [...(blurs.get(key) ?? []), nameOf(n)]);
+    }
+    if (!layers.length) continue;
+    const style = [...effectStyles.values()].find((e) => e.layers.length === layers.length && shadowKeys(e.layers) === shadowKeys(layers));
+    const key = style ? `style:${style.name}` : shadowKeys(layers);
+    const entry = shadows.get(key) ?? { layers, drop: false, nodes: 0, names: new Set(), effect: style?.name };
+    entry.nodes++;
+    entry.names.add(nameOf(n));
+    shadows.set(key, entry);
+  }
+  reportShadows(shadows, effectStyles, "the node dump's desktop effects and figma-styles.json");
+  if (scaledEffects) console.log(`  ${scaledEffects} node(s) with fractional effect values (inside a graphic scaled as one piece) are left out.`);
+  if (blurs.size) {
+    console.log("\nBLURS (Figma layer and background blur; a background blur is backdrop-filter, which needs a see-through fill to show):");
+    for (const [k, where] of blurs) console.log(`  ${k} ×${where.length}: ${[...new Set(where)].slice(0, 3).join(", ")}`);
+  }
+
+  /* ---- buttons, at desktop ---- */
+  /* 0 is what a capture leaves out (no p-0 or rounded-none class), so it is not compared either. */
+  const pxObj = (px, filter) => {
+    if (!px) return null;
+    const hits = Object.entries(tokens.scale).filter(([t, v]) => filter(t) && v.desktop === px);
+    const token = hits.length === 1 ? hits[0][0] : null;
+    return { px, name: token ? `--${token}` : `${px}px`, token, triple: token ? tokens.scale[token] : null };
+  };
+  const buttons = desk.filter((n) => /button/i.test(n.name) && !ancestors(n).some((a) => /button/i.test(a.name)) && n.type !== "TEXT");
+  const specs = buttons.map((b) => {
+    const text = descendants(b).find(isText);
+    const ts = text?.s;
+    const size = typeof ts?.fontSize === "number" ? ts.fontSize : null;
+    const lhPx = size ? dumpLineHeight(ts.lineHeight, size) : null;
+    const letter = size ? dumpLetter(ts.letterSpacing, size) : undefined;
+    const T = size ? classify(TYPE_STYLES[text.name.toLowerCase()] ?? null, "desktop", size, lhPx, letter).T : null;
+    const stroke = solidPaint(b.s.strokes);
+    const pad = b.s.padding;
+    const gapNode = [b, ...descendants(b)].find((x) => x.s.autoLayout && x.children.length > 1);
+    return {
+      name: b.name, id: b.id, iconOnly: !text,
+      fill: dumpColor(solidPaint(b.s.fills), b.s.opacity ?? 1),
+      text: ts ? dumpColor(solidPaint(ts.fills), ts.opacity ?? 1) : null,
+      border: stroke && b.s.strokeWeight > 0 ? { width: b.s.strokeWeight, color: dumpColor(stroke) } : null,
+      radius: pxObj(typeof b.s.cornerRadius === "number" ? b.s.cornerRadius : undefined, isRadius),
+      padX: pad ? pxObj(pad.left, isSpace) : null,
+      padY: pad ? pxObj(pad.top, isSpace) : null,
+      gap: gapNode ? pxObj(gapNode.s.autoLayout.gap, isSpace) : null,
+      style: ts && size ? { token: T, px: size, lhPx: typeof lhPx === "number" ? lhPx : null, letter, weight: ts.fontWeight, row: null } : null,
+    };
+  });
+  if (specs.length) reportButtons(specs);
+
+  /* ---- photos and icons ---- */
+  const GENERIC = /^(icon|frame|frame \d+|vector|vector \d+|image|img|div|svg|group|group \d+|text-container|content|contents|actions|global-wrapper|section-container|.*-wrapper|.*-container|layer.*|rectangle.*|ellipse.*)$/i;
+  const usage = (n) => {
+    const names = [n, ...ancestors(n)].map((a) => a.name).filter((x) => x && !/\s--\s|\[(desktop|tablet|mobile)\]/i.test(x));
+    const section = names.find((x) => /-section$/i.test(x))?.replace(/-section$/i, "");
+    const role = names.find((x) => !GENERIC.test(x) && !/-section$/i.test(x));
+    return slug([section, role && slug(role) !== slug(section ?? "") ? role : null].filter(Boolean).join("-")) || "asset";
+  };
+  const photos = new Map();
+  for (const n of nodes) {
+    for (const p of Array.isArray(n.s.fills) ? n.s.fills : []) {
+      if (p.type !== "IMAGE" || !p.imageHash) continue;
+      const e = photos.get(p.imageHash) ?? { ids: [], users: new Set(), usage: usage(n), bps: new Set(), flags: new Set(), size: `${Math.round(n.w)}×${Math.round(n.h)}` };
+      e.ids.push(n.id);
+      e.users.add(n.name);
+      e.bps.add(n.bp);
+      const [[a, b, c], [d, ee, f]] = p.imageTransform ?? [[1, 0, 0], [0, 1, 0]];
+      if (p.scaleMode === "CROP" || (p.scaleMode !== "TILE" && (Math.abs(a - 1) > 0.001 || Math.abs(ee - 1) > 0.001 || Math.abs(c) > 0.001 || Math.abs(f) > 0.001))) e.flags.add("CROPPED");
+      if (a < 0 || ee < 0) e.flags.add("MIRRORED");
+      if (Math.abs(b) > 0.001 || Math.abs(d) > 0.001) e.flags.add("ROTATED");
+      if (p.scaleMode === "FIT") e.flags.add("FIT (contain)");
+      if (p.scaleMode === "TILE") e.flags.add("TILED");
+      photos.set(p.imageHash, e);
+    }
+  }
+  const taken = new Set();
+  const fileName = (base) => {
+    let name = base;
+    for (let i = 2; taken.has(name); i++) name = `${base}-${i}`;
+    taken.add(name);
+    return name;
+  };
+  if (photos.size) {
+    console.log(`\nPHOTOS (${photos.size} distinct image fill(s); the dump holds each image's hash, not the file: download them with the official MCP, download_assets on the node id, into src/assets/${page}/):`);
+    const rows = [...photos.values()].map((e) => [fileName(e.usage), e.ids[0], e.size, [...e.users].slice(0, 2).join(", "), [...e.bps].map((b) => b[0].toUpperCase()).join(""), [...e.flags].join(", ") || "—"]);
+    printTable(["NAME", "NODE", "BOX", "LAYER", "BPS", "FILL"], rows, "  ");
+    console.log("  Photos: downscale to about twice the displayed size before committing. CROPPED: the fill shows part of the file (Figma's imageTransform); crop the file, or position it with object-fit and object-position. MIRRORED: flip the file, or transform: scaleX(-1).");
+    if ([...photos.values()].some((e) => e.flags.has("MIRRORED") || e.flags.has("ROTATED"))) out.asks.push("Some photos are mirrored or rotated in Figma (listed under PHOTOS). Flip the files themselves, or flip them in CSS?");
+  }
+  const VECTOR = new Set(["VECTOR", "BOOLEAN_OPERATION", "ELLIPSE", "LINE", "RECTANGLE", "STAR", "POLYGON", "GROUP", "FRAME", "INSTANCE", "COMPONENT"]);
+  const vectorIcon = (n) => {
+    if (n.type === "TEXT" || !n.children.length || n.w > 64 || n.h > 64) return false;
+    const inner = descendants(n);
+    if (!inner.some((x) => ["VECTOR", "BOOLEAN_OPERATION", "ELLIPSE", "LINE", "STAR", "POLYGON"].includes(x.type))) return false;
+    return inner.every((x) => VECTOR.has(x.type) && !(Array.isArray(x.s.fills) && x.s.fills.some((p) => p.type === "IMAGE")));
+  };
+  const icons = new Map();
+  for (const n of desk.length ? desk : nodes) {
+    if (!vectorIcon(n) || ancestors(n).some(vectorIcon)) continue;
+    const key = `${n.name}|${Math.round(n.w)}x${Math.round(n.h)}|${descendants(n).length}`;
+    const e = icons.get(key) ?? { n, count: 0, usage: usage(n) };
+    e.count++;
+    icons.set(key, e);
+  }
+  if (icons.size) {
+    const list = [...icons.values()].map((e) => ({ ...e, file: fileName(GENERIC.test(e.n.name) || !e.usage.includes(slug(e.n.name)) ? `${e.usage}-icon` : e.usage) }));
+    const direct = list.filter((e) => !e.n.id.startsWith("I"));
+    const nested = list.filter((e) => e.n.id.startsWith("I"));
+    console.log(`\nICONS (${list.length} distinct vector graphic(s) up to 64px, at desktop):`);
+    printTable(["NAME", "NODE", "BOX", "USES"], list.map((e) => [`${e.file}.svg`, e.n.id, `${Math.round(e.n.w)}×${Math.round(e.n.h)}`, `${e.count}`]), "  ");
+    if (direct.length) {
+      console.log(`\n  Export through figma-bridge (no Figma quota):\n  node .agents/skills/lumos-import-figma/bridge.mjs --svg src/assets/${page} ${direct.map((e) => `"${e.n.id}=${e.file}"`).join(" ")}`);
+    }
+    if (nested.length) console.log(`\n  Inside an instance (${nested.map((e) => e.file).join(", ")}): the bridge cannot export an instance's layer by id; use the official MCP's download_assets, or export the main component.`);
+    console.log(`  Then run --clean-svg on them, and rebuild single-colour icons with fill="currentColor" so they follow the text colour and the theme.`);
+  }
+
+  /* ---- fixed or clipped nodes: text a clip can cut, and fixed heights at section level ---- */
+  const clipped = new Map();
+  for (const n of nodes) {
+    const kinds = [];
+    if (n.type === "TEXT") {
+      if (n.s.textAutoResize === "TRUNCATE") kinds.push("text-ellipsis");
+    } else if (n.children.length && hasText(n)) {
+      const al = n.s.autoLayout;
+      const fixed = al && ((al.direction === "VERTICAL" && al.primaryAxisSizing === "FIXED") || (al.direction === "HORIZONTAL" && al.counterAxisSizing === "FIXED"));
+      if (n.s.clipsContent) kinds.push(fixed ? "clip, fixed height" : "clip");
+      else if (fixed && n.depth <= 2) kinds.push("fixed height (section level)");
+    }
+    if (!kinds.length) continue;
+    const key = `${n.name}|${kinds[0]}`;
+    const e = clipped.get(key) ?? { name: n.name, kind: kinds[0], id: n.id, h: {}, count: 0 };
+    (e.h[n.bp] ??= new Set()).add(Math.round(n.h));
+    e.count++;
+    clipped.set(key, e);
+  }
+  if (clipped.size) {
+    console.log("\nFIXED HEIGHT / CLIPPED IN FIGMA (these cause false mismatches when the content is longer or shorter than the drawing; height per frame):");
+    for (const e of clipped.values()) console.log(`  - ${e.name} (${e.id}) ×${e.count}: ${e.kind}  ${BPS.filter((b) => e.h[b]).map((b) => `${b[0].toUpperCase()}${[...e.h[b]].join("/")}`).join(" ")}`);
+    out.asks.push(`${clipped.size} node(s) have a fixed height or clip their text in Figma (${[...new Set([...clipped.values()].map((e) => e.kind))].join("; ")}). Is that intentional, or should the page let them grow?`);
+  }
+
+  /* ---- strokes ---- */
+  const gradients = [];
+  const multi = [];
+  const raw = new Map();
+  const bordered = new Map();
+  const outside = new Map();
+  let scaledStrokes = 0;
+  for (const n of desk) {
+    const strokes = Array.isArray(n.s.strokes) ? n.s.strokes : [];
+    if (!strokes.length || !(n.s.strokeWeight > 0)) continue;
+    if (!whole(n.s.strokeWeight)) {
+      scaledStrokes++;
+      continue;
+    }
+    const where = `${n.name} (${n.id})`;
+    const grads = strokes.filter((p) => p.type.startsWith("GRADIENT"));
+    if (grads.length) gradients.push(`${where} ${n.s.strokeWeight}px: ${grads.map(gradientCss).join(" + ")}`);
+    if (strokes.length > 1) multi.push(`${where}: ${strokes.map((p) => (p.type === "SOLID" ? p.color : p.type.toLowerCase())).join(" + ")}`);
+    const solid = solidPaint(strokes);
+    if (solid && strokes.length === 1 && !Object.values(tokens.swatches).includes(solid.hex)) raw.set(solid.hex, [...(raw.get(solid.hex) ?? []), n.name]);
+    if (n.s.strokeAlign && n.s.strokeAlign !== "INSIDE" && n.type !== "TEXT" && n.type !== "VECTOR") outside.set(`${n.s.strokeAlign.toLowerCase()} ${n.s.strokeWeight}px`, [...(outside.get(`${n.s.strokeAlign.toLowerCase()} ${n.s.strokeWeight}px`) ?? []), n.name]);
+    if (!inButton(n) && n.s.padding && n.s.strokeAlign === "INSIDE") bordered.set(n.name, (bordered.get(n.name) ?? 0) + 1);
+  }
+  if (gradients.length || multi.length || raw.size || bordered.size || outside.size) console.log("\nSTROKES (from the dump, so gradients and multi-paint strokes are the file's own):");
+  if (gradients.length) {
+    console.log("  Gradient strokes (CSS cannot gradient a rounded border directly: a background-clip border-box layer under a padding-box fill, or a mask):");
+    for (const l of [...new Set(gradients)].slice(0, 10)) console.log(`    - ${l}`);
+    out.asks.push(`${gradients.length} gradient stroke(s) (listed under STROKES). Build them as gradient borders, or is a solid border close enough?`);
+  }
+  if (multi.length) {
+    console.log("  Strokes with several paints (only the top one shows unless the upper ones are see-through):");
+    for (const l of [...new Set(multi)].slice(0, 10)) console.log(`    - ${l}`);
+  }
+  if (raw.size) {
+    console.log("  Stroke colours that are no --color-* swatch:");
+    for (const [hex, where] of raw) {
+      const near = nearestSwatch(hex, tokens.swatches);
+      console.log(`    - ${hex} ×${where.length}: ${[...new Set(where)].slice(0, 3).join(", ")}${near ? `  (closest ${near.name}, ${near.d} away)` : ""}`);
+    }
+  }
+  if (outside.size) {
+    console.log("  Strokes outside or centred on the box (they add to its size in Figma; a CSS border inside a border-box does not):");
+    for (const [k, where] of outside) console.log(`    - ${k} ×${where.length}: ${[...new Set(where)].slice(0, 3).join(", ")}`);
+  }
+  if (scaledStrokes) console.log(`  ${scaledStrokes} stroke(s) of a fractional weight (inside a graphic scaled as one piece) are left out.`);
+  if (bordered.size) {
+    console.log(`  Bordered boxes with padding (Figma strokes sit inside the box: subtract the border from the padding, e.g. calc(var(--space-…) - var(--border-width))): ${[...bordered].slice(0, 10).map(([k, v]) => `${k}${v > 1 ? ` ×${v}` : ""}`).join(", ")}${bordered.size > 10 ? `, and ${bordered.size - 10} more` : ""}`);
+  }
+
+  /* ---- literal px and icon sizes: the same node across the three frames ---- */
+  const byPath = new Map();
+  for (const n of nodes) {
+    const e = byPath.get(n.path) ?? {};
+    e[n.bp] = n;
+    byPath.set(n.path, e);
+  }
+  const trio = [...byPath.values()].filter((e) => BPS.every((b) => e[b]));
+  const literal = new Map();
+  const iconRows = [];
+  for (const e of trio) {
+    const d = e.desktop;
+    if (inButton(d)) continue;
+    const same = (get) => {
+      const v = BPS.map((b) => get(e[b]));
+      return v.every((x) => typeof x === "number" && x > 0 && x === v[0]) ? v[0] : null;
+    };
+    const gap = d.children.length > 1 ? same((n) => n.s.autoLayout?.gap) : null;
+    if (gap) literal.set(`gap ${gap}px`, [...(literal.get(`gap ${gap}px`) ?? []), d.name]);
+    const pads = BPS.map((b) => e[b].s.padding);
+    if (pads.every((x) => x) && pads.every((x) => JSON.stringify(x) === JSON.stringify(pads[0]))) {
+      const { top, right, bottom, left } = pads[0];
+      const short = top === bottom && right === left ? (top === right ? `${top}px` : `${top}px ${right}px`) : `${top}px ${right}px ${bottom}px ${left}px`;
+      literal.set(`padding ${short}`, [...(literal.get(`padding ${short}`) ?? []), d.name]);
+    }
+    if (vectorIcon(d)) {
+      const t = { desktop: Math.round(e.desktop.w), tablet: Math.round(e.tablet.w), mobile: Math.round(e.mobile.w) };
+      if (t.desktop === t.tablet && t.tablet === t.mobile) literal.set(`icon size ${t.desktop}px`, [...(literal.get(`icon size ${t.desktop}px`) ?? []), d.name]);
+      else {
+        const token = Object.entries(tokens.scale).find(([name, v]) => name.startsWith("icon-") && v.desktop === t.desktop && v.tablet === t.tablet && v.mobile === t.mobile)?.[0];
+        /* Graphics drawn at each frame's own scale change size too; only a layer named as an icon, or one on the icon scale, is listed. */
+        if (token || /icon/i.test(d.name)) iconRows.push([`${usage(d)} (${d.name})`, fmt(t), token ? `--${token}` : "no --icon-* token has this triple"]);
+      }
+    }
+  }
+  if (literal.size) {
+    console.log("\nLITERAL PX (the same in all three frames, so not a responsive variable: use a fixed rem unless a token is meant; a responsive token gives three values):");
+    for (const [key, where] of [...literal].sort((a, b) => b[1].length - a[1].length).slice(0, 20)) console.log(`  - ${key} ×${where.length}: ${[...new Set(where)].slice(0, 3).join("; ")}${new Set(where).size > 3 ? "; …" : ""}`);
+    if (literal.size > 20) console.log(`  … ${literal.size - 20} more`);
+  }
+  const uniqueIcons = iconRows.filter((r, i) => iconRows.findIndex((x) => x[0] === r[0] && x[1] === r[1]) === i);
+  if (uniqueIcons.length) {
+    console.log("\nICON SIZES BY BREAKPOINT (the width changes per frame, so it tracks an icon-size variable):");
+    printTable(["ICON", "WIDTH D / T / M", "TOKEN"], uniqueIcons);
+  }
 }
 
 /* ---------- batch: the shape Claude fills in from the Figma file ---------- */
@@ -2178,6 +3035,17 @@ const optionValue = (name, fallback) => {
   return next === undefined || next.startsWith("--") ? fallback : next;
 };
 
+/**
+ * Whether a file belongs to page `page`: `<page>.xml`, `<page>-metadata.xml`, `<page>-node.json`,
+ * `<page>-<bp>…` or `<page>-<nn>…`. A plain prefix is not enough: `work` must not read
+ * `work-detail-metadata.xml`.
+ */
+const isPageFile = (name, page) => {
+  const n = name.toLowerCase();
+  const p = page.toLowerCase();
+  return n.startsWith(p) && /^(\.|[-_](desktop|tablet|mobile|metadata|node|context|\d))/.test(n.slice(p.length));
+};
+
 /** Every file in a folder, sorted into the mode that reads it, by what is inside it. */
 function scanFolder(dir) {
   let names;
@@ -2189,13 +3057,18 @@ function scanFolder(dir) {
   } catch {
     fail(`FOLDER ${dir}: cannot read the folder — does it exist?`);
   }
-  const found = { variables: [], metadata: [], designs: [], inventories: [], skipped: [] };
+  const found = { variables: [], metadata: [], dumps: [], styles: [], designs: [], inventories: [], skipped: [], errors: [] };
   for (const name of names) {
     const path = join(dir, name);
     const text = readFileSync(path, "utf8").trimStart();
     const skip = (reason) => found.skipped.push({ name, reason });
     if ((/data-node-id=/.test(text) && /className=/.test(text)) || text.includes("These styles are contained in the design")) {
       found.designs.push(path);
+      continue;
+    }
+    /* get_metadata output saved with the MCP's "Currently selected nodes:" lines above the XML. */
+    if (text[0] !== "<" && /^<(section|frame|canvas|instance)\s/m.test(text)) {
+      found.metadata.push(path);
       continue;
     }
     if (text[0] === "{" || text[0] === "[") {
@@ -2209,6 +3082,8 @@ function scanFolder(dir) {
       const keys = Array.isArray(data) ? [] : Object.keys(data);
       const bad = keys.filter((k) => !INVENTORY_KEYS.includes(k));
       if (Array.isArray(data)) skip("JSON array, expected an object");
+      else if (isNodeDump(data)) found.dumps.push(path);
+      else if (Array.isArray(data.effects) && Array.isArray(data.paints)) found.styles.push(path);
       else if (data.modes && typeof data.modes === "object" && Array.isArray(data.variables)) found.variables.push(path);
       else if (!keys.length) skip("empty JSON object");
       else if (bad.length) skip(`neither a variable export nor an inventory (unknown key(s): ${bad.join(", ")})`);
@@ -2218,6 +3093,9 @@ function scanFolder(dir) {
       const tag = text.match(/^(?:<\?[^>]*\?>\s*)*<\s*([\w-]+)/)?.[1];
       if (["section", "frame", "canvas", "instance"].includes(tag)) found.metadata.push(path);
       else skip(`XML starting with <${tag ?? "?"}>, not get_metadata output`);
+    } else if (text.length < 1000 && /rate limit|error|exceeded|try again/i.test(text)) {
+      skip(`a Figma MCP error saved instead of a capture ("${text.trim().split("\n")[0].slice(0, 60)}"); capture this frame again`);
+      found.errors.push(name);
     } else {
       skip("not JSON or XML");
     }
@@ -2240,6 +3118,15 @@ if (summaryList.length) {
   runSummary(summaryList);
   process.exit(0);
 }
+const cleanList = flagAll("clean-svg");
+if (args.includes("--clean-svg")) {
+  if (!cleanList.length) fail("--clean-svg needs one or more SVG files");
+  runCleanSvg(cleanList);
+  process.exit(0);
+}
+
+/* What every mode adds to; printed once at the end, so a folder run asks each question once. */
+const out = { asks: [], guesses: [], updates: [], places: [] };
 
 const folder = optionValue("folder", "figma");
 let folderMode = false;
@@ -2250,12 +3137,24 @@ if (folder !== undefined) {
   if (!found.count) fail(`FOLDER ${folder.replace(/\/$/, "")}/: no files found — drop a variable export, get_metadata XML, get_design_context output or inventory JSON there.`);
   const page = optionValue("page", undefined);
   if (page) {
-    const ofPage = (p) => basename(p).toLowerCase().startsWith(page.toLowerCase());
-    for (const key of ["metadata", "designs"]) {
-      found.skipped.push(...found[key].filter((p) => !ofPage(p)).map((p) => ({ name: basename(p), reason: `not page "${page}" (file name must start with it)` })));
+    const ofPage = (p) => isPageFile(basename(p), page);
+    for (const key of ["metadata", "dumps", "designs"]) {
+      found.skipped.push(...found[key].filter((p) => !ofPage(p)).map((p) => ({ name: basename(p), reason: `not page "${page}" (expected ${page}-metadata.xml or ${page}-<breakpoint>-…)` })));
       found[key] = found[key].filter(ofPage);
     }
+    found.errors = found.errors.filter((n) => isPageFile(n, page));
   }
+  /* A figma-bridge dump becomes the get_metadata XML beside it, unless one saved off the official MCP is there. */
+  found.written = [];
+  for (const dump of found.dumps) {
+    const xml = dump.replace(/(-node)?\.json$/i, "-metadata.xml");
+    if (!existsSync(xml) || readFileSync(xml, "utf8").includes('source="figma-bridge"')) {
+      writeFileSync(xml, dumpToMetadataXml(JSON.parse(readFileSync(dump, "utf8"))));
+      found.written.push(xml);
+    }
+    if (!found.metadata.includes(xml)) found.metadata.push(xml);
+  }
+  if (found.errors.length) out.asks.push(`${found.errors.length} file(s) hold a Figma MCP error message instead of a capture (${found.errors.join(", ")}), so those frames were NOT read. Capture them again (the remote MCP at mcp.figma.com works when the local one is rate-limited).`);
   variableList.push(...found.variables);
   metadataList.push(...found.metadata);
   designList.push(...found.designs);
@@ -2271,23 +3170,27 @@ if (!variableList.length && !metadataList.length && !designList.length && !inven
   fail("need --folder [dir], --json <file>, --variables <file...>, --metadata <file...>, --design-context <file...>, --summary <file...>, or one of --px / --lh / --color");
 }
 
-/* What every mode adds to; printed once at the end, so a folder run asks each question once. */
-const out = { asks: [], guesses: [], updates: [], places: [] };
 const heading = (title) => {
   if (folderMode) console.log(`\n=== ${title} ===\n`);
 };
 
+const dumpList = found?.dumps ?? [];
 if (folderMode && (variableList.length || metadataList.length) && !designList.length) {
-  out.asks.push("No get_design_context capture in this run, so weight, letter spacing and text-transform per text style, text colours, shadows, buttons, assets and fixed or clipped nodes were NOT checked. Save get_design_context output (excludeScreenshot true) for each frame into the folder and run again.");
+  out.asks.push(dumpList.length
+    ? "No get_design_context capture in this run: the node dump covered everything but text-transform. Check the uppercase styles (overlines, tags, buttons) in a screenshot, or capture one section that has them."
+    : "No get_design_context capture in this run, so weight, letter spacing and text-transform per text style, text colours, shadows, buttons, assets and fixed or clipped nodes were NOT checked. Save get_design_context output (excludeScreenshot true) for each frame into the folder and run again.");
 }
 
 printVersion();
 if (found) {
   const dir = `${folder.replace(/\/$/, "")}/`;
   const listed = (label, paths) => paths.length && console.log(`  ${label}: ${paths.map((p) => p.slice(dir.length)).join(", ")}`);
-  console.log(`FOLDER ${dir}: ${found.variables.length} variable export(s), ${found.metadata.length} metadata, ${found.designs.length} design context, ${found.inventories.length} inventor${found.inventories.length === 1 ? "y" : "ies"}, ${found.skipped.length} skipped`);
+  console.log(`FOLDER ${dir}: ${found.variables.length} variable export(s), ${found.metadata.length} metadata, ${found.dumps.length} node dump(s), ${found.designs.length} design context, ${found.inventories.length} inventor${found.inventories.length === 1 ? "y" : "ies"}, ${found.skipped.length} skipped`);
   listed("variable exports", found.variables);
   listed("metadata", found.metadata);
+  listed("node dumps (figma-bridge)", found.dumps);
+  listed("styles (figma-bridge)", found.styles);
+  listed("metadata written from a node dump", found.written);
   listed("design context", found.designs);
   listed("inventories", found.inventories);
   if (found.skipped.length) {
@@ -2304,9 +3207,16 @@ if (metadataList.length) {
   heading(`METADATA (${metadataList.length} file(s))`);
   runMetadata(metadataList);
 }
+if (dumpList.length) {
+  heading(`NODE DUMP (${dumpList.length} file(s))`);
+  runNodeDump(dumpList);
+  runNodeDumpParts(dumpList, found.styles);
+}
 if (designList.length) {
   heading(`DESIGN CONTEXT (${designList.length} file(s))`);
-  runDesignContext(designList);
+  /* A node dump holds the file's own values, so a capture beside it adds only what the dump lacks. */
+  if (dumpList.length) console.log("Everything else came from the node dump above; a capture adds text-transform and its asset URLs.\n");
+  runDesignContext(designList, dumpList.length > 0);
 }
 for (const file of inventoryList) {
   heading(`INVENTORY ${file}`);

@@ -90,7 +90,7 @@ const number = (index: number) => String(index + 1).padStart(2, "0");
                 <ul
                   class:list={[
                     "service-steps_points",
-                    step.points.length > 3 && "grid",
+                    step.points.length > 2 && "grid",
                   ]}
                   role="list"
                 >
@@ -298,7 +298,7 @@ const number = (index: number) => String(index + 1).padStart(2, "0");
         }
       }
 
-      /* Four points or more wrap two to a row instead of squeezing into one. */
+      /* Three points or more wrap two to a row instead of squeezing into one. */
       .service-steps_points.grid {
         @media (width >= 48rem) {
           display: grid;
@@ -315,6 +315,22 @@ const number = (index: number) => String(index + 1).padStart(2, "0");
         .service-steps_point {
           @media (width >= 48rem) {
             padding-inline-end: 0;
+          }
+        }
+
+        /* With an odd count Figma lets each point hug its text: the first column is as wide as its point, the second takes the rest, and the point left alone on the last row may run past the first column. */
+        &:has(> .service-steps_point:last-child:nth-child(odd)) {
+          @media (width >= 48rem) {
+            grid-template-columns: auto minmax(0, 1fr);
+          }
+          @media (width >= 62rem) {
+            width: fit-content;
+          }
+        }
+
+        .service-steps_point:last-child:nth-child(odd) {
+          @media (width >= 48rem) {
+            grid-column: 1 / -1;
           }
         }
       }

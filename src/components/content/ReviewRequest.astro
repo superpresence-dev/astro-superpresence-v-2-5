@@ -1,0 +1,197 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Img from "@/components/media/Img.astro";
+import ContactForm from "@/components/content/ContactForm.astro";
+import statOne from "@/assets/preview/cta-stat-1.svg";
+import statTwo from "@/assets/preview/cta-stat-2.svg";
+import statThree from "@/assets/preview/cta-stat-3.svg";
+import statFour from "@/assets/preview/cta-stat-4.svg";
+
+type Stat = { title: string; text: string };
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading?: string;
+  /** Text under the heading. */
+  text?: string;
+  /** The four facts under the heading; each takes the icon at its position. */
+  stats?: Stat[];
+  /** Text of the form's submit button. */
+  buttonText?: string;
+  /** Form endpoint. Omit to skip submission. */
+  action?: string;
+  /** Link to the privacy policy. */
+  privacyHref?: string;
+}
+
+const {
+  render = true,
+  eyebrow = "What we need from you",
+  heading = "Send us the URL.<br />We’ll take it from there",
+  text = "A few fields below, then we'll come back with a walkthrough, the written summary, and the one change we'd make first.",
+  stats = [
+    { title: "APAC", text: "Our origin and home" },
+    { title: "6+ Experts", text: "Senior designers and developers" },
+    { title: "Worldwide", text: "Range of clients we serve" },
+    { title: "100%", text: "Remote team, operating globally" },
+  ],
+  buttonText,
+  action,
+  privacyHref,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const icons = [statOne, statTwo, statThree, statFour];
+---
+
+{
+  render && (
+    <div class:list={["review-request_wrap", className]} {...rest}>
+      <div class="review-request_intro">
+        <Paragraph variant="overline-small" class="review-request_eyebrow">
+          {eyebrow}
+        </Paragraph>
+        <Heading tag="h2" variant="h3">
+          <Fragment set:html={heading} />
+        </Heading>
+        <Paragraph variant="main" class="review-request_text">
+          {text}
+        </Paragraph>
+      </div>
+      <ContactForm
+        variant="review"
+        submitText={buttonText}
+        action={action}
+        privacyHref={privacyHref}
+        class="review-request_form"
+      />
+      <ul class="review-request_stats" role="list">
+        {stats.map((stat, index) => (
+          <li class="review-request_stat">
+            <Img src={icons[index]} transparent class="review-request_icon" />
+            <div class="review-request_stat-text">
+              <Paragraph tag="span" variant="xsmall" class="weight-medium">
+                {stat.title}
+              </Paragraph>
+              <Paragraph tag="span" variant="xsmall" class="review-request_note">
+                {stat.text}
+              </Paragraph>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    /* Stacked below desktop: heading, form, facts. On desktop the heading and
+       facts share the left column, the form fills the right. */
+    .review-request_wrap {
+      width: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-3rem);
+      @media (width >= 62rem) {
+        grid-template-columns: minmax(0, 33.75rem) minmax(0, 1fr);
+        grid-template-rows: auto 1fr;
+        grid-template-areas:
+          "intro form"
+          "stats form";
+        row-gap: 0;
+      }
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .review-request_intro {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+        @media (width >= 62rem) {
+          grid-area: intro;
+        }
+      }
+
+      .review-request_eyebrow {
+        color: var(--color-neutral-30);
+      }
+
+      .review-request_text {
+        max-width: 30rem;
+        color: var(--color-neutral-60);
+      }
+
+      .review-request_form {
+        @media (width >= 62rem) {
+          grid-area: form;
+        }
+      }
+
+      .review-request_stats {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        @media (width >= 48rem) {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          column-gap: var(--space-1-25rem);
+        }
+        @media (width >= 62rem) {
+          grid-area: stats;
+          align-self: end;
+        }
+      }
+
+      .review-request_stat {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin: 0;
+        padding: var(--space-1-25rem) 0 var(--space-1rem);
+        border-bottom: var(--border-width) solid var(--color-neutral-5);
+        &:last-child {
+          padding-bottom: 0;
+          border-bottom: 0;
+        }
+        @media (width >= 48rem) {
+          &:nth-child(odd) {
+            border-right: var(--border-width) solid var(--color-neutral-5);
+          }
+          &:nth-child(n + 3) {
+            padding-bottom: 0;
+            border-bottom: 0;
+          }
+        }
+      }
+
+      .review-request_icon {
+        width: var(--icon-2xl);
+        height: auto;
+        flex: none;
+      }
+
+      .review-request_stat-text {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-125rem);
+        color: var(--color-neutral-90);
+      }
+
+      .review-request_note {
+        color: var(--color-neutral-60);
+      }
+    }
+  }
+</style>

@@ -21,6 +21,10 @@ interface Props extends HTMLAttributes<"div"> {
   bookingHref?: string;
   /** Link to the privacy policy. */
   privacyHref?: string;
+  /** `contact` shows the form and call booking as tabs; `review` shows only the website review form. */
+  variant?: "contact" | "review";
+  /** Text of the `review` form's submit button. */
+  submitText?: string;
 }
 
 const {
@@ -28,6 +32,8 @@ const {
   action,
   bookingHref = "#",
   privacyHref = "#",
+  variant = "contact",
+  submitText = "Review my website",
   class: className,
   ...rest
 } = Astro.props;
@@ -44,7 +50,81 @@ const budgets = ["Under $10k", "$10k – $25k", "$25k – $50k", "$50k and above
 ---
 
 {
-  render && (
+  render && variant === "review" && (
+    <div class:list={["contact-form_wrap", "review", className]} {...rest}>
+      <div class="contact-form_box review">
+        <Form name="review" action={action}>
+          <Input
+            label="Full name"
+            name="name"
+            placeholder="John Doe"
+            required
+          />
+          <Input
+            variant="email"
+            label="Email address"
+            name="email"
+            placeholder="john@superpresence.co"
+            required
+          />
+          <Input
+            label="Company name"
+            name="company"
+            placeholder="Superpresence"
+            autocomplete="organization"
+            required
+          />
+          <Input
+            label="Website link"
+            name="website"
+            placeholder="superpresence.co"
+            inputmode="url"
+            autocomplete="url"
+            required
+          />
+          <Textarea
+            label="Anything specific you want us to look at?"
+            name="focus"
+            placeholder="Tell us what you're trying to improve, build, or figure out ..."
+            minLines={3}
+            required
+            class="contact-form_wide"
+          />
+          <div class="contact-form_cta contact-form_wide">
+            <Button type="submit" class="contact-form_submit">
+              {submitText}
+            </Button>
+            <Paragraph variant="small" class="contact-form_legal">
+              By clicking the submit button, you agree to our{" "}
+              <a href={privacyHref}>privacy policy</a>
+            </Paragraph>
+          </div>
+
+          <div slot="success" class="contact-form_success">
+            <div class="contact-form_check">
+              <Img src={check} transparent height={100} />
+            </div>
+            <div class="contact-form_success-text">
+              <Heading tag="h2" variant="h4">
+                We’ve got your message
+                <br />
+                and we’re already on it.
+              </Heading>
+              <Paragraph variant="main">
+                Our team is carefully reviewing your request
+                <br />
+                to provide a personalized and accurate response.
+              </Paragraph>
+            </div>
+          </div>
+        </Form>
+      </div>
+    </div>
+  )
+}
+
+{
+  render && variant === "contact" && (
     <Tabs id="contact" class:list={["contact-form_wrap", className]} {...rest}>
       <TabLink slot="links" class="text-style-h6">
         Fill a form
@@ -223,6 +303,13 @@ const budgets = ["Under $10k", "$10k – $25k", "$25k – $50k", "$50k and above
         min-height: 43.75rem;
       }
 
+      &.review {
+        min-height: 0;
+        padding: calc(var(--space-2rem) - var(--border-width));
+        border-radius: var(--radius-0-5rem);
+      }
+
+      &.review,
       &:has([data-state="sent"]) {
         box-shadow:
           0 1rem 2rem rgb(15 15 15 / 0.05),

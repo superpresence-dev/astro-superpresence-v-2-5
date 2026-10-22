@@ -1,0 +1,312 @@
+---
+import type { ComponentProps, HTMLAttributes } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Button from "@/components/Button.astro";
+import Img from "@/components/media/Img.astro";
+import Marquee from "@/components/interactive/Marquee.astro";
+import { slotContent } from "@/utils/slots.ts";
+import background from "@/assets/preview/hero-background.jpg";
+import pointOne from "@/assets/preview/hero-point-1.svg";
+import pointTwo from "@/assets/preview/hero-point-2.svg";
+import pointThree from "@/assets/preview/hero-point-3.svg";
+
+type Point = { title: string; text: string };
+type Work = { title: string; image: ImageMetadata };
+
+interface Props
+  extends
+    HTMLAttributes<"section">,
+    Pick<ComponentProps<typeof Section>, "render"> {
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading?: string;
+  /** Paragraph below the heading. */
+  text?: string;
+  /** Button text. */
+  buttonText?: string;
+  /** Button link. */
+  buttonHref?: string;
+  /** Pictures that run across the hero in a loop; `title` is the alt text. Ignored when the `visual` slot is filled. */
+  works?: Work[];
+  /** The three points under the pictures; each takes the icon at its position. */
+  points?: Point[];
+  /** Icons of the points, in order. */
+  icons?: ImageMetadata[];
+}
+
+const {
+  render = true,
+  eyebrow = "A free website review",
+  heading = "Is your website<br />costing you business?",
+  text = "Your website could be losing leads before sales begin. We'll quickly identify issues and highlight the top fixes to boost your results.",
+  buttonText = "Get a free review",
+  buttonHref = "#review",
+  works = [],
+  points = [
+    {
+      title: "A 5–10 minute review",
+      text: "We look at your website like a potential buyer.",
+    },
+    {
+      title: "Most important problems",
+      text: "We address issues costing leads and trust.",
+    },
+    {
+      title: "A clear first step",
+      text: "You'll see what we'd fix first, guaranteed.",
+    },
+  ],
+  icons = [pointOne, pointTwo, pointThree],
+  class: className,
+  ...rest
+} = Astro.props;
+
+const visual = await slotContent(Astro.slots, "visual");
+---
+
+<Section
+  render={render}
+  theme="light"
+  paddingTop="none"
+  paddingBottom="none"
+  containerClass="review-hero_layout"
+  class:list={["review-hero_wrap", visual && "pictured", className]}
+  {...rest}
+>
+  <Img
+    src={background}
+    slot="background"
+    class="review-hero_background"
+    loading="eager"
+    fetchPriority="high"
+  />
+  <div slot="background" class="review-hero_fade"></div>
+  <div class="review-hero_heading">
+    <div class="review-hero_title-group">
+      <Paragraph variant="overline-small" class="review-hero_eyebrow">
+        {eyebrow}
+      </Paragraph>
+      <Heading tag="h1" class="review-hero_title">
+        <Fragment set:html={heading} />
+      </Heading>
+      <Paragraph variant="large" class="review-hero_text">
+        {text}
+      </Paragraph>
+    </div>
+    <Button element="link" href={buttonHref} emphasis="brand" arrow>
+      {buttonText}
+    </Button>
+  </div>
+  <div class="review-hero_visual">
+    {visual && <Fragment set:html={visual} />}
+    {
+      !visual && works.length > 0 && (
+        <Marquee
+          label="Explorations from the studio"
+          controls={false}
+          class="review-hero_works"
+        >
+          {works.map((work, index) => (
+            <div class="review-hero_work">
+              <Img
+                src={work.image}
+                alt={work.title}
+                loading={index < 4 ? "eager" : "lazy"}
+                sizes="(width >= 62rem) 36rem, 29rem"
+                class="review-hero_work-image"
+              />
+            </div>
+          ))}
+        </Marquee>
+      )
+    }
+    <ul class="review-hero_points" role="list">
+      {
+        points.map((point, index) => (
+          <li class="review-hero_point">
+            <Img src={icons[index]} transparent class="review-hero_point-icon" />
+            <div class="review-hero_point-content">
+              <Paragraph tag="span" variant="main" class="weight-medium">
+                {point.title}
+              </Paragraph>
+              <Paragraph tag="span" variant="small" class="review-hero_point-text">
+                {point.text}
+              </Paragraph>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</Section>
+
+<style is:global>
+  @layer components {
+    .review-hero_wrap {
+      overflow: clip;
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .review-hero_background {
+        opacity: 0.4;
+      }
+
+      .review-hero_fade {
+        background-image: linear-gradient(
+          to top,
+          rgb(255 255 255 / 0.95) 10%,
+          rgb(247 250 255 / 0.665) 50%,
+          rgb(245 249 255 / 0) 100%
+        );
+      }
+
+      .review-hero_layout {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-4rem);
+        padding-top: calc(var(--nav-height) + var(--space-4rem));
+      }
+
+      .review-hero_heading {
+        width: 100%;
+        max-width: 48.75rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-2rem);
+        text-align: center;
+      }
+
+      .review-hero_title-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-1rem);
+      }
+
+      /* Figma breaks the heading greedily, not balanced. */
+      .review-hero_title {
+        text-wrap: wrap;
+      }
+
+      .review-hero_eyebrow {
+        color: var(--color-neutral-40);
+      }
+
+      .review-hero_text {
+        max-width: 40rem;
+      }
+
+      .review-hero_visual {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2rem);
+      }
+
+      /* =====================
+         Works
+         ===================== */
+
+      /* A loop that runs the full width of the screen, past the content
+         margins, at the card size of the Figma frames. */
+      .review-hero_works {
+        --_gap-size: var(--space-1-25rem);
+        --_speed: 6s;
+        width: 100vw;
+        margin-inline: calc(50% - 50vw);
+
+        .marquee_viewport {
+          mask-image: none;
+        }
+      }
+
+      .review-hero_work {
+        width: 26.3125rem;
+        aspect-ratio: 561.1 / 400;
+        min-height: 0;
+        overflow: hidden;
+        border-radius: var(--radius-0-25rem);
+        background-color: var(--color-neutral-5);
+        @media (width >= 48rem) {
+          width: 28.05rem;
+        }
+        @media (width >= 62rem) {
+          width: 35.07rem;
+        }
+      }
+
+      .review-hero_work-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      /* =====================
+         Points
+         ===================== */
+
+      .review-hero_points {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--space-1-25rem);
+        margin: 0;
+        padding: var(--space-1-5rem) 0;
+        list-style: none;
+        border-top: var(--border-width) solid var(--color-neutral-10);
+        @media (width >= 48rem) {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      &.pictured .review-hero_points {
+        border-top: none;
+      }
+
+      .review-hero_point {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-0-75rem);
+        margin: 0;
+        padding-block: var(--space-0-75rem);
+        @media (width >= 48rem) {
+          flex-direction: column;
+        }
+        @media (width >= 62rem) {
+          flex-direction: row;
+          align-items: center;
+        }
+      }
+
+      .review-hero_point-icon {
+        width: 2rem;
+        height: auto;
+        flex: none;
+        @media (width >= 48rem) {
+          width: 2.375rem;
+        }
+        @media (width >= 62rem) {
+          width: 2.875rem;
+        }
+      }
+
+      .review-hero_point-content {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-125rem);
+        color: var(--color-neutral-90);
+      }
+
+      .review-hero_point-text {
+        color: var(--color-neutral-60);
+      }
+    }
+  }
+</style>

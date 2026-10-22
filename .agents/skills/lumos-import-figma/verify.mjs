@@ -17,7 +17,10 @@
  *                footer by their header/footer element), keeping page order, so a
  *                section that is not built yet does not shift every row below it.
  *                Per section: y and height on both sides, the deltas, and the
- *                running total of height deltas over the paired sections.
+ *                running total of height deltas over the paired sections. Sections the
+ *                words cannot place are paired by order and y (marked *). Hidden layers
+ *                are ignored, and a first frame that holds the navbar and the hero is
+ *                split in two when the DOM nav is in flow.
  *
  *                The DOM sections are the in-flow, non-zero-height children of
  *                <body>, with these wrappers replaced by their own children: <main>,
@@ -30,7 +33,8 @@
  *                the rule with a selector when it guesses wrong.
  *
  *   TEXT         Every Figma text node (metadata gives the box, the design-context
- *                capture gives the words) against the DOM element whose own text is
+ *                capture gives the words; a figma-bridge node dump gives both) against
+ *                the DOM element whose own text is
  *                the same words, normalised (case, whitespace, curly quotes). The
  *                element is the innermost one with that text. Inside a section, one
  *                node and one element is a match; the same words N times in Figma
@@ -40,9 +44,11 @@
  *                edge and y from its own section's top, so one section's drift does
  *                not cascade into the next. Deltas are DOM minus Figma, in px.
  *                Text inside an instance (navbar, footer) has no box in metadata,
- *                so it is counted but not compared.
+ *                so it is counted but not compared; the node dump has its box.
  *
- *   SCREENSHOTS  A full-page web shot is written to <folder>/shots/<page>-<bp>-web.png.
+ *   SCREENSHOTS  A full-page web shot is written to <folder>/shots/<page>-<bp>-web.png,
+ *                stitched from viewport captures (fixed elements hidden after the first,
+ *                sticky ones made static), so long pages and filtered layers come out whole.
  *                If <folder>/shots/<page>-<bp>.png exists (a 1x export from Figma),
  *                the web shot is scaled to its width, a diff image is written next
  *                to it, and the mismatch is printed per section band.
@@ -54,7 +60,11 @@
  *                comparison. Writes <page>-<bp>-<nn>-<section>.png: Figma | web |
  *                diff side by side, red where they differ. Figma caps a screenshot
  *                at 1024px on its long side, so the comparison runs at that scale.
- *                `--no-figma` skips it.
+ *                Each Figma shot is cached in <folder>/shots/figma-cache/ by node id and
+ *                reused on later runs (`--refresh-figma` fetches again), so the diffs still
+ *                run when Figma rate-limits or is closed. When figma-bridge (127.0.0.1:1994)
+ *                has its plugin open, the shots come through it at no Figma quota, and the
+ *                Dev Mode server is not asked. `--no-figma` skips it.
  *
  * The page runs with prefers-reduced-motion: reduce so scroll-reveal transforms do
  * not move boxes, and the Astro dev toolbar is hidden.
@@ -64,9 +74,15 @@
  *                   [--tolerance 1] [--chrome <path>] [--sections "<css>"]
  *                   [--threshold 32]   # per-channel colour difference that counts as a mismatch
  *                   [--no-figma]       # skip fetching section screenshots from Figma desktop
+ *                   [--file-key <key>] # figma-bridge, when several files have its plugin open
+ *                   [--refresh-figma]  # fetch Figma shots again instead of using the cache
+ *                   [--viewport-height 900|frame]  # frame: the first Figma section's height
+ *                   [--allow-status 404]           # automatic when the URL path is /404
  *
- * Input files (in --folder): <page>-metadata.xml and <page>-<desktop|tablet|mobile>-context.txt,
- * the same ones `convert.mjs --folder` reads.
+ * Input files (in --folder): <page>-metadata.xml and every <page>-<desktop|tablet|mobile>…
+ * capture (one per breakpoint, or one per section, read together), the same ones
+ * `convert.mjs --folder` reads. A <page>-node.json (bridge.mjs) replaces both: it gives
+ * the frames, the boxes and the words, so no capture is needed.
  */
 
 import { spawn } from "node:child_process";
@@ -74,6 +90,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, 
 import { createServer } from "node:net";
 import { tmpdir } from "node:os";
 import { delimiter, join } from "node:path";
+import { bridgeClient, dumpTree, dumpWords } from "./figma-bridge.mjs";
 
 const args = process.argv.slice(2);
 const flag = (name) => {
@@ -93,8 +110,15 @@ const tolerance = Number(flag("tolerance") ?? 1);
 const pixelThreshold = Number(flag("threshold") ?? 32);
 const sectionSelector = flag("sections");
 const useFigma = !args.includes("--no-figma");
+const refreshFigma = args.includes("--refresh-figma");
 const FIGMA_MCP = "http://127.0.0.1:3845/mcp";
 if (!Number.isFinite(tolerance) || !Number.isFinite(pixelThreshold)) fail("--tolerance and --threshold must be numbers");
+/* A 404 page answers 404 by design. */
+const allowStatus = new Set((flag("allow-status") ?? "").split(",").filter(Boolean).map(Number));
+if (/\/404(\.html)?\/?$/.test(new URL(url).pathname)) allowStatus.add(404);
+/* `frame` sizes the viewport to the first Figma section, so a 100svh hero is measured at the design's height. */
+const viewportFlag = flag("viewport-height") ?? "900";
+if (viewportFlag !== "frame" && !(Number(viewportFlag) > 0)) fail("--viewport-height takes a number of px or `frame`");
 
 /* ---------- small helpers ---------- */
 
@@ -198,6 +222,7 @@ function parseMetadata(xml, file) {
     const node = {
       tag: m[2], id: a.id, name: a.name ?? "",
       x: Number(a.x ?? 0), y: Number(a.y ?? 0), w: Number(a.width), h: Number(a.height),
+      hidden: a.hidden === "true",
       children: [],
     };
     stack.at(-1).children.push(node);
@@ -220,20 +245,37 @@ function pageFrames(roots) {
 
 /**
  * Every text node of a page frame with its box, relative to the page's left edge
- * and to the top of its own section (the frame's direct child).
+ * and to the top of its own section (the frame's direct child). Hidden layers (a
+ * desktop-only card in the mobile frame) are left out.
+ *
+ * When the first section is a frame holding the navbar instance and the hero, and
+ * the DOM has its nav in flow (`domNavH`, a header/nav at the top about as tall),
+ * the navbar becomes its own section and the hero is measured from below it.
  */
-function figmaSections(frame) {
-  return frame.children.map((section, index) => {
+function figmaSections(frame, domNavH) {
+  const out = [];
+  frame.children.filter((c) => !c.hidden).forEach((section, i) => {
+    let top = 0;
+    const nav = i === 0 && domNavH && !/nav/i.test(section.name)
+      ? section.children.find((c) => !c.hidden && /nav/i.test(c.name) && c.y <= 1 && c.w >= frame.w - 1)
+      : null;
+    const split = nav && Math.abs(nav.h - domNavH) <= Math.max(8, nav.h * 0.2);
+    if (split) {
+      out.push({ id: nav.id, name: nav.name, tag: nav.tag, y: section.y + nav.y, h: nav.h, texts: [] });
+      top = nav.y + nav.h;
+    }
     const texts = [];
     const walk = (node, ox, oy) => {
       for (const c of node.children) {
+        if (c.hidden || (split && c === nav)) continue;
         if (c.tag === "text") texts.push({ id: c.id, x: ox + c.x, y: oy + c.y, w: c.w, h: c.h });
         else walk(c, ox + c.x, oy + c.y);
       }
     };
-    walk(section, 0, 0);
-    return { index, id: section.id, name: section.name || section.tag, tag: section.tag, y: section.y, h: section.h, texts };
+    walk(section, 0, -top);
+    out.push({ id: section.id, name: section.name || section.tag, tag: section.tag, y: section.y + top, h: section.h - top, texts, cropTop: top, fullH: section.h });
   });
+  return out.map((s, index) => ({ ...s, index }));
 }
 
 /** The index just past the `>` that closes the opening tag that starts at `from`, honouring quotes and {braces}. */
@@ -293,17 +335,37 @@ function instanceTextCount(code) {
   return ids.size;
 }
 
+/**
+ * Whether a file belongs to page `page`: `<page>.xml`, `<page>-metadata.xml`, `<page>-node.json`,
+ * `<page>-<bp>…` or `<page>-<nn>…`. A plain prefix is not enough: `work` must not read
+ * `work-detail-metadata.xml`.
+ */
+const isPageFile = (name, p) => {
+  const n = name.toLowerCase();
+  return n.startsWith(p.toLowerCase()) && /^(\.|[-_](desktop|tablet|mobile|metadata|node|context|\d))/.test(n.slice(p.length));
+};
+
+/**
+ * The figma-bridge node dump, else the metadata XML; and per breakpoint, every design-context
+ * capture joined into one text: a large page is captured one section at a time
+ * (`<page>-<bp>-01-hero.txt`, `-02-…`).
+ */
 function findFigmaFiles() {
   if (!existsSync(folder)) fail(`${folder}: folder not found`);
-  const names = readdirSync(folder).filter((n) => n.startsWith(page) && !n.endsWith(".png")).sort();
+  const names = readdirSync(folder).filter((n) => isPageFile(n, page) && !n.endsWith(".png")).sort();
+  const dump = names.find((n) => n.toLowerCase() === `${page.toLowerCase()}-node.json`);
   const xml = names.filter((n) => n.endsWith(".xml")).sort((a, b) => Number(b.includes("metadata")) - Number(a.includes("metadata")))[0];
-  if (!xml) fail(`${folder}: no metadata XML starting with "${page}" (expected ${page}-metadata.xml)`);
+  if (!xml && !dump) fail(`${folder}: no metadata XML for page "${page}" (expected ${page}-metadata.xml, or ${page}-node.json from bridge.mjs)`);
   const context = {};
   for (const bp of ["desktop", "tablet", "mobile"]) {
-    const name = names.find((n) => !n.endsWith(".xml") && n.toLowerCase().includes(bp) && readFileSync(join(folder, n), "utf8").includes("data-node-id="));
-    if (name) context[bp] = join(folder, name);
+    const files = names.filter((n) => !n.endsWith(".xml") && !n.endsWith(".json") && new RegExp(`[-_]${bp}([-_.]|$)`, "i").test(n));
+    const texts = files.map((n) => ({ n, text: readFileSync(join(folder, n), "utf8") }));
+    const captures = texts.filter((t) => t.text.includes("data-node-id="));
+    const errors = texts.filter((t) => !t.text.includes("data-node-id=") && t.text.length < 1000 && /rate limit|error|exceeded|try again/i.test(t.text));
+    if (errors.length) console.log(`note: ${errors.map((t) => t.n).join(", ")} hold${errors.length === 1 ? "s" : ""} a Figma MCP error, not a capture; capture ${errors.length === 1 ? "it" : "them"} again`);
+    if (captures.length) context[bp] = { files: captures.map((t) => t.n), text: captures.map((t) => t.text).join("\n") };
   }
-  return { xml: join(folder, xml), context };
+  return { xml: xml && join(folder, xml), dump: dump && join(folder, dump), context };
 }
 
 /* ---------- Chrome over the DevTools protocol ---------- */
@@ -465,7 +527,9 @@ function pageProbe(selector) {
     const s = cs(el);
     const r = el.getBoundingClientRect();
     const iconBeside = Boolean(el.querySelector(":scope > svg, :scope > img"));
-    if (s.display === "inline" || iconBeside) {
+    /* A table cell stretches to its row; Figma's text node keeps its own height, so measure the text. */
+    const cell = el.tagName === "TD" || el.tagName === "TH";
+    if (s.display === "inline" || iconBeside || cell) {
       const rg = document.createRange();
       let rs;
       if (iconBeside) {
@@ -537,7 +601,7 @@ async function settlePage() {
  * and footer pair with the header and footer elements; a section with no text of its
  * own (a hero with no children in the metadata) takes the one DOM section left in the gap.
  */
-function pairSections(fSections, dSections, dTexts, capture) {
+function pairSections(fSections, dSections, dTexts, wordsOf) {
   const n = fSections.length;
   const m = dSections.length;
   const domWords = dSections.map((_, di) => new Set(dTexts.filter((t) => t.sec === di).map((t) => t.text)));
@@ -546,7 +610,7 @@ function pairSections(fSections, dSections, dTexts, capture) {
     if (/nav/i.test(f.name)) return /^(header|nav)/.test(label) ? 1000 : 0;
     if (/footer/i.test(f.name)) return /^footer/.test(label) ? 1000 : 0;
     if (/^(header|nav|footer)/.test(label)) return 0;
-    const words = new Set(f.texts.map((t) => contextText(capture, t.id)).filter((raw) => raw !== null).map(normText).filter(Boolean));
+    const words = new Set(f.texts.map((t) => wordsOf(t.id)).filter((raw) => raw !== null).map(normText).filter(Boolean));
     let hit = 0;
     for (const w of words) if (domWords[di].has(w)) hit++;
     return hit;
@@ -567,20 +631,50 @@ function pairSections(fSections, dSections, dTexts, capture) {
     } else if (best[i][j] === best[i - 1][j]) i--;
     else j--;
   }
+  /* Between two word-paired anchors, the sections left over are paired by position: in order when
+     the counts agree and the heights are close (a section with no text pairs on order alone), else
+     each to the nearest DOM section by y. With no capture at all, every section is paired this way. */
   const taken = new Set(pairs.filter((p) => p >= 0));
+  const byPosition = new Set();
+  const closeH = (f, d) => Math.abs(d.h - f.h) <= Math.max(24, f.h * 0.25);
   let prevF = -1;
   let prevD = -1;
   for (let i = 0; i <= n; i++) {
     if (i < n && pairs[i] < 0) continue;
     const nextD = i < n ? pairs[i] : m;
     const fGap = [];
-    for (let k = prevF + 1; k < i; k++) if (!fSections[k].texts.length) fGap.push(k);
+    for (let k = prevF + 1; k < i; k++) fGap.push(k);
     const dGap = [];
     for (let k = prevD + 1; k < nextD; k++) if (!taken.has(k)) dGap.push(k);
-    if (fGap.length === dGap.length) fGap.forEach((fi, k) => (pairs[fi] = dGap[k]));
+    if (fGap.length && fGap.length === dGap.length && fGap.every((fi, k) => !fSections[fi].texts.length || closeH(fSections[fi], dSections[dGap[k]]))) {
+      fGap.forEach((fi, k) => {
+        pairs[fi] = dGap[k];
+        byPosition.add(fi);
+      });
+    } else if (fGap.filter((fi) => !fSections[fi].texts.length).length === dGap.length) {
+      fGap.filter((fi) => !fSections[fi].texts.length).forEach((fi, k) => {
+        pairs[fi] = dGap[k];
+        byPosition.add(fi);
+      });
+    } else {
+      let from = 0;
+      for (const fi of fGap) {
+        const f = fSections[fi];
+        let best = -1;
+        for (let k = from; k < dGap.length; k++) {
+          if (best < 0 || Math.abs(dSections[dGap[k]].y - f.y) < Math.abs(dSections[dGap[best]].y - f.y)) best = k;
+        }
+        if (best >= 0 && Math.abs(dSections[dGap[best]].y - f.y) <= Math.max(24, f.h * 0.1) && closeH(f, dSections[dGap[best]])) {
+          pairs[fi] = dGap[best];
+          byPosition.add(fi);
+          from = best + 1;
+        }
+      }
+    }
     prevF = i;
     prevD = nextD;
   }
+  pairs.byPosition = byPosition;
   return pairs;
 }
 
@@ -600,7 +694,7 @@ function reportSections(fSections, dSections, pairs) {
     }
     const dh = d.h - f.h;
     drift += dh;
-    rows.push([i + 1, cut(f.name, 24), round1(f.y), round1(f.h), cut(d.label, 28), round1(d.y), round1(d.h), signed(d.y - f.y), signed(dh), signed(drift)]);
+    rows.push([`${i + 1}${pairs.byPosition?.has(i) ? "*" : ""}`, cut(f.name, 24), round1(f.y), round1(f.h), cut(d.label, 28), round1(d.y), round1(d.h), signed(d.y - f.y), signed(dh), signed(drift)]);
   });
   const used = new Set(pairs);
   dSections.forEach((d, di) => {
@@ -608,9 +702,14 @@ function reportSections(fSections, dSections, pairs) {
   });
   console.log("SECTIONS  (Δy = DOM y − Figma y; Δh = height delta; DRIFT = sum of Δh over the paired sections so far)");
   printTable(["#", "FIGMA", "Y", "H", "DOM", "Y", "H", "Δy", "Δh", "DRIFT"], rows);
+  if (pairs.byPosition?.size) console.log("  * paired by position (order and y), not by shared words: check the row is the section you think it is.");
+  const instances = fSections.filter((f) => f.tag === "instance" && !f.texts.length && pairs[f.index] >= 0);
+  if (instances.length) {
+    console.log(`  instance section(s) ${instances.map((f) => f.name).join(", ")}: only y and height are compared; the blocks and text inside are NOT checked. A matching height is not a pass: measure the component's variants (get_metadata on the main component) against the DOM.`);
+  }
 }
 
-function reportText(fSections, dSections, dTexts, capture, instanceTexts, pairs) {
+function reportText(fSections, dSections, dTexts, wordsOf, instanceTexts, pairs) {
   const stats = { matched: 0, paired: 0, ambiguous: 0, missing: 0, noWords: 0 };
   const compared = [];
   const ambiguous = [];
@@ -618,12 +717,12 @@ function reportText(fSections, dSections, dTexts, capture, instanceTexts, pairs)
   for (const f of fSections) {
     const d = dSections[pairs[f.index]];
     if (!d) {
-      for (const t of f.texts) if (contextText(capture, t.id) !== null) stats.missing++;
+      for (const t of f.texts) if (wordsOf(t.id) !== null) stats.missing++;
       continue;
     }
     const fByText = new Map();
     for (const t of f.texts) {
-      const raw = contextText(capture, t.id);
+      const raw = wordsOf(t.id);
       const words = raw === null ? "" : normText(raw);
       if (!words) {
         stats.noWords++;
@@ -652,9 +751,11 @@ function reportText(fSections, dSections, dTexts, capture, instanceTexts, pairs)
         stats.matched++;
         if (group.length > 1) stats.paired++;
         const e = dom[i];
+        /* A Figma list box starts at the container edge with the marker indent inside it; the DOM list's content box starts after the indent. */
+        const list = /^(ul|ol|li)\b/.test(e.label);
         compared.push({
           section: f, id: g.id, words: g.words,
-          dx: e.x - g.x, dy: e.y - d.y - g.y, dw: e.w - g.w, dh: e.h - g.h, el: e.label,
+          dx: list ? 0 : e.x - g.x, dy: e.y - d.y - g.y, dw: list ? 0 : e.w - g.w, dh: e.h - g.h, el: e.label,
         });
       });
     }
@@ -739,13 +840,90 @@ async function diffShots(sharp, figmaPng, webPng, diffPng, fSections, frameWidth
   console.log(`  wrote ${diffPng}`);
 }
 
+/* ---------- screenshots ---------- */
+
+/** Fixed elements hidden and sticky ones made static, so they do not repeat on every tile. Layout does not move. */
+function freezeOverlays() {
+  for (const el of document.querySelectorAll("body *")) {
+    const p = getComputedStyle(el).position;
+    /* opacity, not visibility: a child with visibility: visible would still paint. */
+    if (p === "fixed") el.style.setProperty("opacity", "0", "important");
+    else if (p === "sticky") el.style.setProperty("position", "static", "important");
+  }
+  return true;
+}
+
+/**
+ * The whole page as one PNG, built from viewport captures. One `captureBeyondViewport` shot
+ * repeats the top of the page past Chrome's 16384px texture limit and can paint filtered or
+ * composited layers blank outside the viewport; a viewport capture paints what a browser shows.
+ */
+async function capturePage(tab, evaluate, sharp, width, viewH, docH) {
+  if (!sharp) {
+    if (docH > 16384) console.log(`  WARNING: the page is ${docH}px tall; without sharp it is captured in one shot, and everything below 16384px is not real.`);
+    const shot = await tab("Page.captureScreenshot", { format: "png", captureBeyondViewport: true, clip: { x: 0, y: 0, width, height: docH, scale: 1 } });
+    return Buffer.from(shot.data, "base64");
+  }
+  const tiles = [];
+  for (let y = 0, last = -1; ; ) {
+    const at = await evaluate(`(() => { scrollTo(0, ${y}); return new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(() => r(scrollY), 80)))); })()`);
+    if (at <= last) break;
+    const shot = await tab("Page.captureScreenshot", { format: "png" });
+    let input = Buffer.from(shot.data, "base64");
+    const top = Math.round(at);
+    if (top + viewH > docH) input = await sharp(input).extract({ left: 0, top: 0, width, height: Math.max(1, docH - top) }).toBuffer();
+    tiles.push({ input, left: 0, top });
+    if (tiles.length === 1) await evaluate(`(${freezeOverlays.toString()})()`);
+    last = at;
+    if (at + viewH >= docH) break;
+    y = at + viewH;
+  }
+  await evaluate("scrollTo(0, 0)");
+  return sharp({ create: { width, height: docH, channels: 3, background: "#ffffff" } }).composite(tiles).png().toBuffer();
+}
+
+/**
+ * A Figma section screenshot, from <shots>/figma-cache/ when an earlier run saved it (unless
+ * --refresh-figma), else from Figma desktop. A rate limit is retried once, then the rest of the
+ * run uses the cache only.
+ */
+function figmaShots(figma, shots) {
+  const dir = join(shots, "figma-cache");
+  let limited = false;
+  return async (id) => {
+    const file = join(dir, `${id.replace(/[^\w-]/g, "-")}.png`);
+    const cached = existsSync(file);
+    if (cached && !refreshFigma) return { png: readFileSync(file), cached: true };
+    let shot = { error: figma ? "Figma rate limit earlier in this run" : "Figma desktop not running" };
+    if (figma && !limited) {
+      const ask = () => figma.screenshot(id).catch((e) => ({ error: e.message }));
+      shot = await ask();
+      if (!shot.png && /rate limit/i.test(shot.error)) limited = /tomorrow/i.test(shot.error); // a daily limit: waiting does not help
+      if (!shot.png && /rate limit/i.test(shot.error) && !limited) {
+        await sleep(15000);
+        shot = await ask();
+        if (!shot.png && /rate limit/i.test(shot.error)) limited = true;
+      }
+    }
+    if (shot.png) {
+      mkdirSync(dir, { recursive: true });
+      writeFileSync(file, shot.png);
+      return shot;
+    }
+    return cached ? { png: readFileSync(file), cached: true } : { error: `${shot.error} (no cached shot)` };
+  };
+}
+
 /* ---------- main ---------- */
 
 async function main() {
-  const { xml, context } = findFigmaFiles();
-  const frames = pageFrames(parseMetadata(readFileSync(xml, "utf8"), xml));
+  const { xml, dump: dumpFile, context } = findFigmaFiles();
+  const dump = dumpFile ? JSON.parse(readFileSync(dumpFile, "utf8")) : null;
+  const source = dumpFile ?? xml;
+  const frames = pageFrames(dump ? [dumpTree(dump)] : parseMetadata(readFileSync(xml, "utf8"), xml));
+  const words = dump ? dumpWords(dump) : null;
   const breakpoints = ["desktop", "tablet", "mobile"].filter((bp) => frames[bp]);
-  if (!breakpoints.length) fail(`${xml}: no page frames found`);
+  if (!breakpoints.length) fail(`${source}: no page frames found`);
 
   let res;
   try {
@@ -753,7 +931,7 @@ async function main() {
   } catch (e) {
     fail(`${url}: not reachable (${e.cause?.code ?? e.message})`);
   }
-  if (!res.ok) fail(`${url}: HTTP ${res.status}`);
+  if (!res.ok && !allowStatus.has(res.status)) fail(`${url}: HTTP ${res.status}${res.status === 404 ? " (a 404 page: pass --allow-status 404)" : ""}`);
 
   let sharp = null;
   try {
@@ -762,9 +940,11 @@ async function main() {
     console.log("note: sharp is not installed, screenshot diffs are skipped");
   }
 
-  const figma = useFigma && sharp ? await figmaClient() : null;
-  let figmaLimited = false;
-  if (useFigma && sharp && !figma) console.log(`note: Figma desktop is not answering on ${FIGMA_MCP}; section screenshots from Figma are skipped (open the file in Figma desktop with Dev Mode MCP enabled)`);
+  /* figma-bridge first: it spends no Figma quota. The Dev Mode server, which shares its daily limit with slicing, only when the bridge is not running. */
+  let figma = useFigma && sharp ? await bridgeClient(flag("file-key")) : null;
+  if (figma) console.log("note: section screenshots come through figma-bridge");
+  else if (useFigma && sharp) figma = await figmaClient();
+  if (useFigma && sharp && !figma) console.log(`note: neither figma-bridge nor Figma desktop's Dev Mode server (${FIGMA_MCP}) is answering; section screenshots from Figma come from the cache only (run the bridge plugin, or open the file in Figma desktop with Dev Mode MCP enabled)`);
   const chrome = await launchChrome();
   process.once("SIGINT", () => {
     chrome.close();
@@ -784,13 +964,17 @@ async function main() {
       return r.result.value;
     };
 
-    console.log(`verify  ${url}  page "${page}"  metadata ${xml}  tolerance ${tolerance}px`);
+    console.log(`verify  ${url}  page "${page}"  ${dump ? "node dump" : "metadata"} ${source}  tolerance ${tolerance}px`);
+    /* One for the whole run, so a rate limit at desktop is not retried at every breakpoint. */
+    const shotOf = figmaShots(figma, join(folder, "shots"));
     for (const bp of breakpoints) {
       const frame = frames[bp];
       const width = Math.round(frame.w);
       console.log(`\n${"=".repeat(78)}\n${bp.toUpperCase()} ${width}px  (Figma frame "${frame.name}", ${round1(frame.h)}px tall)\n${"=".repeat(78)}`);
 
-      await tab("Emulation.setDeviceMetricsOverride", { width, height: 900, deviceScaleFactor: 1, mobile: false });
+      const firstSection = frame.children.find((c) => !c.hidden);
+      const viewH = Math.round(viewportFlag === "frame" ? firstSection?.h ?? 900 : Number(viewportFlag));
+      await tab("Emulation.setDeviceMetricsOverride", { width, height: viewH, deviceScaleFactor: 1, mobile: false });
       const loaded = cdp.once("Page.loadEventFired", sessionId);
       const nav = await tab("Page.navigate", { url });
       if (nav.errorText) fail(`${url}: ${nav.errorText}`);
@@ -799,86 +983,62 @@ async function main() {
       await evaluate(`(${settlePage.toString()})()`);
 
       const probe = await evaluate(`(${pageProbe.toString()})(${JSON.stringify(sectionSelector ?? null)})`);
-      const fSections = figmaSections(frame);
+      const domNav = probe.sections.find((s) => /^(header|nav)/.test(s.label) && s.y < 2);
+      const fSections = figmaSections(frame, domNav?.h);
       if (!probe.sections.length) console.log("WARNING: no DOM sections found; is the page empty?");
-      const pairs = pairSections(fSections, probe.sections, probe.texts, readFileSync(context[bp] ?? xml, "utf8"));
+      const capture = context[bp]?.text ?? "";
+      if (!dump && context[bp]?.files.length > 1) console.log(`captures read together: ${context[bp].files.join(", ")}`);
+      /* The dump holds every text's words; a capture holds them only for the nodes it covers. */
+      const wordsOf = dump ? (id) => words.get(id) ?? null : (id) => contextText(capture, id);
+      const pairs = pairSections(fSections, probe.sections, probe.texts, wordsOf);
       reportSections(fSections, probe.sections, pairs);
 
-      const captureFile = context[bp];
-      if (captureFile) {
-        const capture = readFileSync(captureFile, "utf8");
-        reportText(fSections, probe.sections, probe.texts, capture, instanceTextCount(capture), pairs);
-      } else console.log(`\nTEXT  skipped: no ${page}-${bp} design-context capture in ${folder}/`);
+      if (dump) reportText(fSections, probe.sections, probe.texts, wordsOf, 0, pairs);
+      else if (capture) reportText(fSections, probe.sections, probe.texts, wordsOf, instanceTextCount(capture), pairs);
+      else console.log(`\nTEXT  skipped: no ${page}-${bp} design-context capture in ${folder}/ (or ${page}-node.json from bridge.mjs)`);
 
       const shots = join(folder, "shots");
       mkdirSync(shots, { recursive: true });
       const webPng = join(shots, `${page}-${bp}-web.png`);
       const height = Math.ceil(probe.docHeight);
-      // A beyond-viewport capture resizes the viewport, which races the relayout and wraps past Chrome's 16384px
-      // texture. So the page is scrolled one viewport at a time and stitched; sticky boxes become relative (same
-      // spot when not stuck) and fixed ones are hidden after the first screen, so neither repeats in every tile.
-      if (sharp) {
-        const view = 900;
-        const tiles = [];
-        for (let y = 0; y < height; y += view) {
-          const top = await evaluate(`(async (y, first) => {
-            if (!first) for (const el of document.querySelectorAll("body *")) {
-              const p = getComputedStyle(el).position;
-              if (p === "sticky") Object.assign(el.style, { position: "relative", top: "auto", bottom: "auto" });
-              else if (p === "fixed") el.style.opacity = "0";
-            }
-            scrollTo(0, y);
-            await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
-            return scrollY;
-          })(${y}, ${y === 0})`);
-          const t = await tab("Page.captureScreenshot", { format: "png", clip: { x: 0, y: top, width, height: view, scale: 1 } });
-          tiles.push({ input: Buffer.from(t.data, "base64"), left: 0, top });
-        }
-        await evaluate("scrollTo(0, 0)");
-        await sharp({ create: { width, height: Math.max(height, tiles.at(-1).top + view), channels: 4, background: "#ffffff" }, limitInputPixels: false })
-          .composite(tiles)
-          .png()
-          .toBuffer()
-          .then((png) => sharp(png, { limitInputPixels: false }).extract({ left: 0, top: 0, width, height }).toFile(webPng));
-      } else {
-        const shot = await tab("Page.captureScreenshot", { format: "png", captureBeyondViewport: true, clip: { x: 0, y: 0, width, height, scale: 1 } });
-        writeFileSync(webPng, Buffer.from(shot.data, "base64"));
-      }
-      console.log(`\nSHOT  wrote ${webPng} (${width}×${height})`);
+      writeFileSync(webPng, await capturePage(tab, evaluate, sharp, width, viewH, height));
+      console.log(`\nSHOT  wrote ${webPng} (${width}×${height}${sharp ? `, ${Math.ceil(height / viewH)} viewport tile(s)` : ""})`);
 
       const figmaPng = join(shots, `${page}-${bp}.png`);
+      const cacheDir = join(shots, "figma-cache");
       if (existsSync(figmaPng)) {
         if (sharp) await diffShots(sharp, figmaPng, webPng, join(shots, `${page}-${bp}-diff.png`), fSections, width, bp);
-      } else if (!figma) console.log(`  no Figma export at ${figmaPng}; to diff, export the frame there (Figma: select frame → Export → PNG, 1x)`);
+      } else if (!figma && !existsSync(cacheDir)) console.log(`  no Figma export at ${figmaPng}; to diff, export the frame there (Figma: select frame → Export → PNG, 1x)`);
 
-      // Raw Figma section shots are cached by node id, so a rerun costs no MCP calls.
-      const cached = (f) => join(shots, `figma-${f.id.replace(/[^0-9a-z]+/gi, "-")}.png`);
-      if (sharp && (figma || fSections.some((f) => existsSync(cached(f))))) {
+      if (sharp && useFigma && (figma || existsSync(cacheDir))) {
         const rows = [];
+        let fromCache = 0;
         for (const f of fSections) {
           const d = probe.sections[pairs[f.index]];
           if (!d) {
             rows.push([f.index + 1, cut(f.name, 24), "—", "no DOM section", ""]);
             continue;
           }
-          let shot = existsSync(cached(f)) ? { png: readFileSync(cached(f)) } : null;
-          if (!shot && figmaLimited) shot = { error: "skipped: Figma rate limit" };
-          if (!shot && !figma) shot = { error: "no cached shot, Figma not answering" };
-          if (!shot) {
-            shot = await figma.screenshot(f.id);
-            if (shot.png) writeFileSync(cached(f), shot.png);
-            else if (/rate limit/i.test(shot.error)) figmaLimited = true;
-          }
+          const shot = await shotOf(f.id);
           if (!shot.png) {
-            rows.push([f.index + 1, cut(f.name, 24), "—", cut(shot.error, 40), ""]);
+            rows.push([f.index + 1, cut(f.name, 24), "—", cut(shot.error, 60), ""]);
             continue;
           }
+          if (shot.cached) fromCache++;
+          let png = shot.png;
+          if (f.cropTop) {
+            /* The hero below a navbar that became its own section: drop the navbar's band from the frame's shot. */
+            const { width: sw, height: sh } = await sharp(png).metadata();
+            const cropPx = Math.round((f.cropTop * sh) / f.fullH);
+            png = await sharp(png).extract({ left: 0, top: cropPx, width: sw, height: sh - cropPx }).toBuffer();
+          }
           const out = join(shots, `${page}-${bp}-${String(f.index + 1).padStart(2, "0")}-${f.name.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}.png`);
-          const r = await sectionDiff(sharp, shot.png, webPng, d, out);
-          rows.push([f.index + 1, cut(f.name, 24), `${r.pct.toFixed(1)}%`, out, ""]);
+          const r = await sectionDiff(sharp, png, webPng, d, out);
+          rows.push([f.index + 1, cut(f.name, 24), `${r.pct.toFixed(1)}%${shot.cached ? " (cached)" : ""}`, out, ""]);
         }
         console.log(`\nSECTION DIFF  (Figma screenshot of each section | web crop at the DOM section's own position | red where a channel differs by more than ${pixelThreshold}/255)`);
         printTable(["#", "FIGMA", "MISMATCH", "IMAGE"], rows.map((r) => r.slice(0, 4)), "  ");
+        if (fromCache) console.log(`  ${fromCache} Figma shot(s) came from ${cacheDir}/; after a design change, run with --refresh-figma.`);
         if (rows.length && rows.every((r) => /no node could be found/i.test(String(r[3])))) {
           console.log("  Figma desktop answered but has another file in front: bring the design's tab to the front in Figma desktop and run again.");
         }

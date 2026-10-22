@@ -1,0 +1,402 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Img from "@/components/media/Img.astro";
+import showcase from "@/assets/redesign/hero-showcase.jpg";
+import author from "@/assets/redesign/hero-author.jpg";
+import glass from "@/assets/preview/hero-background.jpg";
+import globeIcon from "@/assets/redesign/hero-globe.svg";
+import arrowIcon from "@/assets/redesign/hero-arrow.svg";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+}
+
+const { render = true, class: className, ...rest } = Astro.props;
+
+const Globe = globeIcon;
+const Arrow = arrowIcon;
+---
+
+{
+  render && (
+    <div
+      class:list={["redesign-hero-graphic_wrap", className]}
+      aria-hidden="true"
+      {...rest}
+    >
+      <Img
+        src={showcase}
+        sizes="(width >= 48rem) 100vw, 140vw"
+        loading="eager"
+        class="redesign-hero-graphic_photo"
+      />
+      <div class="redesign-hero-graphic_browser">
+        <div class="redesign-hero-graphic_bar">
+          <div class="redesign-hero-graphic_dots">
+            <span class="redesign-hero-graphic_dot red" />
+            <span class="redesign-hero-graphic_dot amber" />
+            <span class="redesign-hero-graphic_dot green" />
+          </div>
+          <div class="redesign-hero-graphic_address">
+            <Globe />
+            <span>yoursite.com</span>
+          </div>
+        </div>
+        <div class="redesign-hero-graphic_page">
+          <span class="redesign-hero-graphic_line title" />
+          <span class="redesign-hero-graphic_line one" />
+          <span class="redesign-hero-graphic_line two" />
+          <div class="redesign-hero-graphic_cards">
+            <span class="redesign-hero-graphic_card" />
+            <span class="redesign-hero-graphic_card" />
+            <span class="redesign-hero-graphic_card" />
+          </div>
+          <span class="redesign-hero-graphic_cta" />
+        </div>
+      </div>
+      <div class="redesign-hero-graphic_quote">
+        <Img src={glass} sizes="30rem" class="redesign-hero-graphic_glass" />
+        <div class="redesign-hero-graphic_author">
+          <Img src={author} sizes="5rem" class="redesign-hero-graphic_avatar" />
+          <span class="redesign-hero-graphic_name">James Lou</span>
+        </div>
+        <span class="redesign-hero-graphic_quote-text">
+          “We finally look like the firm our clients already trust. Enquiries
+          picked up within the first month.”
+        </span>
+      </div>
+      <div class="redesign-hero-graphic_result">
+        <div class="redesign-hero-graphic_badge">
+          <Arrow />
+          <span class="redesign-hero-graphic_figure">38%</span>
+        </div>
+        <span class="redesign-hero-graphic_label">More enquiries in 6 weeks</span>
+      </div>
+      <span class="redesign-hero-graphic_fade" />
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    /* An artboard 1312 by 480 units that scales as one piece. Below tablet it
+       runs past the content margins, as the mobile frame does. */
+    .redesign-hero-graphic_wrap {
+      --_unit: calc(100cqw / 1312);
+      container-type: inline-size;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1312 / 480;
+      overflow: hidden;
+      font-family: var(--primary-family);
+      color: var(--color-neutral-90);
+      @media (width < 48rem) {
+        width: calc(100% * 492 / 361);
+        margin-inline: calc(100% * -65.5 / 361);
+      }
+
+      span {
+        display: block;
+      }
+
+      svg {
+        display: block;
+        flex: none;
+        max-width: none;
+      }
+
+      img {
+        display: block;
+        max-width: none;
+      }
+
+      .redesign-hero-graphic_photo {
+        position: absolute;
+        top: calc(-497 * var(--_unit));
+        left: calc(-32.5 * var(--_unit));
+        width: calc(1377 * var(--_unit));
+        height: calc(977 * var(--_unit));
+        object-fit: cover;
+      }
+
+      /* Browser */
+
+      .redesign-hero-graphic_browser {
+        position: absolute;
+        top: calc(32 * var(--_unit));
+        left: calc(229 * var(--_unit));
+        width: calc(854 * var(--_unit));
+        height: calc(456 * var(--_unit));
+        overflow: hidden;
+        background-color: var(--color-neutral-0);
+        border: var(--border-width) solid var(--color-neutral-2);
+        border-radius: calc(8 * var(--_unit));
+        box-shadow:
+          calc(-15 * var(--_unit)) calc(9 * var(--_unit)) calc(39 * var(--_unit))
+            rgb(153 153 153 / 0.1),
+          calc(-61 * var(--_unit)) calc(37 * var(--_unit)) calc(72 * var(--_unit))
+            rgb(153 153 153 / 0.09),
+          calc(-138 * var(--_unit)) calc(84 * var(--_unit))
+            calc(97 * var(--_unit)) rgb(153 153 153 / 0.05),
+          calc(-245 * var(--_unit)) calc(149 * var(--_unit))
+            calc(115 * var(--_unit)) rgb(153 153 153 / 0.01);
+      }
+
+      .redesign-hero-graphic_bar {
+        position: absolute;
+        top: calc(16 * var(--_unit));
+        left: calc(16 * var(--_unit));
+        width: calc(820 * var(--_unit));
+        display: flex;
+        align-items: center;
+        gap: calc(12 * var(--_unit));
+      }
+
+      .redesign-hero-graphic_dots {
+        display: flex;
+        gap: calc(8 * var(--_unit));
+      }
+
+      .redesign-hero-graphic_dot {
+        width: calc(12 * var(--_unit));
+        height: calc(12 * var(--_unit));
+        border-radius: 50%;
+        background-color: #dc2626;
+
+        &.amber {
+          background-color: #fbbf24;
+        }
+
+        &.green {
+          background-color: #16a34a;
+        }
+      }
+
+      .redesign-hero-graphic_address {
+        flex: 1;
+        height: calc(42 * var(--_unit));
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+        padding: 0 calc(26 * var(--_unit)) 0 calc(4 * var(--_unit));
+        background-color: var(--color-neutral-2);
+        border: var(--border-width) solid var(--color-neutral-5);
+        border-radius: calc(8 * var(--_unit));
+        font-size: calc(18 * var(--_unit));
+        line-height: calc(24 * var(--_unit));
+        letter-spacing: -0.007em;
+
+        svg {
+          width: calc(24 * var(--_unit));
+          height: calc(24 * var(--_unit));
+          color: var(--color-neutral-20);
+        }
+      }
+
+      .redesign-hero-graphic_page {
+        position: absolute;
+        top: calc(106 * var(--_unit));
+        left: calc(48 * var(--_unit));
+        width: calc(756 * var(--_unit));
+        height: calc(302 * var(--_unit));
+      }
+
+      .redesign-hero-graphic_line {
+        position: absolute;
+        left: 50%;
+        translate: -50% 0;
+        height: calc(11 * var(--_unit));
+        border-radius: calc(2 * var(--_unit));
+        background-color: var(--color-neutral-5);
+
+        &.title {
+          top: 0;
+          width: calc(308 * var(--_unit));
+          height: calc(18 * var(--_unit));
+          background-color: var(--color-neutral-90);
+        }
+
+        &.one {
+          top: calc(30 * var(--_unit));
+          width: calc(182 * var(--_unit));
+        }
+
+        &.two {
+          top: calc(53 * var(--_unit));
+          width: calc(120 * var(--_unit));
+        }
+      }
+
+      .redesign-hero-graphic_cards {
+        position: absolute;
+        top: calc(84 * var(--_unit));
+        left: 0;
+        width: 100%;
+        display: flex;
+        gap: calc(12 * var(--_unit));
+      }
+
+      .redesign-hero-graphic_card {
+        flex: 1;
+        height: calc(172 * var(--_unit));
+        background-image: linear-gradient(to bottom, #eff0ff 4.5%, #ffffff 95.5%);
+      }
+
+      .redesign-hero-graphic_cta {
+        position: absolute;
+        top: calc(276 * var(--_unit));
+        left: calc(330.5 * var(--_unit));
+        width: calc(95 * var(--_unit));
+        height: calc(26 * var(--_unit));
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--brand);
+      }
+
+      /* Testimonial */
+
+      .redesign-hero-graphic_quote {
+        position: absolute;
+        isolation: isolate;
+        top: calc(135 * var(--_unit));
+        left: calc(60 * var(--_unit));
+        width: calc(394 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(24 * var(--_unit));
+        padding: calc(24 * var(--_unit));
+        overflow: hidden;
+        background-color: var(--color-neutral-0);
+        border-radius: calc(20 * var(--_unit)) calc(20 * var(--_unit)) 0
+          calc(20 * var(--_unit));
+        box-shadow:
+          calc(3 * var(--_unit)) calc(5 * var(--_unit)) calc(13 * var(--_unit))
+            rgb(184 184 184 / 0.1),
+          calc(12 * var(--_unit)) calc(21 * var(--_unit))
+            calc(24 * var(--_unit)) rgb(184 184 184 / 0.09),
+          calc(27 * var(--_unit)) calc(48 * var(--_unit))
+            calc(33 * var(--_unit)) rgb(184 184 184 / 0.05),
+          calc(48 * var(--_unit)) calc(85 * var(--_unit))
+            calc(39 * var(--_unit)) rgb(184 184 184 / 0.01);
+
+        &::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          z-index: -1;
+          background-image: linear-gradient(
+            to top,
+            #ffffff -1.5%,
+            rgb(247 250 255 / 0.7) 58.4%,
+            rgb(245 249 255 / 0) 78.3%
+          );
+        }
+      }
+
+      .redesign-hero-graphic_glass {
+        position: absolute;
+        inset: 0 0 0 5.3%;
+        z-index: -2;
+        width: 89.4%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.6;
+      }
+
+      .redesign-hero-graphic_author {
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+      }
+
+      .redesign-hero-graphic_avatar {
+        width: calc(40 * var(--_unit));
+        height: calc(40 * var(--_unit));
+        object-fit: cover;
+        border-radius: calc(8 * var(--_unit));
+      }
+
+      .redesign-hero-graphic_name,
+      .redesign-hero-graphic_quote-text,
+      .redesign-hero-graphic_label {
+        font-size: calc(18 * var(--_unit));
+        line-height: calc(24 * var(--_unit));
+        letter-spacing: -0.007em;
+      }
+
+      .redesign-hero-graphic_name {
+        font-weight: var(--primary-medium);
+      }
+
+      .redesign-hero-graphic_quote-text {
+        color: var(--color-neutral-80);
+      }
+
+      /* Result */
+
+      .redesign-hero-graphic_result {
+        position: absolute;
+        top: calc(328 * var(--_unit));
+        left: calc(902 * var(--_unit));
+        display: flex;
+        align-items: center;
+        gap: calc(16 * var(--_unit));
+        padding: calc(12 * var(--_unit));
+        overflow: hidden;
+        white-space: nowrap;
+        background-color: var(--color-neutral-0);
+        border-radius: calc(12 * var(--_unit));
+        box-shadow:
+          calc(-5 * var(--_unit)) calc(5 * var(--_unit)) calc(13 * var(--_unit))
+            rgb(184 184 184 / 0.4),
+          calc(12 * var(--_unit)) calc(21 * var(--_unit))
+            calc(24 * var(--_unit)) rgb(184 184 184 / 0.09),
+          calc(27 * var(--_unit)) calc(48 * var(--_unit))
+            calc(33 * var(--_unit)) rgb(184 184 184 / 0.05);
+      }
+
+      .redesign-hero-graphic_badge {
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+        padding: calc(8 * var(--_unit));
+        border-radius: calc(8 * var(--_unit));
+        background-color: #f0fdf4;
+        color: var(--color-accent-success-90);
+        box-shadow:
+          calc(1 * var(--_unit)) 0 calc(2 * var(--_unit)) rgb(48 48 48 / 0.04),
+          calc(3 * var(--_unit)) calc(1 * var(--_unit)) calc(4 * var(--_unit))
+            rgb(48 48 48 / 0.05);
+
+        svg {
+          width: calc(20 * var(--_unit));
+          height: calc(20 * var(--_unit));
+        }
+      }
+
+      .redesign-hero-graphic_figure {
+        font-family: var(--secondary-family);
+        font-size: calc(24 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(30 * var(--_unit));
+        letter-spacing: -0.01em;
+      }
+
+      .redesign-hero-graphic_label {
+        font-weight: var(--primary-medium);
+        color: var(--color-neutral-60);
+      }
+
+      .redesign-hero-graphic_fade {
+        position: absolute;
+        top: calc(437 * var(--_unit));
+        left: calc(-70 * var(--_unit));
+        width: calc(1452 * var(--_unit));
+        height: calc(267 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        filter: blur(calc(17.5 * var(--_unit)));
+      }
+    }
+  }
+</style>

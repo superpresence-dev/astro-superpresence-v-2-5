@@ -25,6 +25,8 @@ interface Props extends HTMLAttributes<"div"> {
   steps: Step[];
   /** Box under the side navigation. Omit to leave it out. */
   note?: Note;
+  /** Adds `--space-2rem` between the heading and the steps. */
+  spaced?: boolean;
 }
 
 const {
@@ -33,6 +35,7 @@ const {
   heading,
   steps,
   note,
+  spaced = false,
   class: className,
   ...rest
 } = Astro.props;
@@ -43,7 +46,10 @@ const number = (index: number) => `(${String(index + 1).padStart(2, "0")})`;
 
 {
   render && heading && steps?.length > 0 && (
-    <div class:list={["industry-process_wrap", className]} {...rest}>
+    <div
+      class:list={["industry-process_wrap", spaced && "spaced", className]}
+      {...rest}
+    >
       <div class="industry-process_intro">
         <Paragraph variant="overline-small" class="industry-process_eyebrow">
           {eyebrow}
@@ -198,6 +204,10 @@ const number = (index: number) => `(${String(index + 1).padStart(2, "0")})`;
       .industry-process_eyebrow,
       .industry-process_number {
         color: var(--color-neutral-30);
+      }
+
+      &.spaced .industry-process_layout {
+        padding-top: var(--space-2rem);
       }
 
       .industry-process_layout {

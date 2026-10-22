@@ -1,0 +1,191 @@
+---
+import type { ComponentProps, HTMLAttributes } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Button from "@/components/Button.astro";
+import Img from "@/components/media/Img.astro";
+import teamImage from "@/assets/about/cta-team.jpg";
+import projectImage from "@/assets/about/cta-project.jpg";
+
+type Card = {
+  eyebrow: string;
+  heading: string;
+  buttonText: string;
+  buttonHref: string;
+};
+
+interface Props
+  extends
+    HTMLAttributes<"section">,
+    Pick<ComponentProps<typeof Section>, "render"> {
+  /** The light card: an invitation with a line of text. */
+  team?: Card & { text: string };
+  /** The dark card: the main call to action. */
+  project?: Card;
+}
+
+const {
+  render = true,
+  team = {
+    eyebrow: "Open positions",
+    heading: "Want to be part of a Superpresence?",
+    text: "We seek designers, developers, and PMs eager to excel, working closely with clients who appreciate quality craft.",
+    buttonText: "Join the team",
+    buttonHref: "#",
+  },
+  project = {
+    eyebrow: "Limited projects for Q4",
+    heading: "Start a project",
+    buttonText: "Book a strategy call",
+    buttonHref: "/contact",
+  },
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<Section
+  render={render}
+  paddingTop="none"
+  paddingBottom="none"
+  containerClass="about-cta_layout"
+  class:list={["about-cta_wrap", className]}
+  {...rest}
+>
+  <div class="about-cta_card">
+    <Img src={teamImage} sizes="(width >= 62rem) 30rem, 100vw" class="about-cta_image" />
+    <div class="about-cta_content">
+      <Paragraph variant="overline-small" class="about-cta_eyebrow">
+        {team.eyebrow}
+      </Paragraph>
+      <Heading tag="h2" variant="h4">
+        {team.heading}
+      </Heading>
+      <Paragraph variant="main" class="about-cta_text">
+        {team.text}
+      </Paragraph>
+    </div>
+    <Button element="link" href={team.buttonHref} class="about-cta_button">
+      {team.buttonText}
+    </Button>
+  </div>
+  <div class="about-cta_card project theme-dark">
+    <Img src={projectImage} sizes="(width >= 62rem) 55.5rem, 100vw" class="about-cta_image" />
+    <Paragraph variant="overline-small" class="about-cta_eyebrow">
+      {project.eyebrow}
+    </Paragraph>
+    <div class="about-cta_footer">
+      <Heading tag="h2" variant="h3">
+        {project.heading}
+      </Heading>
+      <Button element="link" href={project.buttonHref} class="about-cta_button">
+        {project.buttonText}
+      </Button>
+    </div>
+  </div>
+</Section>
+
+<style is:global>
+  @layer components {
+    .about-cta_wrap {
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .about-cta_layout {
+        width: calc(100% - 2 * var(--space-1-5rem));
+        max-width: none;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        align-items: stretch;
+        gap: var(--space-1-25rem);
+        padding-block: var(--space-1-5rem);
+        @media (width < 48rem) {
+          width: var(--site-width);
+        }
+        @media (width >= 62rem) {
+          grid-template-columns: minmax(0, 480fr) minmax(0, 888fr);
+          gap: var(--space-1-5rem);
+        }
+      }
+
+      .about-cta_card {
+        position: relative;
+        isolation: isolate;
+        min-height: 16.875rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: var(--space-3-5rem);
+        padding: var(--space-2-5rem);
+        overflow: clip;
+        border-radius: var(--radius-0-25rem);
+        background-color: var(--color-neutral-0);
+        @media (width >= 48rem) {
+          min-height: 15rem;
+        }
+        @media (width >= 62rem) {
+          min-height: 26.25rem;
+        }
+
+        &.project {
+          gap: var(--space-1-25rem);
+          background-color: var(--color-neutral-2);
+        }
+      }
+
+      .about-cta_image {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .about-cta_content {
+        max-width: 25rem;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-5rem);
+        @media (width >= 48rem) {
+          max-width: none;
+        }
+        @media (width >= 62rem) {
+          max-width: 25rem;
+        }
+      }
+
+      .about-cta_eyebrow {
+        color: var(--color-neutral-30);
+      }
+
+      .about-cta_text {
+        color: var(--color-neutral-60);
+      }
+
+      .project .about-cta_eyebrow {
+        color: var(--color-neutral-20);
+      }
+
+      .about-cta_footer {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-1-25rem);
+        @media (width >= 48rem) {
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+        }
+      }
+
+      .about-cta_button {
+        flex: none;
+      }
+    }
+  }
+</style>

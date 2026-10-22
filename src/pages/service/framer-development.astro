@@ -1,0 +1,517 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import HomeHero from "@/components/section/HomeHero.astro";
+import IndustryProblem from "@/components/content/IndustryProblem.astro";
+import ServiceFeatures from "@/components/content/ServiceFeatures.astro";
+import FramerFeatureGraphic from "@/components/content/FramerFeatureGraphic.astro";
+import WebflowFeatureGraphic from "@/components/content/WebflowFeatureGraphic.astro";
+import ServiceSteps from "@/components/content/ServiceSteps.astro";
+import WhyOffers from "@/components/content/WhyOffers.astro";
+import IndustryProcess from "@/components/content/IndustryProcess.astro";
+import DesignProcessGraphic from "@/components/content/DesignProcessGraphic.astro";
+import WebflowProcessGraphic from "@/components/content/WebflowProcessGraphic.astro";
+import IndustryBuild from "@/components/section/IndustryBuild.astro";
+import HomeQuote from "@/components/section/HomeQuote.astro";
+import ServicePoints from "@/components/content/ServicePoints.astro";
+import DesignWhyGraphic from "@/components/content/DesignWhyGraphic.astro";
+import WhyCompare from "@/components/content/WhyCompare.astro";
+import ServicePromise from "@/components/section/ServicePromise.astro";
+import HomeFaq from "@/components/content/HomeFaq.astro";
+import ServiceGrid from "@/components/content/ServiceGrid.astro";
+import HomeCta from "@/components/section/HomeCta.astro";
+import { serviceUrl } from "@/utils/services.ts";
+import heroImage from "@/assets/service/framer/hero.jpg";
+import languagesImage from "@/assets/service/framer/features-3.jpg";
+import tierEssentials from "@/assets/service/webflow/tier-1.png";
+import tierGrowth from "@/assets/service/webflow/tier-2.png";
+import tierScale from "@/assets/service/webflow/tier-3.png";
+import handoverImage from "@/assets/service/framer/handover-background.jpg";
+
+const related = [
+  {
+    title: "Website design",
+    text: "The strategy and design that come before this build, from the same team.",
+  },
+  {
+    title: "Webflow development",
+    text: "A site your team can run, connected to the tools you already use.",
+  },
+  {
+    title: "Branding",
+    text: "An identity crafted specifically for the website and its buyers reading it.",
+  },
+  {
+    title: "Website migration",
+    text: "Your existing site moved to Webflow, with content and rankings carried over.",
+  },
+  {
+    title: "Webflow maintenance",
+    text: "Ongoing post-launch care tailored to your site’s needs and growth, on a custom retainer.",
+  },
+  {
+    title: "Social & ad creative",
+    text: "Graphics for campaigns and channels, designed to match the new site.",
+  },
+].map((item) => ({
+  ...item,
+  href: serviceUrl(
+    item.title === "Website migration" ? "Migrate to Webflow" : item.title,
+  ),
+}));
+---
+
+<Layout
+  title="Framer development"
+  description="Pixel-perfect Framer builds with motion done properly, connected to your tools. Your team keeps changing the site after launch, without a developer."
+  overlap
+>
+  {/* Hero */}
+  <HomeHero
+    eyebrow="Framer development"
+    heading="Framer websites that<br />launch fast and grow with you"
+    text="Pixel-perfect builds with motion done properly, connected to your tools. Your team keeps changing the site after launch, without a developer."
+    image={heroImage}
+    buttonText="Start your project"
+    buttonHref="/contact"
+    variant="split"
+    fade="soft"
+    tint="#f76f00"
+    tintEnd="#603613"
+    wide={48.75}
+  />
+  {/* Problem */}
+  <Section>
+    <IndustryProblem
+      heading="Your website is holding<br />the company back"
+      items={[
+        {
+          title: "The launch is coming and the site isn't",
+          text: "A fundraise or campaign date doesn't move, and the current site can't be ready in time.",
+        },
+        {
+          title: "The design loses its polish in the build",
+          text: "The motion and detail that made the design striking never make it onto the live site.",
+        },
+        {
+          title: "Every change waits on a developer",
+          text: "Your team spots what needs updating, then waits days for someone to make the edit.",
+        },
+      ]}
+    />
+  </Section>
+  {/* Platform and motion */}
+  <Section>
+    <ServiceFeatures
+      items={[
+        {
+          eyebrow: "An honest answer",
+          heading: "Framer or Webflow?<br />We build both",
+          text: "Because we build on both, we can tell you which one fits. Framer is fastest to launch and change; Webflow handles bigger content and more complex integrations.",
+          points: [
+            "A straight recommendation before you commit",
+            "Based on your content, languages and team",
+            "No platform to sell you",
+          ],
+        },
+        {
+          eyebrow: "Motion with a job",
+          heading: "Movement that moves<br />buyers forward",
+          text: "Every interaction is planned for what it does for the reader, not added for decoration, and every one has a reduced-motion fallback.",
+          points: [
+            "Interactions mapped to the buyer journey",
+            "Smooth on phones as well as desktops",
+            "Accessible fallbacks for every animation",
+          ],
+        },
+      ]}
+    >
+      <FramerFeatureGraphic slot="visual-1" variant="platforms" />
+      <FramerFeatureGraphic slot="visual-2" variant="motion" />
+    </ServiceFeatures>
+  </Section>
+  {/* What we do */}
+  <Section>
+    <ServiceSteps
+      heading="Everything in a Framer build"
+      lead="Designed and built by one team, so the site launches the way it was designed."
+      steps={[
+        {
+          title: "Build",
+          points: [
+            {
+              title: "Built from the signed-off design",
+              text: "Page by page, matched to the Figma file.",
+            },
+            {
+              title: "Responsive breakpoints",
+              text: "Designed and checked for phone, tablet and desktop.",
+            },
+            {
+              title: "Motion and interactions",
+              text: "Scroll and hover effects that show the product, not decorate it.",
+            },
+            {
+              title: "Reusable components",
+              text: "Sections your team can reuse for new pages.",
+            },
+          ],
+        },
+        {
+          title: "CMS",
+          points: [
+            {
+              title: "Framer CMS for your content",
+              text: "Posts, updates and pages your team publishes.",
+            },
+            {
+              title: "Editor training",
+              text: "A walkthrough of how to update the site safely.",
+            },
+          ],
+        },
+        {
+          title: "Search and measurement",
+          points: [
+            {
+              title: "SEO basics",
+              text: "Meta titles, descriptions, sitemap and schema.",
+            },
+            {
+              title: "GA4 and heatmaps",
+              text: "See where visitors come from and where they drop off.",
+            },
+            {
+              title: "301 redirects",
+              text: "Old URLs mapped when you are moving an existing site.",
+            },
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Builds */}
+  <Section>
+    <WhyOffers
+      variant="options"
+      eyebrow="Three builds, one standard"
+      heading="Pick the build that fits where you are"
+      lead="Framer, Webflow or Next.js, same price. We recommend the platform after the first call."
+      note="Same team, same process and QA on every tier. Pricing is shared after a call."
+      columnsFrom="desktop"
+      cardHeight={34.375}
+      contentHeight={20.75}
+      cardHeightMedium={27.5}
+      contentHeightMedium={1}
+      cardHeightSmall={27.5}
+      options={[
+        {
+          tone: "blue",
+          image: tierEssentials,
+          label: "Essentials",
+          title: "One-page site",
+          text: "One page, engineered to turn your first serious traffic into conversations.",
+          points: [
+            "A single conversion-built page",
+            "Light positioning, copy, design and build",
+            "SEO basics, responsive",
+            "Fixed scope, 2 feedback rounds",
+          ],
+        },
+        {
+          tone: "purple",
+          image: tierGrowth,
+          label: "Growth",
+          title: "Full marketing site",
+          text: "The full marketing site that converts the traffic you already pay for.",
+          points: [
+            "Six core pages, plus pages as you need them",
+            "Buyer and competitor research, expert copy",
+            "CMS and blog, GA4 and heat maps",
+            "Custom graphics and an icon set",
+            "3 feedback rounds",
+          ],
+        },
+        {
+          tone: "orange",
+          image: tierScale,
+          label: "Scale",
+          title: "Tailored build",
+          text: "For companies moving into their next stage. A build sized to the ambition.",
+          points: [
+            "Large multi-page or SaaS sites",
+            "CRM and custom integrations",
+            "Multi-language builds",
+            "Scoped and priced directly",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Process */}
+  <Section>
+    <IndustryProcess
+      eyebrow="How we work"
+      heading="Five steps, each<br />signed off before the next"
+      note={{
+        title: "3 feedback rounds included",
+        text: "Each phase is approved before the next one starts, so nothing gets reworked later.",
+      }}
+      steps={[
+        {
+          title: "Kick-off and research",
+          text: "A strategy call, then research into your company, competitors and buyers.",
+          points: ["Buyer research", "Scope and timeline", "Platform fit check"],
+        },
+        {
+          title: "CMS and page plan",
+          text: "We plan the structure around your content, so your team can publish on its own.",
+          points: ["Sitemap", "CMS collections", "Content plan"],
+        },
+        {
+          title: "Build and motion",
+          text: "Pages are built to match the design, with interactions planned and tested on real devices.",
+          points: ["Pixel-perfect build", "Interactions", "Responsive layouts"],
+        },
+        {
+          title: "Integrations and SEO",
+          text: "Forms, CRM, analytics and redirects are connected and checked before launch.",
+          points: ["CRM", "Analytics and events", "Redirects"],
+        },
+        {
+          title: "QA and launch",
+          text: "Every page is checked across devices, browsers and languages, then launched on your date.",
+          points: ["Device testing", "Language check", "Launch support"],
+        },
+      ]}
+    >
+      <DesignProcessGraphic slot="step-1" variant="strategy" />
+      <WebflowProcessGraphic slot="step-2" variant="sitemap" />
+      <WebflowProcessGraphic slot="step-3" variant="build" />
+      <WebflowProcessGraphic slot="step-4" variant="integrations" />
+      <WebflowProcessGraphic slot="step-5" variant="launch" />
+    </IndustryProcess>
+  </Section>
+  {/* Languages */}
+  <Section>
+    <ServiceFeatures
+      reverse
+      items={[
+        {
+          eyebrow: "One site, every market",
+          heading: "English first, your home<br />language beside it",
+          text: "Framer has localisation built in. We set up each language properly, so the layout holds when the words change.",
+          points: [
+            "English, Thai, Chinese and Japanese versions",
+            "Layouts that hold when text gets longer",
+            "A clear review flow for each language",
+          ],
+        },
+      ]}
+    >
+      <WebflowFeatureGraphic
+        slot="visual-1"
+        variant="languages"
+        image={languagesImage}
+      />
+    </ServiceFeatures>
+  </Section>
+  {/* Handover */}
+  <IndustryBuild
+    variant="handover"
+    eyebrow="Handover"
+    heading="Built for your team to run it"
+    image={handoverImage}
+    items={[
+      {
+        title: "Project access",
+        text: "Your platform account and every connected tool, transferred to you.",
+      },
+      {
+        title: "Brand assets",
+        text: "Final logo, color, and font files are prepared and ready for use anywhere you need them.",
+      },
+      {
+        title: "Strategy document",
+        text: "Who the site serves and why each page is designed the way it is.",
+      },
+      {
+        title: "Figma file",
+        text: "The full design source, so future pages start from the same system.",
+      },
+      {
+        title: "Recorded walkthrough",
+        text: "A video guide showing how to update pages, posts, and forms quickly and easily.",
+      },
+      {
+        title: "Measurement plan",
+        text: "What to track post-launch and where to locate the data you need for success.",
+      },
+    ]}
+  />
+  {/* Quote */}
+  <HomeQuote />
+  {/* Why */}
+  <Section>
+    <ServicePoints
+      variant="visual"
+      eyebrow="Why Superpresence"
+      heading="Why companies choose us<br />to build on Framer"
+      items={[
+        {
+          title: "The whole senior team, one roof",
+          text: "Strategy, design, copy, development, conversion and QA in one accountable team, with nobody for you to hire or manage.",
+        },
+        {
+          title: "Built to convert, engineered for search",
+          text: "Conversion structure on the surface; clean structure, schema and speed underneath, so search and AI tools read you correctly.",
+        },
+        {
+          title: "QA on every build",
+          text: "Cross-browser, cross-device, forms, integrations, redirects and a performance pass before anything goes live, at every tier.",
+        },
+        {
+          title: "Built in Asia, written for buyers abroad",
+          text: "We work in your timezone, understand Asian companies, and craft English content that appeals directly to your target buyers.",
+        },
+        {
+          title: "Copy written by people, in English",
+          text: "Expert copywriters write every page. Not translated, not generated, and built around how your buyers decide.",
+        },
+        {
+          title: "Strategy before pixels",
+          text: "We don't start designing until what you do, who it is for and why you are clear. Design amplifies clarity; it can't create it.",
+        },
+      ]}
+    >
+      <DesignWhyGraphic slot="visual-1" variant="team" />
+      <DesignWhyGraphic slot="visual-2" variant="convert" />
+      <DesignWhyGraphic slot="visual-3" variant="depth" />
+      <DesignWhyGraphic slot="visual-4" variant="asia" />
+      <DesignWhyGraphic slot="visual-5" variant="copy" />
+      <DesignWhyGraphic slot="visual-6" variant="strategy" />
+    </ServicePoints>
+  </Section>
+  {/* Comparison */}
+  <Section>
+    <WhyCompare
+      variant="marks"
+      eyebrow="The comparison"
+      heading="What each option actually delivers"
+      lead="A quick comparison before you decide who does the work."
+      rows={[
+        "Pixel-perfect to the design",
+        "Motion planned, not decorative",
+        "Your team can edit it",
+        "Languages set up properly",
+        "Design and build by one team",
+      ]}
+      options={[
+        {
+          title: "Superpresence",
+          icon: "brand",
+          featured: true,
+          items: [true, true, true, true, true],
+        },
+        {
+          title: "Freelancer",
+          icon: "hire",
+          items: ["Varies", "Sometimes", "Sometimes", false, false],
+        },
+        {
+          title: "Typical agency",
+          icon: "agency",
+          items: ["Sometimes", "Sometimes", "Sometimes", "Varies", "Varies"],
+        },
+      ]}
+    />
+  </Section>
+  {/* Promise */}
+  <ServicePromise
+    heading="Launch with<br />nothing left to chance"
+    items={[
+      {
+        value: "14 days",
+        title: "Warranty after launch",
+        text: "If anything we built does not work as signed off, we fix it free for 14 days after launch.",
+      },
+      {
+        value: "Every build",
+        title: "Passes the same checks",
+        text: "Devices, browsers, forms, tools and redirects, tested before anything goes live.",
+      },
+      {
+        value: "10 min",
+        title: "Free video teardown",
+        text: "What is working on your current site, what is losing buyers and what we would change first.",
+      },
+    ]}
+  />
+  {/* FAQ */}
+  <Section>
+    <HomeFaq
+      eyebrow="Still got questions?"
+      heading="Before you ask"
+      items={[
+        {
+          question: "Why Framer and not Webflow?",
+          answer: [
+            "Framer is fastest to launch and easiest to change, with strong motion. Webflow suits larger content and more complex integrations. We build both, so we recommend the one that fits.",
+          ],
+        },
+        {
+          question: "Does a Framer site rank on Google?",
+          answer: [
+            "Yes. Rankings come from structure, content and speed, not from the platform. Framer serves fast pages, and we set meta titles, descriptions, a sitemap and schema on every page, with 301 redirects mapped when you move from an existing site.",
+            "Every page also gets a clear heading hierarchy, so search engines and AI tools read your business correctly.",
+          ],
+        },
+        {
+          question: "Can the site run in English and our home language?",
+          answer: [
+            "Yes. Framer has localisation built in. We set up English first, with Thai, Chinese, Japanese or your own language beside it, and check that every layout holds when the text gets longer.",
+            "Each language gets a clear review flow, so your team signs off the wording before it goes live.",
+          ],
+        },
+        {
+          question: "Can our team edit the site after launch?",
+          answer: [
+            "Day to day, yes. Your team can update text and images, publish posts and add pages in Framer’s editor and CMS without a developer. You get editor training and a recorded walkthrough at handover.",
+            "New page layouts, new CMS collections and new integrations are still build work. Those go through a maintenance plan or a one-off request.",
+          ],
+        },
+        {
+          question: "Will animation slow the site down?",
+          answer: [
+            "Not when it is planned. Every interaction has a job, is tested on real phones as well as desktops, and is kept light enough that pages stay fast.",
+            "Anyone who turns on reduced motion in their device settings gets a calm version of every animation.",
+          ],
+        },
+        {
+          question: "What happens if we outgrow Framer?",
+          answer: [
+            "Because we build on both, moving is a known path rather than a rebuild from scratch. If your content, languages or integrations outgrow Framer, we move the site to Webflow with content and rankings carried over.",
+            "You own the Figma file and every account from day one, so nothing is locked to us.",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Related services */}
+  <Section>
+    <ServiceGrid
+      eyebrow="Related services"
+      heading="Before and after the build"
+      lead="Most Framer builds start with a design, and some move to Webflow later."
+      items={related}
+    />
+  </Section>
+  {/* CTA */}
+  <HomeCta
+    eyebrow="You've reached the end, so now..."
+    heading="Need it live by a date that will not move?"
+    text="Tell us about the launch and what the site has to do, and we will shape a scope that gets you there."
+    buttonText="Start your project"
+    buttonHref="/contact"
+  />
+</Layout>

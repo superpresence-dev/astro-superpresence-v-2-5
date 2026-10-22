@@ -8,6 +8,7 @@ import Button from "@/components/Button.astro";
 import HeroLogos from "@/components/content/HeroLogos.astro";
 import Img from "@/components/media/Img.astro";
 import background from "@/assets/home/alt-01.png";
+import { REVIEW_URL } from "@/utils/review.ts";
 
 interface Props
   extends HTMLAttributes<"section">,
@@ -32,14 +33,16 @@ interface Props
   variant?: "logos" | "split";
   /** Where the background image sits below tablet, as a CSS `object-position` such as `32% 50%`. Omit to centre it. */
   focus?: string;
-  /** Lets the `split` heading run to 46.875rem instead of 42.5rem, for a heading with a long line. */
-  wide?: boolean;
+  /** Lets the `split` heading run to 46.875rem instead of 42.5rem, for a heading with a long line. A number sets that width in rem. */
+  wide?: boolean | number;
   /** Bottom fade over the image: `deep` turns solid below desktop, `soft` stays at 70% on every screen. */
   fade?: "deep" | "soft";
   /** Colour the `soft` fade runs to, as a hex. Mixed at 70% like the default dark. */
   fadeColor?: string;
   /** Washes the whole image in this colour (hex): a light even tint, then a heavy gradient from the middle down. Replaces the bottom fade. */
   tint?: string;
+  /** Colour the tint's bottom gradient runs to (hex), when it is darker than the tint itself. */
+  tintEnd?: string;
 }
 
 const {
@@ -49,7 +52,7 @@ const {
   text = "Your customers compare you with the biggest names in your market before they get in touch. We build the website that wins that comparison, and turns it into enquiries.",
   image = background,
   buttonText = "Review my website",
-  buttonHref = "#",
+  buttonHref = REVIEW_URL,
   secondaryText,
   secondaryHref = "#",
   variant = "logos",
@@ -58,6 +61,7 @@ const {
   fade = "deep",
   fadeColor,
   tint,
+  tintEnd,
   class: className,
   ...rest
 } = Astro.props;
@@ -73,6 +77,8 @@ const {
   style={[
     fadeColor && `--_fade-color: ${fadeColor}`,
     tint && `--_tint: ${tint}`,
+    tintEnd && `--_tint-end: ${tintEnd}`,
+    typeof wide === "number" && `--_main-width: ${wide}rem`,
     focus && `--_focus: ${focus}`,
   ]
     .filter(Boolean)
@@ -179,7 +185,7 @@ const {
           linear-gradient(
             to bottom,
             transparent 35.868%,
-            color-mix(in srgb, var(--_tint) 90%, transparent) 70.305%
+            color-mix(in srgb, var(--_tint-end, var(--_tint)) 90%, transparent) 70.305%
           );
         background-position: 0 0;
         background-size: 100% 100%;
@@ -270,7 +276,7 @@ const {
         }
 
         &.wide .home-hero_main {
-          max-width: 46.875rem;
+          max-width: var(--_main-width, 46.875rem);
         }
 
         .home-hero_text {

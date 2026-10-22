@@ -29,12 +29,27 @@ node .agents/skills/lumos-import-figma/convert.mjs --folder figma
 its name: a JSON with `modes` and `variables` is a variable export, XML that
 starts with a `section`, `frame`, `canvas` or `instance` tag is metadata, a file
 with `data-node-id=` and `className=` (or the "These styles are contained in the
-design" line) is a `get_design_context` capture, and a JSON whose keys are all
-inventory keys is an inventory. Anything else, and any invalid JSON, is listed
+design" line) is a `get_design_context` capture, a JSON whose root has `id`,
+`type`, `bounds` and `children` is a figma-bridge node dump, and a JSON whose
+keys are all inventory keys is an inventory. A node dump is written out as
+`<page>-metadata.xml` beside it (`service-node.json` gives
+`service-metadata.xml`) and measured like one; a metadata XML saved off the
+official MCP is never overwritten. Anything else, and any invalid JSON, is listed
 under `SKIPPED (not recognised)` rather than failing the run. An empty or
 missing folder exits non-zero. When the folder holds more than one page, add
-`--page <prefix>` (for example `--page home`): only metadata and design-context
-files whose name starts with the prefix are read, and variable exports are always read.
+`--page <name>` (for example `--page home`): only metadata, node-dump and
+design-context files named `<name>.xml`, `<name>-metadata.xml`,
+`<name>-node.json`, `<name>-<breakpoint>…` or `<name>-<nn>…` are read, so `--page work` does not pick up
+`work-detail-metadata.xml`. Variable exports are always read. Metadata saved
+with the MCP's "Currently selected nodes:" lines above the XML is recognised.
+
+A file that holds only a Figma MCP error ("Rate limit exceeded, please try again
+tomorrow") is listed as an error and asked about: that frame was never read.
+The local Dev Mode server has a daily limit that slicing and verify share; when
+it is reached, capture through the remote Figma MCP (mcp.figma.com) instead, and
+never save the error text as if it were a capture. `capture.mjs` (step 2) spends
+one call per node and saves its screenshot too, so verify does not spend
+another.
 
 The agent shows the consolidated report, puts the single `ASK BEFORE WRITING`
 list to the user, and edits `base.css` only after the answers.
@@ -43,6 +58,108 @@ If the user gives a Figma node link instead of files, first save its
 `get_metadata` XML and its `get_design_context` output for each frame into the
 folder through the Figma MCP, then run the same command. The steps below
 explain what each part of the report means.
+
+## Choosing the Figma source
+
+Two servers can read the file. Pick one at the start of every slice, in this
+order, without asking, and say in one line which is in use:
+
+1. **figma-bridge** ([gethopp/figma-mcp-bridge](https://github.com/gethopp/figma-mcp-bridge)),
+   when its plugin is running in Figma desktop. It reads the open file
+   through the plugin, so it spends no Figma API or Dev Mode quota. Give the
+   script the node that holds the page's three breakpoint frames:
+
+   ```bash
+   node .agents/skills/lumos-import-figma/bridge.mjs --page service --node 6825:45642
+   ```
+
+   It writes `figma/<page>-node.json` (the whole subtree, every text's words,
+   box and style), `figma/<page>-metadata.xml` from it, the variable
+   collections as `figma/Responsive.json` and `figma/Static.json` (the same
+   files the Export/Import Variables plugin gives, so that export is not
+   needed; one exported with the plugin is kept), and a screenshot of every
+   section into `figma/shots/figma-cache/`, straight to disk: a dump of
+   several MB never goes through the conversation, so do not call the
+   bridge's `get_node` on a whole page yourself. It also lists the photos (IMAGE
+   fills): the bridge has an image's hash, not its file, so download those
+   with the official MCP's `download_assets`. Something already saved is kept,
+   so a run that stopped carries on; `--force` fetches again. With several
+   files open in the plugin, pass `--file-key` (the script lists them).
+
+   **Read only.** The bridge also has tools that create, edit, move and delete
+   nodes and run scripts in the file. Never call any of them, not even to work
+   around a missing export.
+2. **The official Figma MCP**, when `bridge.mjs` exits 2 (no bridge, no file
+   has the plugin open, or the open file does not hold the node): the flow below, `get_metadata`, `capture.mjs` and
+   `download_assets`, with its rate-limit handling.
+3. If a bridge run fails partway, keep what was saved and fetch only what is
+   missing with the official MCP. Do not start over.
+
+What the node dump covers: layout (through the metadata it writes), every
+text's words and box for verify, inside instances too, and in `--folder`
+everything a capture reports except **text-transform** (the dump has no
+`textCase`): text styles and colours, shadows and blurs, buttons, photos and
+icons, fixed or clipped nodes, strokes, literal px and icon sizes (the
+`NODE DUMP` section, below). Check the uppercase styles (overlines, tags,
+buttons) in a screenshot; a capture of one section that has them settles it.
+A capture beside a dump adds only text-transform and its asset URLs, so
+nothing is asked twice. The report names the source of each input (bridge
+dump, official capture, cache), so a missing check can be traced to its cause.
+
+**Reading the `NODE DUMP` section.** A dump does not say which variable a value
+is bound to, so each text node's style is told by its values: the type token
+whose size and line height at that breakpoint it has, in Figma's variables (or
+`base.css` without them). The layer name decides between equal candidates,
+then the letter spacing (text-small and overline-main share 14/20), and stands
+when nothing fits. So the table matches what a capture's variables would say,
+and it measures more: the real px per breakpoint, local overrides a style
+definition hides, and text inside instances such as the footer.
+
+- `LAYER NAME IS NOT THE STYLE`: layers counted under the style their values
+  belong to (`p__md → --text-small ×32`). Not a question; tell the designer
+  only if they ask for tidy layers.
+- `TEXT WITH NO STYLE`: no type-style name and a size that fits no token, or
+  several. Asked about once.
+- More than one size or letter spacing within a style is a real deviation in
+  the file, with a node id to look at; ask, as with a capture.
+- Text at a fractional size sits in a graphic scaled as one piece and is left
+  out; text in buttons (or named `b__*`) waits for the button rows. The same
+  goes for effects and strokes with fractional values.
+
+The rest of the section reads like a capture's, with the file's own values:
+
+- `SHADOWS` and `BLURS` come from the desktop frame, named after an equal
+  Figma effect style from `figma-styles.json` when there is one, with true blur
+  and spread (no drop-shadow halving).
+- `BUTTONS` are read at desktop, like the button tokens; a 0 radius or padding
+  is left out, as a capture leaves it out.
+- `PHOTOS` lists each image fill once with its node id, flagged `CROPPED`,
+  `MIRRORED`, `ROTATED`, `FIT` or `TILED` from its `imageTransform` and scale
+  mode. The dump has no image file: download them with the official MCP's
+  `download_assets` on those node ids.
+- `ICONS` lists vector graphics up to 64px and prints a ready
+  `bridge.mjs --svg src/assets/<page> <id>=<name> …` line that exports them at
+  no quota. A layer inside an instance (an id starting with `I`) cannot be
+  exported by the bridge; take those from the official MCP.
+- `STROKES` gives gradient strokes as CSS (`linear-gradient(181deg, …)`),
+  strokes with several paints, colours that are no swatch, and strokes set
+  outside or centred on the box, which add to its size in Figma.
+- `FIXED HEIGHT / CLIPPED` lists nodes that clip text, and fixed heights at
+  section level, with the height in each frame.
+- `LITERAL PX` compares the same node (by its path of layer names) across the
+  three frames: a gap, padding or icon size that never changes is literal.
+
+To read one section without opening the dump, print it as an outline:
+
+```bash
+npm run slice -- --summary figma/service-node.json                  # frames and their sections, with ids
+npm run slice -- --summary figma/service-node.json --node 6825:40115  # one section, a line per node
+```
+
+Each line gives the node's size, auto layout and gap, padding, fill, radius,
+stroke, effects and clipping, and for text the family, size/line height,
+weight, letter spacing, colour and words. Build the markup from it the way a
+capture's code would be read.
 
 ## What Figma cannot say
 
@@ -194,9 +311,23 @@ Figma style and a template default is reported and asked about, never applied.
    times is one value.
 
    **Text styles come from `get_design_context`.** For each frame (desktop,
-   tablet, mobile) of the page, call `get_design_context` with
-   `excludeScreenshot: true` and save the raw output into `figma/`, for example
-   `about-desktop.txt`, then run `--folder`. Its "These styles are contained in
+   tablet, mobile) of the page, or each section of it, save the raw
+   `get_design_context` output into `figma/`, for example `about-desktop.txt`,
+   then run `--folder`. With Figma desktop open, save it with the script rather
+   than by hand:
+
+   ```bash
+   node .agents/skills/lumos-import-figma/capture.mjs --page about desktop-01-hero=6819:36460 desktop-02-logos=6819:36512
+   ```
+
+   Each `<name>=<nodeId>` is one call. It writes `figma/about-<name>.txt` and
+   keeps the screenshot that same call returns in
+   `figma/shots/figma-cache/<node-id>.png`, where verify looks first, so verify
+   asks Figma for nothing it already has. A job whose capture and screenshot
+   both exist is skipped (`--force` fetches again), so nothing is captured
+   twice. A rate limit stops the run and prints the jobs left; an error is
+   never saved as a capture. Through the remote MCP, where no script can save
+   the screenshot, call `get_design_context` with `excludeScreenshot: true`. Its "These styles are contained in
    the design" line is the only place that says which text style uses which
    weight and tracking: variables hold sizes and line heights, not the weight or
    letter spacing a style applies. The script reads the weight, the letter
@@ -245,10 +376,29 @@ Figma style and a template default is reported and asked about, never applied.
      `NEW`. When nothing matches yet — a fresh project — the variants are
      compared with the `--button-*` role tokens instead, and the primary variant
      is the user's choice; nothing is applied.
-   - **Assets.** Every `http://localhost:3845/assets/<hash>.<ext>` becomes a row
+   - **Assets.** Every `http://localhost:3845/assets/<hash>.<ext>` (local Dev
+     Mode server) and every `` `${assetPathPrefix}/<hash>.<ext>` `` (remote
+     server, whose prefix changes on every call) becomes a row
      with the node that uses it and a ready `curl -o src/assets/<page>/<name>.<ext>`
-     line. The script makes no network request. Downscale photos, and rebuild
-     SVG icons with `fill="currentColor"`. Files are named by where they are
+     line. Remote URLs expire 7 days after the capture: download them in the
+     same session. If a capture declares image constants in a form the script
+     cannot read, it says so instead of listing nothing. The script makes no
+     network request. Downscale photos, and rebuild
+     SVG icons with `fill="currentColor"`. After downloading, run
+     `convert.mjs --clean-svg src/assets/<page>/*.svg`: an export of a small
+     instance can carry its parents (a page-wide background rect, the dashed
+     purple component-set outline) and clip ids such as `clip0_1_8` that every
+     export shares, which collide when two SVGs are inlined on one page. It
+     removes those and suffixes every id with the file name. A row marked
+     `CROPPED FILL` is placed with offsets past its box: a logo with transparent
+     margins then renders smaller than in Figma, so trim it and use
+     `object-fit: contain`. The capture never says when Figma flipped or
+     cropped an image fill with an image transform, or when an icon instance
+     had a nested glyph swapped (its asset URL can be the main component's
+     default glyph); compare each image and icon with a screenshot, and when one
+     differs, export the node with a read-only `use_figma`
+     (`exportAsync({ format: "SVG_STRING" })`, or `fills[].imageTransform`,
+     where a negative x scale is a mirror). Files are named by where they are
      used (`guide-tag.svg`, `footer-iconbutton-4.svg`), the same use at another
      breakpoint gets `-tablet` / `-mobile`. Never pick a file by the `imgXxx`
      constant name: those are numbered per capture, so `imgIcon12` was the
@@ -256,14 +406,32 @@ Figma style and a template default is reported and asked about, never applied.
      shipped with a LinkedIn logo because of it. Match a node to its file by the
      hash in the URL.
    - **Fixed or clipped nodes.** `overflow-hidden`, `text-ellipsis`,
-     `line-clamp-*` and an explicit `h-[Npx]` on a frame that holds text are
-     flagged. They explain mismatches that are not bugs; ask whether they are
-     intentional.
+     `line-clamp-*`, an explicit `h-[Npx]`, and a `max-h-[Npx]` with a clip, on a
+     frame that holds text, are flagged. A clipped `max-h` cuts off the end of
+     its content in the drawing (the last link of a table of contents): showing
+     it all is a decision, not a mismatch. They explain mismatches that are not
+     bugs; ask whether they are intentional.
+   - **Strokes.** A border the same colour as its own fill (`border-white` on a
+     white card) is invisible as written, and is almost always a gradient or
+     multi-paint stroke the capture flattened to one colour; a border colour
+     written as a raw hex while the rest of the file uses variables is a weaker
+     hint of the same. Read `node.strokes` with a read-only `use_figma` before
+     building either as a solid border. Every bordered box with padding is
+     listed too, as a reminder that its padding includes the stroke.
+   - **Literal px.** A gap, padding or icon size with no variable
+     (`gap-[12px]`, `size-[24px]`) is the same at every breakpoint in Figma.
+     Mapping it to a responsive token makes tablet and mobile smaller than the
+     design; use a fixed rem unless the user wants it to scale.
+   - **Icon sizes by breakpoint.** An icon whose width changes across the three
+     captures is bound to an icon-size variable, and the table names the
+     `--icon-*` token with that triple. A non-square box (`h-[20px] w-[16px]` on
+     tablet) is that variable at work, not export noise: the width tracks the
+     token, the height stays at the line box.
 
    `--summary <file...>` prints a capture as an indented outline, one line per
-   node (name, box, gap, padding variables, text style, colours, radius, no
-   code), so a page can be read in about two hundred lines instead of five
-   hundred.
+   node (name, box, gap, padding variables, text style, colours, radius,
+   absolute offsets and margins, no code), so a page can be read in about two
+   hundred lines instead of five hundred.
 
    Leading trim is off by default in this project (opt-in with a `.text-trim`
    class; the `--*-trim-top/bottom` tokens still exist). A Figma text box
@@ -479,11 +647,41 @@ Figma style and a template default is reported and asked about, never applied.
    existing covered it. That list is the one most worth arguing with: it is
    where the system grows, and growth is harder to undo than a token.
 
-   Three things go wrong while building, and all three are quiet:
+   These go wrong while building, and all of them are quiet:
 
    - **Strokes sit inside the box in Figma, and Lumos is border-box.** Do not
-     add the border to the size. Use `--button-border-inset`, or subtract the
-     border from the padding, so the box ends up the size the frame says.
+     add the border to the size. This holds for every bordered box, not only
+     buttons: text fields, cards, a section with a top rule. Use
+     `--button-border-inset` on buttons, and elsewhere subtract the border from
+     the padding (`calc(var(--space-0-75rem) - var(--border-width))` on
+     `.field-control`), so the box ends up the size the frame says. One or two
+     px per box adds up to 4–17px over a section, which reads as a spacing bug
+     somewhere else. The `STROKES` list names the bordered boxes with padding.
+   - **A link-style button sits in a button-height frame.** In Figma a "See
+     all →" link is often an instance as tall as a regular button, with the
+     underline just under the text; `Button variant="link"` is only as tall as
+     its text, so every row holding one comes out 10–15px short. Read the
+     instance's height in metadata and give the link `margin-block` for the
+     difference (`calc(var(--space-0-5rem) - var(--border-width) / 2)` matched
+     46 / 40 / 36px frames), in the section component. A `min-height` did not
+     match tablet.
+   - **Type set on a wrapper does not reach a child with a text-style class.**
+     A `font-weight` on a link loses to the `.text-style-*` span inside it, and a
+     `letter-spacing` on a flex row loses to its children's own style. Put the
+     weight and tracking on the element that holds the text.
+   - **Figma wraps greedily; the template balances headings.** The heading
+     styles set `--hN-text-wrap: balance`, which is deliberate and stays in the
+     template. Figma fills each line, then breaks, so a balanced heading can
+     break on other words or take another line count than the frame. When a
+     section's height or a line break must match the design, set
+     `text-wrap: wrap` on that heading in the component, and say so in the
+     report; ask once per project whether balance is wanted everywhere.
+   - **A bold or medium run inside body text can grow its line.** With some
+     fonts the heavier face has taller metrics, so a `<strong>` lead-in makes
+     its line 1px taller than the line height (six list items: 150px against
+     144px). Measure one paragraph with and without the run; if it grows, set
+     `line-height: 1` on `strong` and `a` inside the rich text so the run sits
+     inside the paragraph's strut.
    - **Do not name a component variant like an existing class.** A Button
      variant called `icon` collided with the Icon component's `.icon`, and a
      header variant called `text` collided with Lumos's `.text` (which adds
@@ -570,14 +768,32 @@ Figma style and a template default is reported and asked about, never applied.
    not built yet does not shift the rows below it; (2) every Figma text node
    (words from the design-context capture, box from the metadata) against the DOM
    element with the same words, listing each delta over `--tolerance` (default
-   1px), worst first; (3) a full-page screenshot at
-   `figma/shots/<page>-<bp>-web.png`. If the Figma frame is exported as
+   1px), worst first. A `figma/<page>-node.json` from `bridge.mjs` replaces both:
+   it gives every text's words and box, inside instances such as the navbar and
+   footer too, so the TEXT check runs with no capture at all; (3) a full-page screenshot at
+   `figma/shots/<page>-<bp>-web.png`, stitched from viewport captures so a page
+   taller than Chrome's 16384px limit and layers with filters come out whole.
+
+   Captures saved one section at a time (`<page>-<bp>-01-hero.txt`,
+   `-02-…`) are read together. Hidden layers (`hidden="true"`, a desktop-only
+   card in the mobile frame) are ignored. When the first Figma frame holds the
+   navbar instance and the hero and the DOM nav is in flow, the navbar is
+   paired with the DOM header and the hero is measured from below it, so the
+   nav height does not show up as an offset on every hero row. Sections the
+   shared words cannot place (no capture, a section with no text) are paired by
+   order and y and marked `*`: check those rows. A section that is an instance
+   (navbar, footer) has only its y and height compared, and the report says so:
+   a matching height there is not a pass. A `/404` URL is measured at its real
+   status (`--allow-status <code>` for others), and `--viewport-height frame`
+   sizes the viewport to the first Figma section, so a `100svh` hero is
+   compared at the design's height instead of 900px. If the Figma frame is exported as
    `figma/shots/<page>-<bp>.png` (Figma: select the frame, Export, PNG, 1x), it
    also writes `<page>-<bp>-diff.png` (red where the pixels differ) and the
    mismatch percentage per section.
 
    No export is needed when Figma desktop has the file open: the script asks
-   Figma's Dev Mode MCP server (`127.0.0.1:3845`) for a screenshot of every
+   figma-bridge (`127.0.0.1:1994`, no quota) when its plugin is running, else
+   Figma's Dev Mode MCP server (`127.0.0.1:3845`), for a screenshot of every
    section and writes `figma/shots/<page>-<bp>-<nn>-<section>.png` with three
    panels, Figma | web | red diff, plus a mismatch percentage per section. The
    web panel is cropped at the DOM section's own position, so a section is
@@ -586,18 +802,17 @@ Figma style and a template default is reported and asked about, never applied.
    at a reduced scale. Text edges always show some red (font rendering differs);
    look for red shapes instead: a different icon, an image cropped or covered,
    a line that wraps differently, a block that is missing. These are exactly the
-   faults the text measurements cannot see. `--no-figma` skips it.
-
-   Every raw Figma shot is cached as `figma/shots/figma-<node-id>.png`, and a
-   rerun reads the cache instead of calling Figma, so a section costs one MCP
-   call however many times verify runs. The Dev Mode MCP has a daily quota: when
-   it answers "rate limit", the script stops calling, diffs the sections it
-   already has and lists the rest as skipped, and the next run fetches only those.
-   Delete a section's cached file when the design changes after slicing. The web
-   shot is taken one viewport at a time and stitched (sticky boxes made relative,
-   fixed ones hidden after the first screen), because a single capture taller
-   than 16384px wraps back to the top and a beyond-viewport capture can catch the
-   page mid-relayout.
+   faults the text measurements cannot see. Each Figma shot is cached in
+   `figma/shots/figma-cache/` by node id and reused on later runs, marked
+   `(cached)`, so the diffs still run when Figma desktop is closed or
+   rate-limited. Sections captured with `capture.mjs` are already in the cache,
+   so verify after slicing costs no Figma calls for them. On a daily rate limit
+   verify stops calling Figma for the rest of the run, diffs every section the
+   cache has and names the rest. **The cache does not know when the design
+   changed:** after an edit in Figma, delete `figma/shots/figma-cache/` or run
+   with `--refresh-figma`, or the diffs compare against the old design.
+   `--no-figma` skips it. Exporting the three frames by hand (above) costs no
+   quota at all, but gives the per-band diff, not the three-panel one.
 
    Read the deltas as a list of causes, not as noise. A whole section shifted by
    the same amount usually has one cause: a heading or paragraph margin the type
@@ -635,7 +850,10 @@ Close with these lists. Anything empty, say so.
   the tokens added.
 - **Buttons** — each variant as a row, which one is the primary, and every
   `--button-*` token that differs.
-- **Assets** — what was downloaded and where, what was downscaled or rebuilt.
+- **Assets** — what was downloaded and where, what was downscaled, trimmed,
+  cleaned or rebuilt.
+- **Strokes** — each stroke read from Figma as a gradient or multi-paint, and
+  how it was built.
 - **Fixed or clipped nodes** — each one the user ruled on, and each mismatch it
   explains.
 - **Still open** — inconsistencies the user has not ruled on yet.
@@ -648,20 +866,24 @@ Close with these lists. Anything empty, say so.
 
 ## Checklist before editing base.css
 
+- [ ] Source named: figma-bridge or the official MCP, and which inputs came from which (dump, capture, cache).
 - [ ] Variables compared: every row `match`, `DIFFERS` or `MISSING`, nothing left in an unknown group.
 - [ ] Layout measured: site-margin, gutter and section padding from metadata, outliers looked at.
-- [ ] Text styles compared: weight, letter spacing and line height for every style from `get_design_context`, conflicts asked.
+- [ ] Text styles compared: weight, letter spacing and line height for every style from the node dump or `get_design_context`, conflicts asked; text-transform checked by eye when only the dump was read.
 - [ ] Colours compared: `--heading` and `--text` against the light theme block, the other text colours asked about (roles or one-offs), new swatches listed, themed colours set in every theme block.
 - [ ] Shadows listed: the distinct shadows, compared with the Figma effect styles, and the `--shadow-*` question asked.
 - [ ] Buttons compared: every variant a row, the primary one chosen by the user, each `--button-*` DIFFERS line seen.
-- [ ] Assets listed: every curl line run (or deliberately skipped), photos downscaled, icons rebuilt with `currentColor`.
+- [ ] Assets listed: every curl line, `download_assets` photo and `bridge.mjs --svg` line run (or deliberately skipped), photos downscaled and cropped or flipped as flagged, icons rebuilt with `currentColor`.
 - [ ] Fixed-height and clipped nodes asked about: intentional, or should the page let them grow.
+- [ ] Strokes checked: each same-colour or raw-hex stroke read from Figma (gradient or solid), every bordered box's padding reduced by its border.
+- [ ] Literal px values kept fixed (not mapped to a responsive token), and icons whose width changes per breakpoint given their `--icon-*` token.
+- [ ] No file in the folder is a saved MCP error: every frame was actually captured.
 - [ ] Fonts checked: the family and every weight are configured.
 - [ ] The consolidated `ASK BEFORE WRITING` list was put to the user and answered.
 
 ## Checklist before calling the page done
 
-- [ ] `npm run verify` ran after the last change, with Figma desktop open (section diffs made).
+- [ ] `npm run verify` ran after the last change, with Figma desktop open (section diffs made) or every section's shot in the cache.
 - [ ] Every section diff above the noise level was opened and each red shape is fixed or listed.
 - [ ] Section heights match the metadata, or the difference is explained (desktop content on a stale frame, a design question).
 - [ ] Anything the tool missed or got wrong was logged in `.feedback/`, or there was nothing to log.
@@ -692,7 +914,20 @@ This skill versions separately from the framework. A fix here does not need a
 Lumos release, and a Lumos release does not invalidate the skill.
 
 - **Skill version** — `SKILL_VERSION` in `convert.mjs`. Bump it when the
-  conversion rules or the workflow change.
+  conversion rules or the workflow change. Every release is tagged
+  `skill-v<version>` on the template. When the user asks for a newer or an
+  older version, replace the skill folder as a whole from the `template` remote
+  (adding it first if the project has none), so files a version deleted or
+  renamed do not stay behind:
+
+  ```bash
+  git fetch template --tags
+  git rm -r --quiet .agents/skills/lumos-import-figma
+  git restore --source=skill-v2.6.0 --worktree --staged -- .agents/skills/lumos-import-figma
+  ```
+
+  `--source=template/main` takes the newest commit. Show the user the version
+  line of the next `npm run slice` run, so they see which version is active.
 - **Lumos version** — `package.json` is the source of truth. Nothing here
   duplicates it; the script reads it and prints both on every run:
 

@@ -1,0 +1,178 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+
+type Item = { title: string; text: string };
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading?: string;
+  /** Text under the heading. Omit to leave it out. */
+  lead?: string;
+  /** Cards in order; each one's illustration comes from its `visual-N` slot. */
+  items?: Item[];
+}
+
+const {
+  render = true,
+  eyebrow,
+  heading,
+  lead,
+  items = [],
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+{
+  render && heading && items.length > 0 && (
+    <div
+      class:list={[
+        "review-deliverables_wrap",
+        items.length > 2 && "three",
+        className,
+      ]}
+      {...rest}
+    >
+      <div class="review-deliverables_intro">
+        {eyebrow && (
+          <Paragraph
+            variant="overline-small"
+            class="review-deliverables_eyebrow"
+          >
+            {eyebrow}
+          </Paragraph>
+        )}
+        <Heading tag="h2" variant="h3">
+          <Fragment set:html={heading} />
+        </Heading>
+        {lead && (
+          <Paragraph variant="large" class="review-deliverables_lead">
+            {lead}
+          </Paragraph>
+        )}
+      </div>
+      <ul class="review-deliverables_list" role="list">
+        {items.map((item, index) => (
+          <li class="review-deliverables_card">
+            <div class="review-deliverables_visual">
+              <slot name={`visual-${index + 1}`} />
+            </div>
+            <div class="review-deliverables_content">
+              <Heading tag="h3" variant="h5">
+                {item.title}
+              </Heading>
+              <Paragraph variant="main" class="review-deliverables_text">
+                {item.text}
+              </Paragraph>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .review-deliverables_wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-3-5rem);
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .review-deliverables_intro {
+        width: 100%;
+        max-width: 55rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-0-75rem);
+        text-align: center;
+      }
+
+      .review-deliverables_eyebrow {
+        color: var(--color-neutral-30);
+      }
+
+      .review-deliverables_lead {
+        max-width: 33.75rem;
+      }
+
+      .review-deliverables_list {
+        width: 100%;
+        max-width: 69rem;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--space-1-5rem);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        @media (width >= 48rem) {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      .review-deliverables_card {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1-5rem);
+        margin: 0;
+        padding: calc(var(--space-2rem) - var(--border-width));
+        background-color: var(--color-neutral-2);
+        border: var(--border-width) solid var(--color-neutral-5);
+        border-radius: var(--radius-0-5rem);
+      }
+
+      .review-deliverables_content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+      }
+
+      .review-deliverables_text {
+        color: var(--color-neutral-60);
+      }
+
+      /* Three cards: one centred column until desktop, then a row across
+         the full content width, without the two-card border. */
+      &.three {
+        .review-deliverables_list {
+          max-width: none;
+          justify-items: center;
+          gap: var(--space-1-25rem);
+          @media (width >= 48rem) {
+            grid-template-columns: minmax(0, 1fr);
+          }
+          @media (width >= 62rem) {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+          }
+        }
+
+        .review-deliverables_card {
+          width: 100%;
+          padding: var(--space-2rem);
+          border: none;
+          border-radius: var(--radius-0-75rem);
+          @media (width >= 48rem) {
+            max-width: 27.5rem;
+          }
+          @media (width >= 62rem) {
+            max-width: none;
+          }
+        }
+      }
+    }
+  }
+</style>
