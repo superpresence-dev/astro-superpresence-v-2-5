@@ -1,0 +1,142 @@
+title: Businesses going digital
+description: Clients still come through referrals, then check your site. We make it the reason they call, without you hiring anyone.
+order: 2
+
+hero:
+  eyebrow: Businesses going digital
+  heading: The digital team your firm<br />never had to hire
+  text: Clients still come through referrals, then check your site. We make it the reason they call, without you hiring anyone.
+  image: ../../assets/who/businesses-going-digital/hero.jpg
+
+problem:
+  heading: You’re losing people before<br />they ever speak to you
+  items:
+    - title: The referrals still come
+      text: They keep arriving, but fewer of them turn into a call, and nobody says why.
+    - title: You don’t look established
+      text: Clients, hires and partners all read the same page, and none of them see the firm you actually are.
+    - title: You’re correcting on call one
+      text: The site sets an expectation the work doesn’t match, so the first call is spent walking it back.
+
+stages:
+  eyebrow: Where you start from
+  heading: Going digital is a different job<br />depending on where you start
+  lead: Some firms rely on referrals, others have outgrown old sites, or are expanding fast. We build the site that fits your unique growth.
+  items:
+    - label: Referral-led
+      title: Make the referral check pass in one visit.
+      text: Most new clients hear your name first, then look you up before they call. The site confirms what the referrer already said.
+      note: Usually starts when referrals keep coming but fewer turn into calls.
+      image: ../../assets/who/businesses-going-digital/stage-1.jpg
+      visual: referral
+    - label: Outgrown the old site
+      title: Show the firm you are now, not the one you were.
+      text: The business has grown and the site hasn’t. We rebuild it around today’s services, people and proof.
+      note: Usually starts when the team quietly stops sending the link.
+      image: ../../assets/who/businesses-going-digital/stage-2.jpg
+      visual: refresh
+    - label: Adding offices & services
+      title: Grow into new offices and services without starting over.
+      text: New locations, new practice areas and new languages. The site takes on each one cleanly.
+      note: Usually starts when a new office or service has nowhere to live on the site.
+      image: ../../assets/who/businesses-going-digital/stage-3.jpg
+      visual: expand
+
+benefits:
+  items:
+    - title: Referrals arrive already convinced
+      text: The site backs up what the referrer said, so the call starts with the work, not the pitch.
+    - title: You stop apologising for the link
+      text: Reads like the firm you are today, for clients, partners and hires who check before they call.
+    - title: Your team keeps it current
+      text: Update services, people and news yourselves, without a developer or an agency ticket.
+    - title: Your expertise finally gets written down
+      text: We settle what you do and who it’s for before we design. Most firms have never had to put it in writing.
+    - title: Found by people who haven’t met you
+      text: Pages structured for search and AI answers, so new clients find you outside your network.
+    - title: You own all of it, from day one
+      text: The site, copy, and design files are yours—change agencies, hire in-house, or go solo freely.
+
+shift:
+  with:
+    - Referrals check the site, then call.
+    - The site looks like the firm today.
+    - The website is the first thing you send.
+    - Clients arrive knowing what you do.
+    - Your team updates services and people itself.
+    - New services get a page within days.
+    - New clients find you outside your network.
+  without:
+    - Referrals check the site and go quiet.
+    - The site looks years behind the firm.
+    - You apologise for the link, then send it.
+    - First calls go on correcting expectations.
+    - Every update waits for an outside developer.
+    - New services have nowhere to live online.
+    - Only people who know you can find you.
+
+process:
+  heading: The firm clients find online<br />finally matches the one they meet
+  steps:
+    - label: Listening
+      title: Listening
+      text: We speak with your partners, a few loyal clients and the people who refer you, to learn why the work comes to you.
+      points:
+        - Partner and client conversations
+        - A review of who refers you, and why
+        - What clients check before calling
+      visual: referrer
+    - label: Putting it in words
+      title: Putting it in words
+      text: Most firms have never written down what sets them apart. We do it in English that lands with clients at home and abroad.
+      points:
+        - A clear line for every service
+        - Practice and people pages
+        - Native English, never a translation
+      visual: services
+    - label: Looking the part
+      title: Looking the part
+      text: Every page is drawn to look as established as the firm, and the same look carries into proposals and LinkedIn.
+      points:
+        - An identity refresh where it’s due
+        - Credentials and matters, presented well
+        - A look that carries into proposals
+      visual: identity
+    - label: Making contact easy
+      title: Making contact easy
+      text: Every page points toward a consultation, and the enquiry form asks what your team would ask on the first call.
+      points:
+        - One obvious route to a consultation
+        - Enquiry forms that qualify
+        - Comfortable to use on a phone
+      visual: enquiry
+    - label: Handing over the keys
+      title: Handing over the keys
+      text: Once it’s live, your staff learn to update services, people and news, and local search knows where to find you.
+      points:
+        - Simple editing for your staff
+        - Set up for local and map search
+        - A fast, secure modern platform
+      visual: people
+
+faq:
+  heading: Questions business owners ask us
+  items:
+    - question: Most of our work comes through referrals. Do we really need a better site?
+      answer: Referrals are the reason. Most people who hear your name look you up before they call, and a dated site quietly undoes a good recommendation. The site’s job is to confirm what the referrer already said.
+    - question: Our site was built years ago. Do you rebuild it or start fresh?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Can you write in English for clients outside our home market?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: How long does a project take?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Will our team be able to update the site?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: What happens after launch?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: What is the project investment?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+
+cta:
+  heading: Make the website the<br />easiest yes a client gives you
+  text: Send us the link. We’ll tell you what a stranger understands in ten seconds, and what they don’t.

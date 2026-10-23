@@ -1,0 +1,246 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import HomeHero from "@/components/section/HomeHero.astro";
+import IndustryProblem from "@/components/content/IndustryProblem.astro";
+import WhoStageGraphic from "@/components/content/WhoStageGraphic.astro";
+import IndustryGrowth from "@/components/content/IndustryGrowth.astro";
+import HomeDifference from "@/components/content/HomeDifference.astro";
+import HomeQuote from "@/components/section/HomeQuote.astro";
+import WhyCompare from "@/components/content/WhyCompare.astro";
+import ServicePoints from "@/components/content/ServicePoints.astro";
+import DesignWhyGraphic from "@/components/content/DesignWhyGraphic.astro";
+import IndustryProcess from "@/components/content/IndustryProcess.astro";
+import WhoProcessGraphic from "@/components/content/WhoProcessGraphic.astro";
+import WhyOffers from "@/components/content/WhyOffers.astro";
+import HomeFaq from "@/components/content/HomeFaq.astro";
+import HomeCta from "@/components/section/HomeCta.astro";
+import { WORK_URL } from "@/utils/work.ts";
+
+export const getStaticPaths = (async () => {
+  const audiences = await getCollection("who");
+  return audiences.map((audience) => ({
+    params: { slug: audience.id },
+    props: { audience },
+  }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  audience: CollectionEntry<"who">;
+}
+
+const { data } = Astro.props.audience;
+const stages = data.stages.items;
+const steps = data.process.steps;
+---
+
+<Layout title={data.title} description={data.description} overlap>
+  {/* Hero */}
+  <HomeHero
+    eyebrow={data.hero.eyebrow}
+    heading={data.hero.heading}
+    text={data.hero.text}
+    image={data.hero.image}
+    secondaryText="See our work"
+    secondaryHref={WORK_URL}
+  />
+  {/* Problem */}
+  <Section>
+    <IndustryProblem heading={data.problem.heading} items={data.problem.items} />
+  </Section>
+  {/* Stages */}
+  <Section>
+    <IndustryProcess
+      variant="stages"
+      eyebrow={data.stages.eyebrow}
+      heading={data.stages.heading}
+      lead={data.stages.lead}
+      steps={data.stages.items}
+    >
+      <WhoStageGraphic
+        slot="step-1"
+        render={!!stages[0]}
+        variant={stages[0]?.visual}
+        image={stages[0]?.image}
+      />
+      <WhoStageGraphic
+        slot="step-2"
+        render={!!stages[1]}
+        variant={stages[1]?.visual}
+        image={stages[1]?.image}
+      />
+      <WhoStageGraphic
+        slot="step-3"
+        render={!!stages[2]}
+        variant={stages[2]?.visual}
+        image={stages[2]?.image}
+      />
+    </IndustryProcess>
+  </Section>
+  {/* Benefits */}
+  <Section>
+    <IndustryGrowth
+      variant="list"
+      eyebrow="What you get"
+      heading="A website that works for you"
+      icons={["people", "scan", "security", "people", "scan", "security"]}
+      items={data.benefits.items}
+    />
+  </Section>
+  {/* Shift */}
+  <Section>
+    <HomeDifference
+      eyebrow="The shift"
+      heading="Before Superpresence, and after"
+      lead=""
+      boxes={[
+        { title: "With Superpresence", featured: true, items: data.shift.with },
+        {
+          title: "Without Superpresence",
+          featured: false,
+          items: data.shift.without,
+        },
+      ]}
+    />
+  </Section>
+  {/* Quote */}
+  <HomeQuote />
+  {/* Comparison */}
+  <Section>
+    <WhyCompare
+      heading="The three options in front of you"
+      lead="Each one suits a different moment. Here’s how they compare for a startup that needs its website to sell."
+      rows={[
+        "Strategy and positioning",
+        "Who writes the copy",
+        "Design",
+        "What it's built for",
+        "Founder time needed",
+        "Who’s on it",
+        "Expert direction",
+      ]}
+      options={[
+        {
+          title: "Superpresence",
+          icon: "brand",
+          featured: true,
+          items: [
+            "Settled before design starts",
+            "Senior copywriters, in English",
+            "Fully custom, built as a system",
+            "Sign-ups, demos and investor trust",
+            "Workshops, reviews and sign-off",
+            "Strategy, design, copy, dev",
+            "Senior people lead every stage",
+          ],
+        },
+        {
+          title: "Hiring in-house",
+          icon: "hire",
+          items: [
+            "Squeezed between product work",
+            "Whoever on the team can write",
+            "Depends on one hire",
+            "Keeping the site running",
+            "Hiring and managing them",
+            "One or two people",
+            "Depends on the hire",
+          ],
+        },
+        {
+          title: "Traditional agency",
+          icon: "agency",
+          items: [
+            "Often skipped for speed",
+            "Often left to you, or translated",
+            "Often a template",
+            "Traffic and campaigns",
+            "Briefing and chasing",
+            "Split across teams",
+            "Depends on the account team",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Team */}
+  <Section>
+    <ServicePoints
+      variant="visual"
+      eyebrow="Who we are"
+      heading="A senior team in Asia, built to be<br />the department you don't have"
+      items={[
+        {
+          title: "Built in Asia, written for buyers abroad",
+          text: "We work in your timezone, understand how Asian startups sell, and write for English-speaking buyers and investors without ever sounding translated.",
+        },
+        {
+          title: "The whole senior team, one roof",
+          text: "Strategy, design, copy, development, conversion and QA in one accountable team, with nobody for you to hire or manage.",
+        },
+        {
+          title: "Copy written by people, in English",
+          text: "Senior copywriters write every page. Not translated, not generated, and built around how your buyers actually decide.",
+        },
+        {
+          title: "Designed for the screen first",
+          text: "Every identity is tested on real web pages, pitch decks and social posts, not only on a logo sheet.",
+        },
+        {
+          title: "AI-native, not AI-dependent",
+          text: "We use AI to quickly research your market and clients, with experts reviewing every line to ensure quality.",
+        },
+        {
+          title: "Depth over volume",
+          text: "Every project gets senior attention for as long as the problem takes, not a slot sized to a subscription.",
+        },
+      ]}
+    >
+      <DesignWhyGraphic slot="visual-1" variant="asia" />
+      <DesignWhyGraphic slot="visual-2" variant="team" />
+      <DesignWhyGraphic slot="visual-3" variant="copy" />
+      <DesignWhyGraphic slot="visual-4" variant="screen" />
+      <DesignWhyGraphic slot="visual-5" variant="ai" />
+      <DesignWhyGraphic slot="visual-6" variant="depth" />
+    </ServicePoints>
+  </Section>
+  {/* Process */}
+  <Section>
+    <IndustryProcess heading={data.process.heading} steps={data.process.steps}>
+      <WhoProcessGraphic slot="step-1" variant={steps[0]?.visual} />
+      <WhoProcessGraphic slot="step-2" variant={steps[1]?.visual} />
+      <WhoProcessGraphic slot="step-3" variant={steps[2]?.visual} />
+      <WhoProcessGraphic slot="step-4" variant={steps[3]?.visual} />
+      <WhoProcessGraphic slot="step-5" variant={steps[4]?.visual} />
+    </IndustryProcess>
+  </Section>
+  {/* Offers */}
+  <Section>
+    <WhyOffers
+      heading="Two ways in. Neither of them<br />starts with a quote"
+      lead=""
+      texts={[
+        "A senior strategist reviews your site like a cautious investor or new buyer, pinpointing where visitors lose interest.",
+        "We redesign the first screen of your site and send it over. It’s yours to keep, whether we work together or not.",
+      ]}
+    />
+  </Section>
+  {/* FAQ */}
+  <Section>
+    <HomeFaq
+      eyebrow="Still got questions?"
+      heading={data.faq.heading}
+      items={data.faq.items}
+    />
+  </Section>
+  {/* CTA */}
+  <HomeCta
+    eyebrow="You've reached the end, so now..."
+    heading={data.cta.heading}
+    text={data.cta.text}
+    buttonText="Book a strategy call"
+    buttonHref="/contact"
+  />
+</Layout>

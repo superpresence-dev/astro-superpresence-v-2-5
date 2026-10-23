@@ -21,9 +21,9 @@ interface Props extends HTMLAttributes<"div"> {
   bookingHref?: string;
   /** Link to the privacy policy. */
   privacyHref?: string;
-  /** `contact` shows the form and call booking as tabs; `review` shows only the website review form. */
-  variant?: "contact" | "review";
-  /** Text of the `review` form's submit button. */
+  /** `contact` shows the form and call booking as tabs; `review` shows only the website review form; `playbook` is the three-field playbook request, with no box of its own. */
+  variant?: "contact" | "review" | "playbook";
+  /** Text of the `review` and `playbook` forms' submit button. */
   submitText?: string;
 }
 
@@ -114,6 +114,68 @@ const budgets = ["Under $10k", "$10k – $25k", "$25k – $50k", "$50k and above
                 Our team is carefully reviewing your request
                 <br />
                 to provide a personalized and accurate response.
+              </Paragraph>
+            </div>
+          </div>
+        </Form>
+      </div>
+    </div>
+  )
+}
+
+{
+  render && variant === "playbook" && (
+    <div class:list={["contact-form_wrap", "playbook", className]} {...rest}>
+      <div class="contact-form_box playbook">
+        <Form name="playbook" action={action}>
+          <Input
+            label="Full name"
+            name="name"
+            placeholder="John Doe"
+            autocomplete="name"
+            required
+          />
+          <Input
+            variant="email"
+            label="Company email"
+            name="email"
+            placeholder="john@superpresence.co"
+            required
+          />
+          <Input
+            label="Website link"
+            name="website"
+            placeholder="superpresence.co"
+            inputmode="url"
+            autocomplete="url"
+            required
+          />
+          <div class="contact-form_cta">
+            <Button type="submit" emphasis="brand" class="contact-form_submit">
+              {submitText}
+            </Button>
+            <Paragraph variant="xsmall" class="contact-form_legal">
+              By submitting, you agree to our{" "}
+              <a href={privacyHref}>privacy policy</a>.
+            </Paragraph>
+          </div>
+          <div slot="success" class="contact-form_success">
+            <div class="contact-form_check">
+              <Img src={check} transparent height={110} />
+            </div>
+            <div class="contact-form_success-text">
+              <Paragraph variant="overline-small" class="contact-form_eyebrow">
+                Check your inbox
+              </Paragraph>
+              <Heading tag="h2" variant="h3">
+                It is on its way.
+                <br />
+                Give it two minutes.
+              </Heading>
+              <Paragraph variant="main">
+                We have sent the playbook to the address you gave us. If it
+                has not arrived, look in spam or promotions — it comes from
+                superpresence.com.
               </Paragraph>
             </div>
           </div>
@@ -321,6 +383,68 @@ const budgets = ["Under $10k", "$10k – $25k", "$25k – $50k", "$50k and above
       .form_wrap {
         display: grid;
         gap: var(--space-1-5rem);
+      }
+
+      /* Playbook: the panel around it is the card, so no box here, and
+         the fields stack in one column. */
+      &.playbook {
+        min-height: 0;
+        padding: 0;
+        background-color: transparent;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+
+        .form_fields {
+          grid-template-columns: minmax(0, 1fr);
+          gap: var(--space-0-75rem);
+        }
+
+        .field-label {
+          color: var(--color-neutral-80);
+        }
+
+        .field-star {
+          color: var(--color-primary-60);
+        }
+
+        .field-control::placeholder {
+          color: var(--color-neutral-40);
+        }
+
+        .contact-form_cta {
+          gap: var(--space-0-5rem);
+          margin-top: calc(var(--space-1-25rem) - var(--space-0-75rem));
+        }
+
+        .contact-form_legal {
+          color: var(--color-neutral-30);
+          a {
+            color: inherit;
+            font-weight: inherit;
+            text-decoration: none;
+          }
+        }
+
+        .form_wrap[data-state="sent"] .form_fields {
+          display: none;
+        }
+
+        .contact-form_success {
+          gap: var(--space-3rem);
+        }
+
+        .contact-form_check {
+          width: 6.875rem;
+          aspect-ratio: 1;
+          img {
+            object-fit: contain;
+          }
+        }
+
+        .contact-form_eyebrow {
+          color: var(--color-neutral-30);
+        }
       }
 
       .form_fields,

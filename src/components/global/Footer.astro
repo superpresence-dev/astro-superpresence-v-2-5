@@ -14,6 +14,8 @@ import { serviceUrl } from "@/utils/services.ts";
 import { EXPLORATION_URL } from "@/utils/explorations.ts";
 import { REVIEW_URL } from "@/utils/review.ts";
 import { REDESIGN_URL } from "@/utils/redesign.ts";
+import { PLAYBOOK_URL } from "@/utils/playbook.ts";
+import { AUDIENCES, whoUrl } from "@/utils/who.ts";
 
 interface Props {
   /** Set to `false` to omit the component. */
@@ -89,6 +91,10 @@ const hrefs: Record<string, string> = {
   "Free homepage redesign": REDESIGN_URL,
   "Migrate to Webflow": serviceUrl("Migrate to Webflow"),
   Explorations: EXPLORATION_URL,
+  "B2B website playbook": PLAYBOOK_URL,
+  ...Object.fromEntries(
+    AUDIENCES.map((audience) => [audience.title, whoUrl(audience.id)]),
+  ),
 };
 
 const clocks = [

@@ -26,8 +26,8 @@ interface Props
   items: Item[];
   /** Text under the heading. Omit to leave it out. */
   lead?: string;
-  /** `pages` is a row of three top-ruled items; `steps` is numbered columns with a left rule, a chip each and a navy shade; `handover` is the same numbered columns in three per row, with a blue shade and no chips. */
-  variant?: "pages" | "steps" | "handover";
+  /** `pages` is a row of three top-ruled items; `steps` is numbered columns with a left rule, a chip each and a navy shade; `handover` is the same numbered columns in three per row, with a blue shade and no chips; `systems` is `handover` with a teal shade, closer rules and section padding below desktop. */
+  variant?: "pages" | "steps" | "handover" | "systems";
 }
 
 const {
@@ -49,7 +49,11 @@ const {
   paddingTop="none"
   paddingBottom="none"
   containerClass="industry-build_layout"
-  class:list={["industry-build_wrap", variant === "handover" ? "steps handover" : variant, className]}
+  class:list={["industry-build_wrap", variant === "handover"
+      ? "steps handover"
+      : variant === "systems"
+        ? "steps handover systems"
+        : variant, className]}
   {...rest}
 >
   <Img src={image} slot="background" class="industry-build_background" />
@@ -271,6 +275,61 @@ const {
 
           .industry-build_item {
             border-left-color: rgb(245 245 245 / 0.1);
+          }
+
+          &.systems {
+            .industry-build_layout {
+              --_pad: var(--section-space-medium);
+              min-height: calc(106.25rem + 2 * var(--_pad));
+              padding-block: var(--_pad);
+              @media (width >= 48rem) {
+                min-height: calc(72.5rem + 2 * var(--_pad));
+              }
+              @media (width >= 62rem) {
+                --_pad: var(--space-4rem);
+                min-height: calc(68.75rem + 2 * var(--_pad));
+              }
+            }
+
+            /* Figma: a 20% teal wash, then a band that is solid at the
+               top, clear over the lights and dark again behind the heading. */
+            .industry-build_shade {
+              background-image:
+                linear-gradient(
+                  to bottom,
+                  rgb(1 42 61 / 1) 0%,
+                  rgb(36 60 71 / 0) 22.07%,
+                  rgb(36 60 71 / 0.8) 40.14%,
+                  rgb(36 60 71 / 0.59) 60.66%,
+                  rgb(36 60 71 / 0) 100%
+                ),
+                linear-gradient(rgb(1 42 61 / 0.2), rgb(1 42 61 / 0.2));
+            }
+
+            /* Figma breaks the heading greedily, not balanced. */
+            .industry-build_intro .heading {
+              text-wrap: wrap;
+            }
+
+            /* Figma: 16px on desktop, 20px between tablet rows. Mobile
+               alternates 12 and 20 inside fixed-height frames; 14px lands
+               the heading where the frame has it. */
+            .industry-build_list {
+              gap: 0.875rem var(--space-1rem);
+              @media (width >= 48rem) {
+                row-gap: 1.25rem;
+              }
+              @media (width >= 62rem) {
+                row-gap: 1rem;
+              }
+            }
+
+            /* Figma keeps number and title together, then a wider step to
+               the text. */
+            .industry-build_text {
+              margin-top: calc(var(--space-2rem) - var(--space-1rem));
+              color: var(--color-neutral-5);
+            }
           }
         }
       }

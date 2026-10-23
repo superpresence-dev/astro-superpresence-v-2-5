@@ -1,0 +1,192 @@
+---
+import type { ComponentProps, HTMLAttributes, SvgComponent } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Icon from "@/components/media/Icon.astro";
+import Img from "@/components/media/Img.astro";
+import background from "@/assets/playbook/industries-background.jpg";
+import industryOne from "@/assets/playbook/industry-1.svg";
+import industryTwo from "@/assets/playbook/industry-2.svg";
+import industryThree from "@/assets/playbook/industry-3.svg";
+import industryFour from "@/assets/playbook/industry-4.svg";
+
+type Item = { title: string; text: string };
+
+interface Props
+  extends
+    HTMLAttributes<"section">,
+    Pick<ComponentProps<typeof Section>, "render"> {
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading?: string;
+  /** Industries in order, two to a row from tablet; each takes the icon at its position. */
+  items?: Item[];
+  /** Icons of the industries, in order. */
+  icons?: SvgComponent[];
+}
+
+const {
+  render = true,
+  eyebrow = "Who this is for",
+  heading = "Four industries where a stranger<br />decides before you speak",
+  items = [
+    {
+      title: "Professional services",
+      text: "Law firms, accountancies and consultancies, where a referral gets checked before anyone calls.",
+    },
+    {
+      title: "SaaS and technology",
+      text: "A stranger judging the software in ten seconds, before they will hand over an email.",
+    },
+    {
+      title: "Manufacturers and exporters",
+      text: "A buyer qualifying your factory from a spec sheet, long before anyone books a call.",
+    },
+    {
+      title: "High-value B2B services",
+      text: "Anything sold through conversations rather than carts, where the site has to earn the first one.",
+    },
+  ],
+  icons = [industryOne, industryTwo, industryThree, industryFour],
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<Section
+  render={render && items.length > 0}
+  theme="light"
+  containerClass="playbook-industries_layout"
+  class:list={["playbook-industries_wrap", className]}
+  {...rest}
+>
+  <Img src={background} slot="background" class="playbook-industries_background" />
+  <div slot="background" class="playbook-industries_fade"></div>
+  <div class="playbook-industries_intro">
+    <Paragraph variant="overline-small" class="playbook-industries_eyebrow">
+      {eyebrow}
+    </Paragraph>
+    <Heading tag="h2" variant="h3">
+      <Fragment set:html={heading} />
+    </Heading>
+  </div>
+  <ul class="playbook-industries_list" role="list">
+    {
+      items.map((item, index) => (
+        <li class="playbook-industries_card">
+          <Icon src={icons[index]} variant="2xl" />
+          <div class="playbook-industries_content">
+            <Heading tag="h3" variant="h5">
+              {item.title}
+            </Heading>
+            <Paragraph variant="main" class="playbook-industries_text">
+              {item.text}
+            </Paragraph>
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+<style is:global>
+  @layer components {
+    .playbook-industries_wrap {
+      --_dash: var(--color-neutral-10);
+
+      background-color: var(--color-neutral-2);
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .playbook-industries_background {
+        object-fit: cover;
+        opacity: 0.8;
+      }
+
+      /* Figma's white fade: solid at both edges, thinnest at the middle. */
+      .playbook-industries_fade {
+        background-image: linear-gradient(
+          to bottom,
+          rgb(255 255 255 / 1) 0%,
+          rgb(255 255 255 / 0.25) 50%,
+          rgb(255 255 255 / 0.6) 75%,
+          rgb(255 255 255 / 1) 100%
+        );
+      }
+
+      .playbook-industries_layout {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-3-5rem);
+      }
+
+      .playbook-industries_intro {
+        width: 100%;
+        max-width: 55rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-0-75rem);
+        text-align: center;
+      }
+
+      .playbook-industries_eyebrow {
+        color: var(--color-neutral-30);
+      }
+
+      .playbook-industries_list {
+        width: 100%;
+        max-width: 69rem;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--space-1-5rem);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        @media (width >= 48rem) {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      /* A 5px dash, 5px gap border like the Figma stroke, which a CSS
+         dashed border cannot space. It sits inside the padding box. */
+      .playbook-industries_card {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2rem);
+        margin: 0;
+        padding: var(--space-2rem);
+        border-radius: var(--radius-0-25rem);
+        background-color: var(--color-neutral-0);
+        background-image:
+          repeating-linear-gradient(to right, var(--_dash) 0 5px, transparent 5px 10px),
+          repeating-linear-gradient(to right, var(--_dash) 0 5px, transparent 5px 10px),
+          repeating-linear-gradient(to bottom, var(--_dash) 0 5px, transparent 5px 10px),
+          repeating-linear-gradient(to bottom, var(--_dash) 0 5px, transparent 5px 10px);
+        background-position: top left, bottom left, top left, top right;
+        background-size:
+          100% var(--border-width),
+          100% var(--border-width),
+          var(--border-width) 100%,
+          var(--border-width) 100%;
+        background-repeat: no-repeat;
+      }
+
+      .playbook-industries_content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-5rem);
+      }
+
+      .playbook-industries_text {
+        color: var(--color-neutral-60);
+      }
+    }
+  }
+</style>

@@ -1,0 +1,154 @@
+---
+import type { HTMLAttributes, SvgComponent } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Icon from "@/components/media/Icon.astro";
+import learnOne from "@/assets/playbook/learn-1.svg";
+import learnTwo from "@/assets/playbook/learn-2.svg";
+import learnThree from "@/assets/playbook/learn-3.svg";
+import learnFour from "@/assets/playbook/learn-4.svg";
+
+type Item = { title: string; text: string };
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading?: string;
+  /** Topics in order, two to a row; each takes the icon at its position. */
+  items?: Item[];
+  /** Icons of the topics, in order. */
+  icons?: SvgComponent[];
+}
+
+const {
+  render = true,
+  eyebrow = "What you'll learn inside",
+  heading = "Everything you need to turn site traffic<br />into sales calls",
+  items = [
+    {
+      title: "Pain-first messaging formula",
+      text: "Why feature-led copy loses buyers and how to rewrite it for immediate action.",
+    },
+    {
+      title: "Trust signal placement map",
+      text: "The exact page layout positions where proof turns skeptical traffic into leads.",
+    },
+    {
+      title: "Lead capture ladder",
+      text: "How to capture the 95% of site visitors who aren't ready to buy today.",
+    },
+    {
+      title: "Conversion architecture",
+      text: "Structure your website as an active sales engine instead of a passive brochure.",
+    },
+  ],
+  icons = [learnOne, learnTwo, learnThree, learnFour],
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+{
+  render && heading && items.length > 0 && (
+    <div class:list={["playbook-learn_wrap", className]} {...rest}>
+      <div class="playbook-learn_intro">
+        {eyebrow && (
+          <Paragraph variant="overline-small" class="playbook-learn_eyebrow">
+            {eyebrow}
+          </Paragraph>
+        )}
+        <Heading tag="h2" variant="h3">
+          <Fragment set:html={heading} />
+        </Heading>
+      </div>
+      <ul class="playbook-learn_list" role="list">
+        {items.map((item, index) => (
+          <li class="playbook-learn_item">
+            <Icon src={icons[index]} variant="2xl" class="playbook-learn_icon" />
+            <div class="playbook-learn_content">
+              <Heading tag="h3" variant="h5">
+                {item.title}
+              </Heading>
+              <Paragraph variant="main" class="playbook-learn_text">
+                {item.text}
+              </Paragraph>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .playbook-learn_wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3-5rem);
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .playbook-learn_intro {
+        max-width: 45rem;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+      }
+
+      .playbook-learn_eyebrow {
+        color: var(--color-neutral-30);
+      }
+
+      /* One column, two from tablet; from desktop the pair sits in the
+         right-hand 54rem of the content. */
+      .playbook-learn_list {
+        width: 100%;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--space-1-5rem);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        @media (width >= 48rem) {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        @media (width >= 62rem) {
+          max-width: 54rem;
+          align-self: flex-end;
+        }
+      }
+
+      .playbook-learn_item {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2rem);
+        margin: 0;
+        padding-block: var(--space-2rem);
+        padding-right: var(--space-2rem);
+        border-top: var(--border-width) solid var(--color-neutral-5);
+      }
+
+      .playbook-learn_icon {
+        color: var(--brand);
+      }
+
+      .playbook-learn_content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+      }
+
+      .playbook-learn_text {
+        color: var(--color-neutral-60);
+      }
+    }
+  }
+</style>

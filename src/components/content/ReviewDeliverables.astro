@@ -16,6 +16,8 @@ interface Props extends HTMLAttributes<"div"> {
   lead?: string;
   /** Cards in order; each one's illustration comes from its `visual-N` slot. */
   items?: Item[];
+  /** Three cards only: a hairline border, a smaller corner and a wider gap. */
+  outlined?: boolean;
 }
 
 const {
@@ -24,6 +26,7 @@ const {
   heading,
   lead,
   items = [],
+  outlined = false,
   class: className,
   ...rest
 } = Astro.props;
@@ -35,6 +38,7 @@ const {
       class:list={[
         "review-deliverables_wrap",
         items.length > 2 && "three",
+        outlined && "outlined",
         className,
       ]}
       {...rest}
@@ -170,6 +174,18 @@ const {
           }
           @media (width >= 62rem) {
             max-width: none;
+          }
+        }
+
+        &.outlined {
+          .review-deliverables_list {
+            gap: var(--space-1-5rem);
+          }
+
+          .review-deliverables_card {
+            padding: calc(var(--space-2rem) - var(--border-width));
+            border: var(--border-width) solid var(--color-neutral-5);
+            border-radius: var(--radius-0-5rem);
           }
         }
       }

@@ -1,0 +1,139 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import PlaybookHero from "@/components/section/PlaybookHero.astro";
+import PlaybookLearn from "@/components/content/PlaybookLearn.astro";
+import ReviewDeliverables from "@/components/content/ReviewDeliverables.astro";
+import PlaybookGraphic from "@/components/content/PlaybookGraphic.astro";
+import PlaybookIndustries from "@/components/section/PlaybookIndustries.astro";
+import IndustryBuild from "@/components/section/IndustryBuild.astro";
+import HomeDifference from "@/components/content/HomeDifference.astro";
+import PlaybookRequest from "@/components/section/PlaybookRequest.astro";
+import systemsImage from "@/assets/playbook/systems-background.jpg";
+---
+
+<Layout
+  title="B2B website playbook"
+  description="A free 10-part system to generate more leads and bookings: how top-performing B2B brands fix positioning, speed up load times, and turn site visitors into sales calls."
+  navTheme="light"
+  overlap
+>
+  {/* Hero */}
+  <PlaybookHero />
+  {/* What you'll learn */}
+  <Section>
+    <PlaybookLearn />
+  </Section>
+  {/* What you get */}
+  <Section>
+    <ReviewDeliverables
+      eyebrow="What you actually get"
+      heading="What that means for you"
+      lead="Frameworks to diagnose the problem, checklists to score yourself, and fixes you can ship on your own site this week."
+      items={[
+        {
+          title: "Frameworks and diagnostics",
+          text: "73 slides detailing why B2B sites fail to convert, with examples and common patterns.",
+        },
+        {
+          title: "Self-scoring checklists",
+          text: "Ten checklists you run against your own site, so the gaps come out as a score.",
+        },
+        {
+          title: "Fixes for this week",
+          text: "Five changes you can make without a developer, a budget approval, or a full rebuild.",
+        },
+      ]}
+      outlined
+    >
+      <PlaybookGraphic slot="visual-1" variant="framework" />
+      <PlaybookGraphic slot="visual-2" variant="checklist" />
+      <PlaybookGraphic slot="visual-3" variant="fixes" />
+    </ReviewDeliverables>
+  </Section>
+  {/* Who this is for */}
+  <PlaybookIndustries />
+  {/* The systems */}
+  <IndustryBuild
+    variant="systems"
+    eyebrow="The systems"
+    heading="Nine systems that make the site do the selling before you do"
+    image={systemsImage}
+    items={[
+      {
+        title: "Strategy-led design",
+        text: "Why \"make it look modern\" produces expensive sites that don't sell. What to settle first.",
+      },
+      {
+        title: "Targeted messaging",
+        text: "The rewrite method that starts with the buyer's problem, and why feature-led copy loses.",
+      },
+      {
+        title: "Trust, credibility and proof",
+        text: "Where each kind of proof belongs, page by page, and what to do before you have testimonials.",
+      },
+      {
+        title: "Visual identity",
+        text: "Stock photos make B2B sites interchangeable. The decisions that separate premium from template.",
+      },
+      {
+        title: "Conversion architecture",
+        text: "Most B2B sites are a collection of pages, not a route. How to build a deliberate path to enquiry.",
+      },
+      {
+        title: "Ad-to-site alignment",
+        text: "Your ads make a promise the landing page breaks. The message-match method that stops the leak.",
+      },
+      {
+        title: "Lead capture",
+        text: "Most visitors are not ready today. The capture ladder keeps them in reach until they are.",
+      },
+      {
+        title: "Content and SEO",
+        text: "Traffic alone proves nothing. Write for buyers with budget, not students or competitors.",
+      },
+      {
+        title: "Measurement and iteration",
+        text: "The short monthly review that compounds. What to track, what to test, what to change.",
+      },
+    ]}
+  />
+  {/* Who it's for */}
+  <Section>
+    <HomeDifference
+      eyebrow="Who it's for"
+      heading="Who this playbook is for"
+      lead="Built for B2B companies where one client is worth thousands, and the website is either opening that door or quietly closing it."
+      leadWidth="full"
+      logos={false}
+      columnsFrom="desktop"
+      boxes={[
+        {
+          title: "This is for you if...",
+          featured: true,
+          items: [
+            "You sell a high-value service through conversations",
+            "You're spending on ads that don't convert",
+            "You are established and quietly overtaken online",
+            "You are scaling faster than the site is",
+            "You want a method you can run yourself",
+          ],
+        },
+        {
+          title: "This isn't for you if...",
+          featured: false,
+          items: [
+            "You sell B2C ecommerce or consumer products",
+            "Your buyer decides and buys in one visit",
+            "You want someone to do it for you",
+            "You need something live this week",
+            "You are collecting free files to brief someone cheaper",
+          ],
+        },
+      ]}
+    />
+  </Section>
+  {/* Request */}
+  <PlaybookRequest id="playbook" />
+</Layout>
+

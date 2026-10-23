@@ -1,0 +1,142 @@
+title: Marketing teams
+description: Landing pages that match every ad, launch in days without a developer, and show your team where visitors drop off.
+order: 3
+
+hero:
+  eyebrow: Marketing teams
+  heading: Your ads are working.<br />Your landing pages aren’t.
+  text: Landing pages that match every ad, launch in days without a developer, and show your team where visitors drop off.
+  image: ../../assets/who/marketing-teams/hero.jpg
+
+problem:
+  heading: You’re paying for traffic the site<br />can’t close, and nobody flags it
+  items:
+    - title: Paying twice for the same click
+      text: The ad gets them there and the page sends them away, so you pay to reach them again.
+    - title: You can’t ship without a developer
+      text: Next week’s campaign page needs engineering time, so the campaign launches without it.
+    - title: Your CPA rises and nobody knows why
+      text: Channel performance holds steady while CPA climbs. The leak isn’t in the channel.
+
+stages:
+  eyebrow: Where the leak is
+  heading: Every part of the funnel asks the website to do a different job.
+  lead: Paid traffic needs pages that match the ad. Launches need pages without a developer. Leadership needs proof the fix worked. We build for all three.
+  items:
+    - label: Paid acquisition
+      title: Stop paying twice for the same click.
+      text: Every ad lands on a page built around that ad’s promise, so the visitor never has to work it out.
+      note: Usually starts when CPA rises and the channel isn’t the reason.
+      image: ../../assets/who/marketing-teams/stage-1.jpg
+      visual: match
+    - label: Campaign launches
+      title: Launch the page the same week as the campaign.
+      text: A library of sections your team assembles into new pages, without waiting on a developer ticket.
+      note: Usually starts when campaigns ship without the page they need.
+      image: ../../assets/who/marketing-teams/stage-2.jpg
+      visual: launch
+    - label: Reporting to leadership
+      title: Find the leak, then show leadership it’s fixed.
+      text: Clear analytics on every page, so you know where visitors drop off and can prove what changed.
+      note: Usually starts when traffic looks fine and pipeline says otherwise.
+      image: ../../assets/who/marketing-teams/stage-3.jpg
+      visual: funnel
+
+benefits:
+  items:
+    - title: The traffic you buy starts converting
+      text: Focused on a stranger's 10-second decision, not your interface tour. Same budget, better landing.
+    - title: Campaign pages need no engineering
+      text: Your team assembles new pages from a section library, the same week the campaign goes live.
+    - title: You can see where visitors drop off
+      text: Analytics and tracking on every page, so the leak finally has an address.
+    - title: Every page keeps the ad’s promise
+      text: Headlines, offers and proof carry the ad’s message all the way to the form.
+    - title: Polished enough for the board deck
+      text: A site you’re happy to screenshot for leadership, not one you crop around.
+    - title: You own all of it, from day one
+      text: The site, copy, and design files are yours—change agencies, hire in-house, or work solo freely.
+
+shift:
+  with:
+    - Every click lands on a matching page.
+    - The page ships the same week.
+    - Marketing builds a new page in an afternoon.
+    - You can see exactly where visitors drop.
+    - Forms ask only what sales needs.
+    - Your team tests a headline this week.
+    - The site goes straight into the deck.
+  without:
+    - You pay twice for the same click.
+    - Campaigns launch without the page they need.
+    - Every fix waits behind a developer ticket.
+    - CPA rises and nobody can say why.
+    - Forms ask for too much, too early.
+    - Testing a headline takes a whole sprint.
+    - You crop the site out of the deck.
+
+process:
+  heading: Every step is planned around<br />the number you report on
+  steps:
+    - label: Funnel audit
+      title: Funnel audit
+      text: We open your analytics and ad accounts first, to find which pages leak, which audiences convert and where spend is wasted.
+      points:
+        - Analytics and attribution review
+        - An ad-to-page message check
+        - A leak map for every campaign
+      visual: leaks
+    - label: Message match
+      title: Message match
+      text: Each headline and offer continues the ad that sent the click, in the exact words your customers search with.
+      points:
+        - Headlines matched to each ad
+        - Offer and proof copy
+        - Test variants written upfront
+      visual: variants
+    - label: Section library
+      title: Section library
+      text: Instead of one-off pages, we design a kit of on-brand sections your team combines into any campaign page.
+      points:
+        - On-brand campaign sections
+        - Templates by audience and region
+        - Usage rules anyone can follow
+      visual: kit
+    - label: Conversion testing
+      title: Conversion testing
+      text: Forms get shorter, proof moves to where visitors hesitate, and every change is set up to be measured.
+      points:
+        - Shorter, sales-ready forms
+        - Proof placed at drop-off points
+        - A/B tests ready to run
+      visual: form
+    - label: Tracking & enablement
+      title: Tracking & enablement
+      text: We launch with events on the actions that matter, then train your team to publish and test without filing a ticket.
+      points:
+        - Events on every key action
+        - Clean data for weekly reports
+        - Publishing training for marketers
+      visual: events
+
+faq:
+  heading: Questions marketing teams ask us
+  items:
+    - question: We already have a web developer. What else do you add?
+      answer: Developers build what they’re given. What’s usually missing is the conversion design, copy and testing structure that decides what gets built. We handle that layer, then hand your developer a cleaner job or take the build on ourselves.
+    - question: Can you work inside our existing brand and design system?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Will we be able to ship landing pages without a developer?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Do you set up analytics and tracking?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: How quickly can we launch a campaign page?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: What happens after launch?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: What is the project investment?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+
+cta:
+  heading: Make the website the part of the<br />funnel you stop worrying about
+  text: Send us the link. We’ll tell you where the traffic you’re buying is leaking, and what it would take to stop it.

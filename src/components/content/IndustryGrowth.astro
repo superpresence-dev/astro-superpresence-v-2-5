@@ -185,6 +185,12 @@ const icons = iconNames.map((name) => industryIcons[name]);
         .industry-growth_layout {
           width: 100%;
         }
+
+        .industry-growth_list:has(> :nth-child(4)) {
+          @media (48rem <= width < 62rem) {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+        }
       }
 
       &.tiles {
@@ -258,7 +264,7 @@ const icons = iconNames.map((name) => industryIcons[name]);
         flex-direction: column;
         justify-content: space-between;
         margin: 0;
-        padding: var(--space-1-5rem);
+        padding: calc(var(--space-1-5rem) - var(--border-width));
         background-color: var(--color-neutral-0);
         border: var(--border-width) solid var(--color-neutral-10);
         border-radius: var(--radius-0-5rem);

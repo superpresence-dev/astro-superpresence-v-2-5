@@ -15,12 +15,13 @@ import design from "@/assets/service/design/why/icon-design.svg";
 import developer from "@/assets/service/design/why/icon-dev.svg";
 import qa from "@/assets/service/design/why/icon-qa.svg";
 import globeIcon from "@/assets/service/icons/globe.svg";
+import aiTiles from "@/assets/who/why-ai.svg";
 
 interface Props extends HTMLAttributes<"div"> {
   /** Set to `false` to omit the component. */
   render?: boolean;
-  /** Which illustration: the globe of markets, the strategy questions, the QA checks, the written copy, the team, the conversion figures, the depth chart, the screen with its colour and type tokens, or an ad and the page it leads to. */
-  variant?: "asia" | "strategy" | "qa" | "copy" | "team" | "convert" | "depth" | "screen" | "ads";
+  /** Which illustration: the globe of markets, the strategy questions, the QA checks, the written copy, the team, the conversion figures, the depth chart, the screen with its colour and type tokens, an ad and the page it leads to, or the AI tile among blank ones. */
+  variant?: "asia" | "strategy" | "qa" | "copy" | "team" | "convert" | "depth" | "screen" | "ads" | "ai";
 }
 
 const {
@@ -244,6 +245,9 @@ const bars = [
             yoursite.com
           </span>
         </div>
+      )}
+      {variant === "ai" && (
+        <Img src={aiTiles} transparent class="design-why-graphic_ai" />
       )}
       {variant === "depth" && (
         <div class="design-why-graphic_chart">
@@ -847,6 +851,22 @@ const bars = [
           font-weight: var(--primary-medium);
           color: var(--color-neutral-95);
         }
+      }
+
+      /* AI: the AI tile among blank ones, fading out at the edges */
+
+      .design-why-graphic_ai {
+        position: absolute;
+        top: calc(-11 * var(--_unit));
+        left: calc(-1 * var(--_unit));
+        width: calc(389 * var(--_unit));
+        max-width: none;
+        height: auto;
+        mask-image: radial-gradient(
+          41% 38% at 50% 50%,
+          #000 60%,
+          transparent 115%
+        );
       }
 
       /* Depth: time spent on positioning */

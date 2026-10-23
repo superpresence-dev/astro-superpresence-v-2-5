@@ -185,6 +185,99 @@ const industries = defineCollection({
     }),
 });
 
+/** Pictures a "where you are now" stage can show: the variants of WhoStageGraphic. */
+export const WHO_STAGE_VISUALS = [
+  "forward",
+  "qualify",
+  "structure",
+  "referral",
+  "refresh",
+  "expand",
+  "match",
+  "launch",
+  "funnel",
+] as const;
+
+/** Pictures a process step can show: the variants of WhoProcessGraphic. */
+export const WHO_PROCESS_VISUALS = [
+  "interview",
+  "pitch",
+  "scene",
+  "paths",
+  "publish",
+  "referrer",
+  "services",
+  "identity",
+  "enquiry",
+  "people",
+  "leaks",
+  "variants",
+  "kit",
+  "form",
+  "events",
+] as const;
+
+const who = defineCollection({
+  loader: glob({ pattern: "**/*.yaml", base: "./src/content/who" }),
+  schema: ({ image }) =>
+    z.object({
+      /** Audience name, used for the page title. */
+      title: z.string(),
+      description: z.string(),
+      order: z.number(),
+      hero: z.object({
+        eyebrow: z.string(),
+        heading: z.string(),
+        text: z.string(),
+        image: image(),
+      }),
+      problem: z.object({
+        heading: z.string(),
+        items: z.array(item),
+      }),
+      stages: z.object({
+        eyebrow: z.string(),
+        heading: z.string(),
+        lead: z.string(),
+        items: z.array(
+          z.object({
+            /** Text in the side navigation. */
+            label: z.string(),
+            /** Opening sentence, set darker than the rest of the text. */
+            title: z.string(),
+            text: z.string(),
+            /** Line beside the flag icon, under the text. */
+            note: z.string(),
+            image: image(),
+            visual: z.enum(WHO_STAGE_VISUALS),
+          }),
+        ),
+      }),
+      benefits: z.object({ items: z.array(item) }),
+      shift: z.object({
+        with: z.array(z.string()),
+        without: z.array(z.string()),
+      }),
+      process: z.object({
+        heading: z.string(),
+        steps: z.array(
+          z.object({
+            label: z.string(),
+            title: z.string(),
+            text: z.string(),
+            points: z.array(z.string()),
+            visual: z.enum(WHO_PROCESS_VISUALS),
+          }),
+        ),
+      }),
+      faq: z.object({
+        heading: z.string(),
+        items: z.array(z.object({ question: z.string(), answer: z.string() })),
+      }),
+      cta: z.object({ heading: z.string(), text: z.string() }),
+    }),
+});
+
 export const collections = {
   work,
   blog,
@@ -192,4 +285,5 @@ export const collections = {
   explorations,
   legal,
   industries,
+  who,
 };

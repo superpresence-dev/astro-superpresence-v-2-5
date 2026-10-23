@@ -1,0 +1,142 @@
+title: Startups
+description: Strategy, copy, design and build for startups, so investors and buyers understand you in ten seconds, from pre-seed to scale.
+order: 1
+
+hero:
+  eyebrow: Startups
+  heading: Win the second meeting<br />before the first call
+  text: Strategy, copy, design and build for startups, so investors and buyers understand you in ten seconds, from pre-seed to scale.
+  image: ../../assets/who/startups/hero.jpg
+
+problem:
+  heading: You’re losing people before<br />they ever speak to you
+  items:
+    - title: More spend, same results
+      text: Sign-ups are flat. The extra ad spend lands on a page that still makes people work out what you do.
+    - title: You don't look like what you are
+      text: Customers, investors and candidates all read the same page, and none of them see the real you.
+    - title: The first call is damage control
+      text: The site creates false expectations, so the first ten minutes of calls fix misunderstandings.
+
+stages:
+  eyebrow: Where you are now
+  heading: Every stage asks the website to do a different job.
+  lead: Pre-seed sites earn meetings, Series B sites support sales. We build for now and future growth without rebuilding.
+  items:
+    - label: Pre-seed & seed
+      title: Make an early idea look like a real company.
+      text: A handful of users and a story still sharpening. The site makes your problem and your answer clear enough that investors forward the link.
+      note: Usually starts before a raise, a public launch or your first sales hire.
+      image: ../../assets/who/startups/stage-1.jpg
+      visual: forward
+    - label: Series A
+      title: Give sales a site they’re glad to send.
+      text: Traction is real and the team is growing. Now the site qualifies buyers and backs up every sales conversation.
+      note: Usually starts when the seed-round site can’t keep up with the company.
+      image: ../../assets/who/startups/stage-2.jpg
+      visual: qualify
+    - label: Growth & scale
+      title: Let the site grow without becoming a patchwork.
+      text: New products, new markets and new hires every month. The site absorbs all of it and stays easy to find.
+      note: Usually starts when every team has added pages and nobody owns the whole site.
+      image: ../../assets/who/startups/stage-3.jpg
+      visual: structure
+
+benefits:
+  items:
+    - title: The traffic you buy starts converting
+      text: Focused on the stranger's 10-second decision, not an interface tour. Same budget, better landing results.
+    - title: You stop apologising for the link
+      text: Reads like the company you’re becoming, for investors and candidates who look you up without telling you.
+    - title: Your engineers stay on the roadmap
+      text: Marketing ships pages without a developer, and the structure absorbs new products without a rebuild.
+    - title: The positioning finally gets written down
+      text: We can’t build the site without settling it first. Founders tell us this is the part they didn’t expect to value most.
+    - title: People find you by your problem
+      text: Pages are optimized for search engines and AI, helping new buyers discover your site easily.
+    - title: You own all of it, from day one
+      text: The site, copy, and design files are yours—change agencies, hire in-house, or go solo freely.
+
+shift:
+  with:
+    - Clicks land on a page people instantly understand.
+    - The site makes the case for it.
+    - The website is the first thing you send.
+    - Investors get the story before the meeting.
+    - Prospects arrive already knowing what you do.
+    - Candidates read the site and want in.
+    - Marketing builds a new page in an afternoon.
+  without:
+    - You pay for clicks on unclear pages.
+    - The site describes the product.
+    - You apologise for the link, then send it.
+    - Investors leave with more questions than answers.
+    - Every call starts with explaining what you do.
+    - Candidates can’t tell what you actually do.
+    - Every landing page waits behind the roadmap.
+
+process:
+  heading: Your pitch, rebuilt to work<br />without you in the room
+  steps:
+    - label: Founder deep-dive
+      title: Research & strategy
+      text: Two working sessions with your founders and a stack of recorded sales calls. We learn what investors push back on and what buyers misread.
+      points:
+        - Founder and customer interviews
+        - Investor and buyer objections mapped
+        - Category and competitor teardown
+      visual: interview
+    - label: Positioning sprint
+      title: Positioning sprint
+      text: Your one-line pitch gets written, argued over and signed off before any design starts. Deck language finally turns into plain English.
+      points:
+        - A one-line pitch the founders sign off
+        - Homepage and product narrative
+        - Talking points sales can reuse
+      visual: pitch
+    - label: Product storytelling
+      title: Product storytelling
+      text: We turn the product into scenes people grasp at a glance, even if the interface changes next month.
+      points:
+        - Product scenes and UI illustrations
+        - An identity that works on site and deck
+        - Components ready for the next raise
+      visual: scene
+    - label: Audience paths
+      title: Audience paths
+      text: Buyers, investors and candidates each get their own route through the site, ending in one clear action.
+      points:
+        - Separate routes for each audience
+        - Demo and trial sign-up flows
+        - Checked on every screen size
+      visual: paths
+    - label: Ship & scale
+      title: Ship & scale
+      text: We launch in Webflow or Framer, structured for search and AI answers, and set up so non-engineers can change it.
+      points:
+        - Live on Webflow or Framer
+        - Ready for search and AI answers
+        - Editable without an engineer
+      visual: publish
+
+faq:
+  heading: Questions founders ask us
+  items:
+    - question: We already have a product designer in-house. What else do you add?
+      answer: Product design and a marketing site are different jobs. Your designer is rightly focused on the app. What’s usually missing is the positioning, copy written for buyers, conversion design and a front-end build marketing can run on its own. That’s the gap we fill, and it keeps your designer on the roadmap.
+    - question: We’re pre-seed. Are we too early for you?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: How long does a project take, and can it land before our raise?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Can you work inside our existing brand and design system?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: Will we be able to ship landing pages without a developer?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: What happens after launch?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    - question: What is the project investment?
+      answer: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+
+cta:
+  heading: Make your website the<br />easiest yes your startup gets
+  text: Send us the link. We’ll tell you what a stranger understands in ten seconds, and we’ll say so if the site isn’t the problem.

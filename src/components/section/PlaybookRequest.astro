@@ -1,0 +1,241 @@
+---
+import type { ComponentProps, HTMLAttributes } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Img from "@/components/media/Img.astro";
+import ContactForm from "@/components/content/ContactForm.astro";
+import background from "@/assets/playbook/request-background.jpg";
+import books from "@/assets/playbook/request-books.png";
+import booksTablet from "@/assets/playbook/request-books-tablet.png";
+import booksMobile from "@/assets/playbook/request-books-mobile.png";
+
+interface Props
+  extends
+    HTMLAttributes<"section">,
+    Pick<ComponentProps<typeof Section>, "render"> {
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading?: string;
+  /** Text under the heading. */
+  text?: string;
+  /** Text of the form's submit button. */
+  buttonText?: string;
+  /** Form endpoint. Omit to skip submission. */
+  action?: string;
+  /** Link to the privacy policy. */
+  privacyHref?: string;
+  /** Picture beside the form, from desktop. */
+  image?: ImageMetadata;
+  /** Picture under the form on tablet and mobile landscape. */
+  imageTablet?: ImageMetadata;
+  /** Picture under the form on mobile portrait. */
+  imageMobile?: ImageMetadata;
+}
+
+const {
+  render = true,
+  eyebrow = "Get your copy",
+  heading = "The method, in full.<br />73 slides. Free.",
+  text = "The same method behind every B2B site we build and audit in Asia. Ten parts, each with frameworks, real examples and a checklist you score yourself against.",
+  buttonText = "Send me the playbook",
+  action,
+  privacyHref = "/privacy-policy",
+  image = books,
+  imageTablet = booksTablet,
+  imageMobile = booksMobile,
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<Section
+  render={render}
+  theme="light"
+  paddingTop="none"
+  paddingBottom="none"
+  containerClass="playbook-request_layout"
+  class:list={["playbook-request_wrap", className]}
+  {...rest}
+>
+  <div class="playbook-request_card">
+    <Img src={background} class="playbook-request_background" />
+    <div class="playbook-request_panel">
+      <div class="playbook-request_intro">
+        <Paragraph variant="overline-small" class="playbook-request_eyebrow">
+          {eyebrow}
+        </Paragraph>
+        <Heading tag="h2" variant="h3">
+          <Fragment set:html={heading} />
+        </Heading>
+        <Paragraph variant="main" class="playbook-request_text">
+          {text}
+        </Paragraph>
+      </div>
+      <ContactForm
+        variant="playbook"
+        action={action}
+        privacyHref={privacyHref}
+        submitText={buttonText}
+      />
+    </div>
+    <div class="playbook-request_visual">
+      <Img
+        src={imageMobile}
+        transparent
+        sizes="21.0625rem"
+        class="playbook-request_image mobile"
+      />
+      <Img
+        src={imageTablet}
+        transparent
+        sizes="(width >= 48rem) 46.625rem, 100vw"
+        class="playbook-request_image tablet"
+      />
+      <Img
+        src={image}
+        transparent
+        sizes="41.5rem"
+        class="playbook-request_image desktop"
+      />
+    </div>
+  </div>
+</Section>
+
+<style is:global>
+  @layer components {
+    .playbook-request_wrap {
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .playbook-request_layout {
+        padding-block: min(var(--site-margin), 2rem);
+      }
+
+      .playbook-request_card {
+        position: relative;
+        width: 100%;
+        isolation: isolate;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1rem);
+        padding: var(--space-1rem);
+        overflow: hidden;
+        border-radius: var(--radius-1-5rem);
+        @media (width >= 62rem) {
+          flex-direction: row;
+        }
+
+        /* Figma lays a blue gradient at 70% over the photo. */
+        &::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          z-index: -1;
+          opacity: 0.7;
+          background-image: linear-gradient(
+            108deg,
+            #045ef1 0%,
+            #3388e7 47.4%,
+            #001746 100%
+          );
+        }
+      }
+
+      .playbook-request_background {
+        position: absolute;
+        inset: 0;
+        z-index: -2;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .playbook-request_panel {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4rem);
+        padding: var(--space-2-5rem);
+        border-radius: var(--radius-1rem);
+        background-color: var(--color-neutral-0);
+        @media (width >= 62rem) {
+          flex: 0 0 37.5rem;
+          min-height: 42rem;
+        }
+
+        /* Once sent, the success message takes the whole panel. */
+        &:has([data-state="sent"]) {
+          justify-content: center;
+
+          .playbook-request_intro {
+            display: none;
+          }
+        }
+      }
+
+      .playbook-request_intro {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+      }
+
+      .playbook-request_eyebrow {
+        color: var(--color-neutral-30);
+      }
+
+      .playbook-request_text {
+        color: var(--color-neutral-60);
+      }
+
+          /* Each screen has its own Figma export, laid out for that frame. */
+      .playbook-request_visual {
+        position: relative;
+        height: 31.25rem;
+        min-height: 0;
+        overflow: hidden;
+        border-radius: var(--radius-1rem);
+        /* Mobile landscape takes the tablet picture and height. */
+        @media (width >= 30rem) {
+          height: 36.375rem;
+        }
+        @media (width >= 62rem) {
+          flex: 1;
+          min-width: 0;
+          height: auto;
+        }
+      }
+
+      .playbook-request_image {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 0 100%;
+
+        &.tablet,
+        &.desktop {
+          display: none;
+        }
+        @media (width >= 30rem) {
+          &.mobile {
+            display: none;
+          }
+          &.tablet {
+            display: block;
+          }
+        }
+        @media (width >= 62rem) {
+          &.tablet {
+            display: none;
+          }
+          &.desktop {
+            display: block;
+          }
+        }
+      }
+    }
+  }
+</style>

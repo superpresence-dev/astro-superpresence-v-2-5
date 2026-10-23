@@ -9,6 +9,7 @@ import teardown from "@/assets/why/gaps-teardown.png";
 import redesign from "@/assets/why/gaps-redesign.png";
 import check from "@/assets/home/difference-list-item.svg";
 import { REVIEW_URL } from "@/utils/review.ts";
+import { REDESIGN_URL } from "@/utils/redesign.ts";
 
 type Tone = "blue" | "purple" | "orange" | "green" | "pink";
 type Choice = {
@@ -55,12 +56,15 @@ type OffersProps = BaseProps & {
   variant?: "offers";
   /** Destination of an offer's link when the offer sets none of its own. */
   href?: string;
+  /** Text of each offer card, in order. Omit to keep the shared text. */
+  texts?: string[];
   options?: never;
 };
 
 type OptionsProps = BaseProps & {
   variant: "options";
   href?: never;
+  texts?: never;
   /** Cards in order, each with its tone, icon, text and points. */
   options: Choice[];
 };
@@ -69,6 +73,7 @@ type Props = OffersProps | OptionsProps;
 type AllProps = BaseProps & {
   variant?: "offers" | "options";
   href?: string;
+  texts?: string[];
   options?: Choice[];
 };
 
@@ -79,6 +84,7 @@ const {
   lead = "Both are free, and both leave you with something useful whether or not you hire us.",
   variant = "offers",
   href = "/contact",
+  texts,
   options,
   note,
   cardHeight,
@@ -112,7 +118,9 @@ const offers: {
           image: teardown,
           duration: "10 minutes",
           title: "A video teardown of your site",
-          text: "A senior pair of eyes walks your site the way a cautious buyer does, and shows you where enquiries are being lost.",
+          text:
+            texts?.[0] ??
+            "A senior pair of eyes walks your site the way a cautious buyer does, and shows you where enquiries are being lost.",
           link: "Review my website",
           href: REVIEW_URL,
         },
@@ -121,8 +129,11 @@ const offers: {
           image: redesign,
           duration: "2 weeks",
           title: "A redesign of your homepage hero",
-          text: "We redesign the first screen of your site and send it over. Yours to keep either way.",
+          text:
+            texts?.[1] ??
+            "We redesign the first screen of your site and send it over. Yours to keep either way.",
           link: "Claim your free redesign",
+          href: REDESIGN_URL,
         },
       ];
 ---

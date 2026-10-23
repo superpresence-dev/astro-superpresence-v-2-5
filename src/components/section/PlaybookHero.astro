@@ -1,0 +1,202 @@
+---
+import type { ComponentProps, HTMLAttributes } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Button from "@/components/Button.astro";
+import Img from "@/components/media/Img.astro";
+import background from "@/assets/playbook/hero-background.jpg";
+import book from "@/assets/playbook/hero-book.png";
+
+interface Props
+  extends
+    HTMLAttributes<"section">,
+    Pick<ComponentProps<typeof Section>, "render"> {
+  /** Small label above the heading. */
+  eyebrow?: string;
+  /** Section heading. Accepts `<br>` for a forced line break. */
+  heading?: string;
+  /** Paragraph below the heading. */
+  text?: string;
+  /** Button text. */
+  buttonText?: string;
+  /** Button link. */
+  buttonHref?: string;
+  /** Picture of the playbook beside the heading, cropped by the bottom of the hero. */
+  image?: ImageMetadata;
+  /** Alt text of the picture. */
+  imageAlt?: string;
+}
+
+const {
+  render = true,
+  eyebrow = "Inside our B2B conversion engine",
+  heading = "A 10-part system to generate more leads and bookings",
+  text = "Learn how top-performing B2B brands fix positioning, speed up load times, and turn site visitors into sales calls.",
+  buttonText = "Get the free playbook",
+  buttonHref = "#playbook",
+  image = book,
+  imageAlt = "Cover of the playbook: Why most B2B websites don’t generate leads",
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<Section
+  render={render}
+  theme="light"
+  paddingTop="none"
+  paddingBottom="none"
+  containerClass="playbook-hero_layout"
+  class:list={["playbook-hero_wrap", className]}
+  {...rest}
+>
+  <Img
+    src={background}
+    slot="background"
+    class="playbook-hero_background"
+    loading="eager"
+    fetchPriority="high"
+  />
+  <div slot="background" class="playbook-hero_glow"></div>
+  <div class="playbook-hero_heading">
+    <div class="playbook-hero_title-group">
+      <Paragraph variant="overline-small" class="playbook-hero_eyebrow">
+        {eyebrow}
+      </Paragraph>
+      <Heading tag="h1" class="playbook-hero_title">
+        <Fragment set:html={heading} />
+      </Heading>
+      <Paragraph variant="large" class="playbook-hero_text">
+        {text}
+      </Paragraph>
+    </div>
+    <Button element="link" href={buttonHref} emphasis="brand" arrow>
+      {buttonText}
+    </Button>
+  </div>
+  <div class="playbook-hero_visual">
+    <Img
+      src={image}
+      alt={imageAlt}
+      transparent
+      loading="eager"
+      sizes="45.5rem"
+      class="playbook-hero_image"
+    />
+  </div>
+</Section>
+
+<style is:global>
+  @layer components {
+    .playbook-hero_wrap {
+      overflow: clip;
+
+      :is(.heading, .text) {
+        margin: 0;
+      }
+
+      .playbook-hero_background {
+        object-fit: cover;
+      }
+
+      /* Figma's radial white wash over the photo, at 24%. */
+      .playbook-hero_glow {
+        opacity: 0.24;
+        background-image: radial-gradient(
+          ellipse 60% 60% at 60% 40%,
+          rgb(255 255 255 / 1) 0%,
+          rgb(255 255 255 / 0.5) 17%,
+          rgb(251 253 255 / 0.75) 33%,
+          rgb(248 251 255 / 1) 74%,
+          rgb(247 250 255 / 0.7) 92%,
+          rgb(245 249 255 / 0) 100%
+        );
+      }
+
+      /* Stacked below desktop: the heading, then the book cut off by the
+         bottom of the hero. Side by side from desktop, the heading centred
+         on a 25rem row with the book overflowing it. */
+      .playbook-hero_layout {
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--space-2rem) + var(--space-3rem));
+        padding-top: calc(var(--nav-height) + 1.25rem + var(--space-2rem));
+        @media (width >= 62rem) {
+          flex-direction: row;
+          align-items: center;
+          gap: var(--space-4rem);
+          padding-block: calc(var(--nav-height) + 7.8125rem) 7.8125rem;
+        }
+      }
+
+      .playbook-hero_heading {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-2rem);
+        @media (width >= 62rem) {
+          flex: 0 1 41rem;
+          min-width: 0;
+        }
+      }
+
+      .playbook-hero_title-group {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-0-75rem);
+      }
+
+      /* Figma breaks the heading greedily, not balanced. */
+      .playbook-hero_title {
+        max-width: 39.25rem;
+        text-wrap: wrap;
+        @media (width >= 62rem) {
+          max-width: 35.75rem;
+        }
+      }
+
+      .playbook-hero_eyebrow {
+        color: var(--color-neutral-30);
+      }
+
+      .playbook-hero_text {
+        max-width: 40rem;
+      }
+
+      .playbook-hero_visual {
+        position: relative;
+        width: 100%;
+        height: 33.75rem;
+        @media (width >= 48rem) {
+          height: 34.75rem;
+        }
+        @media (width >= 62rem) {
+          flex: 1;
+          min-width: 0;
+          height: 25rem;
+        }
+      }
+
+      /* The export is the 728 × 896 Figma frame: the book sits at the
+         same size on every screen and runs past the bottom of the hero. */
+      .playbook-hero_image {
+        position: absolute;
+        top: -1.0625rem;
+        left: -1.375rem;
+        width: 45.5rem;
+        max-width: none;
+        height: auto;
+        @media (width >= 48rem) {
+          top: -1rem;
+          left: 2.1875rem;
+        }
+        @media (width >= 62rem) {
+          top: -4.875rem;
+          left: 0;
+        }
+      }
+    }
+  }
+</style>

@@ -33,6 +33,8 @@ import { serviceUrl } from "@/utils/services.ts";
 import { REVIEW_URL } from "@/utils/review.ts";
 import { REDESIGN_URL } from "@/utils/redesign.ts";
 import { EXPLORATION_URL } from "@/utils/explorations.ts";
+import { PLAYBOOK_URL } from "@/utils/playbook.ts";
+import { AUDIENCES, whoUrl } from "@/utils/who.ts";
 
 interface Props {
   /** Set to `false` to omit the component. */
@@ -143,8 +145,6 @@ const industryGroups = [
     ],
   },
 ];
-
-const audiences = ["Startups", "Businesses going digital", "Marketing teams"];
 
 const resources = [
   {
@@ -325,10 +325,13 @@ const panels = [
                     Who we work with
                   </Paragraph>
                   <ul class="nav-dropdown_list" role="list">
-                    {audiences.map((audience) => (
+                    {AUDIENCES.map((audience) => (
                       <li>
-                        <a class="nav-dropdown_audience text-style-h6" href="#">
-                          {audience}
+                        <a
+                          class="nav-dropdown_audience text-style-h6"
+                          href={whoUrl(audience.id)}
+                        >
+                          {audience.title}
                         </a>
                       </li>
                     ))}
@@ -427,7 +430,12 @@ const panels = [
                         doesn't, written for operators.
                       </Paragraph>
                     </div>
-                    <Button element="link" href="#" variant="link" arrow>
+                    <Button
+                      element="link"
+                      href={PLAYBOOK_URL}
+                      variant="link"
+                      arrow
+                    >
                       Get the playbook
                     </Button>
                   </div>

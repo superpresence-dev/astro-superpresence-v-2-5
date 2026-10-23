@@ -1,0 +1,1593 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Img from "@/components/media/Img.astro";
+import Icon from "@/components/media/Icon.astro";
+import james from "@/assets/who/avatar-james.jpg";
+import manTeal from "@/assets/who/avatar-man-teal.jpg";
+import woman from "@/assets/who/avatar-woman.jpg";
+import manBlue from "@/assets/who/avatar-man-blue.jpg";
+import forwardIcon from "@/assets/who/icons/forward.svg";
+import check from "@/assets/who/icons/check.svg";
+import search from "@/assets/who/icons/search.svg";
+import chevron from "@/assets/who/icons/chevron.svg";
+import calendar from "@/assets/who/icons/calendar.svg";
+import link from "@/assets/who/icons/link.svg";
+import pin from "@/assets/who/icons/pin.svg";
+import flagHk from "@/assets/service/design/why/flag-hk.svg";
+import flagTh from "@/assets/service/design/why/flag-th.svg";
+import flagAu from "@/assets/who/icons/flag-au.svg";
+import flagSg from "@/assets/service/design/why/flag-sg.svg";
+import arrowDown from "@/assets/who/icons/arrow-down.svg";
+import arrowBoth from "@/assets/who/icons/arrow-both.svg";
+import click from "@/assets/who/icons/click.svg";
+import send from "@/assets/who/icons/send.svg";
+import cursor from "@/assets/service/design/why/cursor.svg";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Photo behind the cards. */
+  image: ImageMetadata;
+  /** Which stage the cards show: the forwarded investor email, the qualified deal, the site menu, the referral check, the old site beside the new one, the new office, the ad and its matching page, the section dropped into a campaign page, or the funnel report. */
+  variant:
+    | "forward"
+    | "qualify"
+    | "structure"
+    | "referral"
+    | "refresh"
+    | "expand"
+    | "match"
+    | "launch"
+    | "funnel";
+}
+
+const { render = true, image, variant, class: className, ...rest } = Astro.props;
+
+const events = [
+  { text: "Sales sent the pricing page", day: "Mon" },
+  { text: "Buyer read the security page · 4 min", day: "Tue" },
+  { text: "Buyer booked a demo", day: "Wed" },
+];
+
+const menu = [
+  { title: "Products", links: ["Access", "Audit", "Vault"] },
+  { title: "Markets", links: ["United States", "Europe", "Asia Pacific"] },
+  { title: "Company", links: ["About", "Careers · 12 roles", "Press"] },
+];
+
+const offices = [
+  { name: "Hongkong", flag: flagHk },
+  { name: "Thailand", flag: flagTh },
+  { name: "Australia", flag: flagAu },
+  { name: "Singapore", flag: flagSg },
+];
+const practices = ["Corporate", "Tax", "Finance", "Data privacy"];
+
+const advisors = [manTeal, woman, manBlue];
+
+const funnel = [
+  { label: "Visited", value: "4,200", share: 91.8 },
+  { label: "Reached pricing", value: "2,940", share: 64.3 },
+  { label: "Booked a demo", value: "380", share: 29.5 },
+];
+---
+
+{
+  render && image && variant && (
+    <div
+      class:list={["who-stage_wrap", variant, className]}
+      aria-hidden="true"
+      {...rest}
+    >
+      <Img src={image} class="who-stage_photo" width={1440} />
+      <div class="who-stage_stage">
+        {variant === "forward" && (
+          <>
+            <div class="who-stage_group">
+              <div class="who-stage_card who-stage_email">
+                <span class="who-stage_from">
+                  <Img src={james} class="who-stage_avatar" width={96} />
+                  <span class="who-stage_sender">
+                    <span class="who-stage_name">James Lee</span>
+                    <span class="who-stage_meta">to Investment team</span>
+                  </span>
+                </span>
+                <span class="who-stage_message">
+                  <span class="who-stage_subject">
+                    Fwd: Worth a look before Thursday
+                  </span>
+                  <span class="who-stage_meta">
+                    Clear problem, clear answer. Worth a meeting?
+                  </span>
+                </span>
+              </div>
+              <div class="who-stage_card who-stage_preview">
+                <span class="who-stage_thumb">
+                  <span class="who-stage_brand">Kestrel</span>
+                  <span class="who-stage_name">
+                    Access control that keeps up with your team
+                  </span>
+                </span>
+                <span class="who-stage_link">
+                  <span class="who-stage_domain">kestrel.io</span>
+                  <span class="who-stage_link-title">
+                    Kestrel · Access control for growing teams
+                  </span>
+                </span>
+              </div>
+            </div>
+            <span class="who-stage_pill who-stage_forwarded">
+              <Icon src={forwardIcon} class="who-stage_pill-icon" />
+              Forwarded to 3 partners
+            </span>
+          </>
+        )}
+        {variant === "qualify" && (
+          <div class="who-stage_group">
+            <div class="who-stage_card who-stage_deal">
+              <span class="who-stage_deal-header">
+                <span class="who-stage_deal-title">
+                  <span class="who-stage_heading">Acme Logistics</span>
+                  <span class="who-stage_meta">Deal · 48 seats</span>
+                </span>
+                <span class="who-stage_tag">
+                  <span class="who-stage_tick">
+                    <Icon src={check} class="who-stage_check" />
+                  </span>
+                  Qualified
+                </span>
+              </span>
+              <ol class="who-stage_timeline">
+                {events.map((event) => (
+                  <li class="who-stage_event">
+                    <span class="who-stage_marker" />
+                    <span class="who-stage_event-text">{event.text}</span>
+                    <span class="who-stage_meta">{event.day}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+            <span class="who-stage_pill who-stage_qualified">
+              <span class="who-stage_box">
+                <Icon src={check} class="who-stage_check" />
+              </span>
+              Qualified before the first call
+            </span>
+          </div>
+        )}
+        {(variant === "structure" || variant === "expand") && (
+          <div class="who-stage_group">
+            <div class="who-stage_menu">
+              {variant === "structure" ? (
+                menu.map((column, index) => (
+                  <div class="who-stage_column">
+                    <span class="who-stage_label">{column.title}</span>
+                    <ul class="who-stage_links" role="list">
+                      {column.links.map((item, position) => (
+                        <li class="who-stage_menu-link">
+                          {item}
+                          {index < 2 && position === 2 && (
+                            <span class="who-stage_new">New</span>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))
+              ) : (
+                <>
+                  <div class="who-stage_column">
+                    <span class="who-stage_label">Offices</span>
+                    <ul class="who-stage_links" role="list">
+                      {offices.map((office, position) => (
+                        <li class="who-stage_menu-link">
+                          <Img
+                            src={office.flag}
+                            transparent
+                            class="who-stage_flag"
+                          />
+                          {office.name}
+                          {position === offices.length - 1 && (
+                            <span class="who-stage_new">New</span>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div class="who-stage_column">
+                    <span class="who-stage_label">Practice areas</span>
+                    <ul class="who-stage_links" role="list">
+                      {practices.map((practice, position) => (
+                        <li class="who-stage_menu-link">
+                          {practice}
+                          {position === practices.length - 1 && (
+                            <span class="who-stage_new">New</span>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </>
+              )}
+            </div>
+            {variant === "structure" ? (
+              <span class="who-stage_search">
+                <span class="who-stage_query">
+                  <Icon src={search} class="who-stage_search-icon" />
+                  Audit logs
+                </span>
+                <span class="who-stage_crumbs">
+                  Products
+                  <Icon src={chevron} class="who-stage_chevron" />
+                  Audit
+                </span>
+              </span>
+            ) : (
+              <span class="who-stage_search">
+                <span class="who-stage_query">
+                  <Icon src={pin} class="who-stage_search-icon" />
+                  Singapore page added
+                  <span class="who-stage_dot" />
+                  no rebuild
+                </span>
+              </span>
+            )}
+          </div>
+        )}
+        {variant === "refresh" && (
+          <div class="who-stage_old">
+            <span class="who-stage_old-copy">
+              <span class="who-stage_year">2016 site</span>
+              <span class="who-stage_bars">
+                <span class="who-stage_bar" />
+                <span class="who-stage_bar" />
+                <span class="who-stage_bar" />
+              </span>
+              <span class="who-stage_bars short">
+                <span class="who-stage_bar" />
+                <span class="who-stage_bar" />
+                <span class="who-stage_bar" />
+              </span>
+            </span>
+            <span class="who-stage_facts small">
+              3 services
+              <span class="who-stage_dot" />8 people
+            </span>
+          </div>
+        )}
+        {(variant === "referral" || variant === "refresh") && (
+          <div class="who-stage_group">
+            <div class="who-stage_card who-stage_site">
+              <span class="who-stage_bar-top">
+                <span class="who-stage_dots">
+                  <span class="who-stage_dot" />
+                  <span class="who-stage_dot" />
+                  <span class="who-stage_dot" />
+                </span>
+                <span class="who-stage_address">ardenlim.com</span>
+              </span>
+              <span class="who-stage_hero">
+                <span class="who-stage_hero-copy">
+                  <span class="who-stage_firm">Arden &amp; Lim</span>
+                  <span class="who-stage_headline">
+                    {variant === "referral"
+                      ? "Singapore company setup, handled end to end"
+                      : "Advisory, tax and audit in six markets"}
+                  </span>
+                  {variant === "referral" && (
+                    <span class="who-stage_meta">
+                      Corporate and cross-border counsel since 1998.
+                    </span>
+                  )}
+                </span>
+                {variant === "referral" ? (
+                  <span class="who-stage_button">Book a call</span>
+                ) : (
+                  <span class="who-stage_team">
+                    <span class="who-stage_avatars">
+                      {advisors.map((advisor) => (
+                        <Img
+                          src={advisor}
+                          class="who-stage_avatar"
+                          width={80}
+                        />
+                      ))}
+                    </span>
+                    <span class="who-stage_facts">
+                      40+ advisors
+                      <span class="who-stage_dot" />6 offices
+                    </span>
+                  </span>
+                )}
+              </span>
+            </div>
+            {variant === "referral" ? (
+              <span class="who-stage_pill who-stage_booked">
+                <Icon src={calendar} class="who-stage_pill-icon" />
+                Call booked after one visit
+              </span>
+            ) : (
+              <span class="who-stage_pill who-stage_booked shared">
+                <Icon src={link} class="who-stage_pill-icon" />
+                Team is sharing the link again
+              </span>
+            )}
+          </div>
+        )}
+        {variant === "match" && (
+          <div class="who-stage_row">
+            <div class="who-stage_stack">
+              <div class="who-stage_card who-stage_ad">
+                <span class="who-stage_ad-head">
+                  <span class="who-stage_logo" />
+                  <span class="who-stage_ad-brand">
+                    <span class="who-stage_brand">Kestrel</span>
+                    <span class="who-stage_sponsored">Sponsored</span>
+                  </span>
+                </span>
+                <span class="who-stage_creative">
+                  Pass your SOC 2 review in 30 days
+                </span>
+                <span class="who-stage_ad-cta">
+                  <span class="who-stage_meta">kestrel.io</span>
+                  <span class="who-stage_learn">Learn more</span>
+                </span>
+              </div>
+              <span class="who-stage_pill who-stage_booked who-stage_cpl">
+                <Icon src={arrowDown} class="who-stage_pill-icon" />
+                Cost per lead down 18%
+              </span>
+            </div>
+            <Icon src={arrowBoth} class="who-stage_arrow" />
+            <div class="who-stage_card who-stage_site">
+              <span class="who-stage_bar-top">
+                <span class="who-stage_dots">
+                  <span class="who-stage_dot" />
+                  <span class="who-stage_dot" />
+                  <span class="who-stage_dot" />
+                </span>
+                <span class="who-stage_address">kestrel.io/soc2</span>
+              </span>
+              <span class="who-stage_hero">
+                <span class="who-stage_hero-copy">
+                  <span class="who-stage_firm">For security and IT teams</span>
+                  <span class="who-stage_headline">
+                    Pass your SOC 2 review in 30 days
+                  </span>
+                  <span class="who-stage_meta">
+                    Corporate and cross-border counsel since 1998.
+                  </span>
+                </span>
+                <span class="who-stage_button">Start your review</span>
+              </span>
+            </div>
+          </div>
+        )}
+        {variant === "launch" && (
+          <>
+            <div class="who-stage_group">
+              <div class="who-stage_card who-stage_site">
+                <span class="who-stage_bar-top">
+                  <span class="who-stage_dots">
+                    <span class="who-stage_dot" />
+                    <span class="who-stage_dot" />
+                    <span class="who-stage_dot" />
+                  </span>
+                  <span class="who-stage_address">webinar-q4</span>
+                </span>
+                <span class="who-stage_hero">
+                  <span class="who-stage_block">
+                    <span class="who-stage_headline">
+                      Q4 Webinar · Access reviews
+                    </span>
+                    <span class="who-stage_lines">
+                      <span class="who-stage_line" />
+                      <span class="who-stage_line short" />
+                    </span>
+                    <span class="who-stage_cta" />
+                  </span>
+                  <span class="who-stage_drop">Pricing</span>
+                </span>
+              </div>
+              <span class="who-stage_pill who-stage_booked">
+                <Icon src={click} class="who-stage_pill-icon" />
+                without waiting developer ticket
+              </span>
+            </div>
+            <span class="who-stage_cursor-tag">
+              <Icon src={cursor} class="who-stage_cursor" />
+              Marketing team
+            </span>
+          </>
+        )}
+        {variant === "funnel" && (
+          <div class="who-stage_group">
+            <div class="who-stage_card who-stage_funnel">
+              <span class="who-stage_funnel-head">
+                <span class="who-stage_funnel-title">
+                  <span class="who-stage_name">Landing page funnel</span>
+                  <span class="who-stage_path">/soc2 · last 30 days</span>
+                </span>
+                <span class="who-stage_tag">After fix</span>
+              </span>
+              <ul class="who-stage_steps" role="list">
+                {funnel.map((row) => (
+                  <li class="who-stage_step">
+                    <span class="who-stage_step-label">
+                      <span class="who-stage_step-name">{row.label}</span>
+                      {row.value}
+                    </span>
+                    <span class="who-stage_track">
+                      <span
+                        class="who-stage_fill"
+                        style={`--_share: ${row.share}%`}
+                      />
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <span class="who-stage_pill who-stage_report">
+              <Icon src={send} class="who-stage_pill-icon" />
+              Sent to leadership
+              <span class="who-stage_dot" />
+              Monday
+            </span>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    /* A 2:1 photo with the cards on a 700 × 322 stage at its centre. Lengths
+       are desktop units (948 across); below 62rem the tablet drawing takes
+       over, 770 across, which the mobile frame scales as one piece. */
+    .who-stage_wrap {
+      --_frame: 948;
+      --_card-radius: 12;
+      --_pill-radius: 8;
+      --_text: 16;
+      --_text-line: 22;
+      --_text-small: 14;
+      --_text-small-line: 20;
+      --_text-large: 18;
+      --_text-large-line: 24;
+      --_group-gap: 8;
+      --_email: 333;
+      --_email-pad: 16;
+      --_email-gap: 12;
+      --_avatar: 48;
+      --_message-pad: 16;
+      --_message-inline: 24;
+      --_preview: 358;
+      --_preview-pad: 16;
+      --_pill-pad: 8;
+      --_pill-gap: 8;
+      --_pill-icon: 16;
+      --_deal-pad: 24;
+      --_deal-gap: 20;
+      --_event-pad: 12;
+      --_event-gap: 12;
+      --_check: 20;
+      --_box-gap: 8;
+      --_box-end: 12;
+      --_menu-pad: 40;
+      --_column-gap: 16;
+      --_link-gap: 8;
+      --_search-pad: 12;
+      --_search-gap: 32;
+      --_search-icon: 20;
+      --_query-gap: 4;
+      --_bar-top: 38;
+      --_bar-pad: 8;
+      --_bar-inline: 20;
+      --_hero-pad: 20;
+      --_hero-gap: 20;
+      --_booked-pad: 8;
+      --_booked-inline: 12;
+      --_booked-gap: 8;
+      --_booked-icon: 24;
+      --_old-top: 54;
+      --_old-height: 162.8;
+      --_old-pad: 16;
+      --_old-gap: 16;
+      --_old-meta: 20;
+      --_team-avatar: 40;
+      --_team-gap: 8;
+      --_stack-gap: 12;
+      --_ad-pad: 12;
+      --_ad-gap: 8;
+      --_logo: 24;
+      --_creative-pad: 16;
+      --_cta-pad: 8;
+      --_block-pad: 16;
+      --_block-gap: 12;
+      --_drop-pad: 12;
+      --_drop-inline: 16;
+      --_click: 20;
+      --_funnel-pad: 28;
+      --_funnel-inline: 20;
+      --_steps-gap: 16;
+      @media (width < 62rem) {
+        --_frame: 770;
+        --_card-radius: 8;
+        --_pill-radius: 6;
+        --_text: 14;
+        --_text-line: 20;
+        --_text-small: 13;
+        --_text-small-line: 19;
+        --_text-large: 16;
+        --_text-large-line: 22;
+        --_group-gap: 6;
+        --_email: 317;
+        --_email-pad: 12;
+        --_email-gap: 8;
+        --_avatar: 36;
+        --_message-pad: 12;
+        --_message-inline: 20;
+        --_preview: 310;
+        --_preview-pad: 12;
+        --_pill-pad: 6;
+        --_pill-gap: 6;
+        --_pill-icon: 14;
+        --_deal-pad: 20;
+        --_deal-gap: 16;
+        --_event-pad: 8;
+        --_event-gap: 8;
+        --_check: 16;
+        --_box-gap: 6;
+        --_box-end: 8;
+        --_menu-pad: 32;
+        --_column-gap: 12;
+        --_link-gap: 6;
+        --_search-pad: 8;
+        --_search-gap: 28;
+        --_search-icon: 16;
+        --_bar-top: 34;
+        --_bar-pad: 6;
+        --_bar-inline: 16;
+        --_hero-pad: 16;
+        --_hero-gap: 16;
+        --_booked-pad: 6;
+        --_booked-inline: 8;
+        --_booked-gap: 6;
+        --_booked-icon: 20;
+        --_old-top: 64;
+        --_old-height: 142.8;
+        --_old-pad: 12;
+        --_old-gap: 12;
+        --_old-meta: 16;
+        --_team-avatar: 32;
+        --_team-gap: 6;
+        --_stack-gap: 8;
+        --_ad-pad: 8;
+        --_ad-gap: 6;
+        --_logo: 20;
+        --_creative-pad: 12;
+        --_cta-pad: 6;
+        --_block-pad: 12;
+        --_block-gap: 8;
+        --_drop-pad: 8;
+        --_drop-inline: 12;
+        --_click: 16;
+        --_funnel-pad: 24;
+        --_funnel-inline: 16;
+        --_steps-gap: 12;
+      }
+      --_unit: calc(100cqw / var(--_frame));
+      --_card-shadow: calc(-3 * var(--_unit)) calc(10 * var(--_unit))
+          calc(24 * var(--_unit)) rgb(0 0 0 / 0.1),
+        calc(-12 * var(--_unit)) calc(42 * var(--_unit))
+          calc(43 * var(--_unit)) rgb(0 0 0 / 0.09),
+        calc(-26 * var(--_unit)) calc(94 * var(--_unit))
+          calc(58 * var(--_unit)) rgb(0 0 0 / 0.05),
+        calc(-47 * var(--_unit)) calc(167 * var(--_unit))
+          calc(69 * var(--_unit)) rgb(0 0 0 / 0.01);
+      --_pill-shadow: calc(-1 * var(--_unit)) calc(3 * var(--_unit))
+          calc(8 * var(--_unit)) rgb(69 69 69 / 0.1),
+        calc(-4 * var(--_unit)) calc(13 * var(--_unit))
+          calc(14 * var(--_unit)) rgb(69 69 69 / 0.09),
+        calc(-9 * var(--_unit)) calc(30 * var(--_unit))
+          calc(19 * var(--_unit)) rgb(69 69 69 / 0.05),
+        calc(-16 * var(--_unit)) calc(53 * var(--_unit))
+          calc(22 * var(--_unit)) rgb(69 69 69 / 0.01);
+      --_avatar-shadow: 0 calc(1 * var(--_unit)) calc(2 * var(--_unit))
+          rgb(16 24 40 / 0.06),
+        0 calc(1 * var(--_unit)) calc(3 * var(--_unit)) rgb(16 24 40 / 0.1);
+      container-type: inline-size;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 2 / 1;
+      overflow: clip;
+      border-radius: var(--radius-0-5rem);
+      color: var(--color-neutral-90);
+      font-family: var(--primary-family);
+      letter-spacing: -0.005em;
+      white-space: nowrap;
+
+      :is(span, li) {
+        display: block;
+      }
+
+      ul,
+      ol {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      li {
+        margin: 0;
+      }
+
+      .icon {
+        max-width: none;
+      }
+
+      .who-stage_photo {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .who-stage_stage {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: calc(700 * var(--_unit));
+        height: calc(322 * var(--_unit));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        translate: -50% -50%;
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+      }
+
+      .who-stage_group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(var(--_group-gap) * var(--_unit));
+      }
+
+      .who-stage_card {
+        overflow: clip;
+        border-radius: calc(var(--_card-radius) * var(--_unit));
+        background-color: var(--color-neutral-0);
+        box-shadow: var(--_card-shadow);
+      }
+
+      .who-stage_meta {
+        color: var(--color-neutral-50);
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+      }
+
+      .who-stage_name,
+      .who-stage_event-text {
+        font-size: calc(var(--_text) * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(var(--_text-line) * var(--_unit));
+      }
+
+      .who-stage_avatar {
+        flex: none;
+        width: calc(var(--_avatar) * var(--_unit));
+        height: calc(var(--_avatar) * var(--_unit));
+        border: calc(1 * var(--_unit)) solid var(--color-neutral-0);
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: var(--_avatar-shadow);
+      }
+
+      .who-stage_pill {
+        display: flex;
+        align-items: center;
+        gap: calc(var(--_pill-gap) * var(--_unit));
+        padding: calc(var(--_pill-pad) * var(--_unit));
+        border-radius: calc(var(--_pill-radius) * var(--_unit));
+        background-color: var(--color-neutral-0);
+        font-weight: var(--primary-medium);
+        box-shadow: var(--_pill-shadow);
+      }
+
+      .who-stage_pill-icon {
+        --_size: calc(var(--_pill-icon) * var(--_unit));
+        flex: none;
+        color: var(--color-primary-60);
+      }
+
+      .who-stage_dot {
+        flex: none;
+        width: calc(3 * var(--_unit));
+        height: calc(3 * var(--_unit));
+        border-radius: 50%;
+        background-color: var(--color-neutral-10);
+      }
+
+      /* =====================
+         Forward
+         ===================== */
+
+      .who-stage_email {
+        width: calc(var(--_email) * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--_email-gap) * var(--_unit));
+        padding: calc(var(--_email-pad) * var(--_unit));
+        border: calc(1 * var(--_unit)) solid var(--color-neutral-5);
+      }
+
+      .who-stage_from {
+        display: flex;
+        align-items: center;
+        gap: calc(var(--_email-gap) * var(--_unit));
+      }
+
+      .who-stage_message {
+        display: flex;
+        flex-direction: column;
+        gap: calc(4 * var(--_unit));
+        padding: calc(var(--_message-pad) * var(--_unit))
+          calc(var(--_message-inline) * var(--_unit));
+        border: calc(1 * var(--_unit)) solid var(--color-neutral-5);
+        border-radius: calc(var(--_card-radius) * var(--_unit))
+          calc(var(--_card-radius) * 2 * var(--_unit))
+          calc(var(--_card-radius) * 2 * var(--_unit))
+          calc(2 * var(--_unit));
+        background-color: var(--color-neutral-2);
+      }
+
+      .who-stage_subject {
+        font-size: calc(var(--_text-small) * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(var(--_text-small-line) * var(--_unit));
+      }
+
+      .who-stage_preview {
+        width: calc(var(--_preview) * var(--_unit));
+      }
+
+      .who-stage_thumb {
+        display: flex;
+        flex-direction: column;
+        gap: calc(4 * var(--_unit));
+        padding: calc(var(--_preview-pad) * var(--_unit));
+        color: var(--color-neutral-0);
+        background-image: linear-gradient(
+          164.5deg,
+          #07176e 0%,
+          #0b1a5c 70%,
+          #002e8b 100%
+        );
+      }
+
+      .who-stage_brand {
+        font-weight: var(--primary-medium);
+      }
+
+      .who-stage_link {
+        display: flex;
+        flex-direction: column;
+        gap: calc(2 * var(--_unit));
+        padding: calc(var(--_preview-pad) * var(--_unit));
+        font-family: var(--secondary-family);
+      }
+
+      .who-stage_domain {
+        color: var(--color-neutral-50);
+        font-size: calc(10 * var(--_unit));
+        line-height: calc(14 * var(--_unit));
+      }
+
+      .who-stage_link-title {
+        font-size: calc(11 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(15 * var(--_unit));
+      }
+
+      .who-stage_forwarded {
+        position: absolute;
+        top: calc(265 * var(--_unit));
+        left: calc(473 * var(--_unit));
+      }
+
+      /* =====================
+         Qualify
+         ===================== */
+
+      .who-stage_deal {
+        width: calc(496 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--_deal-gap) * var(--_unit));
+        padding: calc(var(--_deal-pad) * var(--_unit));
+        border: calc(1 * var(--_unit)) solid var(--color-neutral-5);
+      }
+
+      .who-stage_deal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .who-stage_deal-title {
+        display: flex;
+        flex-direction: column;
+        gap: calc(2 * var(--_unit));
+      }
+
+      .who-stage_heading {
+        font-size: calc(var(--_text-large) * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(var(--_text-large-line) * var(--_unit));
+        letter-spacing: -0.007em;
+      }
+
+      .who-stage_tag {
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+        padding: calc(4 * var(--_unit)) calc(8 * var(--_unit));
+        border: calc(1 * var(--_unit)) solid var(--color-primary-10);
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-primary-5);
+        color: var(--color-primary-60);
+      }
+
+      .who-stage_tick {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: calc(12 * var(--_unit));
+        height: calc(12 * var(--_unit));
+      }
+
+      .who-stage_check {
+        --_size: calc(var(--_check) * var(--_unit));
+        flex: none;
+      }
+
+      .who-stage_timeline {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: calc(4 * var(--_unit));
+        &::before {
+          content: "";
+          position: absolute;
+          top: calc((var(--_event-pad) + 11) * var(--_unit));
+          bottom: calc((var(--_event-pad) + 11) * var(--_unit));
+          left: calc(10.5 * var(--_unit));
+          width: calc(1 * var(--_unit));
+          background-color: var(--color-primary-60);
+        }
+      }
+
+      .who-stage_event {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: calc(var(--_event-gap) * var(--_unit));
+        padding-block: calc(var(--_event-pad) * var(--_unit));
+        .who-stage_meta {
+          color: var(--color-neutral-40);
+        }
+      }
+
+      .who-stage_event-text {
+        flex: 1 1 0;
+        color: var(--color-neutral-60);
+      }
+
+      .who-stage_marker {
+        flex: none;
+        width: calc(22 * var(--_unit));
+        height: calc(22 * var(--_unit));
+        padding: calc(7.26 * var(--_unit));
+        border-radius: 50%;
+        background-color: var(--color-neutral-0);
+        box-shadow: var(--_avatar-shadow);
+        &::before {
+          content: "";
+          display: block;
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          background-color: var(--color-primary-60);
+        }
+      }
+
+      .who-stage_event:last-child {
+        .who-stage_event-text {
+          color: var(--color-neutral-90);
+        }
+        .who-stage_marker {
+          background-color: var(--color-primary-60);
+          &::before {
+            background-color: var(--color-primary-5);
+          }
+        }
+      }
+
+      .who-stage_qualified {
+        gap: calc(var(--_box-gap) * var(--_unit));
+        padding: calc(4 * var(--_unit)) calc(var(--_box-end) * var(--_unit))
+          calc(4 * var(--_unit)) calc(4 * var(--_unit));
+        border: calc(1 * var(--_unit)) solid var(--color-neutral-5);
+        font-size: calc(var(--_text-small) * var(--_unit));
+        line-height: calc(var(--_text-small-line) * var(--_unit));
+      }
+
+      .who-stage_box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: calc(24 * var(--_unit));
+        height: calc(24 * var(--_unit));
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-primary-60);
+        color: var(--color-neutral-0);
+      }
+
+      /* =====================
+         Structure and expand
+         ===================== */
+
+      .who-stage_menu {
+        display: flex;
+        gap: calc(56 * var(--_unit));
+        padding: calc(var(--_menu-pad) * var(--_unit));
+        border: calc(1 * var(--_unit)) solid var(--color-neutral-5);
+        border-radius: calc(var(--_card-radius) * var(--_unit));
+        background-color: var(--color-neutral-2);
+      }
+
+      .who-stage_column {
+        width: calc(140 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--_column-gap) * var(--_unit));
+      }
+
+      .who-stage_label {
+        color: var(--color-neutral-50);
+        text-transform: uppercase;
+      }
+
+      .who-stage_links {
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--_link-gap) * var(--_unit));
+      }
+
+      .who-stage_menu-link {
+        display: flex;
+        align-items: center;
+        gap: calc(4 * var(--_unit));
+        font-size: calc(var(--_text) * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(var(--_text-line) * var(--_unit));
+      }
+
+      .who-stage_new {
+        padding: calc(2 * var(--_unit)) calc(5 * var(--_unit));
+        border: calc(1 * var(--_unit)) solid var(--color-primary-10);
+        border-radius: calc(2 * var(--_unit));
+        background-color: var(--color-primary-5);
+        color: var(--color-primary-60);
+        font-family: var(--secondary-family);
+        font-size: calc(8 * var(--_unit));
+        font-weight: var(--primary-regular);
+        line-height: calc(11 * var(--_unit));
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+      }
+
+      .who-stage_search {
+        display: flex;
+        align-items: center;
+        gap: calc(var(--_search-gap) * var(--_unit));
+        padding: calc(var(--_search-pad) * var(--_unit));
+        border: calc(1 * var(--_unit)) solid var(--color-neutral-5);
+        border-radius: calc(var(--_pill-radius) * var(--_unit));
+        background-color: var(--color-neutral-0);
+        box-shadow:
+          0 calc(4 * var(--_unit)) calc(12 * var(--_unit))
+            calc(-4 * var(--_unit)) rgb(16 24 40 / 0.14),
+          var(--_card-shadow);
+      }
+
+      .who-stage_query {
+        display: flex;
+        align-items: center;
+        gap: calc(var(--_query-gap) * var(--_unit));
+        font-size: calc(var(--_text) * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(var(--_text-line) * var(--_unit));
+      }
+
+      .who-stage_search-icon {
+        --_size: calc(var(--_search-icon) * var(--_unit));
+        flex: none;
+        color: var(--color-primary-60);
+      }
+
+      .who-stage_crumbs {
+        display: flex;
+        align-items: center;
+        gap: calc(4 * var(--_unit));
+        color: var(--color-neutral-50);
+        font-size: calc(var(--_text-small) * var(--_unit));
+        line-height: calc(var(--_text-small-line) * var(--_unit));
+      }
+
+      .who-stage_chevron {
+        --_size: calc(10 * var(--_unit));
+        color: var(--color-neutral-20);
+      }
+
+      &.structure .who-stage_group {
+        gap: calc(var(--_hero-gap) * var(--_unit));
+      }
+
+      &.expand {
+        --_query-gap: 8;
+        @media (width < 62rem) {
+          --_query-gap: 6;
+        }
+
+        .who-stage_group {
+          gap: calc(var(--_hero-gap) * var(--_unit));
+        }
+
+        .who-stage_menu {
+          gap: calc(120 * var(--_unit));
+          @media (width < 62rem) {
+            gap: calc(112 * var(--_unit));
+          }
+        }
+
+        .who-stage_menu-link {
+          gap: calc(6 * var(--_unit));
+          .who-stage_new {
+            margin-left: calc(-2 * var(--_unit));
+          }
+        }
+
+        .who-stage_query {
+          color: var(--color-neutral-80);
+          .who-stage_dot {
+            width: calc(6 * var(--_unit));
+            height: calc(6 * var(--_unit));
+          }
+        }
+      }
+
+      .who-stage_flag {
+        flex: none;
+        width: calc(18.67 * var(--_unit));
+        height: calc(14 * var(--_unit));
+      }
+
+      /* =====================
+         Referral and refresh
+         ===================== */
+
+      .who-stage_site {
+        width: calc(428 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        border: calc(1 * var(--_unit)) solid var(--color-neutral-5);
+      }
+
+      .who-stage_bar-top {
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+        height: calc(var(--_bar-top) * var(--_unit));
+        padding: calc(var(--_bar-pad) * var(--_unit))
+          calc(var(--_bar-inline) * var(--_unit));
+        background-color: var(--color-neutral-2);
+        @media (width < 62rem) {
+          gap: calc(6 * var(--_unit));
+        }
+      }
+
+      .who-stage_dots {
+        display: flex;
+        gap: calc(4 * var(--_unit));
+        .who-stage_dot {
+          width: calc(6 * var(--_unit));
+          height: calc(6 * var(--_unit));
+          background-color: var(--color-neutral-20);
+        }
+      }
+
+      .who-stage_address {
+        flex: 1 1 0;
+        height: calc(22 * var(--_unit));
+        border: calc(1 * var(--_unit)) solid var(--color-neutral-5);
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        color: var(--color-neutral-50);
+        font-size: calc(10 * var(--_unit));
+        line-height: calc(20 * var(--_unit));
+        letter-spacing: 0;
+        text-align: center;
+      }
+
+      .who-stage_hero {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: calc(var(--_hero-gap) * var(--_unit));
+        padding: calc(var(--_hero-pad) * var(--_unit));
+        white-space: normal;
+      }
+
+      .who-stage_hero-copy {
+        display: flex;
+        flex-direction: column;
+        gap: calc(4 * var(--_unit));
+      }
+
+      .who-stage_firm {
+        font-weight: var(--primary-medium);
+      }
+
+      .who-stage_headline {
+        max-width: calc(290 * var(--_unit));
+        color: var(--color-primary-60);
+        font-size: calc(var(--_text-large) * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(var(--_text-large-line) * var(--_unit));
+        letter-spacing: -0.007em;
+      }
+
+      .who-stage_button {
+        padding: calc(6 * var(--_unit)) calc(12 * var(--_unit));
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-primary-60);
+        color: var(--color-neutral-0);
+        font-size: calc(10 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(14 * var(--_unit));
+        letter-spacing: 0;
+      }
+
+      .who-stage_booked {
+        gap: calc(var(--_booked-gap) * var(--_unit));
+        padding: calc(var(--_booked-pad) * var(--_unit))
+          calc(var(--_booked-inline) * var(--_unit));
+        font-size: calc(var(--_text-small) * var(--_unit));
+        line-height: calc(var(--_text-small-line) * var(--_unit));
+        .who-stage_pill-icon {
+          --_size: calc(var(--_booked-icon) * var(--_unit));
+        }
+        &.shared {
+          background-color: var(--color-primary-60);
+          color: var(--color-neutral-0);
+          .who-stage_pill-icon {
+            color: var(--color-neutral-0);
+          }
+        }
+      }
+
+      &.referral .who-stage_group {
+        gap: calc(16 * var(--_unit));
+        @media (width < 62rem) {
+          gap: calc(12 * var(--_unit));
+        }
+      }
+
+      &.refresh {
+        .who-stage_stage {
+          justify-content: flex-start;
+        }
+
+        .who-stage_group {
+          position: relative;
+          z-index: 1;
+          margin-left: calc(206 * var(--_unit));
+          gap: calc(12 * var(--_unit));
+          @media (width < 62rem) {
+            gap: calc(8 * var(--_unit));
+          }
+        }
+
+        .who-stage_site {
+          height: calc(218 * var(--_unit));
+        }
+
+        .who-stage_hero {
+          flex: 1 1 auto;
+          justify-content: center;
+          gap: calc(var(--_hero-gap) * var(--_unit));
+          padding-block: 0;
+        }
+
+        .who-stage_headline {
+          max-width: calc(224 * var(--_unit));
+        }
+      }
+
+      .who-stage_team {
+        display: flex;
+        align-items: center;
+        gap: calc(var(--_team-gap) * var(--_unit));
+      }
+
+      .who-stage_avatars {
+        display: flex;
+        .who-stage_avatar {
+          width: calc(var(--_team-avatar) * var(--_unit));
+          height: calc(var(--_team-avatar) * var(--_unit));
+          & + .who-stage_avatar {
+            margin-left: calc(-4 * var(--_unit));
+          }
+        }
+      }
+
+      .who-stage_facts {
+        display: flex;
+        align-items: center;
+        gap: calc(6 * var(--_unit));
+        color: var(--color-neutral-30);
+        &.small {
+          font-size: calc(10 * var(--_unit));
+          line-height: calc(14 * var(--_unit));
+          letter-spacing: 0.02em;
+        }
+      }
+
+      .who-stage_old {
+        position: absolute;
+        top: calc(var(--_old-top) * var(--_unit));
+        left: calc(66 * var(--_unit));
+        width: calc(197 * var(--_unit));
+        height: calc(var(--_old-height) * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--_old-meta) * var(--_unit));
+        padding: calc(var(--_old-pad) * var(--_unit));
+        border: calc(1 * var(--_unit)) solid var(--color-neutral-5);
+        border-radius: calc(var(--_card-radius) * var(--_unit));
+        background-color: var(--color-neutral-5);
+        box-shadow: var(--_card-shadow);
+      }
+
+      .who-stage_old-copy {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: calc(var(--_old-gap) * var(--_unit));
+      }
+
+      .who-stage_year {
+        padding: calc(2 * var(--_unit)) calc(8 * var(--_unit));
+        border-radius: calc(2 * var(--_unit));
+        background-color: var(--color-neutral-10);
+        color: var(--color-neutral-40);
+        font-weight: var(--primary-medium);
+        @media (width < 62rem) {
+          padding-inline: calc(6 * var(--_unit));
+        }
+      }
+
+      .who-stage_bars {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: calc(4 * var(--_unit));
+        &.short {
+          width: calc(96 * var(--_unit));
+        }
+      }
+
+      .who-stage_bar {
+        height: calc(4.2 * var(--_unit));
+        border-radius: calc(0.4 * var(--_unit));
+        background-color: var(--color-neutral-10);
+        &:nth-child(2) {
+          width: 92%;
+        }
+        &:nth-child(3) {
+          width: 52%;
+        }
+      }
+
+      .who-stage_bars.short .who-stage_bar:nth-child(2) {
+        width: 100%;
+      }
+
+      .who-stage_bars.short .who-stage_bar:nth-child(3) {
+        width: 88.5%;
+      }
+
+      /* =====================
+         Match
+         ===================== */
+
+      .who-stage_row {
+        display: flex;
+        align-items: center;
+        gap: calc(var(--_stack-gap) * var(--_unit));
+      }
+
+      .who-stage_stack {
+        width: calc(210 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--_stack-gap) * var(--_unit));
+      }
+
+      .who-stage_ad {
+        display: flex;
+        flex-direction: column;
+        border: calc(1 * var(--_unit)) solid var(--color-neutral-5);
+      }
+
+      .who-stage_ad-head {
+        display: flex;
+        align-items: center;
+        gap: calc(var(--_ad-gap) * var(--_unit));
+        padding: calc(var(--_ad-pad) * var(--_unit));
+      }
+
+      .who-stage_logo {
+        flex: none;
+        width: calc(var(--_logo) * var(--_unit));
+        height: calc(var(--_logo) * var(--_unit));
+        border-radius: calc(5 * var(--_unit));
+        background-color: var(--color-primary-60);
+      }
+
+      .who-stage_sponsored {
+        color: var(--color-neutral-50);
+        font-size: calc(9 * var(--_unit));
+        line-height: calc(12.6 * var(--_unit));
+      }
+
+      .who-stage_creative {
+        padding: calc(var(--_creative-pad) * var(--_unit))
+          calc(var(--_ad-pad) * var(--_unit));
+        padding-right: calc((28 - var(--_ad-pad)) * var(--_unit));
+        color: var(--color-neutral-0);
+        font-size: calc(var(--_text-small) * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(var(--_text-small-line) * var(--_unit));
+        white-space: normal;
+        background-image: linear-gradient(
+          to bottom right,
+          var(--color-primary-98),
+          var(--color-primary-60) 71%
+        );
+      }
+
+      .who-stage_ad-cta {
+        display: flex;
+        justify-content: space-between;
+        padding: calc(var(--_cta-pad) * var(--_unit))
+          calc(var(--_ad-pad) * var(--_unit));
+      }
+
+      .who-stage_learn {
+        color: var(--color-primary-60);
+      }
+
+      .who-stage_cpl {
+        .who-stage_pill-icon {
+          --_size: calc(16 * var(--_unit));
+          color: var(--color-accent-success-60);
+        }
+      }
+
+      .who-stage_arrow {
+        --_size: calc(40 * var(--_unit));
+        flex: none;
+        height: auto;
+        aspect-ratio: 47 / 12;
+        color: var(--color-neutral-0);
+      }
+
+      &.match {
+        .who-stage_site {
+          width: calc(316 * var(--_unit));
+        }
+
+        .who-stage_headline {
+          max-width: 11em;
+        }
+      }
+
+      /* =====================
+         Launch
+         ===================== */
+
+      &.launch {
+        .who-stage_group {
+          gap: calc(var(--_stack-gap) * var(--_unit));
+        }
+
+        .who-stage_site {
+          width: calc(436 * var(--_unit));
+        }
+
+        .who-stage_hero {
+          align-items: stretch;
+        }
+
+        .who-stage_headline {
+          max-width: none;
+        }
+
+        .who-stage_booked .who-stage_pill-icon {
+          --_size: calc(var(--_click) * var(--_unit));
+        }
+      }
+
+      .who-stage_block {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: calc(var(--_block-gap) * var(--_unit));
+        padding: calc(var(--_block-pad) * var(--_unit));
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-neutral-2);
+      }
+
+      .who-stage_lines {
+        display: flex;
+        flex-direction: column;
+        gap: calc(4 * var(--_unit));
+      }
+
+      .who-stage_line {
+        width: calc(150 * var(--_unit));
+        height: calc(6 * var(--_unit));
+        border-radius: calc(0.4 * var(--_unit));
+        background-color: var(--color-neutral-5);
+        &.short {
+          width: calc(84 * var(--_unit));
+          background-color: var(--color-neutral-10);
+        }
+      }
+
+      .who-stage_cta {
+        width: calc(56 * var(--_unit));
+        height: calc(16 * var(--_unit));
+        border-radius: calc(2 * var(--_unit));
+        background-color: var(--color-primary-60);
+      }
+
+      .who-stage_drop {
+        padding: calc(var(--_drop-pad) * var(--_unit))
+          calc(var(--_drop-inline) * var(--_unit));
+        border: calc(1 * var(--_unit)) dashed var(--color-primary-60);
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-primary-5);
+        color: var(--color-primary-60);
+        font-size: calc(var(--_text) * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(var(--_text-line) * var(--_unit));
+        text-align: center;
+      }
+
+      .who-stage_cursor-tag {
+        position: absolute;
+        top: calc(254 * var(--_unit));
+        left: calc(547 * var(--_unit));
+        padding: calc(3.6 * var(--_unit)) calc(7.2 * var(--_unit));
+        border-radius: calc(1.727 * var(--_unit));
+        background-color: #3b63f3;
+        color: var(--color-neutral-0);
+        font-weight: var(--primary-medium);
+      }
+
+      .who-stage_cursor {
+        position: absolute;
+        top: calc(-15.6 * var(--_unit));
+        left: calc(-15.23 * var(--_unit));
+        width: calc(23.275 * var(--_unit));
+        height: auto;
+        aspect-ratio: 21.116 / 21.667;
+        color: #3b63f3;
+      }
+
+      /* =====================
+         Funnel
+         ===================== */
+
+      .who-stage_funnel {
+        width: calc(395 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--_funnel-pad) * var(--_unit));
+        padding: calc(var(--_funnel-pad) * var(--_unit))
+          calc(var(--_funnel-inline) * var(--_unit));
+        border: calc(1 * var(--_unit)) solid var(--color-neutral-5);
+      }
+
+      .who-stage_funnel-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        .who-stage_tag {
+          padding: calc(2 * var(--_unit)) calc(var(--_ad-gap) * var(--_unit));
+          font-weight: var(--primary-medium);
+        }
+      }
+
+      .who-stage_funnel-title {
+        display: flex;
+        flex-direction: column;
+        gap: calc(2 * var(--_unit));
+      }
+
+      .who-stage_path {
+        color: var(--color-neutral-50);
+        font-size: calc(var(--_text-small) * var(--_unit));
+        line-height: calc(var(--_text-small-line) * var(--_unit));
+      }
+
+      .who-stage_steps {
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--_steps-gap) * var(--_unit));
+      }
+
+      .who-stage_step {
+        display: flex;
+        flex-direction: column;
+        gap: calc(6 * var(--_unit));
+      }
+
+      .who-stage_step-label {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .who-stage_step-name {
+        font-weight: var(--primary-medium);
+      }
+
+      .who-stage_track {
+        height: calc(8 * var(--_unit));
+        overflow: clip;
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-neutral-5);
+      }
+
+      .who-stage_fill {
+        width: var(--_share);
+        height: 100%;
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-primary-60);
+      }
+
+      .who-stage_report {
+        gap: calc(var(--_booked-gap) * var(--_unit));
+        padding: calc(var(--_booked-pad) * var(--_unit))
+          calc(var(--_booked-inline) * var(--_unit));
+        background-color: var(--color-primary-60);
+        color: var(--color-neutral-0);
+        .who-stage_pill-icon {
+          --_size: calc(16 * var(--_unit));
+          color: var(--color-neutral-0);
+        }
+        .who-stage_dot {
+          width: calc(4 * var(--_unit));
+          height: calc(4 * var(--_unit));
+          background-color: rgb(255 255 255 / 0.2);
+        }
+      }
+    }
+  }
+</style>

@@ -4,6 +4,7 @@ import Heading from "@/components/typography/Heading.astro";
 import Paragraph from "@/components/typography/Paragraph.astro";
 import Icon from "@/components/media/Icon.astro";
 import check from "@/assets/icons/check-small.svg";
+import flag from "@/assets/who/stage-note.svg";
 
 type Step = {
   title: string;
@@ -11,34 +12,64 @@ type Step = {
   label?: string;
   text: string;
   points: string[];
+  note?: never;
+};
+type Stage = {
+  title: string;
+  label?: string;
+  text: string;
+  /** Line beside the flag icon, under the text. */
+  note: string;
+  points?: never;
 };
 type Note = { title: string; text: string };
 
-interface Props extends HTMLAttributes<"div"> {
+type Base = HTMLAttributes<"div"> & {
   /** Set to `false` to omit the component. */
   render?: boolean;
   /** Small label above the heading. */
   eyebrow?: string;
   /** Section heading. Accepts `<br>` for a forced line break. */
   heading: string;
-  /** Steps in order, numbered automatically. A `step-1`, `step-2`… slot fills that step's visual. */
-  steps: Step[];
+  /** Text under the heading. Omit to leave it out. */
+  lead?: string;
   /** Box under the side navigation. Omit to leave it out. */
   note?: Note;
   /** Adds `--space-2rem` between the heading and the steps. */
   spaced?: boolean;
-}
+};
+
+type Props = Base &
+  (
+    | {
+        /** `steps` puts each step's text and points beside its visual; `stages` runs the title into the text as one heading, adds a flagged note, and puts a wide visual under it. */
+        variant?: "steps";
+        /** Steps in order, numbered automatically. A `step-1`, `step-2`… slot fills that step's visual. */
+        steps: Step[];
+      }
+    | {
+        variant: "stages";
+        steps: Stage[];
+      }
+  );
+
+type AllProps = Base & {
+  variant?: "steps" | "stages";
+  steps: (Step | Stage)[];
+};
 
 const {
   render = true,
   eyebrow = "Our process",
   heading,
+  lead,
   steps,
+  variant = "steps",
   note,
   spaced = false,
   class: className,
   ...rest
-} = Astro.props;
+} = Astro.props as AllProps;
 
 const stepId = (index: number) => `process-step-${index + 1}`;
 const number = (index: number) => `(${String(index + 1).padStart(2, "0")})`;
@@ -47,7 +78,12 @@ const number = (index: number) => `(${String(index + 1).padStart(2, "0")})`;
 {
   render && heading && steps?.length > 0 && (
     <div
-      class:list={["industry-process_wrap", spaced && "spaced", className]}
+      class:list={[
+        "industry-process_wrap",
+        variant === "stages" && "stages",
+        spaced && "spaced",
+        className,
+      ]}
       {...rest}
     >
       <div class="industry-process_intro">
@@ -57,6 +93,11 @@ const number = (index: number) => `(${String(index + 1).padStart(2, "0")})`;
         <Heading tag="h2" variant="h3">
           <Fragment set:html={heading} />
         </Heading>
+        {lead && (
+          <Paragraph variant="large" class="industry-process_text">
+            {lead}
+          </Paragraph>
+        )}
       </div>
       <div class="industry-process_layout">
         <nav class="industry-process_nav" aria-label="Process steps">
@@ -91,6 +132,24 @@ const number = (index: number) => `(${String(index + 1).padStart(2, "0")})`;
         <ol class="industry-process_list">
           {steps.map((step, index) => (
             <li id={stepId(index)} class="industry-process_step">
+              {variant === "stages" ? (
+                <div class="industry-process_heading">
+                  <Paragraph
+                    tag="span"
+                    variant="overline-small"
+                    class="industry-process_number"
+                  >
+                    {number(index)}
+                  </Paragraph>
+                  <Heading tag="h3" variant="h5" class="industry-process_stage">
+                    <strong>{step.title}</strong> {step.text}
+                  </Heading>
+                  <Paragraph variant="main" class="industry-process_flagged">
+                    <Icon src={flag} class="industry-process_flag" />
+                    <span class="industry-process_text">{step.note}</span>
+                  </Paragraph>
+                </div>
+              ) : (
               <div class="industry-process_content">
                 <div class="industry-process_heading">
                   <Paragraph
@@ -108,7 +167,7 @@ const number = (index: number) => `(${String(index + 1).padStart(2, "0")})`;
                   </Paragraph>
                 </div>
                 <ul class="industry-process_points" role="list">
-                  {step.points.map((point) => (
+                  {step.points?.map((point) => (
                     <li class="industry-process_point">
                       <Icon src={check} class="industry-process_check" />
                       <Paragraph
@@ -122,6 +181,7 @@ const number = (index: number) => `(${String(index + 1).padStart(2, "0")})`;
                   ))}
                 </ul>
               </div>
+              )}
               <div class="industry-process_visual" aria-hidden="true">
                 <slot name={`step-${index + 1}`} />
               </div>
@@ -356,6 +416,64 @@ const number = (index: number) => `(${String(index + 1).padStart(2, "0")})`;
           min-width: 0;
           width: auto;
           align-self: center;
+        }
+      }
+
+      /* Stages: heading with its note, a wide visual under it */
+
+      &.stages {
+        .industry-process_intro {
+          max-width: 40rem;
+          > .text {
+            max-width: 33.75rem;
+            @media (width >= 62rem) {
+              max-width: none;
+            }
+          }
+        }
+
+        .industry-process_step {
+          flex-direction: column;
+          align-items: stretch;
+          gap: var(--space-2rem);
+          padding-bottom: var(--space-3-5rem);
+          border-bottom: var(--border-width) solid var(--color-neutral-5);
+        }
+
+        .industry-process_heading {
+          max-width: 40rem;
+          @media (width >= 62rem) {
+            max-width: 46.875rem;
+          }
+        }
+
+        .industry-process_stage {
+          color: var(--color-neutral-30);
+          text-wrap: wrap;
+          strong {
+            color: var(--heading);
+            font-weight: inherit;
+          }
+        }
+
+        .industry-process_flagged {
+          display: flex;
+          align-items: center;
+          gap: var(--space-0-75rem);
+          padding-block: var(--space-0-25rem);
+        }
+
+        .industry-process_flag {
+          --_size: var(--icon-sm);
+          flex: none;
+          color: var(--brand);
+        }
+
+        .industry-process_visual {
+          flex: none;
+          width: 100%;
+          aspect-ratio: 2 / 1;
+          background: none;
         }
       }
     }

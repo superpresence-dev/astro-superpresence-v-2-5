@@ -1,0 +1,1948 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Img from "@/components/media/Img.astro";
+import Icon from "@/components/media/Icon.astro";
+import headOfIt from "@/assets/who/avatar-head-of-it.jpg";
+import woman from "@/assets/who/avatar-woman.jpg";
+import manTeal from "@/assets/who/avatar-man-teal.jpg";
+import manBlue from "@/assets/who/avatar-man-blue.jpg";
+import mic from "@/assets/who/icons/process-mic.svg";
+import layers from "@/assets/who/icons/process-layers.svg";
+import chevron from "@/assets/who/icons/process-select.svg";
+import cursorGreen from "@/assets/who/icons/process-cursor-green.svg";
+import cursorOrange from "@/assets/who/icons/process-cursor-orange.svg";
+import mapIcon from "@/assets/who/icons/process-map.svg";
+import searchIcon from "@/assets/who/icons/process-search.svg";
+import flagHk from "@/assets/service/design/why/flag-hk.svg";
+import flagTh from "@/assets/service/design/why/flag-th.svg";
+import flagAu from "@/assets/who/icons/flag-au.svg";
+import check from "@/assets/icons/check-small.svg";
+
+type Variant =
+  | "interview"
+  | "pitch"
+  | "scene"
+  | "paths"
+  | "publish"
+  | "referrer"
+  | "services"
+  | "identity"
+  | "enquiry"
+  | "people"
+  | "leaks"
+  | "variants"
+  | "kit"
+  | "form"
+  | "events";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Which step of the process the picture shows. */
+  variant: Variant;
+}
+
+const { render = true, variant, class: className, ...rest } = Astro.props;
+
+const washes: Record<Variant, string> = {
+  interview: "wash-fresh",
+  referrer: "wash-fresh",
+  publish: "wash-fresh",
+  people: "wash-fresh",
+  pitch: "wash-blue",
+  paths: "wash-blue",
+  services: "wash-blue",
+  enquiry: "wash-blue",
+  scene: "wash-mist",
+  identity: "wash-mist",
+  leaks: "wash-fresh",
+  events: "wash-fresh",
+  variants: "wash-blue",
+  form: "wash-blue",
+  kit: "wash-mist",
+};
+
+const notes = {
+  interview: {
+    avatar: headOfIt,
+    title: "Customer interview",
+    meta: ["Head of IT", "Acme"],
+    quote: ["“We lost a deal because ", "the security review took three weeks", ".”"],
+    tag: "BUYING TRIGGER",
+    calls: "12 sales calls reviewed",
+  },
+  referrer: {
+    avatar: woman,
+    title: "Referrer conversation",
+    meta: ["Priya Nair", "Partner, Halden"],
+    quote: ["“I send clients their way because ", "they reply in a day, not a week.", "”"],
+    tag: "WHY THEY REFER",
+    calls: "9 partner, client and referrer calls",
+  },
+};
+const note = variant === "interview" || variant === "referrer" ? notes[variant] : undefined;
+
+const services = [
+  { label: "CORPORATE", text: "Set up and run your company in Singapore.", accent: true },
+  { label: "TAX", text: "Pay what you owe in each market, and no more." },
+  { label: "DISPUTES", text: "Settle it quickly, or win it in court." },
+];
+const sizes = [
+  { label: "1–10" },
+  { label: "11–50", selected: true },
+  { label: "50+" },
+];
+const campaigns = [
+  { path: "/webinar-q3", source: "LinkedIn", rate: "6.8%" },
+  { path: "/soc2-audit", source: "Google Ads", rate: "1.2%", leak: true },
+  { path: "/pricing-lp", source: "Meta", rate: "4.1%" },
+];
+const kitSections = [
+  { name: "Hero", selected: true },
+  { name: "Proof" },
+  { name: "Pricing" },
+];
+const templates = [
+  { name: "Hongkong", flag: flagHk },
+  { name: "Thailand", flag: flagTh },
+  { name: "Australia", flag: flagAu },
+];
+const fields = [
+  { label: "Work email", value: "acme@company.co" },
+  { label: "Company", value: "company.com" },
+];
+const events = [
+  { name: "demo_booked", page: "/soc2-audit", time: "12:04", accent: true },
+  { name: "form_started", page: "/soc2-audit", time: "12:03" },
+  { name: "pricing_viewed", page: "/pricing-lp", time: "11:58" },
+];
+const people = [
+  { avatar: manTeal, name: "Daniel Lim", role: "Partner" },
+  { avatar: manBlue, name: "Peter Janson", role: "Senior associate" },
+  { avatar: woman, name: "Jessica Avellyn", role: "Associate", added: true },
+];
+---
+
+{
+  render && variant && (
+    <div
+      class:list={["who-process_wrap", variant, washes[variant], className]}
+      aria-hidden="true"
+      {...rest}
+    >
+      <div class="who-process_stage">
+        {note && (
+          <div class="who-process_group">
+            <div class="who-process_card who-process_note">
+              <span class="who-process_person">
+                <Img src={note.avatar} width={96} class="who-process_avatar" />
+                <span class="who-process_who">
+                  <span class="who-process_title">{note.title}</span>
+                  <span class="who-process_meta">
+                    {note.meta[0]}
+                    <span class="who-process_dot" />
+                    {note.meta[1]}
+                  </span>
+                </span>
+              </span>
+              <span class="who-process_quote">
+                {note.quote[0]}
+                <em>{note.quote[1]}</em>
+                {note.quote[2]}
+              </span>
+              <span class="who-process_tag warning">{note.tag}</span>
+            </div>
+            <span class="who-process_connector" />
+            <span class="who-process_pill">
+              <Icon src={mic} class="who-process_mic" />
+              <span class="who-process_title">{note.calls}</span>
+            </span>
+          </div>
+        )}
+        {variant === "pitch" && (
+          <div class="who-process_group">
+            <div class="who-process_card who-process_pitch">
+              <span class="who-process_row">
+                <span class="who-process_label">One-line pitch</span>
+                <span class="who-process_tag primary small">v4</span>
+              </span>
+              <span class="who-process_struck">
+                An AI-native, zero-trust identity orchestration layer
+              </span>
+              <span class="who-process_headline">
+                <em>Access control</em> that keeps up with your team.
+              </span>
+              <span class="who-process_rule" />
+              <span class="who-process_row">
+                <span class="who-process_founders">
+                  <span class="who-process_faces">
+                    <Img src={manTeal} width={80} class="who-process_avatar small" />
+                    <Img src={woman} width={80} class="who-process_avatar small" />
+                  </span>
+                  <span class="who-process_meta">Both founders</span>
+                </span>
+                <span class="who-process_tag success small">Signed off</span>
+              </span>
+            </div>
+            <span class="who-process_pill">
+              <Icon src={check} class="who-process_check" />
+              <span class="who-process_title">Agreed before any design starts</span>
+            </span>
+          </div>
+        )}
+        {variant === "scene" && (
+          <div class="who-process_group">
+            <span class="who-process_scene">
+              <span class="who-process_tag primary scene">
+                SCENE 02 · ACCESS REQUEST
+              </span>
+              <span class="who-process_card who-process_request">
+                <span class="who-process_person">
+                  <Img src={woman} width={96} class="who-process_avatar" />
+                  <span class="who-process_who">
+                    <span class="who-process_quote">Maya requested Billing</span>
+                    <span class="who-process_label muted">
+                      Finance
+                      <span class="who-process_dot" />2 min ago
+                    </span>
+                  </span>
+                </span>
+                <span class="who-process_buttons">
+                  <span class="who-process_button">Approve</span>
+                  <span class="who-process_button quiet">Decline</span>
+                </span>
+              </span>
+            </span>
+            <span class="who-process_strip">
+              <span class="who-process_title">Same scene on</span>
+              <span class="who-process_tags">
+                <span class="who-process_tag success">Site</span>
+                <span class="who-process_tag warning">Deck</span>
+              </span>
+            </span>
+            <span class="who-process_cursor orange" style="--_x: 73; --_y: 183;">
+              <Icon src={cursorOrange} class="who-process_arrow" />
+              Designer
+            </span>
+          </div>
+        )}
+        {variant === "paths" && (
+          <div class="who-process_group">
+            <span class="who-process_browser">
+              <span class="who-process_chrome">
+                <span class="who-process_dots">
+                  <span />
+                  <span />
+                  <span />
+                </span>
+                <span class="who-process_address" />
+              </span>
+              <span class="who-process_page">
+                <span class="who-process_page-copy">
+                  <span class="who-process_meta">For IT leads</span>
+                  <span class="who-process_headline">
+                    Pass your next security
+                    <br />
+                    review in days
+                  </span>
+                </span>
+                <span class="who-process_lines">
+                  <span style="--_width: 206;" />
+                  <span style="--_width: 150;" />
+                  <span style="--_width: 85;" />
+                </span>
+                <span class="who-process_demo">Book a demo</span>
+              </span>
+            </span>
+            <span class="who-process_pill status">
+              <span class="who-process_status">
+                <span class="who-process_marker" />
+                <span class="who-process_label strong">Demo requested</span>
+              </span>
+              <span class="who-process_meta">just now</span>
+            </span>
+            <span class="who-process_cursor green" style="--_x: 55; --_y: 207;">
+              <Icon src={cursorGreen} class="who-process_arrow" />
+              IT Lead
+            </span>
+          </div>
+        )}
+        {(variant === "publish" || variant === "people") && (
+          <div class="who-process_group">
+            <div class="who-process_editor">
+              <span class="who-process_bar">
+                <span class="who-process_path">
+                  <Icon src={layers} class="who-process_layers" />
+                  <span class="who-process_label">
+                    Editing
+                    <span class="who-process_dot" />
+                    {variant === "publish" ? "/pricing" : "/our people"}
+                  </span>
+                </span>
+                <span class="who-process_publish">Publish</span>
+              </span>
+              {variant === "publish" ? (
+                <span class="who-process_fields">
+                  <span class="who-process_field">
+                    <span class="who-process_title">Headline</span>
+                    <span class="who-process_input focused">
+                      Pricing that grows with your team
+                      <span class="who-process_caret" />
+                    </span>
+                  </span>
+                  <span class="who-process_field">
+                    <span class="who-process_title">Starter plan</span>
+                    <span class="who-process_input">$49 / month</span>
+                  </span>
+                </span>
+              ) : (
+                <ul class="who-process_people" role="list">
+                  {people.map((person) => (
+                    <li class:list={["who-process_member", person.added && "added"]}>
+                      <Img src={person.avatar} width={96} class="who-process_avatar" />
+                      <span class="who-process_who">
+                        <span class="who-process_title strong">{person.name}</span>
+                        <span class="who-process_meta">{person.role}</span>
+                      </span>
+                      {person.added && (
+                        <span class="who-process_new">NEW</span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {variant === "people" && (
+                <span class="who-process_cursor orange" style="--_x: 138; --_y: 281.35;">
+                  <Icon src={cursorOrange} class="who-process_arrow" />
+                  Office manager
+                </span>
+              )}
+            </div>
+            {variant === "publish" && (
+              <>
+                <span class="who-process_pill">
+                  <Icon src={check} class="who-process_check" />
+                  <span class="who-process_title">Updated by marketing</span>
+                  <span class="who-process_dot large" />
+                  <span class="who-process_title muted">no engineer</span>
+                </span>
+                <span class="who-process_cursor green" style="--_x: 254; --_y: 150;">
+                  <Icon src={cursorGreen} class="who-process_arrow" />
+                  Marketing
+                </span>
+              </>
+            )}
+          </div>
+        )}
+        {variant === "services" && (
+          <div class="who-process_group">
+            <div class="who-process_card who-process_services">
+              <span class="who-process_row">
+                <span class="who-process_title strong">Services</span>
+                <span class="who-process_lang">EN</span>
+              </span>
+              <ul class="who-process_service-list" role="list">
+                {services.map((service) => (
+                  <li class="who-process_service">
+                    <span class="who-process_caps">{service.label}</span>
+                    <span class:list={["who-process_label medium", service.accent && "accent"]}>
+                      {service.text}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <span class="who-process_pill tight">
+              <Icon src={check} class="who-process_check" />
+              <span class="who-process_title">Written in English</span>
+              <span class="who-process_dot" />
+              <span class="who-process_label muted">never translated</span>
+            </span>
+          </div>
+        )}
+        {variant === "identity" && (
+          <div class="who-process_group">
+            <span class="who-process_looks">
+              <span class="who-process_proposal">
+                <span class="who-process_cover">
+                  <span class="who-process_meta light">Arden &amp; Lim</span>
+                  <span class="who-process_meta white">Proposal for Halden Group</span>
+                </span>
+                <span class="who-process_lines">
+                  <span style="--_width: 93;" />
+                  <span style="--_width: 108;" />
+                  <span style="--_width: 69;" />
+                </span>
+              </span>
+              <span class="who-process_hero">
+                <span class="who-process_hero-copy">
+                  <span class="who-process_label medium light">Arden &amp; Lim</span>
+                  <span class="who-process_headline">
+                    Counsel for business that crosses borders
+                  </span>
+                </span>
+                <span class="who-process_consult">Book a consultation</span>
+              </span>
+            </span>
+            <span class="who-process_strip">
+              <span class="who-process_title">Same look on</span>
+              <span class="who-process_tags">
+                <span class="who-process_tag success">SITE</span>
+                <span class="who-process_tag warning">Proposals</span>
+                <span class="who-process_tag primary">Linkedin</span>
+              </span>
+            </span>
+          </div>
+        )}
+        {variant === "enquiry" && (
+          <div class="who-process_group">
+            <div class="who-process_card who-process_form">
+              <span class="who-process_quote strong">Book a consultation</span>
+              <span class="who-process_form-fields">
+                <span class="who-process_form-field">
+                  <span class="who-process_label">What do you need help with?</span>
+                  <span class="who-process_select">
+                    Setting up in Singapore
+                    <Icon src={chevron} class="who-process_chevron" />
+                  </span>
+                </span>
+                <span class="who-process_form-field">
+                  <span class="who-process_label">Company size</span>
+                  <span class="who-process_chips">
+                    {sizes.map((size) => (
+                      <span class:list={["who-process_chip", size.selected && "selected"]}>
+                        {size.label}
+                      </span>
+                    ))}
+                  </span>
+                </span>
+              </span>
+              <span class="who-process_submit">Request a consultation</span>
+            </div>
+            <span class="who-process_pill wide-gap">
+              <span class="who-process_ok" />
+              <span class="who-process_title">Qualified enquiry</span>
+              <span class="who-process_dot" />
+              <span class="who-process_label muted">sent to a partner</span>
+            </span>
+          </div>
+        )}
+        {variant === "leaks" && (
+          <div class="who-process_group">
+            <div class="who-process_card who-process_leaks">
+              <span class="who-process_row who-process_leaks-head">
+                <span class="who-process_title strong">Q3 campaigns</span>
+                <span class="who-process_meta">Last 90 days</span>
+              </span>
+              <ul class="who-process_campaigns" role="list">
+                {campaigns.map((campaign) => (
+                  <li class:list={["who-process_campaign", campaign.leak && "leak"]}>
+                    <span class="who-process_who">
+                      <span class="who-process_label strong">{campaign.path}</span>
+                      <span class="who-process_meta">{campaign.source}</span>
+                    </span>
+                    <span class="who-process_rate">
+                      {campaign.rate}
+                      {campaign.leak && <span class="who-process_leak">LEAK</span>}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <span class="who-process_pill roomy">
+              <Icon src={mapIcon} class="who-process_mic" />
+              <span class="who-process_found">
+                <span class="who-process_title">3 leaks found</span>
+                <span class="who-process_dot" />
+                <span class="who-process_label muted">across 12 campaigns</span>
+              </span>
+            </span>
+          </div>
+        )}
+        {variant === "variants" && (
+          <div class="who-process_group">
+            <span class="who-process_pill">
+              <Icon src={searchIcon} class="who-process_mic" />
+              <span class="who-process_title">soc 2 audit in 30 days</span>
+            </span>
+            <span class="who-process_connector" />
+            <div class="who-process_card who-process_variants">
+              <span class="who-process_switch">
+                <span class="who-process_option selected">Variant A</span>
+                <span class="who-process_option">Variant B</span>
+              </span>
+              <span class="who-process_variant">
+                <span class="who-process_variant-copy">
+                  <span class="who-process_headline">
+                    Your <em>SOC 2 audit,</em>
+                    <br />
+                    done <em>in 30 days</em>
+                  </span>
+                  <span class="who-process_lines">
+                    <span style="--_width: 274;" />
+                    <span style="--_width: 150;" />
+                    <span style="--_width: 85;" />
+                  </span>
+                </span>
+                <span class="who-process_start">Start your audit</span>
+              </span>
+            </div>
+          </div>
+        )}
+        {variant === "kit" && (
+          <div class="who-process_group">
+            <div class="who-process_card who-process_kit">
+              <span class="who-process_row">
+                <span class="who-process_title strong">Campaign kit</span>
+                <span class="who-process_meta">24 sections</span>
+              </span>
+              <ul class="who-process_sections" role="list">
+                {kitSections.map((section) => (
+                  <li class:list={["who-process_section", section.selected && "selected"]}>
+                    <span class="who-process_thumb">
+                      <span />
+                      <span />
+                      <span />
+                    </span>
+                    <span class="who-process_meta">{section.name}</span>
+                  </li>
+                ))}
+              </ul>
+              <span class="who-process_templates">
+                <span class="who-process_label medium">Templates</span>
+                <span class="who-process_regions">
+                  {templates.map((template) => (
+                    <span class="who-process_region">
+                      <Img src={template.flag} transparent class="who-process_flag" />
+                      {template.name}
+                    </span>
+                  ))}
+                </span>
+              </span>
+            </div>
+            <span class="who-process_pill">
+              <Icon src={check} class="who-process_check" />
+              <span class="who-process_title">Rule: one CTA per page</span>
+            </span>
+          </div>
+        )}
+        {variant === "form" && (
+          <div class="who-process_group">
+            <div class="who-process_card who-process_form demo">
+              <span class="who-process_quote strong">Book a demo</span>
+              <span class="who-process_form-fields">
+                {fields.map((field) => (
+                  <span class="who-process_form-field">
+                    <span class="who-process_label">{field.label}</span>
+                    <span class="who-process_select">{field.value}</span>
+                  </span>
+                ))}
+              </span>
+              <span class="who-process_proof">
+                <span class="who-process_stars">★★★★★</span>
+                <span class="who-process_meta">“Live in a week.” · IT lead, Acme</span>
+              </span>
+              <span class="who-process_submit">Book a demo</span>
+            </div>
+            <span class="who-process_pill wide-gap">
+              <span class="who-process_ok" />
+              <span class="who-process_title">A/B test live</span>
+              <span class="who-process_dot" />
+              <span class="who-process_label muted">50 / 50 split</span>
+            </span>
+          </div>
+        )}
+        {variant === "events" && (
+          <div class="who-process_group">
+            <div class="who-process_editor">
+              <span class="who-process_bar">
+                <span class="who-process_quote">Tracked events</span>
+                <span class="who-process_live">
+                  <span class="who-process_ok small" />
+                  <span class="who-process_label medium">Live</span>
+                </span>
+              </span>
+              <ul class="who-process_events" role="list">
+                {events.map((event) => (
+                  <li class="who-process_event">
+                    <span class="who-process_person">
+                      <Icon src={check} class="who-process_tick" />
+                      <span class="who-process_who">
+                        <span class:list={["who-process_title", event.accent && "accent"]}>
+                          {event.name}
+                        </span>
+                        <span class="who-process_meta">{event.page}</span>
+                      </span>
+                    </span>
+                    <span class="who-process_meta">{event.time}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <span class="who-process_pill">
+              <Icon src={check} class="who-process_check" />
+              <span class="who-process_title">Published by marketing</span>
+              <span class="who-process_dot large" />
+              <span class="who-process_title muted">no ticket</span>
+            </span>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    /* A square artboard that scales as one piece. Its 400-unit stage fills
+       the share of the box each Figma frame gives it. */
+    .who-process_wrap {
+      --_scale: 400 / 517;
+      --_wash: 100%;
+      @media (width < 62rem) {
+        --_scale: 280 / 347;
+        --_wash: calc(517 / 347 * 100%);
+      }
+      @media (width < 48rem) {
+        --_scale: 280 / 361;
+        --_wash: calc(517 / 361 * 100%);
+      }
+      --_unit: calc(100cqw * var(--_scale) / 400);
+      --_base: #d4f4f7;
+      --_tint: rgb(213 226 245 / 0.32);
+      --_deep: rgb(5 103 244 / 0.32);
+      --_lift: 0 calc(3 * var(--_unit)) calc(7 * var(--_unit))
+          rgb(120 120 120 / 0.06),
+        0 calc(13 * var(--_unit)) calc(13 * var(--_unit))
+          rgb(120 120 120 / 0.08),
+        0 calc(30 * var(--_unit)) calc(18 * var(--_unit))
+          rgb(120 120 120 / 0.03),
+        0 calc(54 * var(--_unit)) calc(22 * var(--_unit))
+          rgb(120 120 120 / 0.01);
+      --_float: calc(11 * var(--_unit)) calc(7 * var(--_unit))
+          calc(13 * var(--_unit)) rgb(153 153 153 / 0.05),
+        calc(25 * var(--_unit)) calc(17 * var(--_unit))
+          calc(18 * var(--_unit)) rgb(153 153 153 / 0.05),
+        calc(45 * var(--_unit)) calc(30 * var(--_unit))
+          calc(22 * var(--_unit)) rgb(153 153 153 / 0.01);
+      --_hero: linear-gradient(
+        140deg,
+        #89a8ff 0%,
+        #063fe4 24%,
+        var(--color-primary-98) 83%
+      );
+      container-type: inline-size;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: clip;
+      color: var(--color-neutral-80);
+      font-family: var(--primary-family);
+      letter-spacing: -0.005em;
+      background:
+        linear-gradient(to bottom, var(--_tint) 55.368%, var(--_deep) 96.905%)
+          top / 100% var(--_wash) no-repeat,
+        var(--_base);
+
+      &.wash-fresh {
+        --_base:
+          linear-gradient(
+            136.467deg,
+            transparent 20.752%,
+            rgb(255 255 255 / 0.5) 51.501%,
+            transparent 99.854%
+          ),
+          #d4f4f7;
+      }
+
+      &:is(.interview, .referrer, .leaks) {
+        --_wash: 100%;
+        @media (width < 62rem) {
+          --_scale: 268.47 / 347;
+        }
+        @media (width < 48rem) {
+          --_scale: 279.3 / 361;
+        }
+      }
+
+      &:is(.pitch, .services, .variants, .kit, .form, .events) {
+        @media (width < 62rem) {
+          --_scale: 300 / 347;
+        }
+        @media (width < 48rem) {
+          --_scale: 300 / 361;
+        }
+      }
+
+      &:is(.scene, .paths) {
+        @media (width < 62rem) {
+          --_scale: 288 / 347;
+        }
+        @media (width < 48rem) {
+          --_scale: 288 / 361;
+        }
+      }
+
+      &.wash-blue {
+        --_base: #c5d6ff;
+        --_tint: rgb(128 195 254 / 0.32);
+        --_deep: rgb(6 66 238 / 0.32);
+      }
+
+      &.wash-mist {
+        --_base: #e8ebf2;
+        --_tint: rgb(174 224 246 / 0.32);
+      }
+
+      &:is(.wash-blue, .wash-mist)::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.4 -0.45'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        opacity: 0.35;
+      }
+
+      :is(span, li) {
+        display: block;
+      }
+
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      li {
+        margin: 0;
+      }
+
+      em {
+        font-style: normal;
+        color: var(--color-primary-60);
+      }
+
+      .icon {
+        max-width: none;
+      }
+
+      .who-process_stage {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: calc(400 * var(--_unit));
+        aspect-ratio: 1 / 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        translate: -50% -50%;
+      }
+
+      .who-process_group {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      /* =====================
+         Shared pieces
+         ===================== */
+
+      .who-process_card {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        border: calc(1 * var(--_unit)) solid var(--color-neutral-5);
+        border-radius: calc(12 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        box-shadow: var(--_lift);
+      }
+
+      .who-process_row {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .who-process_person {
+        display: flex;
+        align-items: center;
+        gap: calc(10 * var(--_unit));
+      }
+
+      .who-process_who {
+        display: flex;
+        flex-direction: column;
+        gap: calc(2 * var(--_unit));
+      }
+
+      .who-process_avatar {
+        flex: none;
+        width: calc(48 * var(--_unit));
+        height: calc(48 * var(--_unit));
+        object-fit: cover;
+        border: calc(1 * var(--_unit)) solid var(--color-neutral-0);
+        border-radius: 50%;
+        box-shadow:
+          0 calc(1 * var(--_unit)) calc(2 * var(--_unit))
+            rgb(16 24 40 / 0.06),
+          0 calc(1 * var(--_unit)) calc(3 * var(--_unit)) rgb(16 24 40 / 0.1);
+        &.small {
+          width: calc(40 * var(--_unit));
+          height: calc(40 * var(--_unit));
+        }
+      }
+
+      .who-process_title {
+        font-size: calc(16 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(22 * var(--_unit));
+        white-space: nowrap;
+        &.strong {
+          color: var(--color-neutral-90);
+        }
+        &.muted {
+          color: var(--color-neutral-50);
+        }
+      }
+
+      .who-process_label {
+        display: flex;
+        align-items: center;
+        gap: calc(4 * var(--_unit));
+        font-size: calc(14 * var(--_unit));
+        line-height: calc(20 * var(--_unit));
+        white-space: nowrap;
+        &.medium,
+        &.strong {
+          font-weight: var(--primary-medium);
+        }
+        &.muted {
+          color: var(--color-neutral-50);
+        }
+        &.accent {
+          color: var(--color-primary-60);
+        }
+        &.light {
+          color: var(--color-neutral-10);
+        }
+      }
+
+      .who-process_meta {
+        display: flex;
+        align-items: center;
+        gap: calc(4 * var(--_unit));
+        color: var(--color-neutral-50);
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        white-space: nowrap;
+        &.light {
+          color: var(--color-neutral-10);
+        }
+        &.white {
+          color: var(--color-neutral-0);
+          font-weight: var(--primary-medium);
+        }
+      }
+
+      .who-process_dot {
+        flex: none;
+        width: calc(3 * var(--_unit));
+        height: calc(3 * var(--_unit));
+        border-radius: 50%;
+        background-color: var(--color-neutral-10);
+        &.large {
+          width: calc(5 * var(--_unit));
+          height: calc(5 * var(--_unit));
+        }
+      }
+
+      .who-process_quote {
+        font-size: calc(18 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(24 * var(--_unit));
+        letter-spacing: -0.007em;
+        &.strong {
+          color: var(--color-neutral-90);
+        }
+      }
+
+      .who-process_headline {
+        font-family: var(--secondary-family);
+        font-size: calc(20 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(26 * var(--_unit));
+        letter-spacing: -0.01em;
+      }
+
+      .who-process_tag {
+        padding: calc(3 * var(--_unit)) calc(7 * var(--_unit));
+        border: calc(1 * var(--_unit)) solid;
+        border-radius: calc(4 * var(--_unit));
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        white-space: nowrap;
+        &.small {
+          padding-block: 0;
+          border-radius: calc(2 * var(--_unit));
+        }
+        &.warning {
+          border-color: var(--color-accent-warning-10);
+          background-color: var(--color-accent-warning-5);
+          color: var(--color-accent-warning-60);
+        }
+        &.success {
+          border-color: var(--color-accent-success-10);
+          background-color: var(--color-accent-success-5);
+          color: var(--color-accent-success-80);
+        }
+        &.primary {
+          border-color: var(--color-primary-10);
+          background-color: var(--color-primary-5);
+          color: var(--color-primary-60);
+        }
+      }
+
+      .who-process_pill {
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+        padding: calc(12 * var(--_unit));
+        border: calc(1 * var(--_unit)) solid var(--color-neutral-5);
+        border-radius: calc(12 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        &.tight {
+          gap: calc(4 * var(--_unit));
+          .who-process_check {
+            margin-right: calc(8 * var(--_unit));
+          }
+        }
+        &.wide-gap {
+          gap: calc(4 * var(--_unit));
+          .who-process_ok {
+            margin-right: calc(8 * var(--_unit));
+          }
+        }
+      }
+
+      .who-process_check {
+        --_size: calc(20 * var(--_unit));
+        flex: none;
+        color: var(--color-primary-60);
+      }
+
+      .who-process_strip {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: calc(12 * var(--_unit));
+        border-radius: calc(12 * var(--_unit));
+        background-color: var(--color-neutral-0);
+      }
+
+      .who-process_tags {
+        display: flex;
+        gap: calc(8 * var(--_unit));
+        .who-process_tag {
+          padding: calc(2 * var(--_unit)) calc(8 * var(--_unit));
+        }
+      }
+
+      .who-process_lines {
+        display: flex;
+        flex-direction: column;
+        gap: calc(4 * var(--_unit));
+        > span {
+          width: calc(var(--_width) * var(--_unit));
+          height: calc(4.2 * var(--_unit));
+          border-radius: calc(0.4 * var(--_unit));
+          background-color: var(--color-neutral-2);
+          box-shadow: 0 calc(0.3 * var(--_unit)) calc(1.2 * var(--_unit))
+            rgb(0 0 0 / 0.03);
+        }
+      }
+
+      .who-process_cursor {
+        position: absolute;
+        top: calc(var(--_y) * var(--_unit));
+        left: calc(var(--_x) * var(--_unit));
+        padding: calc(3.6 * var(--_unit)) calc(7.2 * var(--_unit));
+        border-radius: calc(1.727 * var(--_unit));
+        color: var(--color-neutral-0);
+        font-size: calc(12 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(18 * var(--_unit));
+        white-space: nowrap;
+        &.green {
+          background-color: var(--color-accent-success-70);
+        }
+        &.orange {
+          background-color: var(--color-accent-warning-60);
+        }
+      }
+
+      .who-process_arrow {
+        --_size: calc(24 * var(--_unit));
+        position: absolute;
+        top: calc(-16.2 * var(--_unit));
+        left: calc(-15.3 * var(--_unit));
+        overflow: visible;
+      }
+
+      /* =====================
+         Interview and referrer
+         ===================== */
+
+      .who-process_group:has(.who-process_note) {
+        gap: calc(12 * var(--_unit));
+      }
+
+      .who-process_note {
+        width: calc(340 * var(--_unit));
+        gap: calc(24 * var(--_unit));
+        padding: calc(32 * var(--_unit)) calc(24 * var(--_unit));
+        .who-process_avatar {
+          opacity: 0.9;
+        }
+        .who-process_quote {
+          width: calc(290 * var(--_unit));
+        }
+        .who-process_tag {
+          border-radius: calc(2 * var(--_unit));
+        }
+      }
+
+      .who-process_connector {
+        position: relative;
+        width: calc(1.5 * var(--_unit));
+        height: calc(36 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        &::before,
+        &::after {
+          content: "";
+          position: absolute;
+          left: 50%;
+          width: calc(6 * var(--_unit));
+          height: calc(6 * var(--_unit));
+          background-color: var(--color-neutral-0);
+          translate: -50% 0;
+        }
+        &::before {
+          top: calc(-3 * var(--_unit));
+          rotate: 45deg;
+        }
+        &::after {
+          bottom: calc(-3 * var(--_unit));
+          border-radius: 50%;
+        }
+      }
+
+      .who-process_mic {
+        --_size: calc(24 * var(--_unit));
+        flex: none;
+        color: var(--color-primary-60);
+      }
+
+      /* =====================
+         Pitch
+         ===================== */
+
+      .who-process_group:has(.who-process_pitch) {
+        gap: calc(24 * var(--_unit));
+      }
+
+      .who-process_pitch {
+        width: calc(369.2 * var(--_unit));
+        gap: calc(16 * var(--_unit));
+        padding: calc(24 * var(--_unit));
+        .who-process_label {
+          color: var(--color-neutral-80);
+        }
+      }
+
+      .who-process_struck {
+        color: var(--color-neutral-50);
+        font-size: calc(13.68 * var(--_unit));
+        line-height: calc(19.15 * var(--_unit));
+        letter-spacing: 0;
+        text-decoration: line-through;
+        white-space: nowrap;
+        opacity: 0.8;
+      }
+
+      .who-process_rule {
+        width: 100%;
+        height: calc(1.14 * var(--_unit));
+        background-color: var(--color-neutral-5);
+      }
+
+      .who-process_founders {
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+      }
+
+      .who-process_faces {
+        display: flex;
+        > * + * {
+          margin-left: calc(-4 * var(--_unit));
+        }
+      }
+
+      /* =====================
+         Scene
+         ===================== */
+
+      .who-process_group:has(.who-process_scene) {
+        gap: calc(40 * var(--_unit));
+        > * {
+          width: calc(351 * var(--_unit));
+        }
+        > .who-process_cursor {
+          width: auto;
+        }
+      }
+
+      .who-process_scene {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(12 * var(--_unit));
+        .who-process_tag {
+          padding: calc(3.86 * var(--_unit)) calc(7.86 * var(--_unit));
+          border-width: calc(1.14 * var(--_unit));
+        }
+      }
+
+      .who-process_request {
+        width: 100%;
+        gap: calc(24 * var(--_unit));
+        padding: calc(24 * var(--_unit));
+        .who-process_person {
+          gap: calc(12 * var(--_unit));
+        }
+        .who-process_who {
+          gap: calc(4 * var(--_unit));
+        }
+      }
+
+      .who-process_buttons {
+        display: flex;
+        gap: calc(8 * var(--_unit));
+      }
+
+      .who-process_button {
+        padding: calc(8 * var(--_unit)) calc(16 * var(--_unit));
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-primary-60);
+        color: var(--color-neutral-0);
+        font-size: calc(12 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(18 * var(--_unit));
+        &.quiet {
+          background-color: var(--color-neutral-5);
+          color: var(--color-neutral-80);
+        }
+      }
+
+      /* =====================
+         Paths
+         ===================== */
+
+      .who-process_group:has(.who-process_browser) {
+        gap: calc(20 * var(--_unit));
+      }
+
+      .who-process_browser {
+        width: calc(362 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(32 * var(--_unit));
+        padding: calc(12 * var(--_unit)) calc(12 * var(--_unit))
+          calc(32 * var(--_unit));
+        border-radius: calc(12 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        box-shadow: var(--_float);
+      }
+
+      .who-process_chrome {
+        display: flex;
+        align-items: center;
+        gap: calc(12 * var(--_unit));
+      }
+
+      .who-process_dots {
+        display: flex;
+        gap: calc(4 * var(--_unit));
+        > span {
+          width: calc(6 * var(--_unit));
+          height: calc(6 * var(--_unit));
+          border-radius: 50%;
+          background-color: rgb(6 66 238 / 0.12);
+        }
+      }
+
+      .who-process_address {
+        width: calc(300 * var(--_unit));
+        height: calc(4 * var(--_unit));
+        border-radius: calc(0.4 * var(--_unit));
+        background-image: linear-gradient(
+          to right,
+          var(--color-primary-60),
+          rgb(3 38 136 / 0)
+        );
+        opacity: 0.08;
+      }
+
+      .who-process_page {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: calc(16 * var(--_unit));
+      }
+
+      .who-process_page-copy {
+        display: flex;
+        flex-direction: column;
+        gap: calc(4 * var(--_unit));
+        margin-bottom: calc(-4 * var(--_unit));
+      }
+
+      .who-process_demo {
+        padding: calc(4 * var(--_unit)) calc(8 * var(--_unit));
+        border-radius: calc(2 * var(--_unit));
+        background-color: var(--color-primary-60);
+        color: var(--color-neutral-0);
+        font-size: calc(10 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(14 * var(--_unit));
+        letter-spacing: 0;
+      }
+
+      .who-process_pill.status {
+        width: calc(283 * var(--_unit));
+        justify-content: space-between;
+        box-shadow: 0 calc(6 * var(--_unit)) calc(16 * var(--_unit))
+          calc(-6 * var(--_unit)) rgb(6 13 51 / 0.2);
+      }
+
+      .who-process_status {
+        display: flex;
+        align-items: center;
+        gap: calc(6 * var(--_unit));
+      }
+
+      .who-process_marker {
+        width: calc(16 * var(--_unit));
+        height: calc(16 * var(--_unit));
+        padding: calc(5 * var(--_unit));
+        border-radius: 50%;
+        background-color: var(--color-primary-60);
+        box-shadow:
+          0 calc(0.91 * var(--_unit)) calc(1.81 * var(--_unit))
+            rgb(16 24 40 / 0.06),
+          0 calc(0.91 * var(--_unit)) calc(2.72 * var(--_unit))
+            rgb(16 24 40 / 0.1);
+        &::before {
+          content: "";
+          display: block;
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          background-color: var(--color-primary-5);
+        }
+      }
+
+      /* =====================
+         Editor: publish and people
+         ===================== */
+
+      .who-process_group:has(.who-process_editor) {
+        gap: calc(24 * var(--_unit));
+      }
+
+      .who-process_editor {
+        position: relative;
+        width: calc(364.8 * var(--_unit));
+        overflow: visible;
+        border: calc(1.14 * var(--_unit)) solid var(--color-neutral-5);
+        border-radius: calc(12 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        box-shadow: var(--_float);
+      }
+
+      .who-process_bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: calc(16 * var(--_unit));
+        border-radius: calc(11 * var(--_unit)) calc(11 * var(--_unit)) 0 0;
+        background-color: var(--color-neutral-2);
+      }
+
+      .who-process_path {
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+      }
+
+      .who-process_layers {
+        --_size: calc(20 * var(--_unit));
+        flex: none;
+      }
+
+      .who-process_publish {
+        padding: calc(4 * var(--_unit)) calc(12 * var(--_unit));
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-primary-60);
+        color: var(--color-neutral-0);
+        font-size: calc(12 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(18 * var(--_unit));
+      }
+
+      .who-process_fields {
+        display: flex;
+        flex-direction: column;
+        gap: calc(24 * var(--_unit));
+        padding: calc(16 * var(--_unit));
+      }
+
+      .who-process_field {
+        display: flex;
+        flex-direction: column;
+        gap: calc(8 * var(--_unit));
+      }
+
+      .who-process_input {
+        display: flex;
+        align-items: center;
+        gap: calc(2 * var(--_unit));
+        padding: calc(12 * var(--_unit));
+        border: calc(1.14 * var(--_unit)) solid var(--color-neutral-10);
+        border-radius: calc(8 * var(--_unit));
+        font-size: calc(14 * var(--_unit));
+        line-height: calc(20 * var(--_unit));
+        &.focused {
+          border-color: var(--color-primary-60);
+        }
+      }
+
+      .who-process_caret {
+        width: calc(1.71 * var(--_unit));
+        height: calc(16 * var(--_unit));
+        background-color: var(--color-primary-60);
+      }
+
+      .who-process_editor:has(:is(.who-process_people, .who-process_events)) {
+        border-width: calc(1 * var(--_unit));
+        box-shadow: var(--_lift);
+      }
+
+      .who-process_people {
+        display: flex;
+        flex-direction: column;
+        padding: calc(8 * var(--_unit)) calc(16 * var(--_unit));
+      }
+
+      .who-process_member {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: calc(12 * var(--_unit));
+        padding: calc(12 * var(--_unit));
+        &:first-child {
+          border-bottom: calc(1 * var(--_unit)) solid var(--color-neutral-5);
+        }
+        &.added {
+          padding: calc(12 * var(--_unit));
+          border: calc(1.1 * var(--_unit)) dashed var(--color-primary-30);
+          border-radius: calc(8 * var(--_unit));
+          background-color: var(--color-primary-5);
+        }
+      }
+
+      .who-process_new {
+        position: absolute;
+        top: calc(12 * var(--_unit));
+        right: calc(12.5 * var(--_unit));
+        padding: calc(3.3 * var(--_unit)) calc(8 * var(--_unit));
+        border: calc(1.1 * var(--_unit)) solid var(--color-primary-20);
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-primary-10);
+        color: var(--color-primary-60);
+        font-size: calc(9.9 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(14 * var(--_unit));
+      }
+
+      /* =====================
+         Services
+         ===================== */
+
+      .who-process_group:has(.who-process_services) {
+        gap: calc(16 * var(--_unit));
+      }
+
+      .who-process_services {
+        width: calc(358.2 * var(--_unit));
+        padding: calc(24 * var(--_unit));
+        border-width: calc(1.1 * var(--_unit));
+        > .who-process_row {
+          align-items: flex-start;
+          height: calc(34 * var(--_unit));
+        }
+      }
+
+      .who-process_lang {
+        margin-top: calc(0.7 * var(--_unit));
+        padding: calc(3.3 * var(--_unit)) calc(6.6 * var(--_unit));
+        border-radius: calc(4.4 * var(--_unit));
+        background-color: var(--color-primary-5);
+        color: var(--color-primary-60);
+        font-size: calc(9.9 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(14 * var(--_unit));
+      }
+
+      .who-process_service-list {
+        width: 100%;
+      }
+
+      .who-process_service {
+        display: flex;
+        flex-direction: column;
+        gap: calc(3.3 * var(--_unit));
+        padding: calc(12 * var(--_unit)) 0;
+        border-top: calc(1.1 * var(--_unit)) solid var(--color-neutral-5);
+        &:last-child {
+          padding-bottom: calc(12.1 * var(--_unit));
+        }
+      }
+
+      .who-process_caps {
+        color: var(--color-neutral-40);
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+      }
+
+      .who-process_services + .who-process_pill {
+        width: calc(297 * var(--_unit));
+      }
+
+      /* =====================
+         Identity
+         ===================== */
+
+      .who-process_group:has(.who-process_looks) {
+        gap: calc(32 * var(--_unit));
+        > * {
+          width: calc(382 * var(--_unit));
+        }
+      }
+
+      .who-process_looks {
+        position: relative;
+        height: calc(182 * var(--_unit));
+      }
+
+      .who-process_proposal {
+        position: absolute;
+        top: calc(24.4 * var(--_unit));
+        left: 0;
+        width: calc(187 * var(--_unit));
+        height: calc(133.2 * var(--_unit));
+        overflow: clip;
+        border: calc(1.1 * var(--_unit)) solid var(--color-neutral-5);
+        border-radius: calc(11 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        box-shadow: var(--_lift);
+        .who-process_lines {
+          padding: calc(16 * var(--_unit));
+          gap: calc(6 * var(--_unit));
+          > span {
+            height: calc(5 * var(--_unit));
+            border-radius: calc(2 * var(--_unit));
+            background-color: var(--color-neutral-5);
+            box-shadow: none;
+          }
+        }
+      }
+
+      .who-process_cover {
+        height: calc(72 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        gap: calc(4 * var(--_unit));
+        padding: calc(16 * var(--_unit));
+        background-image: var(--_hero);
+      }
+
+      .who-process_hero {
+        position: absolute;
+        top: 0;
+        left: calc(107 * var(--_unit));
+        width: calc(275 * var(--_unit));
+        height: calc(182 * var(--_unit));
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: calc(20 * var(--_unit));
+        padding: calc(24 * var(--_unit));
+        border-radius: calc(12 * var(--_unit));
+        background-image: var(--_hero);
+        box-shadow: var(--_lift);
+        .who-process_headline {
+          width: calc(226.6 * var(--_unit));
+          color: var(--color-neutral-0);
+        }
+      }
+
+      .who-process_hero-copy {
+        display: flex;
+        flex-direction: column;
+        gap: calc(8 * var(--_unit));
+      }
+
+      .who-process_consult {
+        padding: calc(8 * var(--_unit)) calc(12 * var(--_unit));
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-neutral-0);
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+      }
+
+      /* =====================
+         Enquiry
+         ===================== */
+
+      .who-process_group:has(.who-process_form) {
+        gap: calc(24 * var(--_unit));
+      }
+
+      .who-process_form {
+        width: calc(330 * var(--_unit));
+        gap: calc(24 * var(--_unit));
+        padding: calc(24 * var(--_unit));
+      }
+
+      .who-process_form-fields {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: calc(16 * var(--_unit));
+      }
+
+      .who-process_form-field {
+        display: flex;
+        flex-direction: column;
+        gap: calc(8 * var(--_unit));
+      }
+
+      .who-process_select {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: calc(6.9 * var(--_unit)) calc(11 * var(--_unit));
+        border: calc(1.1 * var(--_unit)) solid var(--color-neutral-10);
+        border-radius: calc(4 * var(--_unit));
+        font-size: calc(14 * var(--_unit));
+        line-height: calc(20 * var(--_unit));
+      }
+
+      .who-process_chevron {
+        --_size: calc(15.4 * var(--_unit));
+        color: var(--color-neutral-60);
+      }
+
+      .who-process_chips {
+        display: flex;
+        gap: calc(6.6 * var(--_unit));
+      }
+
+      .who-process_chip {
+        padding: calc(7.9 * var(--_unit)) calc(12 * var(--_unit));
+        border: calc(1.1 * var(--_unit)) solid var(--color-neutral-10);
+        border-radius: calc(4 * var(--_unit));
+        color: var(--color-neutral-90);
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        &.selected {
+          border-color: var(--color-primary-60);
+          background-color: var(--color-primary-5);
+          color: var(--color-primary-60);
+          font-weight: var(--primary-medium);
+        }
+      }
+
+      .who-process_submit {
+        width: 100%;
+        padding: calc(8 * var(--_unit));
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-primary-60);
+        color: var(--color-neutral-0);
+        font-size: calc(14 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(20 * var(--_unit));
+        text-align: center;
+      }
+
+      .who-process_form + .who-process_pill {
+        width: calc(298 * var(--_unit));
+      }
+
+      .who-process_ok {
+        flex: none;
+        width: calc(22 * var(--_unit));
+        height: calc(22 * var(--_unit));
+        padding: calc(7.26 * var(--_unit));
+        border-radius: 50%;
+        background-color: var(--color-accent-success-10);
+        &::before {
+          content: "";
+          display: block;
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          background-color: var(--color-accent-success-60);
+        }
+      }
+      /* =====================
+         Leaks
+         ===================== */
+
+      .who-process_group:has(.who-process_leaks) {
+        gap: calc(24 * var(--_unit));
+      }
+
+      .who-process_leaks {
+        width: calc(352 * var(--_unit));
+        gap: calc(8 * var(--_unit));
+        padding: calc(20 * var(--_unit));
+        .who-process_meta {
+          color: var(--color-neutral-40);
+        }
+        .who-process_label.strong {
+          color: var(--color-neutral-90);
+        }
+      }
+
+      .who-process_leaks-head {
+        padding-bottom: calc(12 * var(--_unit));
+      }
+
+      .who-process_campaigns {
+        width: 100%;
+      }
+
+      .who-process_campaign {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: calc(11 * var(--_unit));
+        padding: calc(12 * var(--_unit));
+        .who-process_who {
+          gap: calc(1.1 * var(--_unit));
+        }
+        &.leak {
+          background-color: var(--color-accent-warning-5);
+          .who-process_rate {
+            color: var(--color-accent-warning-60);
+          }
+        }
+      }
+
+      .who-process_rate {
+        display: flex;
+        align-items: center;
+        gap: calc(4 * var(--_unit));
+        color: var(--color-neutral-80);
+        font-size: calc(12 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(18 * var(--_unit));
+      }
+
+      .who-process_leak {
+        padding: calc(4 * var(--_unit)) calc(8 * var(--_unit));
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-accent-warning-10);
+        font-size: calc(9.9 * var(--_unit));
+        line-height: calc(13.86 * var(--_unit));
+      }
+
+      .who-process_pill.roomy {
+        gap: calc(12 * var(--_unit));
+      }
+
+      .who-process_found {
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+      }
+
+      /* =====================
+         Variants
+         ===================== */
+
+      .who-process_group:has(.who-process_variants) {
+        gap: calc(12 * var(--_unit));
+      }
+
+      .who-process_variants {
+        width: calc(322 * var(--_unit));
+        gap: calc(24 * var(--_unit));
+        padding: calc(24 * var(--_unit));
+        border: 0;
+      }
+
+      .who-process_switch {
+        display: flex;
+        gap: calc(6.6 * var(--_unit));
+      }
+
+      .who-process_option {
+        padding: calc(4 * var(--_unit)) calc(8 * var(--_unit));
+        border: calc(1 * var(--_unit)) solid var(--color-neutral-5);
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-neutral-2);
+        color: var(--color-neutral-50);
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        white-space: nowrap;
+        &.selected {
+          border-color: var(--color-primary-30);
+          background-color: var(--color-primary-5);
+          color: var(--color-primary-60);
+        }
+      }
+
+      .who-process_variant {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: calc(16 * var(--_unit));
+      }
+
+      .who-process_variant-copy {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: calc(12 * var(--_unit));
+        .who-process_headline {
+          color: var(--color-neutral-90);
+        }
+      }
+
+      .who-process_start {
+        padding: calc(4 * var(--_unit)) calc(8 * var(--_unit));
+        border-radius: calc(2 * var(--_unit));
+        background-color: var(--color-primary-60);
+        color: var(--color-neutral-0);
+        font-size: calc(10 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(14 * var(--_unit));
+        white-space: nowrap;
+      }
+
+      /* =====================
+         Kit
+         ===================== */
+
+      .who-process_group:has(.who-process_kit) {
+        gap: calc(24 * var(--_unit));
+      }
+
+      .who-process_kit {
+        width: calc(352 * var(--_unit));
+        gap: calc(24 * var(--_unit));
+        padding: calc(20 * var(--_unit));
+      }
+
+      .who-process_sections {
+        width: 100%;
+        display: flex;
+        align-items: flex-start;
+        gap: calc(12 * var(--_unit));
+      }
+
+      .who-process_section {
+        flex: 1 1 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(4 * var(--_unit));
+        .who-process_meta {
+          color: var(--color-neutral-80);
+        }
+        &.selected {
+          .who-process_thumb {
+            border-color: var(--color-primary-30);
+            background-color: var(--color-primary-5);
+            > span:first-child {
+              width: calc(55 * var(--_unit));
+              background-color: var(--color-primary-60);
+            }
+            > span:last-child {
+              width: calc(26.4 * var(--_unit));
+              height: calc(8.8 * var(--_unit));
+              background-color: var(--color-primary-60);
+            }
+          }
+          .who-process_meta {
+            color: var(--color-primary-60);
+          }
+        }
+      }
+
+      .who-process_thumb {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: calc(4 * var(--_unit));
+        padding: calc(12 * var(--_unit)) calc(8 * var(--_unit));
+        border: calc(1.1 * var(--_unit)) solid var(--color-neutral-5);
+        border-radius: calc(8 * var(--_unit));
+        background-color: var(--color-neutral-2);
+        > span {
+          width: calc(66 * var(--_unit));
+          height: calc(4.4 * var(--_unit));
+          border-radius: calc(2.2 * var(--_unit));
+          background-color: var(--color-neutral-10);
+        }
+        > span:first-child {
+          width: calc(44 * var(--_unit));
+          height: calc(5.5 * var(--_unit));
+          background-color: var(--color-neutral-20);
+        }
+        > span:last-child {
+          width: calc(33 * var(--_unit));
+        }
+      }
+
+      .who-process_templates {
+        display: flex;
+        flex-direction: column;
+        gap: calc(8 * var(--_unit));
+      }
+
+      .who-process_regions {
+        display: flex;
+        gap: calc(12 * var(--_unit));
+      }
+
+      .who-process_region {
+        display: flex;
+        align-items: center;
+        gap: calc(6 * var(--_unit));
+        padding: calc(4 * var(--_unit)) calc(8 * var(--_unit));
+        border: calc(1 * var(--_unit)) solid var(--color-neutral-5);
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-neutral-2);
+        color: var(--color-neutral-80);
+        font-size: calc(12 * var(--_unit));
+        line-height: calc(18 * var(--_unit));
+        white-space: nowrap;
+      }
+
+      .who-process_flag {
+        flex: none;
+        width: calc(18.67 * var(--_unit));
+        height: calc(14 * var(--_unit));
+      }
+
+      /* =====================
+         Form
+         ===================== */
+
+      .who-process_form.demo {
+        gap: calc(16 * var(--_unit));
+        padding: calc(20 * var(--_unit));
+        .who-process_form-fields {
+          gap: calc(12 * var(--_unit));
+        }
+        .who-process_select {
+          padding: calc(8 * var(--_unit)) calc(11 * var(--_unit));
+        }
+        .who-process_submit {
+          padding: calc(8 * var(--_unit)) calc(12 * var(--_unit));
+        }
+      }
+
+      .who-process_proof {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: calc(8.8 * var(--_unit));
+        padding: calc(8 * var(--_unit));
+        border-radius: calc(4 * var(--_unit));
+        background-color: var(--color-neutral-2);
+        .who-process_meta {
+          color: var(--color-neutral-60);
+        }
+      }
+
+      .who-process_stars {
+        color: var(--color-accent-warning-60);
+        font-size: calc(11 * var(--_unit));
+        font-weight: var(--primary-medium);
+        line-height: calc(15.4 * var(--_unit));
+        white-space: nowrap;
+      }
+
+      .who-process_form.demo + .who-process_pill {
+        width: auto;
+      }
+
+      /* =====================
+         Events
+         ===================== */
+
+      .who-process_live {
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--_unit));
+      }
+
+      .who-process_ok.small {
+        width: calc(16 * var(--_unit));
+        height: calc(16 * var(--_unit));
+        padding: calc(5 * var(--_unit));
+      }
+
+      .who-process_events {
+        display: flex;
+        flex-direction: column;
+        padding: calc(8 * var(--_unit)) calc(16 * var(--_unit));
+      }
+
+      .who-process_event {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: calc(12 * var(--_unit));
+        padding-block: calc(12 * var(--_unit));
+        &:not(:last-child) {
+          border-bottom: calc(1 * var(--_unit)) solid var(--color-neutral-5);
+        }
+        .who-process_person {
+          gap: calc(8 * var(--_unit));
+        }
+        .who-process_who {
+          gap: calc(1.1 * var(--_unit));
+        }
+        .who-process_title.accent {
+          color: var(--color-primary-60);
+        }
+      }
+
+      .who-process_tick {
+        --_size: calc(20 * var(--_unit));
+        flex: none;
+        margin: calc(2 * var(--_unit));
+        color: var(--color-neutral-80);
+      }
+    }
+  }
+</style>

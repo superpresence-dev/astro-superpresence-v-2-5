@@ -218,7 +218,11 @@ const {
           }
         }
       }
+      /* Every box is positioned so the plain one sits above the featured
+         box's wide shadow instead of under it. */
       .home-difference_box {
+        position: relative;
+        z-index: 1;
         width: 100%;
         min-width: 0;
         max-width: 33.75rem;
@@ -243,7 +247,7 @@ const {
           }
         }
         &.featured {
-          position: relative;
+          z-index: 0;
           padding-top: 0;
           overflow: clip;
           background-color: var(--color-neutral-0);
